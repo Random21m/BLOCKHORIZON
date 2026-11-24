@@ -1,5 +1,5 @@
 // Offline shell: app files are cached; live API calls always go to the network (the app keeps its own last-value cache).
-const CACHE = 'blockhorizon-v0.1.0';
+const CACHE = 'blockhorizon-v0.2.0';
 const FILES = ['./', 'index.html', 'style.css', 'privacy.html', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
   'src/app.js', 'src/api.js', 'src/lib.js', 'src/i18n.js', 'src/sound.js', 'src/content.js'];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting())); });
