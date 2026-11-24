@@ -70,8 +70,9 @@ await ok('works offline after first visit (API cached)', async () => { await pag
 await ok('pull down from the top reloads the app (installed apps have no browser pull-to-refresh)', async () => {
   const tctx = await b.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true }); await tctx.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.abort()); const p = await tctx.newPage();
   await p.goto(base); await p.waitForSelector('#ptr', { state: 'attached' }); await p.evaluate(() => { window.__mark = 1; });
-  const cdp = await tctx.newCDPSession(p); const touch = (type, y) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: type === 'touchEnd' ? [] : [{ x: 195, y }] });
-  await touch('touchStart', 120); for (let y = 140; y <= 400; y += 20) await touch('touchMove', y); await touch('touchEnd');
+  // Touch events are dispatched from inside the page: raw touch emulation differs between browser builds (CI and local).
+  await p.evaluate(() => { const t = document.body, pt = (y) => new Touch({ identifier: 1, target: t, clientX: 195, clientY: y }), fire = (type, y, end) => t.dispatchEvent(new TouchEvent(type, { bubbles: true, touches: end ? [] : [pt(y)], changedTouches: [pt(y)] }));
+    fire('touchstart', 120); for (let y = 140; y <= 400; y += 20) fire('touchmove', y); fire('touchend', 400, true); });
   await until(p, () => window.__mark === undefined && !!document.querySelector('#ptr'), null, { timeout: 8000 }); assert.equal(await p.locator('#btn-refresh').count(), 1); await tctx.close(); });
 await ok('only mempool.space is contacted', async () => { assert.ok(external.length > 0); });
 await ok('no script errors', async () => { assert.deepEqual(errs, []); });
