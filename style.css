@@ -59,5 +59,41 @@ label.chk{display:flex;gap:10px;align-items:center;margin:8px 0}
 .reduced *,.reduced *::before{transition:none!important;scroll-behavior:auto!important}
 @media (prefers-reduced-motion:reduce){*,*::before{transition:none!important;scroll-behavior:auto!important}}
 @media (max-width:640px){nav{order:3;flex:0 0 100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}nav a{white-space:nowrap}.tools{margin-left:auto}}
-@media (max-width:480px){main{padding:16px 14px 6px}.bar{padding:8px 12px}.hero{padding:22px 14px 16px}.fees{grid-template-columns:repeat(2,1fr)}nav a{padding:5px 8px}}
+@media (max-width:480px){main{padding:16px 14px 6px}.hero{padding:22px 14px 16px}.fees{grid-template-columns:repeat(2,1fr)}}
 :fullscreen body{overflow:auto}
+
+/* ---- one-page dashboard ---- */
+:root{--bar:48px}
+.bar{padding:6px 14px;min-height:var(--bar)}
+.fit .foot{display:none}
+.fit{height:100dvh;display:flex;flex-direction:column;overflow:hidden}.fit .bar{flex:0 0 auto}.fit main{flex:1 1 auto;min-height:0;overflow:auto;padding:10px 12px;max-width:none;width:100%}
+.dashgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;min-height:100%}
+.tile{background:var(--card);border:1px solid var(--line);border-top:2px solid var(--text);border-radius:6px;padding:8px 10px;min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:2px}
+.tile h2{margin:0;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);font-weight:600}
+.tv{font:700 clamp(16px,2.6vh,28px)/1.15 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.tv a{color:var(--accent);text-decoration:none}
+.ts{font-size:clamp(10.5px,1.55vh,13px);color:var(--dim);line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .arc{max-width:120px;margin:0 auto;flex:1 1 auto;min-height:0;display:none}.tile .spark{height:36px;margin:2px 0}.tile .bar-track{margin:4px 0 2px}
+.tile.hero{grid-column:1/-1;border-top-color:var(--accent);text-align:center;justify-content:center;padding:12px}
+.hero .height{font-size:clamp(40px,11vw,64px);margin:2px 0}.hero .hbar{margin-top:8px}
+.tile .fees{gap:4px}.tile .fees div{padding:4px 2px}.tile .fees b{font-size:clamp(15px,2.2vh,20px)}.tile .fees small{font-size:10px}
+.strip2{grid-column:1/-1;display:flex;gap:14px;align-items:stretch;min-width:0}.sgrp{min-width:0;flex:1 1 auto}.sgrp:first-child:not(:only-child){flex:0 1 auto}
+.sgrp h2{margin:0 0 4px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);font-weight:600}
+.strip2 .blocks{padding:0 0 2px;gap:6px;overflow-x:auto}
+.strip2 .blk{flex:0 0 76px;padding:6px;font-size:10.5px;border-radius:6px}.strip2 .blk b{font-size:12px;margin-top:4px}.strip2 .cube{height:26px;border-radius:3px}
+@media (max-width:899px){.ts:nth-of-type(n+3){display:none}.strip2 .sgrp:first-child:not(:last-child){display:none}.strip2 .blk{flex-basis:64px}
+  .fit main{padding:6px 8px}.dashgrid{gap:6px}.tile{padding:6px 8px}.tv{font-size:16px}.tile h2{font-size:9.5px}.tile .spark{height:24px;margin:0}.tile .bar-track{margin:2px 0}
+  .tile.hero{padding:8px}.hero .height{font-size:44px;margin:0}.hero .hbar{margin-top:4px}.hero .eyebrow{font-size:10px}
+  .tile .fees{grid-template-columns:repeat(4,1fr)}.tile .fees b{font-size:14px}.tile .fees div{padding:2px}
+  .bar{padding:4px 10px;gap:2px 10px}nav{gap:0}nav a{padding:3px 8px;font-size:12.5px}.brand{font-size:12.5px}.bar button{padding:4px 9px}}
+@media (min-width:640px) and (max-width:899px){.dashgrid{grid-template-columns:repeat(3,1fr)}}
+@media (min-width:900px){
+  .fit main{overflow:hidden}
+  .dashgrid{grid-template-columns:repeat(4,1fr);grid-template-rows:1.5fr 1fr 1fr auto;gap:10px;height:100%}
+  .tile.hero{grid-column:span 2;grid-row:1}
+  .tile{padding:10px 14px}
+  .tile .arc{display:block}
+  .hero .height{font-size:clamp(48px,9vw,min(15vh,120px))}
+  .tile .spark{height:clamp(28px,5vh,56px)}
+  .strip2 .blk{flex-basis:96px}.strip2 .cube{height:clamp(22px,4vh,40px)}
+}
+@media (min-width:900px) and (max-height:640px){.fit main{overflow:auto}.dashgrid{height:auto;min-height:100%;grid-template-rows:auto}}

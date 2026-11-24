@@ -4,7 +4,7 @@ import { t, setLang, detectLang, LANGS } from './i18n.js';
 import { play, BLOCK_SOUNDS, ALARM_SOUNDS } from './sound.js';
 import { GLOSSARY, ANNIVERSARIES } from './content.js';
 
-export const VERSION = '0.2.0';
+export const VERSION = '0.3.0';
 const $ = (s, r = document) => r.querySelector(s);
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'CHF', 'AUD', 'JPY'];
 const DEF = { theme: 'dark', lang: detectLang(), cur: 'USD', h12: false, dateFmt: 'iso', utc: false, showFees: true, feesRtl: false, showPool: true, showMoscow: true, showCap: true,
@@ -91,58 +91,35 @@ function spark(vals) {
   return s;
 }
 const cube = (p) => el('div', { class: 'cube' }, el('i', { style: `height:${Math.max(4, Math.min(100, p * 100)).toFixed(0)}%` }));
+function tile(cls, title, value, subs = [], extra) {
+  return el('section', { class: 'tile ' + cls }, el('h2', null, title), el('div', { class: 'tv' }, value), extra, ...subs.filter(Boolean).map((x) => el('div', { class: 'ts' }, x)));
+}
 function viewDash() {
-  const h = st.tip, now = Date.now(), root = el('div');
-  const since = st.blocks[0] ? now / 1000 - st.blocks[0].timestamp : NaN;
-  const pr0 = price(), hv0 = Number.isFinite(h) ? L.halvingInfo(h, now) : null;
-  const chips = [[t('price'), Number.isFinite(pr0) ? L.fmtNum(pr0) + ' ' + S.cur : '–'], ['Sats per ' + S.cur, Number.isFinite(pr0) ? L.fmtNum(L.satsPerUnit(pr0)) : '–'],
-    ['Fast fee', st.fees ? L.fmtFee(st.fees.fastestFee) + ' sat/vB' : '–'], ['Mempool', st.mem ? L.fmtNum(st.mem.count) + ' tx' : '–']];
-  root.append(el('section', { class: 'hero card' }, el('div', { class: 'eyebrow' }, t('height')), el('div', { class: 'height', id: 'h' }, L.fmtNum(h)),
+  const h = st.tip, now = Date.now(), root = el('div', { class: 'dashgrid' });
+  const since = st.blocks[0] ? now / 1000 - st.blocks[0].timestamp : NaN, p = price();
+  const hv = Number.isFinite(h) ? L.halvingInfo(h, now) : null, sp = Number.isFinite(h) ? L.supplyAt(h) : NaN;
+  root.append(el('section', { class: 'tile hero' }, el('div', { class: 'eyebrow' }, t('height')), el('div', { class: 'height', id: 'h' }, L.fmtNum(h)),
     el('div', { class: 'since' }, t('since') + ': ', el('b', { id: 'since' }, Number.isFinite(since) ? L.fmtDuration(since) : '–')),
-    el('div', { class: 'strip' }, chips.map(([k, v]) => el('div', { class: 'chip' }, el('small', null, k), el('b', null, v)))),
-    hv0 ? el('div', { class: 'hbar' }, el('div', { class: 'lab' }, el('span', null, `${t('halving')} · ${L.fmtNum(hv0.blocksToGo)} ${t('blocksToGo')}`), el('span', { class: 'num' }, (hv0.progress * 100).toFixed(1) + '%')), el('div', { class: 'track' }, el('div', { class: 'fill', style: `width:${(hv0.progress * 100).toFixed(2)}%` }))) : null));
-  const g = el('div', { class: 'grid' }); root.append(g);
-  if (Number.isFinite(h)) {
-    const hv = L.halvingInfo(h, now);
-    g.append(panel(t('halving'), arc(hv.progress, (hv.progress * 100).toFixed(1) + '%', `epoch ${hv.epoch + 1}`),
-      kv([[t('blocksToGo'), L.fmtNum(hv.blocksToGo)], ['Halving block', L.fmtNum(hv.nextHeight)], ['Est. date', fmtD(hv.estMs, { dateOnly: true })],
-        ['Reward now', L.satsToBtc(hv.subsidy, 4) + ' BTC'], ['Then', L.satsToBtc(hv.nextSubsidy, 5) + ' BTC']])));
-    const sp = L.supplyAt(h);
-    g.append(panel(t('supply'), el('div', { class: 'big' }, L.fmtNum(sp / 1e8, 2) + ' BTC'), bar(sp / L.MAX_SATS),
-      kv([['Issued', (sp / L.MAX_SATS * 100).toFixed(3) + '%'], ['Remaining', L.fmtNum((L.MAX_SATS - sp) / 1e8, 2) + ' BTC'], ['Cap', '21,000,000 BTC']])));
-  }
+    hv ? el('div', { class: 'hbar' }, el('div', { class: 'lab' }, el('span', null, `${t('halving')} · ${L.fmtNum(hv.blocksToGo)} ${t('blocksToGo')}`), el('span', { class: 'num' }, (hv.progress * 100).toFixed(1) + '%')), el('div', { class: 'track' }, el('div', { class: 'fill', style: `width:${(hv.progress * 100).toFixed(2)}%` }))) : null));
+  if (hv) root.append(tile('', t('halving'), L.fmtNum(hv.blocksToGo),
+    [`${t('blocksToGo')} · ${(hv.progress * 100).toFixed(1)}%`, `Block ${L.fmtNum(hv.nextHeight)}`, 'Est. ' + fmtD(hv.estMs, { dateOnly: true }), `Reward ${L.satsToBtc(hv.subsidy, 4)} → ${L.satsToBtc(hv.nextSubsidy, 5)} BTC`], arc(hv.progress, (hv.progress * 100).toFixed(0) + '%', '')));
   if (st.diff) { const d = L.parseDifficulty(st.diff);
-    g.append(panel(t('difficulty'), arc(d.progress, (d.progress * 100).toFixed(1) + '%', `${L.fmtNum(d.blocksLeft)} blocks`),
-      kv([['Expected change', (d.change >= 0 ? '+' : '') + d.change.toFixed(2) + '%'], ['Est. date', fmtD(d.estMs)], ['Retarget block', L.fmtNum(d.nextHeight)],
-        ['Previous change', (d.prevChange >= 0 ? '+' : '') + d.prevChange.toFixed(2) + '%']]))); }
-  if (st.hr) { const a = L.hashrateAverages(st.hr.hashrates, st.hr.currentHashrate), sel = S.hr || 'd14';
-    g.append(panel(t('hashrate'), el('div', { class: 'big' }, L.fmtHashrate(a.current)), spark((st.hr.hashrates || []).map((x) => x.avgHashrate)),
-      kv([['7 days', L.fmtHashrate(a.d7)], ['14 days', L.fmtHashrate(a.d14)], ['30 days', L.fmtHashrate(a.d30)], ['90 days', L.fmtHashrate(a.d90)], ['Difficulty', L.fmtDifficulty(st.hr.currentDifficulty)]]),
-      el('div', { class: 'dim' }, `Selected average (${sel}): ${L.fmtHashrate(a[sel])}`))); }
-  if (st.blocks.length > 1) { const b = L.blockTimeStats(st.blocks, now / 1000);
-    g.append(panel(t('production'), el('div', { class: 'big' }, L.fmtDuration(b.avg)), el('div', { class: 'dim' }, `average of last ${b.count} blocks · target 10m 00s`),
-      kv([['Faster than target', b.fast], ['Slower than target', b.slow], ['Blocks since genesis', L.fmtNum(h + 1)]]))); }
+    root.append(tile('', t('difficulty'), (d.change >= 0 ? '+' : '') + d.change.toFixed(2) + '%', [`${L.fmtNum(d.blocksLeft)} blocks · ${(d.progress * 100).toFixed(0)}% done`, 'Est. ' + fmtD(d.estMs), `Previous ${d.prevChange >= 0 ? '+' : ''}${d.prevChange.toFixed(2)}%`], arc(d.progress, (d.progress * 100).toFixed(0) + '%', ''))); }
+  if (st.hr) { const a = L.hashrateAverages(st.hr.hashrates, st.hr.currentHashrate), sel = S.hr || 'd14', lab = { d7: '7d', d14: '14d', d30: '30d', d90: '90d' }[sel];
+    root.append(tile('', t('hashrate'), L.fmtHashrate(a.current), [`${lab} avg ${L.fmtHashrate(a[sel])}`, 'Difficulty ' + L.fmtDifficulty(st.hr.currentDifficulty)], spark((st.hr.hashrates || []).map((x) => x.avgHashrate)))); }
+  if (hv) root.append(tile('', t('supply'), (sp / 1e14).toFixed(3) + 'M BTC', [`${(sp / L.MAX_SATS * 100).toFixed(2)}% issued`, `${L.fmtNum((L.MAX_SATS - sp) / 1e8, 0)} BTC left`], bar(sp / L.MAX_SATS)));
   if (st.blocks[0]) { const b = L.parseBlock(st.blocks[0]);
-    g.append(panel(t('last'), el('a', { class: 'big', href: '#/block/' + b.height }, '#' + L.fmtNum(b.height)),
-      kv([['Transactions', L.fmtNum(b.txs)], ['Size', (b.size / 1e6).toFixed(2) + ' MB'], ['Median fee', L.fmtFee(b.medianFee) + ' sat/vB'], ['Reward', L.satsToBtc(b.reward, 4) + ' BTC'],
-        ['of which fees', L.satsToBtc(b.fees, 4) + ' BTC'], S.showPool && b.pool ? ['Mined by', b.pool] : null].filter(Boolean)))); }
-  if (S.showFees) {
-    if (st.fees) { const f = st.fees, cells = [[f.fastestFee, t('priority')], [f.halfHourFee, '30 min'], [f.hourFee, '1 h'], [f.economyFee, t('economy')]];
-      g.append(panel(t('fees'), el('div', { class: 'fees' + (S.feesRtl ? ' rtl' : '') }, cells.map(([v, l]) => el('div', null, el('b', null, L.fmtFee(v)), el('small', null, l)))))); }
-    if (st.mem) g.append(panel(t('mempool'), el('div', { class: 'big' }, L.fmtNum(st.mem.count)), el('div', { class: 'dim' }, 'unconfirmed transactions'),
-      kv([['Depth', L.fmtNum(L.mempoolDepth(st.mem), 1) + ' blocks'], ['Size', (st.mem.vsize / 1e6).toFixed(1) + ' MvB'], st.inflow != null ? ['Inflow', L.fmtNum(st.inflow, 0) + ' vB/s'] : null].filter(Boolean))));
-  }
-  const p = price();
-  if (Number.isFinite(p)) { const rows = [[`1 BTC`, `${L.fmtNum(p)} ${S.cur}`], [`Sats per ${S.cur}`, L.fmtNum(L.satsPerUnit(p))]];
-    if (S.showMoscow) rows.push(['Moscow time', L.moscowTime(L.satsPerUnit(p))]);
-    if (S.showCap && Number.isFinite(h)) rows.push(['Market cap', L.compact(L.marketCapUsd(h, p)) + ' ' + S.cur]);
-    g.append(panel(t('price'), el('div', { class: 'big' }, L.fmtNum(L.satsPerUnit(p)) + ' ' + S.satsSym), el('div', { class: 'dim' }, `per 1 ${S.cur}`), kv(rows))); }
-  if (st.ln && st.ln.channel_count) g.append(panel(t('lightning'), el('div', { class: 'big' }, L.satsToBtc(st.ln.total_capacity, 2) + ' BTC'), el('div', { class: 'dim' }, 'public channel capacity'),
-    kv([['Channels', L.fmtNum(st.ln.channel_count)], ['Nodes', L.fmtNum(st.ln.node_count)]])));
-  if (S.showFees && st.proj && st.proj.length) root.append(el('h2', { class: 'sec' }, t('projected')),
-    el('div', { class: 'blocks' }, st.proj.slice(0, 8).map((b, i) => el('div', { class: 'blk proj' }, cube((b.blockVSize || 0) / 1e6), el('b', null, `~${L.fmtFee(b.medianFee)} sat/vB`), el('span', null, L.fmtNum(b.nTx) + ' tx'), el('span', null, `in ~${(i + 1) * 10} min`)))));
-  if (st.blocks.length) root.append(el('h2', { class: 'sec' }, t('recent')),
-    el('div', { class: 'blocks' }, st.blocks.slice(0, 12).map((x, i) => { const b = L.parseBlock(x); return el('a', { class: 'blk' + (i === 0 ? ' cur' : ''), href: '#/block/' + b.height }, cube((x.weight || 0) / 4e6), el('b', null, L.fmtNum(b.height)), el('span', null, L.fmtNum(b.txs) + ' tx'), el('span', null, L.fmtAgo(now / 1000 - b.ts) + ' ago'), S.showPool ? el('span', null, b.pool) : null); })));
+    root.append(tile('', t('last'), el('a', { href: '#/block/' + b.height }, '#' + L.fmtNum(b.height)), [`${L.fmtNum(b.txs)} tx · ${(b.size / 1e6).toFixed(2)} MB`, `Median ${L.fmtFee(b.medianFee)} sat/vB`, `Reward ${L.satsToBtc(b.reward, 3)} BTC` + (S.showPool && b.pool ? ' · ' + b.pool : '')])); }
+  if (st.blocks.length > 1) { const bs = L.blockTimeStats(st.blocks, now / 1000);
+    root.append(tile('', t('production'), L.fmtDuration(bs.avg), [`${bs.fast} fast · ${bs.slow} slow of ${bs.count - 1}`, 'Target 10m 00s'])); }
+  if (S.showFees && st.fees) { const f = st.fees, cells = [[f.fastestFee, 'Next'], [f.halfHourFee, '30m'], [f.hourFee, '1h'], [f.economyFee, 'Slow']];
+    root.append(tile('', t('fees'), el('div', { class: 'fees' + (S.feesRtl ? ' rtl' : '') }, cells.map(([v, l]) => el('div', null, el('b', null, L.fmtFee(v)), el('small', null, l)))))); }
+  if (S.showFees && st.mem) root.append(tile('', t('mempool'), L.fmtNum(st.mem.count) + ' tx', [`Depth ${L.fmtNum(L.mempoolDepth(st.mem), 1)} blocks`, `${(st.mem.vsize / 1e6).toFixed(1)} MvB` + (st.inflow != null ? ` · ${L.fmtNum(st.inflow, 0)} vB/s in` : '')]));
+  if (Number.isFinite(p)) root.append(tile('', t('price'), L.fmtNum(L.satsPerUnit(p)) + ' ' + S.satsSym, [`per ${S.cur} · 1 BTC = ${L.fmtNum(p)}`, S.showMoscow ? 'Moscow time ' + L.moscowTime(L.satsPerUnit(p)) : null, S.showCap && Number.isFinite(h) ? 'Cap ' + L.compact(L.marketCapUsd(h, p)) + ' ' + S.cur : null]));
+  if (st.ln && st.ln.channel_count) root.append(tile('', t('lightning'), L.fmtNum(st.ln.total_capacity / 1e8, 0) + ' BTC', [`${L.fmtNum(st.ln.channel_count)} channels`, `${L.fmtNum(st.ln.node_count)} nodes`]));
+  const proj = S.showFees && st.proj && st.proj.length ? el('div', { class: 'sgrp' }, el('h2', null, t('projected')), el('div', { class: 'blocks' }, st.proj.slice(0, 6).map((b, i) => el('div', { class: 'blk proj' }, cube((b.blockVSize || 0) / 1e6), el('b', null, `~${L.fmtFee(b.medianFee)}`), el('span', null, `${L.fmtNum(b.nTx)} tx`), el('span', null, `~${(i + 1) * 10} min`))))) : null;
+  const rec = st.blocks.length ? el('div', { class: 'sgrp' }, el('h2', null, t('recent')), el('div', { class: 'blocks' }, st.blocks.slice(0, 12).map((x, i) => { const b = L.parseBlock(x); return el('a', { class: 'blk' + (i === 0 ? ' cur' : ''), href: '#/block/' + b.height }, cube((x.weight || 0) / 4e6), el('b', null, L.fmtNum(b.height)), el('span', null, L.fmtNum(b.txs) + ' tx'), el('span', null, L.fmtAgo(now / 1000 - b.ts) + ' ago')); }))) : null;
+  if (proj || rec) root.append(el('section', { class: 'strip2' }, proj, rec));
   if (!Number.isFinite(h)) root.append(el('p', { class: 'dim' }, 'Loading…'));
   return root;
 }
@@ -227,7 +204,7 @@ function viewAbout() {
   const root = el('div'); root.append(el('h1', null, 'ABOUT'), el('div', { class: 'panel' },
     el('p', null, 'BLOCKHORIZON shows the Bitcoin chain as a clock: block height counts up, and everything else (halving, difficulty, fees) counts down to the next block.'),
     el('p', null, 'It is a static page. No account, no ads, no analytics, no cookies. Settings and the last values live only in this browser. Live data comes straight from the public mempool.space API.'),
-    el('p', { class: 'dim' }, `Version ${VERSION}`), el('p', null, el('a', { href: 'https://github.com/Random21m/blockhorizon' }, 'Source on GitHub'))));
+    el('p', { class: 'dim' }, `Version ${VERSION}`), el('p', null, el('a', { href: 'https://github.com/Random21m/blockhorizon' }, 'Source on GitHub'), ' · ', el('a', { href: 'privacy.html' }, 'Privacy'))));
   return root;
 }
 let route = '/';
@@ -236,7 +213,7 @@ function parseRoute() { const h = location.hash.replace(/^#/, '') || '/'; const 
 function renderNav(cur) { const nav = $('#nav'); nav.replaceChildren(...NAVS.map(([p, k]) => el('a', { href: '#' + p, 'aria-current': p === cur ? 'page' : false }, t(k)))); }
 function renderView() {
   const r = parseRoute(); route = r.path; const m = $('#main'); const y = scrollY;
-  const v = r.path === '/block' ? viewBlock(r.arg) : VIEWS[r.path](); m.replaceChildren(v); renderNav(r.path === '/block' ? '/' : r.path);
+  document.body.classList.toggle('fit', r.path === '/'); const v = r.path === '/block' ? viewBlock(r.arg) : VIEWS[r.path](); m.replaceChildren(v); renderNav(r.path === '/block' ? '/' : r.path);
   document.title = 'BLOCKHORIZON' + (Number.isFinite(st.tip) ? ' · ' + L.fmtNum(st.tip) : ''); scrollTo(0, r.path === '/' ? y : 0);
 }
 let rendering = false;
