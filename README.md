@@ -1,12 +1,12 @@
 # BLOCKHORIZON
 
-**Live site: https://random21m.github.io/blockhorizon/** (open it in your browser; it can be installed as an app from the browser menu)
+**Live site: https://random21m.github.io/BLOCKHORIZON/** (open it in your browser; it can be installed as an app from the browser menu)
 
 BLOCKHORIZON is a live Bitcoin dashboard built around one idea: in Bitcoin, time is measured in blocks. It shows where the chain is right now and what comes next: the current block, the countdown to the next halving and difficulty adjustment, fees and the mempool, hashrate, price and sats per dollar.
 
 It is a static, installable page with a calm, flat look (no flashing, no glow), running on free public data. No accounts, no ads, no tracking. Open it and watch the horizon move one block at a time.
 
-## Features (v0.4.1)
+## Features (v0.4.2)
 - Everything on one screen, no scrolling: a tile grid that fills desktop, laptop and phone
 - Live block height clock with an optional sound and the time since the last block
 - Next halving (arc, blocks to go, estimated date, reward) and supply issued
@@ -18,7 +18,7 @@ It is a static, installable page with a calm, flat look (no flashing, no glow), 
 - Price in 7 currencies, sats per unit, Moscow time, market cap; Lightning network capacity
 - Search by block height or date, block pages with permalinks (`#/block/840000`)
 - Block alarm with sounds, calculator (sats/fiat, height/date), halving replay, chain calendar, glossary
-- Settings: dark/light/auto, currency, sats symbol, time/date format, UTC, language (English, German, Spanish), sounds, reduced motion, full screen
+- Settings: dark/light/auto, currency, sats symbol, time/date format, UTC, language (English, German, Spanish, French, Portuguese, Italian, Dutch, Turkish), sounds, reduced motion, full screen
 - Installable PWA that works offline (cached shell and last values)
 
 Not built yet: art gallery, conference listings, chain-state totals (addresses, UTXOs, disk size: no free public source found).

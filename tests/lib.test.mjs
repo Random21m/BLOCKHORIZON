@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as L from '../src/lib.js';
 import { parseTicker } from '../src/price.js';
+import { TABLES, LANGS } from '../src/i18n.js';
 
 const fx = (n) => JSON.parse(fs.readFileSync(new URL('./fixtures/' + n, import.meta.url), 'utf8'));
 
@@ -87,4 +88,11 @@ test('block colours follow the mempool.space fee ramp', () => {
   const pb = fx('mempool-blocks.json')[0]; const bg = L.feeStripes(pb.feeRange);
   assert.ok(bg.startsWith('linear-gradient(to right') || bg.startsWith('#'));
   assert.equal(L.feeStripes([]), L.UPCOMING_EMPTY); assert.equal(L.feeStripes([3, 3.4]), L.feeColor(3));
+});
+
+test('every language has every label and no empty strings', () => {
+  const en = Object.keys(TABLES.en).sort();
+  assert.deepEqual(Object.keys(LANGS).sort(), Object.keys(TABLES).sort());
+  for (const [l, tab] of Object.entries(TABLES)) { assert.deepEqual(Object.keys(tab).sort(), en, l); for (const v of Object.values(tab)) assert.ok(typeof v === 'string' && v.trim().length > 0, l); }
+  assert.ok(Object.keys(TABLES).length >= 8);
 });
