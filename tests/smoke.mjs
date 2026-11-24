@@ -45,8 +45,15 @@ await ok('dashboard fits one screen on phone, laptop and wide screens', async ()
     const m = await page.evaluate(() => { const mn = document.querySelector('main'); return { sh: mn.scrollHeight, ch: mn.clientHeight, doc: document.documentElement.scrollHeight, ih: innerHeight, tiles: document.querySelectorAll('.tile').length }; });
     assert.ok(m.tiles >= 10, 'tiles ' + m.tiles); assert.ok(m.sh <= m.ch + 1 && m.doc <= m.ih + 1, `${w}x${h}: main ${m.sh}/${m.ch} doc ${m.doc}/${m.ih}`);
   } await page.setViewportSize({ width: 360, height: 800 }); });
+await ok('phone: projected blocks shown, next one and latest mined block both in view', async () => {
+  await page.setViewportSize({ width: 390, height: 844 }); await page.goto(base); await until(page, () => document.querySelectorAll('.strip2 .blk.proj').length > 0 && document.querySelectorAll('.strip2 a.blk').length > 0);
+  const r = await page.evaluate(() => { const inView = (e) => { const b = e.getBoundingClientRect(); return b.width > 0 && b.left >= -1 && b.right <= innerWidth + 1; };
+    return { next: inView(document.querySelector('.strip2 .blk.proj')), latest: inView(document.querySelector('.strip2 a.blk')) }; });
+  assert.deepEqual(r, { next: true, latest: true }); await page.setViewportSize({ width: 360, height: 800 }); });
 await ok('no horizontal scroll at 360 px', async () => { assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)); });
 await ok('block page', async () => { await page.goto(base + '#/block/840000'); await page.waitForSelector('.panel dl', { timeout: 6000 }); assert.ok((await page.locator('main').innerText()).includes('Transactions')); });
+await ok('block page has a visible way back to the dashboard on a phone', async () => { const back = page.locator('main a.back'); assert.ok(await back.isVisible()); const bx = await back.boundingBox(); assert.ok(bx.height >= 44 && bx.x >= 0 && bx.x + bx.width <= 360, JSON.stringify(bx));
+  assert.equal(await page.locator('#nav a[aria-current=page]').count(), 0); await back.click(); await until(page, () => location.hash === '#/' && !!document.querySelector('#h')); });
 await ok('search by height navigates', async () => { await page.goto(base); await page.click('#btn-search'); await page.fill('#s-h', '840000'); await page.press('#s-h', 'Enter'); await until(page, () => location.hash === '#/block/840000'); });
 await ok('search by date navigates', async () => { await page.goto(base); await page.click('#btn-search'); await page.fill('#s-d', '2023-11-14'); await page.press('#s-d', 'Enter'); await until(page, () => location.hash === '#/block/816785'); });
 await ok('alarm can be set and listed', async () => { await page.goto(base + '#/alarm'); await page.fill('#al-b', '5'); await page.click('text=Set alarm'); await page.waitForSelector('table'); assert.ok((await page.locator('main').innerText()).includes('5 blocks')); });

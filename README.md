@@ -27,7 +27,7 @@ There is nothing to build: the site is plain static files, so any static host wo
 - **On GitHub Pages:** fork the repository, open **Settings, Pages** and set **Source** to **GitHub Actions**. The included workflow publishes the site on every push to `main` (you can also start it by hand from the **Actions** tab).
 - **Anywhere else:** upload `index.html`, `style.css`, `sw.js`, `manifest.webmanifest`, `privacy.html`, `.nojekyll` and the `icons` and `src` folders. The file paths are relative, so it also works in a sub-folder.
 
-## Features (v0.5.1)
+## Features (v0.5.2)
 - Everything on one screen, no scrolling: a tile grid that fills desktop, laptop and phone
 - Live block height clock with an optional sound and the time since the last block
 - Next halving (arc, blocks to go, estimated date, reward) and supply issued
