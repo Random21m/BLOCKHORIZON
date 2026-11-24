@@ -3,9 +3,9 @@ import { api, live, store } from './api.js';
 import { livePrice } from './price.js';
 import { t, setLang, detectLang, LANGS } from './i18n.js';
 import { play, BLOCK_SOUNDS, ALARM_SOUNDS } from './sound.js';
-import { GLOSSARY, ANNIVERSARIES } from './content.js';
+import { GLOSSARY, ANNIVERSARIES, CHANNELS } from './content.js';
 
-export const VERSION = '0.5.3';
+export const VERSION = '0.5.4';
 export const TIP_ADDR = 'npub1vj8zjhnmkhekv93e2xmrz7kfwuxq25vrzw53u4dqhwd2lp5smvks3mwu2n@npub.cash';
 const $ = (s, r = document) => r.querySelector(s);
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'CHF', 'AUD', 'JPY'];
@@ -36,7 +36,7 @@ function applyLook() {
   const m = $('meta[name=theme-color]'); if (m) m.content = dark ? '#0E0D0C' : '#EAE3D2';
 }
 const price = () => (st.prices && st.prices[S.cur]) || NaN;
-const NAVS = [['/', 'dash'], ['/alarm', 'alarm'], ['/calc', 'calc'], ['/replay', 'replay'], ['/events', 'events'], ['/glossary', 'glossary'], ['/about', 'about']];
+const NAVS = [['/', 'dash'], ['/alarm', 'alarm'], ['/calc', 'calc'], ['/replay', 'replay'], ['/events', 'events'], ['/glossary', 'glossary'], ['/watch', 'watch'], ['/about', 'about']];
 
 // ---------- data ----------
 async function refreshAll() {
@@ -271,6 +271,12 @@ function viewGlossary() {
   const root = el('div'); root.append(el('h1', null, 'GLOSSARY'));
   root.append(el('dl', { class: 'glossary' }, GLOSSARY.flatMap(([k, v]) => [el('dt', null, k), el('dd', null, v)]))); return root;
 }
+function viewWatch() {
+  const list = [...CHANNELS].sort((x, y) => x.localeCompare(y, 'en', { sensitivity: 'base' }));
+  return el('div', null, el('h1', null, t('watch').toUpperCase()), el('div', { class: 'panel' },
+    el('p', { class: 'dim' }, 'Bitcoin channels on YouTube, A to Z. Links open YouTube in a new tab.'),
+    el('ul', { class: 'channels' }, list.map((h) => el('li', null, el('a', { href: 'https://www.youtube.com/@' + h, target: '_blank', rel: 'noopener noreferrer' }, '@' + h + ' ↗'))))));
+}
 function viewAbout() {
   const root = el('div'); root.append(el('h1', null, 'ABOUT'), el('div', { class: 'panel' },
     el('p', null, 'BLOCKHORIZON shows the Bitcoin chain as a clock: block height counts up, and everything else (halving, difficulty, fees) counts down to the next block.'),
@@ -286,7 +292,7 @@ function viewAbout() {
   return root;
 }
 let route = '/';
-const VIEWS = { '/': viewDash, '/alarm': viewAlarm, '/calc': viewCalc, '/replay': viewReplay, '/events': viewEvents, '/glossary': viewGlossary, '/about': viewAbout };
+const VIEWS = { '/': viewDash, '/alarm': viewAlarm, '/calc': viewCalc, '/replay': viewReplay, '/events': viewEvents, '/glossary': viewGlossary, '/watch': viewWatch, '/about': viewAbout };
 function parseRoute() { const h = location.hash.replace(/^#/, '') || '/'; const m = h.match(/^\/block\/(\d+)$/); return m ? { path: '/block', arg: m[1] } : { path: VIEWS[h] ? h : '/' }; }
 function renderNav(cur) { const nav = $('#nav'); nav.replaceChildren(...NAVS.map(([p, k]) => el('a', { href: '#' + p, 'aria-current': p === cur ? 'page' : false }, t(k)))); }
 // Keep the block strips' horizontal scroll across live repaints. On phones both strips share one row (.strip2 scrolls),

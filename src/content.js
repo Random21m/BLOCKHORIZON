@@ -32,3 +32,19 @@ export const ANNIVERSARIES = [
   { m: 5, d: 11, y: 2020, text: 'Third halving (block 630,000)' },
   { m: 4, d: 20, y: 2024, text: 'Fourth halving (block 840,000)' },
 ];
+
+// Bitcoin YouTube channels for the Watch page, A to Z by handle (case ignored).
+export const CHANNELS = [
+  '88_sats',
+  'BTCSessions',
+  'CanadianBitcoiners',
+  'carlabotcoin',
+  'MapleBitcoin',
+  'PlebUnderground',
+  'SovereignSessions',
+  'theguyswann',
+  'thejackmallersshow',
+  'TheLotRadio',
+  'WalkerAmerica',
+  'WhatBitcoinDidPod',
+];
