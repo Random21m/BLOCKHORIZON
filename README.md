@@ -1,6 +1,6 @@
 # BLOCKHORIZON
 
-**Live site: https://random21m.github.io/blockhorizon/** (open it in your browser; it can be installed as an app from the browser menu)
+**Live site: https://random21m.github.io/BLOCKHORIZON/** (open it in your browser; it can be installed as an app from the browser menu)
 
 BLOCKHORIZON is a live Bitcoin dashboard built around one idea: in Bitcoin, time is measured in blocks. It shows where the chain is right now and what comes next: the current block, the countdown to the next halving and difficulty adjustment, fees and the mempool, hashrate, price and sats per dollar.
 
