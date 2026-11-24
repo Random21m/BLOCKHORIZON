@@ -1,9 +1,13 @@
+# BLOCKHORIZON
+
+**Live site: https://random21m.github.io/blockhorizon/** (open it in your browser; it can be installed as an app from the browser menu)
+
 BLOCKHORIZON is a live Bitcoin dashboard built around one idea: in Bitcoin, time is measured in blocks. It shows where the chain is right now and what comes next: the current block, the countdown to the next halving and difficulty adjustment, fees and the mempool, hashrate, price and sats per dollar.
 
-It is a single static page with a futuristic look, running on free public data. No accounts, no ads, no tracking. Open it and watch the horizon move one block at a time.
+It is a static, installable page with a calm, flat look (no flashing, no glow), running on free public data. No accounts, no ads, no tracking. Open it and watch the horizon move one block at a time.
 
-## Features (v0.1.0)
-- Live block height clock with new-block ripple, sound option and time since the last block
+## Features (v0.2.0)
+- Live block height clock with an optional sound and the time since the last block
 - Next halving (arc, blocks to go, estimated date, reward) and supply issued
 - Difficulty adjustment (progress, expected change, previous change)
 - Hashrate with 7/14/30/90-day averages, block production vs the 10-minute target, last block details with mining pool
