@@ -5,7 +5,7 @@ import { t, setLang, detectLang, LANGS } from './i18n.js';
 import { play, BLOCK_SOUNDS, ALARM_SOUNDS } from './sound.js';
 import { GLOSSARY, ANNIVERSARIES } from './content.js';
 
-export const VERSION = '0.5.1';
+export const VERSION = '0.5.2';
 export const TIP_ADDR = 'npub1vj8zjhnmkhekv93e2xmrz7kfwuxq25vrzw53u4dqhwd2lp5smvks3mwu2n@npub.cash';
 const $ = (s, r = document) => r.querySelector(s);
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'CHF', 'AUD', 'JPY'];
@@ -197,7 +197,7 @@ function viewDash() {
 let blockToken = 0;
 function viewBlock(hStr) {
   const root = el('div'), n = L.parseHeightInput(hStr), tok = ++blockToken;
-  root.append(el('h1', null, 'BLOCK ' + (Number.isFinite(n) ? L.fmtNum(n) : '?')));
+  root.append(el('a', { class: 'back', href: '#/' }, '← ' + t('dash')), el('h1', null, 'BLOCK ' + (Number.isFinite(n) ? L.fmtNum(n) : '?')));
   const body = el('div', { class: 'panel' }, 'Loading…'); root.append(body);
   if (!Number.isFinite(n)) { body.textContent = t('notFound'); return root; }
   (async () => {
@@ -291,7 +291,7 @@ function parseRoute() { const h = location.hash.replace(/^#/, '') || '/'; const 
 function renderNav(cur) { const nav = $('#nav'); nav.replaceChildren(...NAVS.map(([p, k]) => el('a', { href: '#' + p, 'aria-current': p === cur ? 'page' : false }, t(k)))); }
 function renderView() {
   const r = parseRoute(); route = r.path; const m = $('#main'); const y = scrollY;
-  document.body.classList.toggle('fit', r.path === '/'); const v = r.path === '/block' ? viewBlock(r.arg) : VIEWS[r.path](); m.replaceChildren(v); renderNav(r.path === '/block' ? '/' : r.path);
+  document.body.classList.toggle('fit', r.path === '/'); const v = r.path === '/block' ? viewBlock(r.arg) : VIEWS[r.path](); m.replaceChildren(v); renderNav(r.path);
   document.title = 'BLOCKHORIZON' + (Number.isFinite(st.tip) ? ' · ' + L.fmtNum(st.tip) : ''); scrollTo(0, r.path === '/' ? y : 0);
 }
 let rendering = false;

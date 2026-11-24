@@ -46,6 +46,8 @@ main{max-width:1180px;margin:0 auto;padding:22px 20px 8px;outline:0}
 form.row,.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
 input,select{font:inherit;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:4px;padding:9px 11px;min-width:0;max-width:100%}
 .btn-go{background:var(--accent);color:#FFFFFF;border-color:var(--accent);font-weight:700}.btn-go:hover{filter:brightness(1.08)}
+/* way back to the dashboard from a block page (installed apps have no browser back button) */
+.back{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;margin:0 0 6px;border:1px solid var(--line);border-radius:4px;background:var(--card);color:var(--text);text-decoration:none;font-size:14px}.back:hover{border-color:var(--accent);color:var(--accent)}
 h1{font:600 26px var(--serif);letter-spacing:.02em;color:var(--text);margin:4px 0 14px}
 .dim{color:var(--dim)}.ok{color:var(--ok)}.bad{color:var(--bad)}
 .glossary dt{font-weight:700;color:var(--accent);margin-top:14px}.glossary dd{margin:3px 0 0}
