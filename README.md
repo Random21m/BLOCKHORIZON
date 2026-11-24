@@ -6,6 +6,27 @@ BLOCKHORIZON is a live Bitcoin dashboard built around one idea: in Bitcoin, time
 
 It is a static, installable page with a calm, flat look (no flashing, no glow), running on free public data. No accounts, no ads, no tracking. Open it and watch the horizon move one block at a time.
 
+## Install
+
+BLOCKHORIZON is a web app: open https://random21m.github.io/BLOCKHORIZON/ and you are already using it. To keep it one tap away, install it as an app. It then opens in its own window, works offline with the last values it saw, and updates itself.
+
+| Where | How |
+|---|---|
+| **iPhone / iPad (Safari)** | Tap the Share button, then **Add to Home Screen**, then **Add**. |
+| **Android (Chrome)** | Tap the menu (three dots), then **Install app** (or **Add to Home screen**). |
+| **Windows / Mac / Linux (Chrome or Edge)** | Click the install icon at the right end of the address bar, or open the menu and choose **Install BLOCKHORIZON**. |
+| **Mac (Safari 17 or newer)** | **File**, then **Add to Dock**. |
+| **Firefox on desktop** | Firefox cannot install web apps. Bookmark the page instead; everything else works. |
+
+Settings (currency, language, time format, theme, sounds) are kept only in your own browser. To remove the app, uninstall it like any other app or clear the site data.
+
+### Run your own copy
+There is nothing to build: the site is plain static files, so any static host works (it must be served over HTTPS, or from `localhost`, so that the offline mode can start).
+
+- **On your computer:** clone this repository and run `python3 -m http.server 8080` in it, then open http://localhost:8080.
+- **On GitHub Pages:** fork the repository, open **Settings, Pages** and set **Source** to **GitHub Actions**. The included workflow publishes the site on every push to `main` (you can also start it by hand from the **Actions** tab).
+- **Anywhere else:** upload `index.html`, `style.css`, `sw.js`, `manifest.webmanifest`, `privacy.html`, `.nojekyll` and the `icons` and `src` folders. The file paths are relative, so it also works in a sub-folder.
+
 ## Features (v0.5.0)
 - Everything on one screen, no scrolling: a tile grid that fills desktop, laptop and phone
 - Live block height clock with an optional sound and the time since the last block
