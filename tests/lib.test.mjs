@@ -78,3 +78,13 @@ test('Kraken ticker parsing from recorded messages', () => {
   assert.deepEqual(parseTicker('not json'), []);
   assert.deepEqual(parseTicker(JSON.stringify({ channel: 'ticker', data: [{ symbol: 'BTC/USD', last: -1 }, { symbol: 'ETH/USD', last: 5 }, { symbol: 'BTC/USD', last: 61000.5 }] })), [{ cur: 'USD', price: 61000.5, pct: null }]);
 });
+
+test('block colours follow the mempool.space fee ramp', () => {
+  assert.equal(L.FEE_BREAKS.length, L.FEE_COLORS.length);
+  assert.equal(L.feeColor(0), '#007d3d'); assert.equal(L.feeColor(0.5), '#007d3d'); assert.equal(L.feeColor(1), '#557d00');
+  assert.equal(L.feeColor(10), '#8c7d09'); assert.equal(L.feeColor(5000), '#ae005b');
+  assert.equal(L.MINED_TOP, '#9339f4'); assert.equal(L.MINED_BOTTOM, '#105fb0');
+  const pb = fx('mempool-blocks.json')[0]; const bg = L.feeStripes(pb.feeRange);
+  assert.ok(bg.startsWith('linear-gradient(to right') || bg.startsWith('#'));
+  assert.equal(L.feeStripes([]), L.UPCOMING_EMPTY); assert.equal(L.feeStripes([3, 3.4]), L.feeColor(3));
+});

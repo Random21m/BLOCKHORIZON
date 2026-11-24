@@ -103,3 +103,20 @@ export function compact(n) {
   const u = [[1e12, 'T'], [1e9, 'B'], [1e6, 'M'], [1e3, 'K']];
   for (const [v, s] of u) if (Math.abs(n) >= v) return (n / v).toFixed(2) + s; return String(Math.round(n));
 }
+
+// Block colours follow the mempool.space convention so the two read the same: fee-rate colour ramp for upcoming blocks,
+// purple-to-blue for mined blocks. (Colour values only; drawn in our own flat style.)
+export const FEE_BREAKS = [0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 125, 150, 175, 200, 250, 300, 350, 400, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000];
+export const FEE_COLORS = ['007d3d', '557d00', '5d7d01', '637d02', '6d7d04', '757d05', '7d7d06', '867d08', '8c7d09', '957d0b', '9b7d0c', 'a67d0e', 'aa7d0f', 'b27d10', 'bb7d11', 'bf7d12', 'bf7815', 'bf7319', 'be6c1e', 'be6820', 'bd6125', 'bd5c28', 'bc552d', 'bc4f30', 'bc4a34', 'bb4339', 'bb3d3c', 'bb373f', 'ba3243', 'b92b48', 'b9254b', 'b8214d', 'b71d4f', 'b61951', 'b41453', 'b30e55', 'b10857', 'b00259', 'ae005b'];
+export const MINED_TOP = '#9339f4', MINED_BOTTOM = '#105fb0', MINED_EMPTY = '#2d3348', UPCOMING_EMPTY = '#554b45';
+export function feeColor(fee) {
+  let idx = 0; for (let i = 0; i < FEE_BREAKS.length; i++) if (fee >= FEE_BREAKS[i]) idx = i;
+  return '#' + FEE_COLORS[idx];
+}
+// CSS background for an upcoming block: hard-edged vertical stripes, one per fee-range value (low to high, left to right)
+export function feeStripes(feeRange) {
+  const cols = (feeRange || []).filter(Number.isFinite).map(feeColor).filter((c, i, a) => i === 0 || c !== a[i - 1]);
+  if (!cols.length) return UPCOMING_EMPTY;
+  const n = cols.length; if (n === 1) return cols[0];
+  return 'linear-gradient(to right, ' + cols.map((c, i) => `${c} ${(i / n * 100).toFixed(1)}% ${((i + 1) / n * 100).toFixed(1)}%`).join(', ') + ')';
+}
