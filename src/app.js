@@ -4,7 +4,7 @@ import { t, setLang, detectLang, LANGS } from './i18n.js';
 import { play, BLOCK_SOUNDS, ALARM_SOUNDS } from './sound.js';
 import { GLOSSARY, ANNIVERSARIES } from './content.js';
 
-export const VERSION = '0.1.0';
+export const VERSION = '0.2.0';
 const $ = (s, r = document) => r.querySelector(s);
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'CHF', 'AUD', 'JPY'];
 const DEF = { theme: 'dark', lang: detectLang(), cur: 'USD', h12: false, dateFmt: 'iso', utc: false, showFees: true, feesRtl: false, showPool: true, showMoscow: true, showCap: true,
@@ -27,7 +27,7 @@ function applyLook() {
   document.documentElement.dataset.theme = dark ? 'dark' : 'light';
   document.documentElement.lang = S.lang; setLang(S.lang);
   document.body.classList.toggle('reduced', S.reduced); document.body.classList.toggle('nopulse', !S.pulse);
-  const m = $('meta[name=theme-color]'); if (m) m.content = dark ? '#1F1B18' : '#F0DFC6';
+  const m = $('meta[name=theme-color]'); if (m) m.content = dark ? '#0A1020' : '#F4F1EA';
 }
 const price = () => (st.prices && st.prices[S.cur]) || NaN;
 const NAVS = [['/', 'dash'], ['/alarm', 'alarm'], ['/calc', 'calc'], ['/replay', 'replay'], ['/events', 'events'], ['/glossary', 'glossary'], ['/about', 'about']];
@@ -67,14 +67,10 @@ function checkAlarms() {
   if (!hit.length) return; store('alarms', rest);
   for (const x of hit) { toast(`⏰ Block ${L.fmtNum(x.height)} reached${x.label ? ': ' + x.label : ''}`); play(x.sound || S.asound); }
 }
-function animateNew() {
-  const h = $('.height'); if (!h) return;
-  if (!S.reduced) { h.classList.remove('pulse'); void h.offsetWidth; h.classList.add('pulse'); }
-  if (S.ripple && !S.reduced) { const r = el('div', { class: 'ripple' }); h.parentElement.append(r); setTimeout(() => r.remove(), 2000); }
-}
+function animateNew() { /* no flashing: the number simply updates */ }
 
 // ---------- views ----------
-const panel = (title, ...kids) => el('section', { class: 'panel alive' }, el('h2', null, title), ...kids);
+const panel = (title, ...kids) => el('section', { class: 'panel' }, el('h2', null, title), ...kids);
 const kv = (rows) => el('dl', { class: 'kv' }, rows.flatMap(([k, v]) => [el('dt', null, k), el('dd', null, v)]));
 const bar = (p) => el('div', { class: 'bar-track' }, el('div', { class: 'bar-fill', style: `width:${Math.max(0, Math.min(1, p)) * 100}%` }));
 function arc(p, big, sub) {
@@ -84,11 +80,27 @@ function arc(p, big, sub) {
   s.innerHTML = `<path class="trk" d="M20 90 A70 70 0 0 1 160 90"/><path class="val" d="M20 90 A70 70 0 0 1 160 90" stroke-dasharray="${c}" stroke-dashoffset="${off}"/><text x="90" y="82"></text><text class="sub" x="90" y="100"></text>`;
   s.querySelectorAll('text')[0].textContent = big; s.querySelectorAll('text')[1].textContent = sub; return s;
 }
+function spark(vals) {
+  const v = vals.filter(Number.isFinite); if (v.length < 2) return el('div');
+  const lo = Math.min(...v), hi = Math.max(...v), w = 300, h = 64, pad = 4, rng = hi - lo || 1;
+  const pts = v.map((y, i) => [i / (v.length - 1) * w, h - pad - (y - lo) / rng * (h - 2 * pad)]);
+  const d = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('');
+  const ns = 'http://www.w3.org/2000/svg', s = document.createElementNS(ns, 'svg');
+  s.setAttribute('viewBox', `0 0 ${w} ${h}`); s.setAttribute('preserveAspectRatio', 'none'); s.setAttribute('class', 'spark'); s.setAttribute('aria-hidden', 'true');
+  s.innerHTML = `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".28"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs><path class="a" d="${d}L${w} ${h}L0 ${h}Z" style="color:var(--accent)"/><path class="l" d="${d}" vector-effect="non-scaling-stroke"/>`;
+  return s;
+}
+const cube = (p) => el('div', { class: 'cube' }, el('i', { style: `height:${Math.max(4, Math.min(100, p * 100)).toFixed(0)}%` }));
 function viewDash() {
   const h = st.tip, now = Date.now(), root = el('div');
   const since = st.blocks[0] ? now / 1000 - st.blocks[0].timestamp : NaN;
-  root.append(el('div', { class: 'hero' }, el('div', { class: 'dim mono' }, t('height').toUpperCase()), el('div', { class: 'height', id: 'h' }, L.fmtNum(h)),
-    el('div', { class: 'since' }, t('since') + ': ', el('b', { id: 'since' }, Number.isFinite(since) ? L.fmtDuration(since) : '–'))));
+  const pr0 = price(), hv0 = Number.isFinite(h) ? L.halvingInfo(h, now) : null;
+  const chips = [[t('price'), Number.isFinite(pr0) ? L.fmtNum(pr0) + ' ' + S.cur : '–'], ['Sats per ' + S.cur, Number.isFinite(pr0) ? L.fmtNum(L.satsPerUnit(pr0)) : '–'],
+    ['Fast fee', st.fees ? L.fmtFee(st.fees.fastestFee) + ' sat/vB' : '–'], ['Mempool', st.mem ? L.fmtNum(st.mem.count) + ' tx' : '–']];
+  root.append(el('section', { class: 'hero card' }, el('div', { class: 'eyebrow' }, t('height')), el('div', { class: 'height', id: 'h' }, L.fmtNum(h)),
+    el('div', { class: 'since' }, t('since') + ': ', el('b', { id: 'since' }, Number.isFinite(since) ? L.fmtDuration(since) : '–')),
+    el('div', { class: 'strip' }, chips.map(([k, v]) => el('div', { class: 'chip' }, el('small', null, k), el('b', null, v)))),
+    hv0 ? el('div', { class: 'hbar' }, el('div', { class: 'lab' }, el('span', null, `${t('halving')} · ${L.fmtNum(hv0.blocksToGo)} ${t('blocksToGo')}`), el('span', { class: 'num' }, (hv0.progress * 100).toFixed(1) + '%')), el('div', { class: 'track' }, el('div', { class: 'fill', style: `width:${(hv0.progress * 100).toFixed(2)}%` }))) : null));
   const g = el('div', { class: 'grid' }); root.append(g);
   if (Number.isFinite(h)) {
     const hv = L.halvingInfo(h, now);
@@ -97,14 +109,14 @@ function viewDash() {
         ['Reward now', L.satsToBtc(hv.subsidy, 4) + ' BTC'], ['Then', L.satsToBtc(hv.nextSubsidy, 5) + ' BTC']])));
     const sp = L.supplyAt(h);
     g.append(panel(t('supply'), el('div', { class: 'big' }, L.fmtNum(sp / 1e8, 2) + ' BTC'), bar(sp / L.MAX_SATS),
-      kv([['Issued', (sp / L.MAX_SATS * 100).toFixed(3) + '%'], ['Remaining', L.satsToBtc(L.MAX_SATS - sp, 4) + ' BTC'], ['Cap', '21,000,000 BTC']])));
+      kv([['Issued', (sp / L.MAX_SATS * 100).toFixed(3) + '%'], ['Remaining', L.fmtNum((L.MAX_SATS - sp) / 1e8, 2) + ' BTC'], ['Cap', '21,000,000 BTC']])));
   }
   if (st.diff) { const d = L.parseDifficulty(st.diff);
     g.append(panel(t('difficulty'), arc(d.progress, (d.progress * 100).toFixed(1) + '%', `${L.fmtNum(d.blocksLeft)} blocks`),
       kv([['Expected change', (d.change >= 0 ? '+' : '') + d.change.toFixed(2) + '%'], ['Est. date', fmtD(d.estMs)], ['Retarget block', L.fmtNum(d.nextHeight)],
         ['Previous change', (d.prevChange >= 0 ? '+' : '') + d.prevChange.toFixed(2) + '%']]))); }
   if (st.hr) { const a = L.hashrateAverages(st.hr.hashrates, st.hr.currentHashrate), sel = S.hr || 'd14';
-    g.append(panel(t('hashrate'), el('div', { class: 'big' }, L.fmtHashrate(a.current)),
+    g.append(panel(t('hashrate'), el('div', { class: 'big' }, L.fmtHashrate(a.current)), spark((st.hr.hashrates || []).map((x) => x.avgHashrate)),
       kv([['7 days', L.fmtHashrate(a.d7)], ['14 days', L.fmtHashrate(a.d14)], ['30 days', L.fmtHashrate(a.d30)], ['90 days', L.fmtHashrate(a.d90)], ['Difficulty', L.fmtDifficulty(st.hr.currentDifficulty)]]),
       el('div', { class: 'dim' }, `Selected average (${sel}): ${L.fmtHashrate(a[sel])}`))); }
   if (st.blocks.length > 1) { const b = L.blockTimeStats(st.blocks, now / 1000);
@@ -127,10 +139,10 @@ function viewDash() {
     g.append(panel(t('price'), el('div', { class: 'big' }, L.fmtNum(L.satsPerUnit(p)) + ' ' + S.satsSym), el('div', { class: 'dim' }, `per 1 ${S.cur}`), kv(rows))); }
   if (st.ln && st.ln.channel_count) g.append(panel(t('lightning'), el('div', { class: 'big' }, L.satsToBtc(st.ln.total_capacity, 2) + ' BTC'), el('div', { class: 'dim' }, 'public channel capacity'),
     kv([['Channels', L.fmtNum(st.ln.channel_count)], ['Nodes', L.fmtNum(st.ln.node_count)]])));
-  if (S.showFees && st.proj && st.proj.length) root.append(el('h2', { class: 'dim mono', style: 'margin:20px 0 0;font-size:12px;letter-spacing:.16em' }, t('projected').toUpperCase()),
-    el('div', { class: 'blocks' }, st.proj.slice(0, 8).map((b, i) => el('div', { class: 'blk proj' }, el('b', null, `~${L.fmtFee(b.medianFee)} sat/vB`), el('span', null, L.fmtNum(b.nTx) + ' tx'), el('span', null, `in ~${(i + 1) * 10} min`)))));
-  if (st.blocks.length) root.append(el('h2', { class: 'dim mono', style: 'margin:14px 0 0;font-size:12px;letter-spacing:.16em' }, t('recent').toUpperCase()),
-    el('div', { class: 'blocks' }, st.blocks.slice(0, 12).map((x, i) => { const b = L.parseBlock(x); return el('a', { class: 'blk' + (i === 0 ? ' cur' : ''), href: '#/block/' + b.height }, el('b', null, L.fmtNum(b.height)), el('span', null, L.fmtNum(b.txs) + ' tx'), el('span', null, L.fmtAgo(now / 1000 - b.ts) + ' ago'), S.showPool ? el('span', null, b.pool) : null); })));
+  if (S.showFees && st.proj && st.proj.length) root.append(el('h2', { class: 'sec' }, t('projected')),
+    el('div', { class: 'blocks' }, st.proj.slice(0, 8).map((b, i) => el('div', { class: 'blk proj' }, cube((b.blockVSize || 0) / 1e6), el('b', null, `~${L.fmtFee(b.medianFee)} sat/vB`), el('span', null, L.fmtNum(b.nTx) + ' tx'), el('span', null, `in ~${(i + 1) * 10} min`)))));
+  if (st.blocks.length) root.append(el('h2', { class: 'sec' }, t('recent')),
+    el('div', { class: 'blocks' }, st.blocks.slice(0, 12).map((x, i) => { const b = L.parseBlock(x); return el('a', { class: 'blk' + (i === 0 ? ' cur' : ''), href: '#/block/' + b.height }, cube((x.weight || 0) / 4e6), el('b', null, L.fmtNum(b.height)), el('span', null, L.fmtNum(b.txs) + ' tx'), el('span', null, L.fmtAgo(now / 1000 - b.ts) + ' ago'), S.showPool ? el('span', null, b.pool) : null); })));
   if (!Number.isFinite(h)) root.append(el('p', { class: 'dim' }, 'Loading…'));
   return root;
 }
@@ -256,7 +268,7 @@ function settingsModal() {
       el('button', { onclick: () => { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen && document.documentElement.requestFullscreen().catch(() => {}); } }, 'Full screen')),
     format: () => el('div', null, row(t('language'), sel('lang', Object.entries(LANGS))), row('Time', sel('h12', [[false, '24-hour'], [true, '12-hour']])), row('Date', sel('dateFmt', [['iso', '2026-11-24'], ['dmy', '24.11.2026'], ['mdy', '11/24/2026']])), row('Zone', sel('utc', [[false, 'Local'], [true, 'UTC']]))),
     sounds: () => el('div', null, chk('sound', 'Sound on new block'), row('Block sound', sel('bsound', Object.entries(BLOCK_SOUNDS))), el('button', { onclick: () => play(S.bsound) }, '▶ Test'),
-      row('Animations', el('span')), chk('ripple', 'Full ripple on new block'), chk('pulse', 'Panel pulse'), chk('reduced', 'Reduced motion')) };
+      chk('reduced', 'Reduce motion (no transitions)')) };
   const body = el('div'), bar2 = el('div', { class: 'tabs', role: 'tablist' });
   const show = (k) => { bar2.querySelectorAll('button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.k === k))); body.replaceChildren(tabs[k]()); };
   for (const k of Object.keys(tabs)) bar2.append(el('button', { role: 'tab', 'data-k': k, onclick: () => show(k) }, k[0].toUpperCase() + k.slice(1)));
