@@ -60,9 +60,11 @@ await ok('alarm can be set and listed', async () => { await page.goto(base + '#/
 await ok('calculator converts sats to fiat', async () => { await page.goto(base + '#/calc'); await page.waitForSelector('#c-sats'); await page.fill('#c-sats', '100000000'); assert.equal(await page.inputValue('#c-fiat'), '61234.50'); });
 await ok('replay, calendar, glossary, about open', async () => { for (const r of ['replay', 'events', 'glossary', 'about']) { await page.goto(base + '#/' + r); assert.ok((await page.locator('main h1').first().innerText()).length > 2, r); } });
 await ok('watch page lists the YouTube channels A to Z', async () => { await page.goto(base + '#/watch'); await page.waitForSelector('.channels a');
-  const links = await page.$$eval('.channels a', (as) => as.map((a) => [a.textContent.replace(' ↗', '').slice(1), a.href, a.target]));
+  const links = await page.$$eval('.channels:not(.sites) a', (as) => as.map((a) => [a.textContent.replace(' ↗', '').slice(1), a.href, a.target]));
   assert.equal(links.length, 12); const names = links.map((l) => l[0]); assert.deepEqual(names, [...names].sort((x, y) => x.localeCompare(y, 'en', { sensitivity: 'base' })));
   assert.equal(names[0], '88_sats'); assert.equal(names[11], 'WhatBitcoinDidPod'); for (const [h, href, tg] of links) { assert.equal(href, 'https://www.youtube.com/@' + h); assert.equal(tg, '_blank'); }
+  const sites = await page.$$eval('.sites a', (as) => as.map((a) => [a.textContent, a.href, a.target, a.rel]));
+  assert.deepEqual(sites, [['The Lot Radio ↗', 'https://www.thelotradio.com/', '_blank', 'noopener noreferrer']]);
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)); });
 await ok('about page shows the support address and QR', async () => { await page.goto(base + '#/about'); await page.waitForSelector('#support'); assert.ok((await page.locator('#tip-addr').innerText()).endsWith('@npub.cash'));
   await until(page, () => { const i = document.querySelector('.tip-qr'); return i && i.complete && i.naturalWidth > 0; }); assert.equal(await page.getAttribute('#support a[href^="lightning:"]', 'href'), 'lightning:npub1vj8zjhnmkhekv93e2xmrz7kfwuxq25vrzw53u4dqhwd2lp5smvks3mwu2n@npub.cash'); });

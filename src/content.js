@@ -48,3 +48,8 @@ export const CHANNELS = [
   'WalkerAmerica',
   'WhatBitcoinDidPod',
 ];
+
+// Websites listed under the channels on the Watch page, A to Z by name (case ignored).
+export const SITES = [
+  { name: 'The Lot Radio', url: 'https://www.thelotradio.com/' },
+];

@@ -3,9 +3,9 @@ import { api, live, store } from './api.js';
 import { livePrice } from './price.js';
 import { t, setLang, detectLang, LANGS } from './i18n.js';
 import { play, BLOCK_SOUNDS, ALARM_SOUNDS } from './sound.js';
-import { GLOSSARY, ANNIVERSARIES, CHANNELS } from './content.js';
+import { GLOSSARY, ANNIVERSARIES, CHANNELS, SITES } from './content.js';
 
-export const VERSION = '0.5.4';
+export const VERSION = '0.5.5';
 export const TIP_ADDR = 'npub1vj8zjhnmkhekv93e2xmrz7kfwuxq25vrzw53u4dqhwd2lp5smvks3mwu2n@npub.cash';
 const $ = (s, r = document) => r.querySelector(s);
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'CHF', 'AUD', 'JPY'];
@@ -273,9 +273,12 @@ function viewGlossary() {
 }
 function viewWatch() {
   const list = [...CHANNELS].sort((x, y) => x.localeCompare(y, 'en', { sensitivity: 'base' }));
+  const sites = [...SITES].sort((x, y) => x.name.localeCompare(y.name, 'en', { sensitivity: 'base' }));
   return el('div', null, el('h1', null, t('watch').toUpperCase()), el('div', { class: 'panel' },
-    el('p', { class: 'dim' }, 'Bitcoin channels on YouTube, A to Z. Links open YouTube in a new tab.'),
-    el('ul', { class: 'channels' }, list.map((h) => el('li', null, el('a', { href: 'https://www.youtube.com/@' + h, target: '_blank', rel: 'noopener noreferrer' }, '@' + h + ' ↗'))))));
+    el('p', { class: 'dim' }, 'Bitcoin channels on YouTube and a few sites, A to Z. Links open in a new tab.'),
+    el('ul', { class: 'channels' }, list.map((h) => el('li', null, el('a', { href: 'https://www.youtube.com/@' + h, target: '_blank', rel: 'noopener noreferrer' }, '@' + h + ' ↗')))),
+    el('h2', { class: 'sites-h' }, 'Sites'),
+    el('ul', { class: 'channels sites' }, sites.map((x) => el('li', null, el('a', { href: x.url, target: '_blank', rel: 'noopener noreferrer' }, x.name + ' ↗'))))));
 }
 function viewAbout() {
   const root = el('div'); root.append(el('h1', null, 'ABOUT'), el('div', { class: 'panel' },
