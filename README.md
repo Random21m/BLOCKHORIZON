@@ -30,3 +30,10 @@ node tests/smoke.mjs               # Playwright smoke test with the API mocked
 python3 -m http.server 8080        # then open http://localhost:8080
 ```
 No build step, no dependencies. Data comes from the public mempool.space API and Kraken's public price feed; nothing else is contacted and nothing is tracked.
+
+## Support
+If BLOCKHORIZON is useful to you, you can send a tip over Lightning:
+
+`npub1vj8zjhnmkhekv93e2xmrz7kfwuxq25vrzw53u4dqhwd2lp5smvks3mwu2n@npub.cash`
+
+(An npub.cash Lightning address: paste it into any Lightning wallet.)
