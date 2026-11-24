@@ -67,6 +67,13 @@ await ok('privacy page opens', async () => { await page.goto(base + 'privacy.htm
 await ok('PWA: manifest valid and service worker registers', async () => { await page.goto(base); const m = await (await page.request.get(base + 'manifest.webmanifest')).json(); assert.ok(m.name && m.icons.length >= 3 && m.display === 'standalone');
   await until(page, () => navigator.serviceWorker.ready.then(() => true), null, { timeout: 8000 }); });
 await ok('works offline after first visit (API cached)', async () => { await page.goto(base); await until(page, () => document.querySelector('#h') && /977/.test(document.querySelector('#h').textContent)); await ctx.setOffline(true); await page.reload(); await until(page, () => document.querySelector('#h') && /977/.test(document.querySelector('#h').textContent), null, { timeout: 8000 }); await ctx.setOffline(false); });
+await ok('pull down from the top reloads the app (installed apps have no browser pull-to-refresh)', async () => {
+  const tctx = await b.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true }); await tctx.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.abort()); const p = await tctx.newPage();
+  await p.goto(base); await p.waitForSelector('#ptr', { state: 'attached' }); await p.evaluate(() => { window.__mark = 1; });
+  // Touch events are dispatched from inside the page: raw touch emulation differs between browser builds (CI and local).
+  await p.evaluate(() => { const t = document.body, pt = (y) => new Touch({ identifier: 1, target: t, clientX: 195, clientY: y }), fire = (type, y, end) => t.dispatchEvent(new TouchEvent(type, { bubbles: true, touches: end ? [] : [pt(y)], changedTouches: [pt(y)] }));
+    fire('touchstart', 120); for (let y = 140; y <= 400; y += 20) fire('touchmove', y); fire('touchend', 400, true); });
+  await until(p, () => window.__mark === undefined && !!document.querySelector('#ptr'), null, { timeout: 8000 }); assert.equal(await p.locator('#btn-refresh').count(), 1); await tctx.close(); });
 await ok('only mempool.space is contacted', async () => { assert.ok(external.length > 0); });
 await ok('no script errors', async () => { assert.deepEqual(errs, []); });
 await b.close(); srv.close();

@@ -27,7 +27,7 @@ There is nothing to build: the site is plain static files, so any static host wo
 - **On GitHub Pages:** fork the repository, open **Settings, Pages** and set **Source** to **GitHub Actions**. The included workflow publishes the site on every push to `main` (you can also start it by hand from the **Actions** tab).
 - **Anywhere else:** upload `index.html`, `style.css`, `sw.js`, `manifest.webmanifest`, `privacy.html`, `.nojekyll` and the `icons` and `src` folders. The file paths are relative, so it also works in a sub-folder.
 
-## Features (v0.5.2)
+## Features (v0.5.3)
 - Everything on one screen, no scrolling: a tile grid that fills desktop, laptop and phone
 - Live block height clock with an optional sound and the time since the last block
 - Next halving (arc, blocks to go, estimated date, reward) and supply issued
@@ -40,7 +40,7 @@ There is nothing to build: the site is plain static files, so any static host wo
 - Search by block height or date, block pages with permalinks (`#/block/840000`)
 - Block alarm with sounds, calculator (sats/fiat, height/date), halving replay, chain calendar, glossary
 - Settings: dark/light/auto, currency, sats symbol, time/date format, UTC, language (English, German, Spanish, French, Portuguese, Italian, Dutch, Turkish), sounds, reduced motion, full screen
-- Installable PWA that works offline (cached shell and last values)
+- Installable PWA that works offline (cached shell and last values) and updates itself on the next open; pull down from the top (or tap ↻) to refresh
 
 Not built yet: art gallery, conference listings, chain-state totals (addresses, UTXOs, disk size: no free public source found).
 
