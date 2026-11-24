@@ -42,7 +42,7 @@ main{max-width:1180px;margin:0 auto;padding:22px 20px 8px;outline:0}
 .blk:hover{border-color:var(--accent);transform:translateY(-2px)}.blk b{display:block;font:700 15px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--text);margin-top:8px}.blk span{color:var(--dim);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .blk.cur{border-color:var(--accent)}.blk.cur b{color:var(--accent)}.blk.proj{border-style:dashed}
 .cube{height:54px;border-radius:3px;background:var(--line);position:relative;overflow:hidden;display:flex;align-items:flex-end}.cube i{display:block;width:100%;background:var(--accent)}
-.blk.proj .cube i{background:var(--blue)}
+
 form.row,.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
 input,select{font:inherit;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:4px;padding:9px 11px;min-width:0;max-width:100%}
 .btn-go{background:var(--accent);color:#FFFFFF;border-color:var(--accent);font-weight:700}.btn-go:hover{filter:brightness(1.08)}
@@ -102,3 +102,5 @@ label.chk{display:flex;gap:10px;align-items:center;margin:8px 0}
 .btc b{font:700 clamp(16px,2.8vh,26px) ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
 .btc .chg{font-size:12.5px;color:var(--dim)}.btc .src{font-size:11px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
 @media (max-width:899px){.btc b{font-size:15px}.btc .chg,.btc .src{font-size:10.5px}}
+
+.cube{border:1px solid var(--line)}.cube i{border-radius:0}

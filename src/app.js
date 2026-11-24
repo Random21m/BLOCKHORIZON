@@ -5,7 +5,7 @@ import { t, setLang, detectLang, LANGS } from './i18n.js';
 import { play, BLOCK_SOUNDS, ALARM_SOUNDS } from './sound.js';
 import { GLOSSARY, ANNIVERSARIES } from './content.js';
 
-export const VERSION = '0.4.0';
+export const VERSION = '0.4.1';
 const $ = (s, r = document) => r.querySelector(s);
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'CHF', 'AUD', 'JPY'];
 const DEF = { theme: 'dark', lang: detectLang(), cur: 'USD', h12: false, dateFmt: 'iso', utc: false, showFees: true, feesRtl: false, showPool: true, showMoscow: true, showCap: true,
@@ -96,7 +96,9 @@ function spark(vals) {
   s.innerHTML = `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".28"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs><path class="a" d="${d}L${w} ${h}L0 ${h}Z" style="color:var(--accent)"/><path class="l" d="${d}" vector-effect="non-scaling-stroke"/>`;
   return s;
 }
-const cube = (p) => el('div', { class: 'cube' }, el('i', { style: `height:${Math.max(4, Math.min(100, p * 100)).toFixed(0)}%` }));
+const cube = (p, fill, base) => el('div', { class: 'cube', style: `background:${base}` }, el('i', { style: `height:${Math.max(4, Math.min(100, p * 100)).toFixed(0)}%;background:${fill}` }));
+const minedCube = (x) => cube((x.weight || 0) / 4e6, `linear-gradient(${L.MINED_TOP}, ${L.MINED_BOTTOM})`, L.MINED_EMPTY);
+const upcomingCube = (b) => cube((b.blockVSize || 0) / 1e6, L.feeStripes(b.feeRange), L.UPCOMING_EMPTY);
 function tile(cls, title, value, subs = [], extra) {
   return el('section', { class: 'tile ' + cls }, el('h2', null, title), el('div', { class: 'tv' }, value), extra, ...subs.filter(Boolean).map((x) => el('div', { class: 'ts' }, x)));
 }
@@ -124,8 +126,8 @@ function viewDash() {
   if (S.showFees && st.mem) root.append(tile('', t('mempool'), L.fmtNum(st.mem.count) + ' tx', [`Depth ${L.fmtNum(L.mempoolDepth(st.mem), 1)} blocks`, `${(st.mem.vsize / 1e6).toFixed(1)} MvB` + (st.inflow != null ? ` · ${L.fmtNum(st.inflow, 0)} vB/s in` : '')]));
   if (Number.isFinite(p)) root.append(tile('', t('price'), L.fmtNum(L.satsPerUnit(p)) + ' ' + S.satsSym, [`per ${S.cur} · 1 BTC = ${L.fmtNum(p)}`, S.showMoscow ? 'Moscow time ' + L.moscowTime(L.satsPerUnit(p)) : null, S.showCap && Number.isFinite(h) ? 'Cap ' + L.compact(L.marketCapUsd(h, p)) + ' ' + S.cur : null]));
   if (st.ln && st.ln.channel_count) root.append(tile('', t('lightning'), L.fmtNum(st.ln.total_capacity / 1e8, 0) + ' BTC', [`${L.fmtNum(st.ln.channel_count)} channels`, `${L.fmtNum(st.ln.node_count)} nodes`]));
-  const proj = S.showFees && st.proj && st.proj.length ? el('div', { class: 'sgrp' }, el('h2', null, t('projected')), el('div', { class: 'blocks' }, st.proj.slice(0, 6).map((b, i) => el('div', { class: 'blk proj' }, cube((b.blockVSize || 0) / 1e6), el('b', null, `~${L.fmtFee(b.medianFee)}`), el('span', null, `${L.fmtNum(b.nTx)} tx`), el('span', null, `~${(i + 1) * 10} min`))))) : null;
-  const rec = st.blocks.length ? el('div', { class: 'sgrp' }, el('h2', null, t('recent')), el('div', { class: 'blocks' }, st.blocks.slice(0, 12).map((x, i) => { const b = L.parseBlock(x); return el('a', { class: 'blk' + (i === 0 ? ' cur' : ''), href: '#/block/' + b.height }, cube((x.weight || 0) / 4e6), el('b', null, L.fmtNum(b.height)), el('span', null, L.fmtNum(b.txs) + ' tx'), el('span', null, L.fmtAgo(now / 1000 - b.ts) + ' ago')); }))) : null;
+  const proj = S.showFees && st.proj && st.proj.length ? el('div', { class: 'sgrp' }, el('h2', null, t('projected')), el('div', { class: 'blocks' }, st.proj.slice(0, 6).map((b, i) => el('div', { class: 'blk proj' }, upcomingCube(b), el('b', null, `~${L.fmtFee(b.medianFee)}`), el('span', null, `${L.fmtNum(b.nTx)} tx`), el('span', null, `~${(i + 1) * 10} min`))))) : null;
+  const rec = st.blocks.length ? el('div', { class: 'sgrp' }, el('h2', null, t('recent')), el('div', { class: 'blocks' }, st.blocks.slice(0, 12).map((x, i) => { const b = L.parseBlock(x); return el('a', { class: 'blk' + (i === 0 ? ' cur' : ''), href: '#/block/' + b.height }, minedCube(x), el('b', null, L.fmtNum(b.height)), el('span', null, L.fmtNum(b.txs) + ' tx'), el('span', null, L.fmtAgo(now / 1000 - b.ts) + ' ago')); }))) : null;
   if (proj || rec) root.append(el('section', { class: 'strip2' }, proj, rec));
   if (!Number.isFinite(h)) root.append(el('p', { class: 'dim' }, 'Loading…'));
   return root;
