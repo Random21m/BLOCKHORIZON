@@ -5,7 +5,8 @@ import { t, setLang, detectLang, LANGS } from './i18n.js';
 import { play, BLOCK_SOUNDS, ALARM_SOUNDS } from './sound.js';
 import { GLOSSARY, ANNIVERSARIES } from './content.js';
 
-export const VERSION = '0.5.0';
+export const VERSION = '0.5.1';
+export const TIP_ADDR = 'npub1vj8zjhnmkhekv93e2xmrz7kfwuxq25vrzw53u4dqhwd2lp5smvks3mwu2n@npub.cash';
 const $ = (s, r = document) => r.querySelector(s);
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'CHF', 'AUD', 'JPY'];
 const US = /^en-US/i.test((typeof navigator !== 'undefined' && navigator.language) || '');
@@ -275,6 +276,13 @@ function viewAbout() {
     el('p', null, 'BLOCKHORIZON shows the Bitcoin chain as a clock: block height counts up, and everything else (halving, difficulty, fees) counts down to the next block.'),
     el('p', null, 'It is a static page. No account, no ads, no analytics, no cookies. Settings and the last values live only in this browser. Live data comes straight from the public mempool.space API.'),
     el('p', { class: 'dim' }, `Version ${VERSION}`), el('p', null, el('a', { href: 'https://github.com/Random21m/blockhorizon' }, 'Source on GitHub'), ' · ', el('a', { href: 'privacy.html' }, 'Privacy'))));
+  const copy = async () => { try { await navigator.clipboard.writeText(TIP_ADDR); toast('Address copied'); } catch { const r = document.createRange(); r.selectNodeContents(addr); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); toast('Select and copy the address'); } };
+  const addr = el('code', { id: 'tip-addr', class: 'tip-addr' }, TIP_ADDR);
+  root.append(el('div', { class: 'panel support', id: 'support' }, el('h2', null, 'Support'),
+    el('p', null, 'If BLOCKHORIZON is useful to you, you can send a tip over Lightning:'),
+    el('img', { class: 'tip-qr', src: 'docs/support-qr.svg', alt: 'QR code for the Lightning address below', width: 220, height: 220 }),
+    addr, el('p', { class: 'row' }, el('button', { id: 'tip-copy', onclick: copy }, 'Copy address'), el('a', { href: 'lightning:' + TIP_ADDR }, 'Open in wallet')),
+    el('p', { class: 'dim' }, 'An npub.cash Lightning address: scan the QR code or paste the address into any Lightning wallet.')));
   return root;
 }
 let route = '/';
