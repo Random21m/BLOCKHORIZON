@@ -5,7 +5,7 @@ import { t, setLang, detectLang, LANGS } from './i18n.js';
 import { play, BLOCK_SOUNDS, ALARM_SOUNDS } from './sound.js';
 import { GLOSSARY, ANNIVERSARIES } from './content.js';
 
-export const VERSION = '0.4.1';
+export const VERSION = '0.4.2';
 const $ = (s, r = document) => r.querySelector(s);
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'CHF', 'AUD', 'JPY'];
 const DEF = { theme: 'dark', lang: detectLang(), cur: 'USD', h12: false, dateFmt: 'iso', utc: false, showFees: true, feesRtl: false, showPool: true, showMoscow: true, showCap: true,
