@@ -1,17 +1,18 @@
 import * as L from './lib.js';
 import { api, live, store } from './api.js';
+import { livePrice } from './price.js';
 import { t, setLang, detectLang, LANGS } from './i18n.js';
 import { play, BLOCK_SOUNDS, ALARM_SOUNDS } from './sound.js';
 import { GLOSSARY, ANNIVERSARIES } from './content.js';
 
-export const VERSION = '0.3.0';
+export const VERSION = '0.4.0';
 const $ = (s, r = document) => r.querySelector(s);
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'CHF', 'AUD', 'JPY'];
 const DEF = { theme: 'dark', lang: detectLang(), cur: 'USD', h12: false, dateFmt: 'iso', utc: false, showFees: true, feesRtl: false, showPool: true, showMoscow: true, showCap: true,
   hr: 'd14', ripple: true, pulse: true, reduced: false, sound: false, bsound: 'drop', asound: 'clock', satsSym: 'sats' };
 const S = Object.assign({}, DEF, store('settings') || {});
 const save = () => store('settings', S);
-const st = { tip: NaN, blocks: [], diff: null, fees: null, mem: null, proj: null, prices: null, hr: null, ln: null, last: 0, conn: 'off' };
+const st = { pct: {}, priceLive: false, priceAt: 0, tip: NaN, blocks: [], diff: null, fees: null, mem: null, proj: null, prices: null, hr: null, ln: null, last: 0, conn: 'off' };
 const alarms = () => store('alarms') || [];
 const fmtD = (ms, o) => L.fmtDate(ms, Object.assign({ h12: S.h12, dateFmt: S.dateFmt, utc: S.utc }, o));
 
@@ -39,7 +40,7 @@ async function refreshAll() {
     blocks: api.blocks().then((b) => { if (Array.isArray(b)) st.blocks = b; }),
     diff: api.difficulty().then((v) => { st.diff = v; }), fees: api.fees().then((v) => { st.fees = v; }),
     mem: api.mempool().then((v) => { st.mem = v; }), proj: api.projected().then((v) => { st.proj = v; }),
-    prices: api.prices().then((v) => { st.prices = v; }), hr: api.hashrate().then((v) => { st.hr = v; }), ln: api.lightning().then((v) => { st.ln = v.latest || v; }),
+    prices: api.prices().then((v) => { st.prices = Date.now() - st.priceAt < 30000 ? Object.assign({}, v, st.prices) : v; }), hr: api.hashrate().then((v) => { st.hr = v; }), ln: api.lightning().then((v) => { st.ln = v.latest || v; }),
   };
   const r = await Promise.allSettled(Object.values(jobs));
   if (r.every((x) => x.status === 'rejected')) st.conn = 'off';
@@ -61,6 +62,11 @@ function onLive(m) {
   if (m.fees) st.fees = m.fees;
   if (m.vBytesPerSecond != null) st.inflow = m.vBytesPerSecond;
   render();
+}
+let tickTimer;
+function onPriceTick(t) {
+  st.prices = Object.assign({}, st.prices, { [t.cur]: t.price }); st.priceAt = Date.now(); if (t.pct != null) st.pct[t.cur] = t.pct;
+  if (!tickTimer) tickTimer = setTimeout(() => { tickTimer = null; store('prices', st.prices); render(); }, 1000);
 }
 function checkAlarms() {
   const a = alarms(), hit = a.filter((x) => st.tip >= x.height), rest = a.filter((x) => st.tip < x.height);
@@ -100,6 +106,7 @@ function viewDash() {
   const hv = Number.isFinite(h) ? L.halvingInfo(h, now) : null, sp = Number.isFinite(h) ? L.supplyAt(h) : NaN;
   root.append(el('section', { class: 'tile hero' }, el('div', { class: 'eyebrow' }, t('height')), el('div', { class: 'height', id: 'h' }, L.fmtNum(h)),
     el('div', { class: 'since' }, t('since') + ': ', el('b', { id: 'since' }, Number.isFinite(since) ? L.fmtDuration(since) : '–')),
+    Number.isFinite(p) ? el('div', { class: 'btc' }, el('b', { id: 'btc' }, L.fmtNum(p, p < 100 ? 2 : 0) + ' ' + S.cur), st.pct[S.cur] != null ? el('span', { class: 'chg' }, (st.pct[S.cur] >= 0 ? '▲ ' : '▼ ') + Math.abs(st.pct[S.cur]).toFixed(2) + '% 24h') : null, el('span', { class: 'src' }, st.priceLive ? 'live · Kraken' : 'mempool.space')) : null,
     hv ? el('div', { class: 'hbar' }, el('div', { class: 'lab' }, el('span', null, `${t('halving')} · ${L.fmtNum(hv.blocksToGo)} ${t('blocksToGo')}`), el('span', { class: 'num' }, (hv.progress * 100).toFixed(1) + '%')), el('div', { class: 'track' }, el('div', { class: 'fill', style: `width:${(hv.progress * 100).toFixed(2)}%` }))) : null));
   if (hv) root.append(tile('', t('halving'), L.fmtNum(hv.blocksToGo),
     [`${t('blocksToGo')} · ${(hv.progress * 100).toFixed(1)}%`, `Block ${L.fmtNum(hv.nextHeight)}`, 'Est. ' + fmtD(hv.estMs, { dateOnly: true }), `Reward ${L.satsToBtc(hv.subsidy, 4)} → ${L.satsToBtc(hv.nextSubsidy, 5)} BTC`], arc(hv.progress, (hv.progress * 100).toFixed(0) + '%', '')));
@@ -262,6 +269,7 @@ export function boot() {
   addEventListener('hashchange', renderView); matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyLook);
   renderView(); refreshAll();
   live(onLive, (s) => { st.conn = s; render(); });
+  livePrice(onPriceTick, (on) => { if (st.priceLive !== on) { st.priceLive = on; render(); } });
   setInterval(tickClock, 1000); setInterval(refreshAll, 60000);
   if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => {});
 }

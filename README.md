@@ -6,13 +6,14 @@ BLOCKHORIZON is a live Bitcoin dashboard built around one idea: in Bitcoin, time
 
 It is a static, installable page with a calm, flat look (no flashing, no glow), running on free public data. No accounts, no ads, no tracking. Open it and watch the horizon move one block at a time.
 
-## Features (v0.3.0)
+## Features (v0.4.0)
 - Everything on one screen, no scrolling: a tile grid that fills desktop, laptop and phone
 - Live block height clock with an optional sound and the time since the last block
 - Next halving (arc, blocks to go, estimated date, reward) and supply issued
 - Difficulty adjustment (progress, expected change, previous change)
 - Hashrate with 7/14/30/90-day averages, block production vs the 10-minute target, last block details with mining pool
 - Fees, mempool (count, depth, inflow), projected blocks, recent blocks strip
+- Live Bitcoin price streamed from Kraken's public feed (mempool.space as fallback), shown under the block height with the 24 h change
 - Price in 7 currencies, sats per unit, Moscow time, market cap; Lightning network capacity
 - Search by block height or date, block pages with permalinks (`#/block/840000`)
 - Block alarm with sounds, calculator (sats/fiat, height/date), halving replay, chain calendar, glossary
@@ -27,4 +28,4 @@ node --test tests/lib.test.mjs     # unit tests on recorded API responses (tests
 node tests/smoke.mjs               # Playwright smoke test with the API mocked
 python3 -m http.server 8080        # then open http://localhost:8080
 ```
-No build step, no dependencies. Data comes from the public mempool.space API; nothing else is contacted and nothing is tracked.
+No build step, no dependencies. Data comes from the public mempool.space API and Kraken's public price feed; nothing else is contacted and nothing is tracked.

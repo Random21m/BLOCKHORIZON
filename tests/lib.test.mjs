@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as L from '../src/lib.js';
+import { parseTicker } from '../src/price.js';
 
 const fx = (n) => JSON.parse(fs.readFileSync(new URL('./fixtures/' + n, import.meta.url), 'utf8'));
 
@@ -68,4 +69,12 @@ test('recorded blocks give block time stats and parsed block', () => {
 });
 test('recorded mempool depth', () => {
   const m = fx('mempool.json'); assert.ok(L.mempoolDepth(m) > 0);
+});
+
+test('Kraken ticker parsing from recorded messages', () => {
+  const raw = (n) => fs.readFileSync(new URL('./fixtures/' + n, import.meta.url), 'utf8');
+  assert.deepEqual(parseTicker(raw('kraken-ticker.json')), [{ cur: 'GBP', price: 45593.6, pct: -2.79 }]);
+  assert.deepEqual(parseTicker(raw('kraken-subscribe.json')), []);
+  assert.deepEqual(parseTicker('not json'), []);
+  assert.deepEqual(parseTicker(JSON.stringify({ channel: 'ticker', data: [{ symbol: 'BTC/USD', last: -1 }, { symbol: 'ETH/USD', last: 5 }, { symbol: 'BTC/USD', last: 61000.5 }] })), [{ cur: 'USD', price: 61000.5, pct: null }]);
 });

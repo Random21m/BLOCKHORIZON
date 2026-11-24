@@ -1,0 +1,1 @@
+{"method":"subscribe","result":{"channel":"ticker","event_trigger":"trades","snapshot":true,"symbol":"BTC/USD"},"success":true,"time_in":"2026-11-24T21:45:39.123408Z","time_out":"2026-11-24T21:45:39.123492Z"}
