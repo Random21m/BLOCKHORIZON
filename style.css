@@ -171,3 +171,6 @@ label.chk{display:flex;gap:10px;align-items:center;margin:8px 0}
 @media (min-width:900px) and (min-height:641px){.tile .fees .est{display:block}}
 
 .btc .dir{font-size:13px;color:var(--dim)}.btc .dir.up{color:var(--ok)}.btc .dir.down{color:var(--bad)}
+.support{margin-top:14px}.tip-qr{display:block;width:220px;max-width:100%;height:auto;margin:6px 0 12px;border-radius:4px;background:#fff}
+.tip-addr{display:block;overflow-wrap:anywhere;font-size:13px;padding:8px 10px;border:1px solid var(--line);border-radius:4px;margin-bottom:10px}
+.support .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
