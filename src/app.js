@@ -27,7 +27,7 @@ function applyLook() {
   document.documentElement.dataset.theme = dark ? 'dark' : 'light';
   document.documentElement.lang = S.lang; setLang(S.lang);
   document.body.classList.toggle('reduced', S.reduced); document.body.classList.toggle('nopulse', !S.pulse);
-  const m = $('meta[name=theme-color]'); if (m) m.content = dark ? '#0A1020' : '#F4F1EA';
+  const m = $('meta[name=theme-color]'); if (m) m.content = dark ? '#111312' : '#F3F2EF';
 }
 const price = () => (st.prices && st.prices[S.cur]) || NaN;
 const NAVS = [['/', 'dash'], ['/alarm', 'alarm'], ['/calc', 'calc'], ['/replay', 'replay'], ['/events', 'events'], ['/glossary', 'glossary'], ['/about', 'about']];
