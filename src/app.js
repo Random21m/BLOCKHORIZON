@@ -364,20 +364,22 @@ export function boot() {
   }
 }
 // Reload the page; the service worker fetches app files network-first, so this also picks up a new version.
-function hardRefresh() { toast('Refreshing…'); navigator.serviceWorker?.getRegistration?.().then((r) => r && r.update()).catch(() => {}).finally(() => location.reload()); }
+function hardRefresh() { toast('Refreshing…'); location.reload(); }
 // Pull down from the top to refresh: installed apps (iPhone home screen, Android standalone) have no browser pull-to-refresh.
 function pullToRefresh() {
   const ind = el('div', { id: 'ptr', class: 'ptr', 'aria-hidden': 'true' }, '↓'); document.body.append(ind);
   const LIMIT = 80; let y0 = null, x0 = 0, d = 0;
   const reset = () => { y0 = null; d = 0; ind.style.transform = ''; ind.style.opacity = ''; ind.classList.remove('ready'); };
   addEventListener('touchstart', (e) => { if (e.touches.length !== 1 || scrollY > 0 || !$('#modal').hidden) return; y0 = e.touches[0].clientY; x0 = e.touches[0].clientX; d = 0; }, { passive: true });
-  addEventListener('touchmove', (e) => {
-    if (y0 === null) return; const dy = e.touches[0].clientY - y0, dx = e.touches[0].clientX - x0;
+  // Browsers throttle touchmove once a drag counts as a scroll, so the lift-off point in touchend decides, not the last move.
+  const pull = (pt) => {
+    const dy = pt.clientY - y0, dx = pt.clientX - x0;
     if (dy <= 0 || Math.abs(dx) > dy || scrollY > 0) { if (dy < 0 || Math.abs(dx) > Math.abs(dy)) reset(); return; }
     d = Math.min(dy * 0.5, LIMIT * 1.4); ind.style.transform = `translate(-50%, ${d}px) rotate(${d * 2.5}deg)`; ind.style.opacity = String(Math.min(1, d / LIMIT));
     ind.textContent = d >= LIMIT ? '↻' : '↓'; ind.classList.toggle('ready', d >= LIMIT);
-  }, { passive: true });
-  addEventListener('touchend', () => { if (y0 !== null && d >= LIMIT) { ind.textContent = '↻'; ind.classList.add('spin'); hardRefresh(); return; } reset(); });
+  };
+  addEventListener('touchmove', (e) => { if (y0 !== null) pull(e.touches[0]); }, { passive: true });
+  addEventListener('touchend', (e) => { if (y0 !== null && e.changedTouches[0]) pull(e.changedTouches[0]); if (y0 !== null && d >= LIMIT) { ind.textContent = '↻'; ind.classList.add('spin'); hardRefresh(); return; } reset(); });
   addEventListener('touchcancel', reset);
 }
 if (typeof document !== 'undefined') boot();
