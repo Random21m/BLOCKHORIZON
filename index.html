@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BLOCKHORIZON</title>
+<meta name="description" content="Live Bitcoin dashboard where block height is the clock. No accounts, no tracking.">
+<meta name="theme-color" content="#1F1B18">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://mempool.space wss://mempool.space; manifest-src 'self'; base-uri 'none'; form-action 'none'">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="#/" aria-label="BLOCKHORIZON home"><svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 20h26" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="20" r="4" fill="currentColor"/></svg><span>BLOCKHORIZON</span></a>
+  <nav id="nav" aria-label="Main"></nav>
+  <div class="tools">
+    <span id="conn" class="conn" title="Connection"></span>
+    <button id="btn-search" data-i="search" aria-label="Search">⌕</button>
+    <button id="btn-settings" aria-label="Settings">⚙</button>
+  </div>
+</header>
+<main id="main" tabindex="-1"></main>
+<footer class="foot"><span id="ver"></span> · <a href="privacy.html">Privacy</a> · <span>Data: mempool.space public API</span></footer>
+<div id="modal" class="modal" hidden role="dialog" aria-modal="true"><div class="sheet"><button id="modal-x" class="x" aria-label="Close">✕</button><div id="modal-body"></div></div></div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script type="module" src="src/app.js"></script>
+</body>
+</html>
