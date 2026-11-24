@@ -80,7 +80,7 @@ label.chk{display:flex;gap:10px;align-items:center;margin:8px 0}
 .sgrp h2{margin:0 0 4px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);font-weight:600}
 .strip2 .blocks{padding:0 0 2px;gap:6px;overflow-x:auto}
 .strip2 .blk{flex:0 0 76px;padding:6px;font-size:10.5px;border-radius:6px}.strip2 .blk b{font-size:12px;margin-top:4px}.strip2 .cube{height:26px;border-radius:3px}
-@media (max-width:899px){.ts:nth-of-type(n+3){display:none}.strip2 .sgrp:first-child:not(:last-child){display:none}.strip2 .blk{flex-basis:64px}
+@media (max-width:899px){.ts.s1,.ts.s2,.ts.s3,.ts.s4{display:none}.strip2 .sgrp:first-child:not(:last-child){display:none}.strip2 .blk{flex-basis:64px}
   .fit main{padding:6px 8px}.dashgrid{gap:6px}.tile{padding:6px 8px}.tv{font-size:16px}.tile h2{font-size:9.5px}.tile .spark{height:24px;margin:0}.tile .bar-track{margin:2px 0}
   .tile.hero{padding:8px}.hero .height{font-size:44px;margin:0}.hero .hbar{margin-top:4px}.hero .eyebrow{font-size:10px}
   .tile .fees{grid-template-columns:repeat(4,1fr)}.tile .fees b{font-size:14px}.tile .fees div{padding:2px}
@@ -88,7 +88,7 @@ label.chk{display:flex;gap:10px;align-items:center;margin:8px 0}
 @media (min-width:640px) and (max-width:899px){.dashgrid{grid-template-columns:repeat(3,1fr)}}
 @media (min-width:900px){
   .fit main{overflow:hidden}
-  .dashgrid{grid-template-columns:repeat(4,1fr);grid-template-rows:1.5fr 1fr 1fr auto;gap:10px;height:100%}
+  .dashgrid{grid-template-columns:repeat(4,1fr);grid-template-rows:1.25fr 1fr 1fr auto;gap:10px;height:100%}
   .tile.hero{grid-column:span 2;grid-row:1}
   .tile{padding:10px 14px}
   .tile .arc{display:block}
@@ -104,3 +104,70 @@ label.chk{display:flex;gap:10px;align-items:center;margin:8px 0}
 @media (max-width:899px){.btc b{font-size:15px}.btc .chg,.btc .src{font-size:10.5px}}
 
 .cube{border:1px solid var(--line)}.cube i{border-radius:0}
+
+/* ---- richer tiles ---- */
+.gfx{display:none}
+.minis{display:grid;grid-template-columns:repeat(auto-fit,minmax(64px,1fr));gap:6px}.mini small{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}.mini b{font:600 clamp(12px,1.8vh,16px) ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+.chartbox{flex:1 1 auto;min-height:34px}.chartbox svg{width:100%;height:100%;display:block}
+.cap{font-size:11px;color:var(--dim)}
+.stack{height:16px;border:1px solid var(--line);border-radius:3px;overflow:hidden;margin:2px 0}.stack i{display:block;min-width:2px}
+.lastviz{align-items:center;gap:12px;flex:1 1 auto;min-height:0}.bigcube{width:clamp(44px,8vh,84px);flex:0 0 auto}.bigcube .cube{height:clamp(44px,8vh,84px)}
+.fillnote{font:600 clamp(12px,1.8vh,16px) ui-monospace,Menlo,monospace;min-width:0;flex:1}.fillnote .stripe{height:8px;border-radius:2px;margin:5px 0 3px;border:1px solid var(--line)}.fillnote small{display:block;font:500 11px system-ui,sans-serif;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (min-width:900px) and (min-height:641px){
+  .gfx{display:block}.lastviz.gfx{display:flex}.minis.gfx,.chartbox.gfx{display:grid}.chartbox.gfx{display:flex}
+  .tile{gap:5px}.tile h2{font-size:11px}
+  .tv{font-size:clamp(20px,3.4vh,36px)}.ts{font-size:clamp(11.5px,1.8vh,15px)}
+  .tile .arc{max-width:none;width:auto;height:auto;flex:1 1 auto;min-height:0;align-self:center}
+  .tile .spark{height:auto;flex:1 1 auto;min-height:30px;margin:2px 0}
+  .tile .fees b{font-size:clamp(20px,3.6vh,36px)}.tile .fees small{font-size:11px}.tile .fees div{padding:8px 4px}
+  .t-fees .tv{margin-top:2px}.t-fees .fees small.gfx{display:block}
+  .t-halving,.t-diff{position:relative}
+}
+
+/* fixes: stacks are flex rows, two detail lines where a graphic is shown, arcs shrink to fit */
+@media (min-width:900px) and (min-height:641px){
+  .stack.gfx{display:flex}
+  .tv{font-size:clamp(18px,3vh,30px)}.ts{font-size:clamp(11px,1.6vh,14px)}
+  .tile .ts.s2,.tile .ts.s3{display:none}
+  .t-price .ts.s1{display:none}
+  .tile .arc{flex:1 1 0;min-height:44px;height:100%;max-width:100%}
+  .tile .chartbox{flex:1 1 0;min-height:30px}
+  .tile .spark{flex:1 1 0;min-height:30px;height:100%}
+  .bigcube{width:clamp(40px,7vh,72px)}.bigcube .cube{height:clamp(40px,7vh,72px)}
+  .strip2 .cube{height:clamp(18px,3vh,30px)}.strip2 .blk{padding:5px}
+  .t-halving .ts.s2{display:block}.t-halving .ts.s3{display:none}
+}
+
+/* ---- calmer pass: one graphic per tile, graphics fill the tile, nothing left empty ---- */
+.gfx{display:block}
+@media (min-width:900px) and (min-height:641px){
+  .tile{justify-content:space-between;padding:12px 16px}
+  .tile .ts{font-size:clamp(12px,1.7vh,15px)}
+  .tile .ts.s1{display:none}
+  .t-price .ts.s1{display:none}
+  .tile .arc,.tile .spark,.tile .chartbox,.tile .lastviz,.tile .fees,.tile .minis,.tile .stack{flex:1 1 0;min-height:0}
+  .tile .stack{display:flex;max-height:64px;min-height:28px;margin:6px 0}
+  .tile .fees{display:grid;margin:6px 0;gap:8px}.tile .fees div{display:flex;flex-direction:column;justify-content:center}
+  .tile .fees .est{display:block;color:var(--dim)}
+  .tile .minis{display:grid;grid-template-columns:1fr 1fr;align-content:center;gap:10px 14px}
+  .tile .mini b{font-size:clamp(15px,2.6vh,24px)}.tile .mini small{font-size:11px}
+  .tile .lastviz{display:flex;margin:6px 0}
+  .tile .cap{font-size:11.5px}
+  .hero .height{font-size:clamp(52px,10vw,min(18vh,130px))}
+  .btc b{font-size:clamp(20px,3.6vh,34px)}
+}
+
+/* compact screens (phones, short windows): numbers only, so everything fits without scrolling */
+.tile .fees .est{display:none}
+@media (max-width:899px),(max-height:640px){
+  .tile .chartbox,.tile .stack,.tile .cap,.tile .lastviz,.tile .minis,.tile .emission{display:none}
+}
+@media (min-width:900px) and (min-height:641px){
+  .t-fees .tv{flex:1 1 0;min-height:0;display:flex}.t-fees .fees{flex:1 1 auto;min-height:0}
+  .t-fees .tv{margin:6px 0}
+}
+
+@media (max-width:899px){.more{display:none}}
+@media (min-width:900px) and (min-height:641px){.tile .fees .est{display:block}}
+
+.btc .dir{font-size:13px;color:var(--dim)}.btc .dir.up{color:var(--ok)}.btc .dir.down{color:var(--bad)}

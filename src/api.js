@@ -26,7 +26,7 @@ export const api = {
   mempool: () => getJSON('/mempool', { cacheKey: 'mempool' }),
   projected: () => getJSON('/v1/fees/mempool-blocks', { cacheKey: 'projected' }),
   prices: () => getJSON('/v1/prices', { cacheKey: 'prices' }),
-  hashrate: () => getJSON('/v1/mining/hashrate/3m', { cacheKey: 'hashrate' }),
+  hashrate: () => getJSON('/v1/mining/hashrate/1y', { cacheKey: 'hashrate' }),
   lightning: () => getJSON('/v1/lightning/statistics/latest', { cacheKey: 'ln' }),
   byTime: (ts) => getJSON('/v1/mining/blocks/timestamp/' + ts),
 };

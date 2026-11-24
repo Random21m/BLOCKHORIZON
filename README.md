@@ -6,7 +6,7 @@ BLOCKHORIZON is a live Bitcoin dashboard built around one idea: in Bitcoin, time
 
 It is a static, installable page with a calm, flat look (no flashing, no glow), running on free public data. No accounts, no ads, no tracking. Open it and watch the horizon move one block at a time.
 
-## Features (v0.4.2)
+## Features (v0.5.0)
 - Everything on one screen, no scrolling: a tile grid that fills desktop, laptop and phone
 - Live block height clock with an optional sound and the time since the last block
 - Next halving (arc, blocks to go, estimated date, reward) and supply issued
