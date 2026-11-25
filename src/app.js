@@ -10,6 +10,7 @@ import { viewDash, viewClock } from './view-dash.js';
 import { viewBlock, viewTx } from './view-chain.js';
 import { viewAlarm, viewCalc, paintFeeNow } from './view-tools.js';
 import { viewCharts } from './view-charts.js';
+import { measure, arrive } from './arrival.js';
 import { viewReplay, viewEvents, viewGlossary, viewWatch, viewAbout } from './view-info.js';
 import { closeModal, searchModal, settingsModal, trapFocus } from './modals.js';
 
@@ -53,13 +54,20 @@ function morph(a, b) {
   bk.forEach((n, i) => { if (ak[i]) morph(ak[i], n); else a.append(n); });
   for (let i = bk.length; i < ak.length; i++) ak[i].remove();
 }
-let rendering = false;
+// What the live view last showed: the height and the newest mined block. They can arrive in separate updates (the minute
+// refresh fetches them separately), so each animates when its own data lands.
+let rendering = false, shownTip = NaN, shownTop = NaN;
 function render() {
   if (LIVE[route] && !rendering) {
     rendering = true;
     try { const cur = $('#main').firstElementChild;
       if (!cur || !cur.classList.contains(LIVE[route])) renderView();
-      else { const sx = stripScroll(); morph(cur, VIEWS[route]()); stripScroll(sx); document.title = docTitle(); }
+      else {
+        const top = st.blocks[0] ? st.blocks[0].height : NaN, moved = { height: st.tip > shownTip, blocks: top > shownTop };
+        const before = moved.height || moved.blocks ? measure() : null; // a new block: remember where everything stood
+        const sx = stripScroll(); morph(cur, VIEWS[route]()); stripScroll(sx); document.title = docTitle(); arrive(before, moved);
+      }
+      shownTip = st.tip; shownTop = st.blocks[0] ? st.blocks[0].height : NaN;
     } finally { rendering = false; } }
   else if (!LIVE[route]) document.title = 'BLOCKHORIZON · ' + L.fmtNum(st.tip);
   checkAlarms(); checkFeeAlerts(); paintFeeNow();
