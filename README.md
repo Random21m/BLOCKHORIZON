@@ -1,14 +1,48 @@
 # BLOCKHORIZON
 
-**Live site: https://random21m.github.io/BLOCKHORIZON/** (open it in your browser; it can be installed as an app from the browser menu)
+**A calm, live Bitcoin dashboard where time is measured in blocks.**
 
-BLOCKHORIZON is a live Bitcoin dashboard built around one idea: in Bitcoin, time is measured in blocks. It shows where the chain is right now and what comes next: the current block, the countdown to the next halving and difficulty adjustment, fees and the mempool, hashrate, price and sats per dollar.
+### [→ Open the app](https://random21m.github.io/BLOCKHORIZON/)
 
-It is a static, installable page with a calm, flat look (no flashing, no glow), running on free public data. No accounts, no ads, no tracking. Open it and watch the horizon move one block at a time.
+No accounts, no ads, no tracking, nothing to install (though you can). Free public data, in 8 languages, and it works offline.
 
-## Install
+![The BLOCKHORIZON dashboard: block height, next halving, difficulty adjustment, hashrate, supply, last block, block production, fees, mempool, price and Lightning, with the projected and recent blocks along the bottom](docs/dashboard.png)
 
-BLOCKHORIZON is a web app: open https://random21m.github.io/BLOCKHORIZON/ and you are already using it. To keep it one tap away, install it as an app. It then opens in its own window, works offline with the last values it saw, and updates itself.
+When a block is mined, you see it happen: the blocks glide one slot along and the new one slides in.
+
+![Animation: block 977,412 is mined; the recent blocks glide one slot to the right and the new block slides in from the divider](docs/block-arrival.gif)
+
+| On a phone | History charts | On your own site |
+|---|---|---|
+| ![The dashboard on a phone, on one screen](docs/phone.png) | ![The Charts page: price, hashrate, difficulty and median fee rate over a year](docs/charts.png) | ![The embeddable widget: block height, halving countdown and price, in dark and light](docs/widgets.png) |
+
+## What it shows
+
+BLOCKHORIZON is built around one idea: in Bitcoin, time is measured in blocks. The block height counts up; everything else counts down to the next block.
+
+**The dashboard** (everything on one screen, no scrolling)
+- Live block height, time since the last block, and the price streamed from Kraken, with the 24 h change
+- Next halving (blocks to go, estimated date, reward) and supply issued
+- Difficulty adjustment (progress, expected and previous change), hashrate with 7/14/30/90-day averages, block production against the 10-minute target
+- Last block with its mining pool, fees, mempool (count, depth, inflow), and the projected and recent blocks, coloured like mempool.space
+- Sats per unit in 7 currencies, Moscow time, market cap, Lightning network capacity
+
+**More pages**
+- **Clock:** just the height, time since the last block and the price, as large as the screen allows, with the screen kept awake (for a spare screen or an old tablet)
+- **Charts:** price, hashrate, difficulty and median fee over 1 month, 1 year or all time
+- **Alarm:** a sound and a message when the chain reaches a block height, or when fees drop to your limit (with a system notification in the background, if you allow it)
+- **Calculator:** sats ⇄ fiat, block height ⇄ date, and what a payment costs right now at each fee level
+- **Search:** any block by height or date, any transaction by ID (confirmations, fee, or its place in the queue), with shareable links
+- Halving replay, chain calendar, glossary, and a Watch page of Bitcoin channels
+
+**Everywhere**
+- Dark, light or automatic; English, German, Spanish, French, Portuguese, Italian, Dutch and Turkish; your currency, time and date format
+- Accessible: keyboard-friendly, screen-reader labels, and checked with axe-core on every page in both themes as part of the tests
+- Calm by design: flat, no flashing, no glow, and nothing moves if you turn on reduce motion
+
+## Install it as an app
+
+Open https://random21m.github.io/BLOCKHORIZON/ and you are already using it. Installed, it opens in its own window, works offline with the last values it saw, and updates itself. Long-press its icon for shortcuts to Clock, Alarm, Charts and Search.
 
 | Where | How |
 |---|---|
@@ -20,49 +54,45 @@ BLOCKHORIZON is a web app: open https://random21m.github.io/BLOCKHORIZON/ and yo
 
 Settings (currency, language, time format, theme, sounds) are kept only in your own browser. To remove the app, uninstall it like any other app or clear the site data.
 
-### Run your own copy
-There is nothing to build: the site is plain static files, so any static host works (it must be served over HTTPS, or from `localhost`, so that the offline mode can start).
+## Put it on your site
 
-- **On your computer:** clone this repository and run `python3 -m http.server 8080` in it, then open http://localhost:8080.
-- **Link previews:** the preview card tags in `index.html` point at this site's address (`og:url`, `og:image`, `canonical`); change them to yours in a fork.
-- **On GitHub Pages:** fork the repository, open **Settings, Pages** and set **Source** to **GitHub Actions**. The included workflow publishes the site on every push to `main` (you can also start it by hand from the **Actions** tab).
-- **Anywhere else:** upload `index.html`, `embed.html`, `embed.css`, `style.css`, `sw.js`, `manifest.webmanifest`, `privacy.html`, `.nojekyll` and the `icons` and `src` folders. The file paths are relative, so it also works in a sub-folder.
+Show the live block height, the halving countdown or the price on your own website or blog with one line of HTML. In the app, open **About → Embed on your site**, pick what to show, and copy the code. For example:
 
-## Features (v0.9.1)
-- Everything on one screen, no scrolling: a tile grid that fills desktop, laptop and phone
-- Live block height clock with an optional sound and the time since the last block; when a block is mined the strip glides one slot and the height rolls over (calm, no flashing, off with reduce motion)
-- Next halving (arc, blocks to go, estimated date, reward) and supply issued
-- Difficulty adjustment (progress, expected change, previous change)
-- Hashrate with 7/14/30/90-day averages, block production vs the 10-minute target, last block details with mining pool
-- Fees, mempool (count, depth, inflow), projected blocks, recent blocks strip
-- Block colours follow the mempool.space convention (fee-rate colours for upcoming blocks, purple to blue for mined blocks), drawn flat
-- Live Bitcoin price streamed from Kraken's public feed (mempool.space as fallback), shown under the block height with the 24 h change
-- Price in 7 currencies, sats per unit, Moscow time, market cap; Lightning network capacity
-- Search by block height, date or transaction ID; block and transaction pages with permalinks (`#/block/840000`, `#/tx/<txid>`) and a Copy link / Share button
-- Transaction lookup: confirmations, fee and fee rate, or for a waiting transaction its place in the queue of projected blocks
-- Clock mode (own menu tab): just the block height, time since the last block and the price, as large as the screen allows, with the screen kept awake; for a spare screen or old tablet
-- Charts page: price (in your currency), hashrate, difficulty and median fee rate over 1 month, 1 year or all time, with a crosshair tooltip, arrow-key reading and a table view
-- Watch page: Bitcoin YouTube channels, A to Z, plus a few sites (The Lot Radio)
-- Block alarm and fee alert (a sound and a message when the next-block, 30-minute or 1-hour fee drops to your limit) with sounds and a system notification in the background, if allowed; calculator (sats/fiat, height/date, what a payment costs now at each fee level), halving replay, chain calendar, glossary
-- Settings: dark/light/auto, currency, sats symbol, time/date format, UTC, language (everything, glossary and anniversaries included, in English, German, Spanish, French, Portuguese, Italian, Dutch, Turkish), sounds, reduced motion, full screen
-- Accessible: checked with axe-core on every page in both themes (part of the test run), keyboard-friendly dialogs and tabs, screen-reader headings and labels
-- Embeddable widget: put the live block height, halving countdown or price on your own site with one line of HTML (About page, "Embed on your site"); options in the URL: `embed.html?show=height|halving|price&theme=auto|dark|light&lang=..&cur=..`
-- App shortcuts: long-press the installed app's icon for Clock, Alarm, Charts or Search
-- Installable PWA that works offline (cached shell and last values) and updates itself on the next open; pull down from the top (or tap ↻) to refresh
+```html
+<iframe src="https://random21m.github.io/BLOCKHORIZON/embed.html?show=height" width="320" height="120" style="border:0" title="BLOCKHORIZON: Block height" loading="lazy"></iframe>
+```
 
-Not built yet: art gallery, conference listings, chain-state totals (addresses, UTXOs, disk size: no free public source found).
+Options: `show=height|halving|price`, `theme=auto|dark|light`, `lang=en|de|es|fr|pt|it|nl|tr`, and `cur=USD|EUR|GBP|CAD|CHF|AUD|JPY` for the price. The widget updates itself and links back to the app.
+
+## Privacy
+
+Your browser asks the public mempool.space API for block, fee and mempool data, and Kraken's public feed for the price. Nothing else is contacted, there are no cookies or analytics, and nothing about you is stored anywhere but your own browser. Details: [privacy.html](https://random21m.github.io/BLOCKHORIZON/privacy.html).
+
+## Run your own copy
+
+There is nothing to build: the site is plain static files, so any static host works (served over HTTPS, or from `localhost`, so the offline mode can start).
+
+- **On your computer:** clone this repository, run `python3 -m http.server 8080` in it, and open http://localhost:8080.
+- **On GitHub Pages:** fork the repository, open **Settings, Pages** and set **Source** to **GitHub Actions**. The included workflow publishes the site on every push to `main` (you can also start it from the **Actions** tab).
+- **Anywhere else:** upload `index.html`, `embed.html`, `embed.css`, `style.css`, `sw.js`, `manifest.webmanifest`, `privacy.html`, `.nojekyll` and the `icons`, `src` and `docs` folders. Paths are relative, so a sub-folder works too.
+- **Link previews:** the preview card tags in `index.html` (`og:url`, `og:image`, `canonical`) point at this site's address; change them to yours in a fork.
 
 ## Develop and test
+
 ```
 node --test tests/lib.test.mjs     # unit tests on recorded API responses (tests/fixtures)
-node tests/smoke.mjs               # Playwright smoke test with the API mocked
+node tests/smoke.mjs               # Playwright browser checks with the API mocked
 python3 -m http.server 8080        # then open http://localhost:8080
 ```
-No build step, no dependencies. The accessibility check in the smoke test runs when `axe-core` is installed (`npm install --no-save axe-core`), as it is in CI.
 
-Code layout (`src/`): `app.js` routing, live repaint and start-up · `state.js` settings and shared state · `data.js` data feeds, block alarms and fee alerts · `ui.js` tiles, charts and other building blocks · `view-dash.js` dashboard and clock · `view-chain.js` block and transaction pages · `view-tools.js` alarm and calculator · `view-info.js` replay, calendar, glossary, watch, about · `view-charts.js` history charts · `arrival.js` the block arrival animation · `modals.js` search and settings · `lib.js` pure helpers (unit-tested) · `api.js`, `price.js` network · `i18n.js`, `strings.js`, `content.js`, `content-i18n.js` texts. Data comes from the public mempool.space API and Kraken's public price feed; nothing else is contacted and nothing is tracked.
+No build step and no dependencies. The accessibility check in the browser tests runs when `axe-core` is installed (`npm install --no-save axe-core`), as it is in CI.
+
+Code layout (`src/`): `app.js` routing, live repaint and start-up · `state.js` settings and shared state · `data.js` data feeds, block alarms and fee alerts · `ui.js` tiles, charts and other building blocks · `view-dash.js` dashboard and clock · `view-chain.js` block and transaction pages · `view-tools.js` alarm and calculator · `view-info.js` replay, calendar, glossary, watch, about · `view-charts.js` history charts · `arrival.js` the block arrival animation · `embed.js` the embeddable widget · `modals.js` search and settings · `lib.js` pure helpers (unit-tested) · `api.js`, `price.js` network · `i18n.js`, `strings.js`, `content.js`, `content-i18n.js` texts.
+
+Version 0.9.1. Not built yet: an art gallery, conference listings and chain-state totals (addresses, UTXOs, disk size), for lack of a free, trustworthy public source.
 
 ## Support
+
 If BLOCKHORIZON is useful to you, you can send a tip over Lightning:
 
 <img src="docs/support-qr.svg" alt="QR code for the Lightning address below" width="220">
