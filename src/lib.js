@@ -240,6 +240,79 @@ export function rsi(vals, n = 14) {
   for (let i = n + 1; i < vals.length; i++) { const d = vals[i] - vals[i - 1]; g = (g * (n - 1) + Math.max(d, 0)) / n; l = (l * (n - 1) + Math.max(-d, 0)) / n; out[i] = l === 0 ? 100 : 100 - 100 / (1 + g / l); }
   return out;
 }
+// Bollinger Bands (n, k standard deviations) and MACD (fast, slow, signal) over closes; NaN until there is enough data.
+export function bollinger(vals, n = 20, k = 2) {
+  const mid = sma(vals, n), up = mid.slice(), lo = mid.slice();
+  for (let i = n - 1; i < vals.length; i++) { let v = 0; for (let j = i - n + 1; j <= i; j++) v += (vals[j] - mid[i]) ** 2; const sd = Math.sqrt(v / n); up[i] = mid[i] + k * sd; lo[i] = mid[i] - k * sd; }
+  return { mid, up, lo };
+}
+export function macd(vals, fast = 12, slow = 26, sig = 9) {
+  const f = ema(vals, fast), s = ema(vals, slow), line = vals.map((_, i) => f[i] - s[i]);
+  const start = line.findIndex(Number.isFinite), signal = new Array(vals.length).fill(NaN);
+  if (start >= 0) { const e = ema(line.slice(start), sig); for (let i = 0; i < e.length; i++) signal[start + i] = e[i]; }
+  return { macd: line, signal, hist: line.map((v, i) => v - signal[i]) };
+}
+// ---- Order book and trades (Kraken v2 websocket) ----
+// Kraken's precision for BTC pairs: prices to 0.1 (JPY to 1), amounts to 8 decimals. Used by the book checksum.
+export const pricePrecision = (cur) => (cur === 'JPY' ? 0 : 1);
+const lvl = (x) => ({ p: x.price, q: x.qty });
+// Pure: raw text -> { type, cur, bids, asks, checksum } for a BTC book frame, else null.
+export function parseBook(raw) {
+  try {
+    const m = JSON.parse(raw); if (!m || m.channel !== 'book' || !Array.isArray(m.data) || !m.data[0]) return null;
+    const d = m.data[0]; if (!/^BTC\/[A-Z]{3}$/.test(d.symbol)) return null;
+    const ok = (a) => (Array.isArray(a) ? a : []).filter((x) => x && Number.isFinite(x.price) && Number.isFinite(x.qty)).map(lvl);
+    return { type: m.type, cur: d.symbol.slice(4), bids: ok(d.bids), asks: ok(d.asks), checksum: d.checksum };
+  } catch { return null; }
+}
+// Apply a frame to a book ({bids: best first, asks: best first}). A snapshot replaces it; in an update an amount of 0
+// removes the level. Levels beyond `depth` are dropped, as Kraken expects.
+export function applyBook(book, f, depth = 25) {
+  const side = (cur, ch, desc) => {
+    const m = new Map(f.type === 'snapshot' ? [] : cur.map((x) => [x.p, x.q]));
+    for (const x of ch) { if (x.q === 0) m.delete(x.p); else m.set(x.p, x.q); }
+    return [...m].map(([p, q]) => ({ p, q })).sort((a, b) => (desc ? b.p - a.p : a.p - b.p)).slice(0, depth);
+  };
+  return { bids: side(book ? book.bids : [], f.bids, true), asks: side(book ? book.asks : [], f.asks, false) };
+}
+// CRC32 (IEEE), as Kraken's book checksum uses.
+let CRC;
+export function crc32(str) {
+  if (!CRC) { CRC = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; CRC[n] = c >>> 0; } }
+  let c = 0xFFFFFFFF; for (let i = 0; i < str.length; i++) c = CRC[(c ^ str.charCodeAt(i)) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+// Kraken's checksum of the top 10 asks then the top 10 bids: price and amount at their precision, without the point or leading zeros.
+export function bookChecksum(book, pp, qp = 8) {
+  const f = (v, d) => v.toFixed(d).replace('.', '').replace(/^0+/, '');
+  const part = (a) => a.slice(0, 10).map((x) => f(x.p, pp) + f(x.q, qp)).join('');
+  return crc32(part(book.asks) + part(book.bids));
+}
+// Pure: raw text -> { type, cur, trades: [{ id, t, side, p, q }] } (newest last) for BTC trade frames, else null.
+export function parseTrades(raw) {
+  try {
+    const m = JSON.parse(raw); if (!m || m.channel !== 'trade' || !Array.isArray(m.data)) return null; let cur = '';
+    const trades = m.data.filter((d) => d && /^BTC\/[A-Z]{3}$/.test(d.symbol) && Number.isFinite(d.price) && Number.isFinite(d.qty)).map((d) => { cur = d.symbol.slice(4); return { id: d.trade_id, t: Date.parse(d.timestamp), side: d.side === 'sell' ? 'sell' : 'buy', p: d.price, q: d.qty }; });
+    return trades.length ? { type: m.type, cur, trades } : null;
+  } catch { return null; }
+}
+// ---- Price alerts: { id, cur, price, dir: 'up' | 'down', sound } fire once when the price reaches them ----
+export const alertDir = (target, now) => (target >= now ? 'up' : 'down');
+export function splitPriceAlerts(list, prices) {
+  const hit = [], rest = [];
+  for (const a of list || []) { const p = prices && prices[a.cur]; (Number.isFinite(p) && (a.dir === 'up' ? p >= a.price : p <= a.price) ? hit : rest).push(a); }
+  return { hit, rest };
+}
+// "60,000", "60.000,5", "59 500.5", "1,5": the last of ',' and '.' is the decimal mark when both appear; a lone ',' is
+// a thousands mark only in groups of three.
+export function parsePriceInput(s) {
+  let x = String(s).trim().replace(/[\s'’]/g, ''); const lc = x.lastIndexOf(','), ld = x.lastIndexOf('.');
+  if (lc >= 0 && ld >= 0) x = lc > ld ? x.replace(/\./g, '').replace(',', '.') : x.replace(/,/g, '');
+  else if (lc >= 0) x = /^\d{1,3}(,\d{3})+$/.test(x) ? x.replace(/,/g, '') : x.replace(',', '.');
+  else if (/^\d{1,3}(\.\d{3}){2,}$/.test(x)) x = x.replace(/\./g, '');
+  if (!/^\d+(\.\d+)?$/.test(x)) return NaN;
+  const v = parseFloat(x); return v > 0 && v < 1e12 ? v : NaN;
+}
 // Price label precision for a value (JPY prices are big, small moves still need cents elsewhere).
 export const priceDigits = (v) => (v >= 1e5 ? 0 : v >= 100 ? 1 : 2);
 

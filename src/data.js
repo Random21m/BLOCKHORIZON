@@ -4,7 +4,7 @@ import { api, store } from './api.js';
 import { t } from './i18n.js';
 import { play } from './sound.js';
 import { ingest } from './block-scene.js';
-import { hooks, S, st, alarms, feeAlerts, FEE_LVL_KEYS, toast, price, priceStr } from './state.js';
+import { hooks, S, st, alarms, feeAlerts, priceAlerts, fmtPrice, FEE_LVL_KEYS, toast, price, priceStr } from './state.js';
 
 // ---------- data ----------
 export async function refreshAll() {
@@ -56,6 +56,7 @@ export function glidePrice() { // the big price eases toward each new trade pric
 export function onPriceTick(tk) {
   const prev = st.prices && st.prices[tk.cur];
   st.prices = Object.assign({}, st.prices, { [tk.cur]: tk.price }); st.priceAt = Date.now(); if (tk.pct != null) st.pct[tk.cur] = tk.pct;
+  checkPriceAlerts();
   if (tk.cur === S.cur) { if (Number.isFinite(prev) && tk.price !== prev) st.dir = tk.price > prev ? 1 : -1; glidePrice(); }
   if (!tickTimer) tickTimer = setTimeout(() => { tickTimer = null; store('prices', st.prices); hooks.render(); }, 400);
 }
@@ -74,6 +75,14 @@ export function checkFeeAlerts() {
   const { hit, rest } = L.splitFeeAlerts(feeAlerts(), st.fees);
   if (!hit.length) return; store('feeAlerts', rest);
   for (const a of hit) { const msg = '⏰ ' + t('feeReached', { l: t(FEE_LVL_KEYS[a.level] || 'lvlNext'), f: L.fmtFee(st.fees[L.FEE_LEVELS[a.level] || 'fastestFee']), m: L.fmtFee(a.max) }); toast(msg); play(a.sound || S.asound); notify(msg); }
+}
+// Price alerts: checked on every price (each Kraken trade, or the minute refresh). Each fires once, then is removed.
+export function checkPriceAlerts() {
+  const list = priceAlerts(); if (!list.length || !st.prices) return;
+  const { hit, rest } = L.splitPriceAlerts(list, st.prices); if (!hit.length) return;
+  store('priceAlerts', rest);
+  for (const a of hit) { const msg = '⏰ ' + t(a.dir === 'up' ? 'priceUpTo' : 'priceDownTo', { p: fmtPrice(a.price, a.cur), n: fmtPrice(st.prices[a.cur], a.cur) }); toast(msg); play(a.sound || S.asound); notify(msg); }
+  hooks.alerts();
 }
 // A system notification as well, so an alarm is seen while the tab is in the background. Only if the user allowed it.
 export function notify(body) {

@@ -5,7 +5,7 @@ import { mountScene } from './block-scene.js';
 import { livePrice } from './price.js';
 import { t } from './i18n.js';
 import { VERSION, $, st, el, toast, applyLook, NAVS, hooks } from './state.js';
-import { refreshAll, onLive, onPriceTick, checkAlarms, checkFeeAlerts } from './data.js';
+import { refreshAll, onLive, onPriceTick, checkAlarms, checkFeeAlerts, checkPriceAlerts } from './data.js';
 import { sinceText } from './ui.js';
 import { viewDash, viewClock } from './view-dash.js';
 import { viewBlock, viewTx } from './view-chain.js';
@@ -80,7 +80,7 @@ function render() {
     } finally { rendering = false; } }
   else if (!LIVE[route]) document.title = 'BLOCKHORIZON · ' + L.fmtNum(st.tip);
   trackBlock(route === '/mining'); if (route === '/mining') mountScene();
-  checkAlarms(); checkFeeAlerts(); paintFeeNow(); paintMySince();
+  checkAlarms(); checkFeeAlerts(); checkPriceAlerts(); paintFeeNow(); paintMySince();
   const c = $('#conn'); if (c) { c.className = 'conn ' + (st.conn === 'on' ? 'on' : st.conn === 'poll' ? 'poll' : ''); c.title = st.conn === 'on' ? t('connLive') : st.conn === 'poll' ? t('connPoll') : t('offline'); }
 }
 
@@ -96,6 +96,7 @@ async function keepAwake(on) { // Screen Wake Lock: released by the browser when
 function tickClock() { const s = $('#since'); if (s && st.blocks[0]) s.textContent = sinceText(Date.now()); paintMining(); }
 export function boot() {
   hooks.render = render; hooks.renderView = renderView;
+  hooks.alerts = () => { if (route === '/alarm') renderView(); document.dispatchEvent(new Event('bh-alerts')); }; // price alerts changed or fired
   applyLook(); $('#ver').textContent = 'BLOCKHORIZON ' + VERSION;
   $('#btn-search').onclick = searchModal; $('#btn-settings').onclick = settingsModal; $('#modal-x').onclick = closeModal;
   $('#modal').addEventListener('click', (e) => { if (e.target.id === 'modal') closeModal(); });

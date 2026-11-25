@@ -275,3 +275,32 @@ test('indicators: SMA, EMA and Wilder RSI', () => {
   const c = [44.34, 44.09, 44.15, 43.61, 44.33, 44.83, 45.10, 45.42, 45.84, 46.08, 45.89, 46.03, 45.61, 46.28, 46.28];
   assert.ok(Math.abs(L.rsi(c, 14)[14] - 70.5) < 0.1, String(L.rsi(c, 14)[14]));
 });
+test('indicators: Bollinger Bands and MACD', () => {
+  const b = L.bollinger([2, 4, 4, 4, 5, 5, 7, 9], 8, 2); // population standard deviation 2, mean 5
+  assert.equal(b.mid[7], 5); assert.equal(b.up[7], 9); assert.equal(b.lo[7], 1); assert.ok(Number.isNaN(b.up[6]));
+  const flat = L.macd(new Array(60).fill(100)); assert.equal(flat.macd[59], 0); assert.equal(flat.signal[59], 0); assert.equal(flat.hist[59], 0);
+  const m = L.macd(Array.from({ length: 60 }, (_, i) => 100 + i)); // a steady rise: MACD positive, signal defined from index 25 + 8
+  assert.ok(m.macd[59] > 0); assert.ok(Number.isNaN(m.signal[32]) && Number.isFinite(m.signal[33]));
+});
+test('order book: snapshot, update, Kraken checksum, depth', () => {
+  const r = (n) => fs.readFileSync(new URL('./fixtures/' + n, import.meta.url), 'utf8');
+  const s = L.parseBook(r('kraken-book-snapshot.json')), u = L.parseBook(r('kraken-book-update.json'));
+  assert.equal(s.type, 'snapshot'); assert.equal(s.cur, 'USD'); assert.equal(s.bids.length, 10);
+  let b = L.applyBook(null, s); assert.ok(b.bids[0].p > b.bids[1].p && b.asks[0].p < b.asks[1].p && b.bids[0].p < b.asks[0].p, 'best first, not crossed');
+  assert.equal(L.bookChecksum(b, 1), s.checksum);
+  b = L.applyBook(b, u); assert.equal(L.bookChecksum(b, 1), u.checksum, 'still in step with Kraken after an update');
+  const g = L.applyBook({ bids: [{ p: 10, q: 1 }, { p: 9, q: 1 }], asks: [{ p: 11, q: 1 }] }, { type: 'update', bids: [{ p: 10, q: 0 }, { p: 9.5, q: 2 }], asks: [{ p: 12, q: 1 }, { p: 13, q: 1 }] }, 2);
+  assert.deepEqual(g, { bids: [{ p: 9.5, q: 2 }, { p: 9, q: 1 }], asks: [{ p: 11, q: 1 }, { p: 12, q: 1 }] }, 'a 0 amount removes, depth is kept');
+  assert.equal(L.crc32('123456789'), 0xCBF43926); assert.equal(L.pricePrecision('JPY'), 0); assert.equal(L.parseBook('{}'), null);
+});
+test('trades and price alerts', () => {
+  const tr = L.parseTrades(fs.readFileSync(new URL('./fixtures/kraken-trade-snapshot.json', import.meta.url), 'utf8'));
+  assert.equal(tr.type, 'snapshot'); assert.equal(tr.trades.length, 50); assert.ok(tr.trades.every((x) => (x.side === 'buy' || x.side === 'sell') && x.p > 0 && x.q > 0 && x.t > 0));
+  assert.equal(L.parseTrades(fs.readFileSync(new URL('./fixtures/kraken-ohlc-update.json', import.meta.url), 'utf8')), null);
+  const list = [{ id: 'a', cur: 'USD', price: 60000, dir: 'up' }, { id: 'b', cur: 'USD', price: 58000, dir: 'down' }, { id: 'c', cur: 'EUR', price: 50000, dir: 'up' }];
+  assert.deepEqual(L.splitPriceAlerts(list, { USD: 60000.1, EUR: 49000 }).hit.map((a) => a.id), ['a']);
+  assert.deepEqual(L.splitPriceAlerts(list, { USD: 57000 }).hit.map((a) => a.id), ['b']);
+  assert.deepEqual(L.splitPriceAlerts(list, {}).rest.length, 3);
+  assert.equal(L.alertDir(61000, 60000), 'up'); assert.equal(L.alertDir(59000, 60000), 'down');
+  assert.deepEqual(['60,000', '60.000,5', '59 500.5', '1,5', '1.234.567', 'abc', '0', '-5'].map(L.parsePriceInput), [60000, 60000.5, 59500.5, 1.5, 1234567, NaN, NaN, NaN]);
+});

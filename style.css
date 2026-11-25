@@ -1,5 +1,5 @@
-:root{--bg:#0E0D0C;--bg2:#0E0D0C;--card:#1C1A17;--card2:#1C1A17;--line:#3A3631;--line2:#262320;--text:#EAE3D2;--dim:#8C857A;--accent:#E06A55;--accent-soft:rgba(224,106,85,.12);--blue:#3987E5;--ok:#6FB38F;--warn:#D9A441;--bad:#E06A55;--up:#4FB286;--down:#E0605A;--violet:#A585F0;--teal:#3FB5B0;--shadow:none;--radius:6px;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif}
-:root[data-theme=light]{--bg:#EAE3D2;--bg2:#EAE3D2;--card:#F3EEE2;--card2:#F3EEE2;--line:#C9C0AD;--line2:#DBD3C2;--text:#16130F;--dim:#5D574E;--accent:#8E2A1F;--accent-soft:rgba(142,42,31,.1);--blue:#2A78D6;--ok:#2F6B4F;--warn:#8A5F10;--bad:#8E2A1F;--up:#1F7A50;--down:#B3261E;--violet:#6B4BC4;--teal:#17777A;--shadow:none}
+:root{--bg:#0E0D0C;--bg2:#0E0D0C;--card:#1C1A17;--card2:#1C1A17;--line:#3A3631;--line2:#262320;--text:#EAE3D2;--dim:#8C857A;--accent:#E06A55;--accent-soft:rgba(224,106,85,.12);--blue:#3987E5;--ok:#6FB38F;--warn:#D9A441;--bad:#E06A55;--up:#4FB286;--down:#E0605A;--violet:#A585F0;--teal:#3FB5B0;--pink:#E07AB8;--shadow:none;--radius:6px;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif}
+:root[data-theme=light]{--bg:#EAE3D2;--bg2:#EAE3D2;--card:#F3EEE2;--card2:#F3EEE2;--line:#C9C0AD;--line2:#DBD3C2;--text:#16130F;--dim:#5D574E;--accent:#8E2A1F;--accent-soft:rgba(142,42,31,.1);--blue:#2A78D6;--ok:#2F6B4F;--warn:#8A5F10;--bad:#8E2A1F;--up:#1F7A50;--down:#B3261E;--violet:#6B4BC4;--teal:#17777A;--pink:#A23B7A;--shadow:none}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 .skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;background:var(--accent);color:var(--bg);padding:6px 10px;z-index:99;border-radius:6px}
@@ -275,3 +275,34 @@ canvas.scene{display:block;width:100%;height:100%;color:var(--text);touch-action
 .tnote,.thelp{margin:0;font-size:12px}
 h2.hist{margin:8px 0 6px}
 @media (max-width:600px){.tplot{height:360px}.tbar{gap:6px}.tbar .tabs{gap:4px}.tbar .tabs button,.ttools select,.tbtn{font-size:13px;padding:4px 8px;min-height:32px}.ttools{margin-left:0}.tprice{font-size:20px}.lstate{margin-left:0}}
+
+/* Trading chart: tools, alerts, order book and trades beside the plot */
+.tgrid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;align-items:start}.tgrid.noside{grid-template-columns:minmax(0,1fr)}.tgrid.noside .tside{display:none}
+.tmain{min-width:0;display:flex;flex-direction:column;gap:8px}
+.tplot.drawing{cursor:copy}.tplot.pick{cursor:pointer}
+.ttool .ticon{display:inline-block;width:1.1em;margin-right:4px;text-align:center}
+.tbtn:disabled{opacity:.45;cursor:default}
+.talerts{display:flex;flex-wrap:wrap;gap:6px}.talerts:empty{display:none}
+.talert{display:inline-flex;align-items:center;gap:6px;font:12px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;border:1px solid var(--warn);color:var(--text);border-radius:4px;padding:2px 2px 2px 8px}
+.talert button{border:0;background:none;color:var(--dim);cursor:pointer;padding:2px 6px;min-height:0;font-size:12px}
+.thint{margin:0;font-size:12px;min-height:1em}.thint:empty{display:none}
+.tside{display:flex;flex-direction:column;gap:6px;min-width:0;font:12px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+.tside h3{margin:0;font:600 12px/1.4 system-ui,sans-serif;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+.book,.trades{display:flex;flex-direction:column}
+.brow{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:6px;padding:1px 4px;position:relative;line-height:1.55}
+.brow span{position:relative;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.brow span:first-child{text-align:left}
+.brow.bhead{color:var(--dim);font-family:system-ui,sans-serif;font-size:11px;border-bottom:1px solid var(--line2)}
+.book .brow.ask,.book .brow.bid{background:linear-gradient(to left,var(--bar) var(--d,0%),transparent var(--d,0%))}
+.book .brow.ask{--bar:color-mix(in srgb,var(--down) 16%,transparent)}.book .brow.bid{--bar:color-mix(in srgb,var(--up) 16%,transparent)}
+.brow.ask span:first-child{color:var(--down)}.brow.bid span:first-child{color:var(--up)}
+.bspread{display:flex;justify-content:space-between;gap:8px;padding:4px;border-block:1px solid var(--line2);font-weight:600}.bspread span:last-child{color:var(--dim);font-weight:400}
+.tlist{max-height:300px;overflow:auto}
+.bwait{margin:4px 0}
+@media (max-width:1000px){.tgrid{grid-template-columns:minmax(0,1fr)}.tside{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;align-items:start}.tside h3:nth-of-type(1){grid-column:1;grid-row:1}.tside h3:nth-of-type(2){grid-column:2;grid-row:1}.tside .bwrap{grid-column:1;grid-row:2}.tside .twrap{grid-column:2;grid-row:2}}
+@media (max-width:600px){.tside{display:flex}}
+@media (min-width:1001px){.tgrid:not(.noside){align-items:stretch}.tgrid:not(.noside) .tplot{height:600px}
+  .tgrid:not(.noside) .tside{height:0;min-height:100%;overflow:hidden}.tside .twrap{flex:1 1 0;min-height:0;display:flex;flex-direction:column}.tside .trades{min-height:0;flex:1 1 0}.tside .tlist{max-height:none;flex:1 1 0;min-height:0}}
+@media (max-width:600px){.tplot.panes{height:480px}}
+.tplot.panes{height:540px}
+@media (min-width:1001px){.tgrid:not(.noside) .tplot.panes{height:640px}}
+.tlist:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
