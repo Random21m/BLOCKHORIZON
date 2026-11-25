@@ -49,7 +49,7 @@ export function viewMining() {
       x.elapsed < 90 && Number.isFinite(gap) ? el('p', { class: 'found', role: 'status' }, t('justFound', { n: L.fmtNum(b0.height), t: L.fmtDuration(gap) }) + (b0.pool ? ' · ' + b0.pool : '')) : null,
       el('div', { class: 'hasher' },
         el('div', { class: 'hrow' }, el('b', { id: 'tries', class: 'mono' }, L.fmtSci(x.tries)), el('span', { class: 'dim' }, ' ' + t('triesSoFar'))),
-        target ? [el('small', null, t('targetL')), hashEl(target, 'target'), el('small', null, t('aTry')), el('ol', { id: 'tries-list', 'aria-hidden': 'true' }, tries.map(tryRow))] : null,
+        target ? [el('small', null, t('targetL')), hashEl(target, 'target'), el('small', null, t('aTry')), el('ol', { id: 'tries-list', 'aria-hidden': 'true', 'data-keep': '' }, tries.map(tryRow))] : null,
         target ? el('p', { class: 'dim note' }, t('targetNote', { n: L.leadingZeros(target) })) : null),
       el('p', { class: 'dim note' }, t('mineIntro')))));
 

@@ -233,3 +233,14 @@ test('mining: live block frames apply (full list, then deltas) and pack without 
   const ap = L.approxBlock(fx('mempool-blocks.json')[0], 5); assert.equal(ap.length, 3870); assert.deepEqual(L.approxBlock(fx('mempool-blocks.json')[0], 5).slice(0, 3), ap.slice(0, 3), 'stable');
   assert.deepEqual(L.approxBlock(null), []);
 });
+
+test('mining: new transactions join a drawn block without moving anything, near their fee band', () => {
+  const frames = fx('projected-txs.json'), map = L.applyBlockFrame(new Map(), frames[0]), list = [...map.values()];
+  const lay = L.packBlock(list.slice(0, 300), 75), before = JSON.stringify(lay);
+  const r = L.fitInto(lay, list.slice(300), 75, lay.unit);
+  assert.equal(JSON.stringify(lay), before, 'placed squares untouched'); assert.equal(r.placed.length + r.left.length, list.length - 300);
+  const all = [...lay, ...r.placed], seen = new Set();
+  for (const q of all) for (let j = q.y; j < q.y + q.s; j++) for (let i = q.x; i < q.x + q.s; i++) { const k = j * 75 + i; assert.ok(!seen.has(k), 'overlap'); seen.add(k); }
+  const low = r.placed.filter((p) => p.rate <= lay[lay.length - 1].rate); assert.ok(low.every((p) => p.y >= lay[lay.length - 1].y), 'low fees go above the existing ones');
+  assert.ok(lay.unit > 0); assert.equal(L.fitInto(lay, [], 75, lay.unit).placed.length, 0);
+});

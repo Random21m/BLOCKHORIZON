@@ -280,7 +280,26 @@ export function packBlock(list, grid = 75) {
     }
     while (low < grid && first[low] >= grid) low++;
   }
-  return out;
+  out.unit = unit; return out;
+}
+// Add transactions to a block already drawn, without moving anything: each goes into the lowest free spot (highest fee
+// rates placed first), at the cell size of the last full layout. Returns the new squares and the ones that did not fit.
+export function fitInto(placed, adds, grid, unit) {
+  const occ = new Uint8Array(grid * grid), out = [], left = [];
+  for (const p of placed) for (let j = p.y; j < Math.min(grid, p.y + p.s); j++) for (let i = p.x; i < Math.min(grid, p.x + p.s); i++) occ[j * grid + i] = 1;
+  const free = (x, y, s) => { for (let j = y; j < y + s; j++) for (let i = x; i < x + s; i++) if (occ[j * grid + i]) return false; return true; };
+  for (const t of adds.filter((a) => a.vsize > 0).sort((a, b) => b.rate - a.rate)) {
+    const s = Math.max(1, Math.min(grid, Math.round(Math.sqrt(t.vsize / unit)))); let done = false, y0 = grid;
+    for (const p of placed) if (p.rate <= t.rate && p.y < y0) y0 = p.y; // start where its fee band starts, so colours stay in order
+    if (y0 >= grid) y0 = 0;
+    place: for (let n = 0; n + s <= grid; n++) for (let x = 0, y = (y0 + n) % (grid - s + 1); x + s <= grid; x++) {
+      if (occ[y * grid + x] || !free(x, y, s)) continue;
+      for (let j = y; j < y + s; j++) for (let i = x; i < x + s; i++) occ[j * grid + i] = 1;
+      out.push({ id: t.id, x, y, s, rate: t.rate, vsize: t.vsize, fee: t.fee, misplaced: y < y0 || y > y0 + Math.max(3, s * 2) }); done = true; break place;
+    }
+    if (!done) left.push(t);
+  }
+  return { placed: out, left };
 }
 // Without the live feed: a stand-in block with the projected block's count, size and fee spread (marked approximate).
 export function approxBlock(pb, seed = 1) {
