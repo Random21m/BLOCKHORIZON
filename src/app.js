@@ -9,11 +9,12 @@ import { sinceText } from './ui.js';
 import { viewDash, viewClock } from './view-dash.js';
 import { viewBlock, viewTx } from './view-chain.js';
 import { viewAlarm, viewCalc, paintFeeNow } from './view-tools.js';
+import { viewCharts } from './view-charts.js';
 import { viewReplay, viewEvents, viewGlossary, viewWatch, viewAbout } from './view-info.js';
 import { closeModal, searchModal, settingsModal, trapFocus } from './modals.js';
 
 let route = '/';
-const VIEWS = { '/': viewDash, '/clock': viewClock, '/alarm': viewAlarm, '/calc': viewCalc, '/replay': viewReplay, '/events': viewEvents, '/glossary': viewGlossary, '/watch': viewWatch, '/about': viewAbout };
+const VIEWS = { '/': viewDash, '/clock': viewClock, '/alarm': viewAlarm, '/calc': viewCalc, '/charts': viewCharts, '/replay': viewReplay, '/events': viewEvents, '/glossary': viewGlossary, '/watch': viewWatch, '/about': viewAbout };
 const LIVE = { '/': 'dashgrid', '/clock': 'clockview' }; // views repainted on every live update (the others keep their inputs)
 function parseRoute() {
   const h = location.hash.replace(/^#/, '') || '/';
@@ -33,6 +34,8 @@ function stripScroll(saved) {
 }
 const docTitle = () => 'BLOCKHORIZON' + (Number.isFinite(st.tip) ? ' · ' + L.fmtNum(st.tip) : '');
 function renderView() {
+  // #/search (the app's Search shortcut) opens the dashboard with the search dialog
+  if (location.hash === '#/search') { history.replaceState(null, '', '#/'); queueMicrotask(searchModal); }
   const r = parseRoute(); route = r.path; const m = $('#main'); const y = scrollY;
   document.body.classList.toggle('fit', r.path === '/'); document.body.classList.toggle('clockmode', r.path === '/clock'); keepAwake(r.path === '/clock');
   const v = r.path === '/block' ? viewBlock(r.arg) : r.path === '/tx' ? viewTx(r.arg) : VIEWS[r.path](); m.replaceChildren(v); if (r.path === '/') stripScroll([]); renderNav(r.path);

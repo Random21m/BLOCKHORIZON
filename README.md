@@ -27,7 +27,7 @@ There is nothing to build: the site is plain static files, so any static host wo
 - **On GitHub Pages:** fork the repository, open **Settings, Pages** and set **Source** to **GitHub Actions**. The included workflow publishes the site on every push to `main` (you can also start it by hand from the **Actions** tab).
 - **Anywhere else:** upload `index.html`, `style.css`, `sw.js`, `manifest.webmanifest`, `privacy.html`, `.nojekyll` and the `icons` and `src` folders. The file paths are relative, so it also works in a sub-folder.
 
-## Features (v0.7.1)
+## Features (v0.8.0)
 - Everything on one screen, no scrolling: a tile grid that fills desktop, laptop and phone
 - Live block height clock with an optional sound and the time since the last block
 - Next halving (arc, blocks to go, estimated date, reward) and supply issued
@@ -40,10 +40,12 @@ There is nothing to build: the site is plain static files, so any static host wo
 - Search by block height, date or transaction ID; block and transaction pages with permalinks (`#/block/840000`, `#/tx/<txid>`) and a Copy link / Share button
 - Transaction lookup: confirmations, fee and fee rate, or for a waiting transaction its place in the queue of projected blocks
 - Clock mode (own menu tab): just the block height, time since the last block and the price, as large as the screen allows, with the screen kept awake; for a spare screen or old tablet
+- Charts page: price (in your currency), hashrate, difficulty and median fee rate over 1 month, 1 year or all time, with a crosshair tooltip, arrow-key reading and a table view
 - Watch page: Bitcoin YouTube channels, A to Z, plus a few sites (The Lot Radio)
 - Block alarm and fee alert (a sound and a message when the next-block, 30-minute or 1-hour fee drops to your limit) with sounds and a system notification in the background, if allowed; calculator (sats/fiat, height/date, what a payment costs now at each fee level), halving replay, chain calendar, glossary
 - Settings: dark/light/auto, currency, sats symbol, time/date format, UTC, language (everything, glossary and anniversaries included, in English, German, Spanish, French, Portuguese, Italian, Dutch, Turkish), sounds, reduced motion, full screen
 - Accessible: checked with axe-core on every page in both themes (part of the test run), keyboard-friendly dialogs and tabs, screen-reader headings and labels
+- App shortcuts: long-press the installed app's icon for Clock, Alarm, Charts or Search
 - Installable PWA that works offline (cached shell and last values) and updates itself on the next open; pull down from the top (or tap ↻) to refresh
 
 Not built yet: art gallery, conference listings, chain-state totals (addresses, UTXOs, disk size: no free public source found).
@@ -56,7 +58,7 @@ python3 -m http.server 8080        # then open http://localhost:8080
 ```
 No build step, no dependencies. The accessibility check in the smoke test runs when `axe-core` is installed (`npm install --no-save axe-core`), as it is in CI.
 
-Code layout (`src/`): `app.js` routing, live repaint and start-up · `state.js` settings and shared state · `data.js` data feeds, block alarms and fee alerts · `ui.js` tiles, charts and other building blocks · `view-dash.js` dashboard and clock · `view-chain.js` block and transaction pages · `view-tools.js` alarm and calculator · `view-info.js` replay, calendar, glossary, watch, about · `modals.js` search and settings · `lib.js` pure helpers (unit-tested) · `api.js`, `price.js` network · `i18n.js`, `strings.js`, `content.js`, `content-i18n.js` texts. Data comes from the public mempool.space API and Kraken's public price feed; nothing else is contacted and nothing is tracked.
+Code layout (`src/`): `app.js` routing, live repaint and start-up · `state.js` settings and shared state · `data.js` data feeds, block alarms and fee alerts · `ui.js` tiles, charts and other building blocks · `view-dash.js` dashboard and clock · `view-chain.js` block and transaction pages · `view-tools.js` alarm and calculator · `view-info.js` replay, calendar, glossary, watch, about · `view-charts.js` history charts · `modals.js` search and settings · `lib.js` pure helpers (unit-tested) · `api.js`, `price.js` network · `i18n.js`, `strings.js`, `content.js`, `content-i18n.js` texts. Data comes from the public mempool.space API and Kraken's public price feed; nothing else is contacted and nothing is tracked.
 
 ## Support
 If BLOCKHORIZON is useful to you, you can send a tip over Lightning:

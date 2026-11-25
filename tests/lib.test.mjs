@@ -162,3 +162,26 @@ test('glossary and anniversaries: every language has every entry, none empty', (
     for (const x of ANNIV_TR[l]) assert.ok(x.trim(), l);
   }
 });
+
+test('history charts: series from recorded responses, ascending, missing values dropped', () => {
+  const pr = L.SERIES.price(fx('price-history.json'), 'USD');
+  assert.ok(pr.length > 1000 && pr.every((p, i) => i === 0 || p.t > pr[i - 1].t) && pr.every((p) => p.v > 0));
+  assert.deepEqual(L.SERIES.price({ prices: [{ time: 2, USD: -1 }, { time: 1, USD: 5 }] }, 'USD'), [{ t: 1000, v: 5 }]);
+  const hr = L.SERIES.hashrate(fx('hashrate-1y.json')), df = L.SERIES.difficulty(fx('hashrate-1y.json')), fe = L.SERIES.fees(fx('feerates-1m.json'));
+  assert.ok(hr.length > 300 && df.length > 20 && fe.length > 100); assert.ok(fe.some((p) => p.v === 0) || fe.every((p) => p.v >= 0));
+});
+
+test('history charts: date range, thinning, ticks, nearest point', () => {
+  const pts = Array.from({ length: 1000 }, (_, i) => ({ t: i * 864e5, v: i + 1 })), now = 999 * 864e5;
+  assert.equal(L.inRange(pts, '1m', now).length, 31); assert.equal(L.inRange(pts, 'all', now).length, 1000);
+  const th = L.thin(pts, 100); assert.equal(th.length, 100); assert.equal(th[0], pts[0]); assert.equal(th[99], pts[999]); assert.equal(L.thin(pts.slice(0, 5), 100).length, 5);
+  assert.deepEqual(L.ticks(0, 100, false), [0, 20, 40, 60, 80, 100]); assert.deepEqual(L.ticks(3, 47, false), [10, 20, 30, 40]);
+  assert.deepEqual(L.ticks(0.05, 120000, true), [0.1, 1, 10, 100, 1000, 10000, 100000]); assert.deepEqual(L.ticks(15, 600, true), [20, 50, 100, 200, 500]);
+  assert.equal(L.nearest(pts, 10.4 * 864e5), 10); assert.equal(L.nearest(pts, -5), 0); assert.equal(L.nearest(pts, 1e15), 999); assert.equal(L.nearest([], 1), -1);
+});
+
+test('history charts: trailing day average', () => {
+  const pts = [0, 1, 2, 3, 4].map((d) => ({ t: d * 864e5, v: d % 2 ? 10 : 0 }));
+  assert.deepEqual(L.smoothDays(pts, 2).map((p) => p.v), [0, 5, 5, 5, 5]); assert.equal(L.smoothDays(pts, 0), pts);
+  assert.deepEqual(L.smoothDays(pts, 1).map((p) => p.v), [0, 10, 0, 10, 0]);
+});
