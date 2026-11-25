@@ -457,3 +457,12 @@ export function approxBlock(pb, seed = 1) {
   for (let i = 0; i < n; i++) { const v = avg * Math.exp((rnd() + rnd() + rnd() - 1.5) * 1.1) * (pb.nTx / n); out.push({ id: 'approx-' + i, fee: 0, vsize: v, rate: rateAt(rnd()) }); }
   return out;
 }
+// mempool.space /v1/mining/reward-stats/144 (+ the current hashrate in H/s) -> what miners earned over the last 144 blocks
+// (about a day): total revenue, the share that came from fees, the average per block and the hashprice (sats per PH/s per day).
+export function minerEconomics(r, hashrate) {
+  if (!r) return null;
+  const reward = Number(r.totalReward), fee = Number(r.totalFee), n = Number(r.endBlock) - Number(r.startBlock) + 1, tx = Number(r.totalTx);
+  if (!(reward > 0) || !(n > 0)) return null;
+  return { blocks: n, reward, fee, tx, feeShare: fee / reward, perBlock: reward / n,
+    hashprice: hashrate > 0 ? reward * (144 / n) / (hashrate / 1e15) : NaN }; // scaled to 144 blocks so a short window still reads per day
+}

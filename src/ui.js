@@ -2,6 +2,7 @@
 import * as L from './lib.js';
 
 import { t } from './i18n.js';
+import { source, getServer } from './api.js';
 import { S, st, el, toast, price, priceStr } from './state.js';
 
 // ---------- views ----------
@@ -55,6 +56,7 @@ export const cube = (p, fill, base) => el('div', { class: 'cube', style: `backgr
 export const minedCube = (x) => cube((x.weight || 0) / 4e6, `linear-gradient(${L.MINED_TOP}, ${L.MINED_BOTTOM})`, L.MINED_EMPTY);
 export const upcomingCube = (b) => cube((b.blockVSize || 0) / 1e6, L.feeStripes(b.feeRange), L.UPCOMING_EMPTY);
 export const more = (x) => el('span', { class: 'more' }, x);
+export const less = (x) => el('span', { class: 'less' }, x); // the shorter wording, shown instead of .more below 900px
 export const pct24 = () => (st.pct[S.cur] >= 0 ? '▲ ' : '▼ ') + Math.abs(st.pct[S.cur]).toFixed(2) + '%';
 // title is a string, or [full, short]: the short one is shown instead below 900px, where tiles are narrow.
 export function tile(cls, title, value, subs = [], extra) {
@@ -64,9 +66,12 @@ export function tile(cls, title, value, subs = [], extra) {
 // The big price line under the block height (dashboard and clock).
 export function priceLine() {
   const p = price(); if (!Number.isFinite(p)) return null;
-  return el('div', { class: 'btc' }, el('b', { id: 'btc' }, priceStr(st.shownCur === S.cur && Number.isFinite(st.shown) ? st.shown : p)), el('span', { id: 'btcdir', class: 'dir ' + (st.dir > 0 ? 'up' : 'down') }, st.dir > 0 ? '▲' : st.dir < 0 ? '▼' : ''),
-    st.pct[S.cur] != null ? el('span', { class: 'chg' }, pct24() + ' ' + t('h24')) : null, el('span', { class: 'src' }, st.priceLive ? t('live') + ' · Kraken' : 'mempool.space'));
+  return el('div', { class: 'btc' }, el('b', { id: 'btc' }, priceStr(st.shownCur === S.cur && Number.isFinite(st.shown) ? st.shown : p)),
+    // one arrow only, the 24 h change (a second arrow for the last trade read as a contradiction next to it)
+    st.pct[S.cur] != null ? el('span', { class: 'chg ' + (st.pct[S.cur] >= 0 ? 'up' : 'down') }, pct24() + ' ' + t('h24')) : null, el('span', { class: 'src' }, st.priceLive ? t('live') + ' · Kraken' : srcHost()));
 }
+// The data host that answered last, for the 'where is this from' labels (mempool.space, your node, or the backup).
+export const srcHost = () => { try { return new URL(source || getServer()).host; } catch { return 'mempool.space'; } };
 export const sinceText = (now) => st.blocks[0] ? L.fmtDuration(now / 1000 - st.blocks[0].timestamp) : '–';
 export function shareRow(path, title) {
   const url = location.href.split('#')[0] + '#' + path;

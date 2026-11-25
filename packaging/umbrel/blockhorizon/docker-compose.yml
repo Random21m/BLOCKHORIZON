@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: blockhorizon_web_1
+      APP_PORT: 80
+
+  web:
+    # Pin the published image by digest before submitting: ghcr.io/random21m/blockhorizon:v0.15.0@sha256:...
+    image: ghcr.io/random21m/blockhorizon:v0.15.0
+    restart: on-failure
+    environment:
+      # The Mempool app's web container; it serves the mempool REST API and live feed at /api.
+      MEMPOOL_URL: http://mempool_web_1:3006

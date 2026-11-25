@@ -2,17 +2,17 @@
 import * as L from './lib.js';
 import { t } from './i18n.js';
 import { S, st, fmtD, el, price } from './state.js';
-import { bar, arc, spark, gapsChart, emissionChart, stack, feeBands, minis, minedCube, upcomingCube, more, pct24, tile, priceLine, sinceText } from './ui.js';
+import { bar, arc, spark, gapsChart, emissionChart, stack, feeBands, minis, less, minedCube, upcomingCube, more, pct24, tile, priceLine, sinceText } from './ui.js';
 
 export function viewDash() {
   const h = st.tip, now = Date.now(), root = el('div', { class: 'dashgrid' }, el('h1', { class: 'sr-only' }, 'BLOCKHORIZON')), p = price();
   const hv = Number.isFinite(h) ? L.halvingInfo(h, now) : null, sp = Number.isFinite(h) ? L.supplyAt(h) : NaN;
   root.append(el('section', { class: 'tile hero' }, el('div', { class: 'eyebrow' }, t('height')), el('div', { class: 'height', id: 'h' }, L.fmtNum(h)),
     el('div', { class: 'since' }, t('since') + ': ', el('b', { id: 'since' }, sinceText(now))), priceLine()));
-  if (hv) root.append(tile('t-halving', t('halving'), L.fmtNum(hv.blocksToGo) + ' ' + t('blocksToGo'),
+  if (hv) root.append(tile('t-halving', t('halving'), [more(L.fmtNum(hv.blocksToGo) + ' ' + t('blocksToGo')), less(t('nBlocks', { n: L.fmtNum(hv.blocksToGo) }))],
     [[t('est', { d: fmtD(hv.estMs, { dateOnly: true }) }), more(t('atBlock', { n: L.fmtNum(hv.nextHeight) }))]], arc(hv.progress, (hv.progress * 100).toFixed(0) + '%', t('ofEpoch'))));
   if (st.diff) { const d = L.parseDifficulty(st.diff);
-    root.append(tile('t-diff', [t('difficulty'), t('diffShort')], (d.change >= 0 ? '+' : '') + d.change.toFixed(2) + '%', [[t('nBlocks', { n: L.fmtNum(d.blocksLeft) }), more(t('estAt', { d: fmtD(d.estMs) }))]], arc(d.progress, (d.progress * 100).toFixed(0) + '%', t('ofPeriod')))); }
+    root.append(tile('t-diff', [t('difficulty'), t('diffShort')], (d.change >= 0 ? '+' : '') + d.change.toFixed(2) + '%', [[more(t('nBlocks', { n: L.fmtNum(d.blocksLeft) })), more(t('estAt', { d: fmtD(d.estMs) })), less(t('est', { d: fmtD(d.estMs, { dateOnly: true }) }))]], arc(d.progress, (d.progress * 100).toFixed(0) + '%', t('ofPeriod')))); }
   if (st.hr) { const a = L.hashrateAverages(st.hr.hashrates, st.hr.currentHashrate), sel = S.hr || 'd14', lab = { d7: '7d', d14: '14d', d30: '30d', d90: '90d' }[sel];
     root.append(tile('t-hash', t('hashrate'), L.fmtHashrate(a.current), [t('avgOf', { p: lab, v: L.fmtHashrate(a[sel]) })], spark((st.hr.hashrates || []).slice(-120).map((x) => x.avgHashrate)))); }
   if (hv) root.append(tile('t-supply', [t('supply'), t('supplyShort')], (sp / 1e14).toFixed(3) + 'M BTC', [[t('issued', { p: (sp / L.MAX_SATS * 100).toFixed(2) }), more(t('btcLeft', { n: L.fmtNum((L.MAX_SATS - sp) / 1e8, 0) }))]], [bar(sp / L.MAX_SATS), emissionChart(hv.epoch)]));

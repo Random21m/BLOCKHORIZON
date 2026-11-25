@@ -1,6 +1,6 @@
 // Search and settings dialogs.
 import * as L from './lib.js';
-import { api } from './api.js';
+import { api, normServer, DEFAULT_SERVER, FALLBACK, getServer } from './api.js';
 import { CURRENCIES } from './price.js';
 import { t, LANGS } from './i18n.js';
 import { play, BLOCK_SOUNDS } from './sound.js';
@@ -48,7 +48,17 @@ export function settingsModal() {
       el('button', { onclick: () => { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen && document.documentElement.requestFullscreen().catch(() => {}); } }, t('fullscreen'))),
     format: () => el('div', null, row(t('language'), sel('lang', Object.entries(LANGS), () => { settingsModal.tab = 'format'; settingsModal(); })), row(t('timeL'), sel('h12', [[false, t('h24f')], [true, t('h12f')]])), row(t('dateL'), sel('dateFmt', [['iso', '2026-11-24'], ['dmy', '24.11.2026'], ['mdy', '11/24/2026']])), row(t('zone'), sel('utc', [[false, t('local')], [true, 'UTC']]))),
     sounds: () => el('div', null, chk('sound', t('soundNew')), row(t('blockSound'), sel('bsound', Object.entries(BLOCK_SOUNDS))), el('button', { onclick: () => play(S.bsound) }, '▶ ' + t('test')),
-      chk('reduced', t('reduce'))) };
+      chk('reduced', t('reduce'))),
+    // Data server: mempool.space, or any mempool-compatible server such as your own node. Checked before it is used.
+    data: () => { const inp = el('input', { id: 'st-server', type: 'url', inputmode: 'url', placeholder: DEFAULT_SERVER, value: S.server || '', autocomplete: 'off', spellcheck: 'false' }), msg = el('p', { class: 'dim', role: 'status' }, t('srvNow', { s: getServer().replace(/^https?:\/\//, '') }));
+      const use = async (v) => {
+        const n = v.trim() ? normServer(v) : ''; if (v.trim() && !n) { msg.textContent = t('srvBad'); return; }
+        if (n) { msg.textContent = '…'; try { const r = await fetch(n + '/api/blocks/tip/height', { cache: 'no-store' }); if (!r.ok || !(parseInt(await r.text(), 10) > 0)) throw new Error('bad'); } catch { msg.textContent = t('srvFail', { s: n }); return; } }
+        S.server = n; save(); hooks.server(); msg.textContent = t('srvOk', { s: (n || DEFAULT_SERVER).replace(/^https?:\/\//, '') });
+      };
+      return el('div', null, el('p', { class: 'dim' }, t('srvIntro')), row(t('srvL'), inp),
+        el('div', { class: 'row' }, el('button', { class: 'btn-go', onclick: () => use(inp.value) }, t('srvUse')), el('button', { onclick: () => { inp.value = ''; use(''); } }, t('srvReset'))), msg,
+        el('p', { class: 'dim' }, t('srvNote', { f: FALLBACK.replace(/^https?:\/\//, '') }))); } };
   const body = el('div', { id: 'st-panel', role: 'tabpanel' }), bar2 = el('div', { class: 'tabs', role: 'tablist', 'aria-label': t('settings') });
   const show = (k) => { bar2.querySelectorAll('button').forEach((b) => { b.setAttribute('aria-selected', String(b.dataset.k === k)); b.tabIndex = b.dataset.k === k ? 0 : -1; }); body.setAttribute('aria-labelledby', 'tab-' + k); body.replaceChildren(tabs[k]()); };
   const keys = Object.keys(tabs);
