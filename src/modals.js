@@ -47,7 +47,7 @@ export function settingsModal() {
       chk('showFees', t('showFees')), chk('feesRtl', t('feesRtl')), chk('showPool', t('showPool')), chk('showMoscow', t('showMoscow')), chk('showCap', t('showCap')),
       el('button', { onclick: () => { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen && document.documentElement.requestFullscreen().catch(() => {}); } }, t('fullscreen'))),
     format: () => el('div', null, row(t('language'), sel('lang', Object.entries(LANGS), () => { settingsModal.tab = 'format'; settingsModal(); })), row(t('timeL'), sel('h12', [[false, t('h24f')], [true, t('h12f')]])), row(t('dateL'), sel('dateFmt', [['iso', '2026-11-24'], ['dmy', '24.11.2026'], ['mdy', '11/24/2026']])), row(t('zone'), sel('utc', [[false, t('local')], [true, 'UTC']]))),
-    sounds: () => el('div', null, chk('sound', t('soundNew')), row(t('blockSound'), sel('bsound', Object.entries(BLOCK_SOUNDS))), el('button', { onclick: () => play(S.bsound) }, '▶ ' + t('test')),
+    sounds: () => el('div', null, chk('sound', t('soundNew')), row(t('blockSound'), sel('bsound', Object.entries(BLOCK_SOUNDS).map(([k, v]) => [k, t(v)]))), el('button', { onclick: () => play(S.bsound) }, '▶ ' + t('test')),
       chk('reduced', t('reduce'))),
     // Data server: mempool.space, or any mempool-compatible server such as your own node. Checked before it is used.
     data: () => { const inp = el('input', { id: 'st-server', type: 'url', inputmode: 'url', placeholder: DEFAULT_SERVER, value: S.server || '', autocomplete: 'off', spellcheck: 'false' }), msg = el('p', { class: 'dim', role: 'status' }, t('srvNow', { s: getServer().replace(/^https?:\/\//, '') }));

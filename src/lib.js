@@ -30,7 +30,7 @@ export function finalCountdown(tip, lastTs, nowMs = Date.now()) {
 export function fmtLong(sec) {
   sec = Math.max(0, Math.floor(sec)); const Y = 31557600, y = Math.floor(sec / Y); sec -= y * Y;
   const d = Math.floor(sec / 86400), h = Math.floor(sec % 86400 / 3600), m = Math.floor(sec % 3600 / 60), s = sec % 60;
-  return (y ? `${y}y ` : '') + (y || d ? `${d}d ` : '') + `${h}h ${m}m ${s}s`;
+  return (y ? `${y}${U.y} ` : '') + (y || d ? `${d}${U.d} ` : '') + `${h}${U.h} ${m}${U.m} ${s}${U.s}`;
 }
 export function futureEstimate(target, tip, nowMs = Date.now()) {
   const d = target - tip;
@@ -58,18 +58,21 @@ export function fmtDifficulty(d) {
   let i = 0; while (d >= 1000 && i < u.length - 1) { d /= 1000; i++; }
   return fmtNum(d, 2) + ' ' + u[i];
 }
+// Unit letters for durations, in the interface language (i18n.js sets them; English by default).
+let U = { y: 'y', d: 'd', h: 'h', m: 'm', s: 's' };
+export function setUnits(u) { if (u && u.d) U = u; }
 export function fmtDuration(sec) {
   sec = Math.max(0, Math.round(sec));
   const d = Math.floor(sec / 86400), h = Math.floor(sec % 86400 / 3600), m = Math.floor(sec % 3600 / 60), s = sec % 60;
-  if (d) return `${d}d ${h}h ${m}m`;
-  if (h) return `${h}h ${m}m ${s}s`;
-  return `${m}m ${s}s`;
+  if (d) return `${d}${U.d} ${h}${U.h} ${m}${U.m}`;
+  if (h) return `${h}${U.h} ${m}${U.m} ${s}${U.s}`;
+  return `${m}${U.m} ${s}${U.s}`;
 }
 export function fmtAgo(sec) {
-  if (sec < 90) return `${Math.max(0, Math.round(sec))}s`;
-  if (sec < 5400) return `${Math.round(sec / 60)}m`;
-  if (sec < 172800) return `${Math.round(sec / 3600)}h`;
-  return `${Math.round(sec / 86400)}d`;
+  if (sec < 90) return `${Math.max(0, Math.round(sec))}${U.s}`;
+  if (sec < 5400) return `${Math.round(sec / 60)}${U.m}`;
+  if (sec < 172800) return `${Math.round(sec / 3600)}${U.h}`;
+  return `${Math.round(sec / 86400)}${U.d}`;
 }
 export function fmtFee(v) { return Number.isFinite(v) ? (v < 10 ? fmtNum(v, 1) : v < 1000 ? String(Math.round(v)) : fmtNum(Math.round(v))) : '–'; }
 export function satsToBtc(s, d = 8) { return (s / 1e8).toFixed(d); }

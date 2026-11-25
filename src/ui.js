@@ -38,12 +38,12 @@ export function gapsChart(blocks) {
   if (gaps.length < 2) return null;
   const w = 320, h = 80, max = Math.max(1200, ...gaps), bw = w / gaps.length, y600 = h - 600 / max * h;
   const bars = gaps.map((g, i) => { const bh = Math.max(2, g / max * h); return `<rect x="${(i * bw + 1.5).toFixed(1)}" y="${(h - bh).toFixed(1)}" width="${(bw - 3).toFixed(1)}" height="${bh.toFixed(1)}" fill="${g >= 600 ? 'var(--accent)' : 'var(--dim)'}"/>`; }).join('');
-  return chart(w, h, bars + `<line x1="0" x2="${w}" y1="${y600.toFixed(1)}" y2="${y600.toFixed(1)}" stroke="var(--text)" stroke-width="1" stroke-dasharray="4 3" vector-effect="non-scaling-stroke"/>`, 'Time between the last blocks against the 10 minute target');
+  return chart(w, h, bars + `<line x1="0" x2="${w}" y1="${y600.toFixed(1)}" y2="${y600.toFixed(1)}" stroke="var(--text)" stroke-width="1" stroke-dasharray="4 3" vector-effect="non-scaling-stroke"/>`, t('gapsAria'));
 }
 export function emissionChart(epoch) {
   const w = 320, h = 80, n = 12, bw = w / n;
   const bars = Array.from({ length: n }, (_, e) => { const bh = Math.max(2, 50 / 2 ** e / 50 * (h - 2)); return `<rect x="${(e * bw + 2).toFixed(1)}" y="${(h - bh).toFixed(1)}" width="${(bw - 4).toFixed(1)}" height="${bh.toFixed(1)}" fill="${e === epoch ? 'var(--accent)' : e < epoch ? 'var(--dim)' : 'var(--line)'}"/>`; }).join('');
-  return chart(w, h, bars, 'Block reward by epoch, halving every 210,000 blocks');
+  return chart(w, h, bars, t('emissionAria'));
 }
 export const stack = (segs) => el('div', { class: 'stack' }, segs.map((x) => el('i', { style: `flex:${x.v};background:${x.c}`, title: x.label })));
 export function feeBands(hist) {

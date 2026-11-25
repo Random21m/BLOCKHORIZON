@@ -10,6 +10,12 @@ import { GLOSSARY_TR, ANNIV_TR } from '../src/content-i18n.js';
 
 const fx = (n) => JSON.parse(fs.readFileSync(new URL('./fixtures/' + n, import.meta.url), 'utf8'));
 
+test('duration units follow the language (and go back to English)', () => {
+  L.setUnits({ y: 'J', d: 'T', h: 'h', m: 'min', s: 's' });
+  try { assert.equal(L.fmtDuration(90061), '1T 1h 1min'); assert.equal(L.fmtAgo(30), '30s'); assert.equal(L.fmtLong(31557600 + 3600), '1J 0T 1h 0min 0s'); }
+  finally { L.setUnits({ y: 'y', d: 'd', h: 'h', m: 'm', s: 's' }); }
+  assert.equal(L.fmtDuration(90061), '1d 1h 1m');
+});
 test('final bitcoin block: 6,929,999 pays the last sat; countdown and long durations', () => {
   assert.equal(L.FINAL_BLOCK, 6929999); assert.equal(L.subsidy(L.FINAL_BLOCK), 1); assert.equal(L.subsidy(L.FINAL_BLOCK + 1), 0);
   const c = L.finalCountdown(L.FINAL_BLOCK - 6, 1000, 1000 * 1000 + 60 * 1000); assert.equal(c.blocks, 6); assert.equal(c.sec, 3540); assert.equal(c.done, false);

@@ -14,7 +14,7 @@ export function viewAlarm() {
   const inH = el('input', { id: 'al-h', type: 'text', inputmode: 'numeric', placeholder: t('height'), 'aria-label': t('height'), value: Number.isFinite(st.tip) ? String(st.tip + 6) : '' });
   const inB = el('input', { id: 'al-b', type: 'text', inputmode: 'numeric', placeholder: t('phFromNow'), 'aria-label': t('fromNow'), size: 10 });
   const inL = el('input', { id: 'al-l', type: 'text', placeholder: t('phLabel'), 'aria-label': t('label'), maxlength: 40 });
-  const sel = el('select', { id: 'al-s', 'aria-label': t('sound') }, Object.entries(ALARM_SOUNDS).map(([k, v]) => el('option', { value: k, selected: k === S.asound }, v)));
+  const sel = el('select', { id: 'al-s', 'aria-label': t('sound') }, Object.entries(ALARM_SOUNDS).map(([k, v]) => el('option', { value: k, selected: k === S.asound }, t(v))));
   const out = el('div', { class: 'dim', id: 'al-out' });
   const preview = () => { const hh = inB.value ? st.tip + (parseInt(inB.value, 10) || 0) : L.parseHeightInput(inH.value); if (!Number.isFinite(hh)) { out.textContent = ''; return null; }
     const f = L.futureEstimate(hh, st.tip); out.textContent = f.past ? t('alreadyMined') : t('away', { n: L.fmtNum(f.blocks), d: fmtD(f.ms) }); return f.past ? null : hh; };
@@ -36,7 +36,7 @@ function feePanel() {
   const cur = (lvl) => (st.fees ? st.fees[L.FEE_LEVELS[lvl]] : NaN);
   const lvl = el('select', { id: 'fa-l', 'aria-label': t('feeLevel') }, Object.keys(L.FEE_LEVELS).map((k) => el('option', { value: k }, t(FEE_LVL_KEYS[k]))));
   const max = el('input', { id: 'fa-m', type: 'text', inputmode: 'decimal', placeholder: t('feeMax'), 'aria-label': t('feeMax'), size: 12 });
-  const snd = el('select', { id: 'fa-s', 'aria-label': t('sound') }, Object.entries(ALARM_SOUNDS).map(([k, v]) => el('option', { value: k, selected: k === S.asound }, v)));
+  const snd = el('select', { id: 'fa-s', 'aria-label': t('sound') }, Object.entries(ALARM_SOUNDS).map(([k, v]) => el('option', { value: k, selected: k === S.asound }, t(v))));
   const now = el('div', { class: 'dim', id: 'fa-now' });
   lvl.addEventListener('change', paintFeeNow);
   const add = () => {
@@ -66,7 +66,7 @@ export function removePriceAlert(id) { store('priceAlerts', priceAlerts().filter
 function pricePanel() {
   const inP = el('input', { id: 'pa-p', type: 'text', inputmode: 'decimal', placeholder: t('priceL'), 'aria-label': t('priceL'), size: 12 });
   const cur = el('select', { id: 'pa-c', 'aria-label': t('currency') }, CURRENCIES.map((c) => el('option', { value: c, selected: c === S.cur }, c)));
-  const snd = el('select', { id: 'pa-s', 'aria-label': t('sound') }, Object.entries(ALARM_SOUNDS).map(([k, v]) => el('option', { value: k, selected: k === S.asound }, v)));
+  const snd = el('select', { id: 'pa-s', 'aria-label': t('sound') }, Object.entries(ALARM_SOUNDS).map(([k, v]) => el('option', { value: k, selected: k === S.asound }, t(v))));
   const now = el('div', { class: 'dim', id: 'pa-now' });
   const paintNow = () => { const p = st.prices && st.prices[cur.value]; now.textContent = Number.isFinite(p) ? t('priceNow', { p: fmtPrice(p, cur.value) }) : ''; };
   cur.addEventListener('change', paintNow); queueMicrotask(paintNow);
