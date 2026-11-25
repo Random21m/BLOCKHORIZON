@@ -43,5 +43,13 @@ export function viewClock() {
   const now = Date.now();
   return el('div', { class: 'clockview' }, el('h1', { class: 'sr-only' }, 'BLOCKHORIZON · ' + t('clock')), el('a', { class: 'clock-x', href: '#/', 'aria-label': t('close'), title: t('close') }, '✕'),
     el('div', { class: 'eyebrow' }, t('height')), el('div', { class: 'clock-h', id: 'h' }, L.fmtNum(st.tip)),
-    el('div', { class: 'since' }, t('since') + ': ', el('b', { id: 'since' }, sinceText(now))), priceLine());
+    el('div', { class: 'since' }, t('since') + ': ', el('b', { id: 'since' }, sinceText(now))), priceLine(), finalBlock(now));
+}
+// Countdown to the last block that creates new bitcoin (ticks every second with the 'since' line).
+export const finalText = (now) => { const c = L.finalCountdown(st.tip, st.blocks[0] && st.blocks[0].timestamp, now); return c.done ? '' : L.fmtLong(c.sec); };
+function finalBlock(now) {
+  if (!Number.isFinite(st.tip)) return null; const c = L.finalCountdown(st.tip, st.blocks[0] && st.blocks[0].timestamp, now);
+  return el('div', { class: 'final' }, el('div', { class: 'eyebrow' }, t('finalBlock') + ' · #' + L.fmtNum(L.FINAL_BLOCK)),
+    c.done ? el('p', null, t('finalDone')) : [el('div', { class: 'final-t', id: 'final' }, L.fmtLong(c.sec)),
+      el('p', { class: 'dim' }, t('finalNote', { n: L.fmtNum(c.blocks), y: new Date(c.estMs).getUTCFullYear() }))]);
 }

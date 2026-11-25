@@ -10,6 +10,12 @@ import { GLOSSARY_TR, ANNIV_TR } from '../src/content-i18n.js';
 
 const fx = (n) => JSON.parse(fs.readFileSync(new URL('./fixtures/' + n, import.meta.url), 'utf8'));
 
+test('final bitcoin block: 6,929,999 pays the last sat; countdown and long durations', () => {
+  assert.equal(L.FINAL_BLOCK, 6929999); assert.equal(L.subsidy(L.FINAL_BLOCK), 1); assert.equal(L.subsidy(L.FINAL_BLOCK + 1), 0);
+  const c = L.finalCountdown(L.FINAL_BLOCK - 6, 1000, 1000 * 1000 + 60 * 1000); assert.equal(c.blocks, 6); assert.equal(c.sec, 3540); assert.equal(c.done, false);
+  assert.equal(L.finalCountdown(L.FINAL_BLOCK, 1000).done, true); assert.equal(L.finalCountdown(L.FINAL_BLOCK + 5, 1000, 0).sec, 0);
+  assert.equal(L.fmtLong(3540), '0h 59m 0s'); assert.equal(L.fmtLong(86400 + 61), '1d 0h 1m 1s'); assert.equal(L.fmtLong(31557600 * 113 + 86400 * 2 + 5), '113y 2d 0h 0m 5s');
+});
 test('subsidy halves every 210000 blocks', () => {
   assert.equal(L.subsidy(0), 5000000000);
   assert.equal(L.subsidy(209999), 5000000000);

@@ -19,6 +19,19 @@ export function halvingInfo(h, nowMs = Date.now()) {
   return { epoch, nextHeight: next, blocksToGo: togo, progress: (h - epoch * EPOCH) / EPOCH,
     subsidy: subsidy(h), nextSubsidy: subsidy(next), estMs: nowMs + togo * TARGET_SEC * 1000 };
 }
+// The last block that creates new bitcoin: the subsidy rounds down to 0 sats from epoch 33 on (block 6,930,000).
+export const FINAL_BLOCK = (() => { let e = 0; while (Math.floor(5000000000 / 2 ** e) > 0) e++; return e * EPOCH - 1; })();
+// Countdown to it, from the last block's time at 10 minutes a block, so it ticks down smoothly and moves a little with each block.
+export function finalCountdown(tip, lastTs, nowMs = Date.now()) {
+  const blocks = FINAL_BLOCK - tip, estMs = (Number.isFinite(lastTs) ? lastTs * 1000 : nowMs) + blocks * TARGET_SEC * 1000;
+  return { blocks, estMs, sec: Math.max(0, (estMs - nowMs) / 1000), done: blocks <= 0 };
+}
+// Long spans with years: "113y 297d 4h 12m 9s" (a year is 365.25 days).
+export function fmtLong(sec) {
+  sec = Math.max(0, Math.floor(sec)); const Y = 31557600, y = Math.floor(sec / Y); sec -= y * Y;
+  const d = Math.floor(sec / 86400), h = Math.floor(sec % 86400 / 3600), m = Math.floor(sec % 3600 / 60), s = sec % 60;
+  return (y ? `${y}y ` : '') + (y || d ? `${d}d ` : '') + `${h}h ${m}m ${s}s`;
+}
 export function futureEstimate(target, tip, nowMs = Date.now()) {
   const d = target - tip;
   return { blocks: d, ms: nowMs + d * TARGET_SEC * 1000, past: d <= 0 };
