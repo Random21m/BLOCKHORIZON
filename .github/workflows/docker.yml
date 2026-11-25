@@ -1,6 +1,7 @@
 name: Container image
 # Builds the image for Intel/AMD and ARM (Raspberry Pi nodes) and publishes it to GitHub Container Registry
 # as ghcr.io/<owner>/blockhorizon, when a version tag (v0.15.0) is pushed or when started from the Actions tab.
+# Every build is also tagged with the app's version (VERSION in src/state.js), so a run started by hand publishes v0.15.0 too.
 on: { push: { tags: ['v*'] }, workflow_dispatch: {} }
 permissions: { contents: read, packages: write }
 jobs:
@@ -12,12 +13,15 @@ jobs:
       - uses: docker/setup-buildx-action@v3
       - uses: docker/login-action@v3
         with: { registry: ghcr.io, username: '${{ github.actor }}', password: '${{ secrets.GITHUB_TOKEN }}' }
+      - id: v
+        run: echo "version=$(sed -n "s/^export const VERSION = '\(.*\)';$/\1/p" src/state.js)" >> "$GITHUB_OUTPUT"
       - id: meta
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ github.repository_owner }}/blockhorizon
           tags: |
             type=ref,event=tag
+            type=raw,value=v${{ steps.v.outputs.version }}
             type=raw,value=latest
       - uses: docker/build-push-action@v6
         with: { context: ., platforms: 'linux/amd64,linux/arm64', push: true, tags: '${{ steps.meta.outputs.tags }}', labels: '${{ steps.meta.outputs.labels }}' }

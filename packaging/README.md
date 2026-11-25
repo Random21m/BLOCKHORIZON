@@ -23,17 +23,23 @@ cross-origin requests, and on an https page it must be https too). A self-hosted
 
 ## Umbrel
 
-`umbrel/blockhorizon/` holds the app definition in the layout of the Umbrel app store
-(`getumbrel/umbrel-apps`): it depends on the Mempool app and reads from its `web` container.
-To submit it:
+`umbrel/blockhorizon/` holds the app definition in the layout of the Umbrel app store (`getumbrel/umbrel-apps`).
+It depends on the Mempool app and reads from its web container at `${APP_MEMPOOL_IP}:${APP_MEMPOOL_PORT}`,
+the address the Mempool app exports (its own widget server and other apps such as am-i-exposed use the same).
+Port 3027 was free across the store when this was written. `umbrel/gallery/` has the three 1440x900 gallery images.
 
-1. Push a tag (`git tag v0.15.0 && git push origin v0.15.0`) so the image is published, make it public, and pin
-   its digest in `docker-compose.yml`.
-2. Test it on an Umbrel (see the umbrel-apps README for installing an app from a fork), and check that
-   `mempool_web_1:3006` is still the Mempool app's address in the current Umbrel release.
-3. Add three gallery images (1440x900) and open a pull request to `getumbrel/umbrel-apps` with this folder.
+Ready:
+- the image `ghcr.io/random21m/blockhorizon:v0.15.0` (amd64 and arm64, public), pinned by digest in `docker-compose.yml`
+- the gallery images
 
-The port (3021) must not clash with another app in the store; pick a free one if the review asks.
+To submit:
+1. Install it on a real Umbrel from a fork of `getumbrel/umbrel-apps` (see its README) and check the dashboard
+   fills from your node.
+2. Open a pull request to `getumbrel/umbrel-apps` adding the `blockhorizon` folder. Attach the gallery images
+   to the pull request (Umbrel hosts them in its gallery repository) and fill in `submission:` with its link.
+
+For a new version: bump VERSION in `src/state.js`, start the "Container image" workflow from the Actions tab
+(it tags the image with the version), then update the image and digest here.
 
 ## Start9
 
