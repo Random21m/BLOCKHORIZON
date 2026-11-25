@@ -9,7 +9,8 @@ await new Promise((ok) => srv.listen(0, '127.0.0.1', ok)); const base = `http://
 const MOCK = { '/api/blocks/tip/height': ['text/plain', 'tip.txt'], '/api/v1/blocks': ['application/json', 'blocks.json'], '/api/v1/difficulty-adjustment': ['application/json', 'difficulty.json'],
   '/api/v1/fees/recommended': ['application/json', 'fees.json'], '/api/mempool': ['application/json', 'mempool.json'], '/api/v1/fees/mempool-blocks': ['application/json', 'mempool-blocks.json'],
   '/api/v1/prices': ['application/json', 'prices.json'], '/api/v1/mining/hashrate/1y': ['application/json', 'hashrate.json'], '/api/v1/lightning/statistics/latest': ['application/json', 'lightning.json'],
-  '/api/block-height/840000': ['text/plain', 'h840000.txt'], '/api/v1/mining/blocks/timestamp/1700000000': ['application/json', 'bytime.json'] };
+  '/api/block-height/840000': ['text/plain', 'h840000.txt'],
+  '/api/tx/2bb85f4b004be6da54f766c17c1e855187327112c231ef2ff35ebad0ea67c69e': ['application/json', 'tx-confirmed.json'], '/api/tx/213b7d2f946122a8c9add976cc6689d71bf567ffbe4212cfb571255ae8d3ff19': ['application/json', 'tx-mempool.json'], '/api/v1/mining/blocks/timestamp/1700000000': ['application/json', 'bytime.json'] };
 // page.waitForFunction evaluates a string in the page, which the site's CSP (no unsafe-eval) can refuse; poll with evaluate instead.
 async function until(page, fn, arg, { timeout = 30000 } = {}) {
   const end = Date.now() + timeout; let last;
@@ -97,6 +98,51 @@ await ok('a connection that never answers still opens the saved app within a few
   await ctx.route(/127\.0\.0\.1/, hang);
   try { const t0 = Date.now(); await page.reload({ waitUntil: 'commit' }); await until(page, () => document.querySelector('#h') && /977/.test(document.querySelector('#h').textContent), null, { timeout: 10000 });
     assert.ok(Date.now() - t0 < 9000, 'took ' + (Date.now() - t0) + ' ms'); } finally { await ctx.unroute(/127\.0\.0\.1/, hang); } });
+const TXC = '2bb85f4b004be6da54f766c17c1e855187327112c231ef2ff35ebad0ea67c69e', TXM = '213b7d2f946122a8c9add976cc6689d71bf567ffbe4212cfb571255ae8d3ff19';
+await ok('clock: own menu tab, big height and price, no header, Escape goes back', async () => {
+  await page.goto(base); await page.click('#nav a[href="#/clock"]'); await until(page, () => location.hash === '#/clock' && /977,411/.test(document.querySelector('.clock-h')?.textContent || ''));
+  assert.equal(await page.locator('#nav a[aria-current=page]').innerText(), 'Clock'); assert.ok(!(await page.locator('header.bar').isVisible()));
+  await until(page, () => /61,/.test(document.querySelector('.clockview #btc')?.textContent || ''), null, { timeout: 8000 });
+  await page.keyboard.press('Escape'); await until(page, () => location.hash === '#/' && !!document.querySelector('.dashgrid')); });
+await ok('clock keeps the screen awake while open and lets go when you leave', async () => {
+  const c = await b.newContext({ viewport: { width: 1280, height: 720 } }); await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.abort());
+  await c.addInitScript(() => { window.__wake = []; Object.defineProperty(navigator, 'wakeLock', { value: { request: async (t) => { window.__wake.push('on:' + t); const l = new EventTarget(); l.release = async () => { window.__wake.push('off'); }; return l; } } }); });
+  const p = await c.newPage(); await p.goto(base + '#/clock'); await until(p, () => window.__wake.includes('on:screen'));
+  await p.evaluate(() => { location.hash = '#/'; }); await until(p, () => window.__wake.includes('off')); await c.close(); });
+await ok('clock fits the screen on a phone without scrolling', async () => {
+  await page.setViewportSize({ width: 390, height: 844 }); await page.goto(base + '#/clock'); await until(page, () => /977/.test(document.querySelector('.clock-h')?.textContent || ''));
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1 && document.documentElement.scrollHeight <= innerHeight + 1)); await page.setViewportSize({ width: 360, height: 800 }); });
+await ok('transaction lookup: a confirmed transaction', async () => {
+  await page.goto(base); await page.click('#btn-search'); await page.fill('#s-t', TXC.toUpperCase()); await page.press('#s-t', 'Enter');
+  await until(page, (id) => location.hash === '#/tx/' + id, TXC); await page.waitForSelector('main .panel dl', { timeout: 6000 }); const tx = await page.locator('main').innerText();
+  for (const w of ['Confirmed', '137,412', '#840,000', '673,200,000 sats', '187 vB', '1 / 2']) assert.ok(tx.includes(w), w);
+  await page.click('main dd a[href="#/block/840000"]'); await until(page, () => location.hash === '#/block/840000'); });
+await ok('transaction lookup: one waiting in the mempool, with its place in the queue', async () => {
+  await page.goto(base); await until(page, () => document.querySelectorAll('.blk.proj').length > 0); await page.click('#btn-search'); await page.fill('#s-h', TXM); await page.press('#s-h', 'Enter'); // the height box also takes a txid
+  await page.waitForSelector('main .panel dl', { timeout: 6000 }); const tx = await page.locator('main').innerText();
+  assert.ok(tx.includes('Waiting in the mempool') && tx.includes('Expected') && tx.includes('1,128 sats') && tx.includes('6.0 sat/vB'), tx); });
+await ok('transaction search explains a mistyped ID', async () => { await page.goto(base); await page.click('#btn-search'); await page.fill('#s-t', 'abc'); await page.press('#s-t', 'Enter'); assert.ok((await page.locator('#s-msg').innerText()).includes('64 characters')); await page.keyboard.press('Escape'); });
+await ok('calculator: what a payment costs at each fee level', async () => {
+  await page.goto(base); await until(page, () => /61,/.test(document.querySelector('#btc')?.textContent || ''), null, { timeout: 8000 }); await page.goto(base + '#/calc'); await page.waitForSelector('#p-table tr');
+  assert.equal(await page.locator('#p-size').innerText(), 'About 141 vB'); assert.equal(await page.locator('#p-table tr').count(), 4);
+  const fees = JSON.parse(fx('fees.json')), first = await page.locator('#p-table tr').first().innerText();
+  assert.ok(first.includes(Math.ceil(fees.fastestFee * 141) + ' sats'), first);
+  await page.selectOption('#p-type', 'taproot'); assert.equal(await page.locator('#p-size').innerText(), 'About 154 vB');
+  await page.fill('#p-in', '2'); assert.equal(await page.locator('#p-size').innerText(), 'About 212 vB');
+  await page.setViewportSize({ width: 360, height: 800 }); assert.ok(await page.evaluate(() => { const p = document.querySelector('#pay'), t = document.querySelector('#p-table'); return document.documentElement.scrollWidth <= innerWidth + 1 && t.getBoundingClientRect().right <= p.getBoundingClientRect().right; }), 'payment table fits on a phone'); });
+await ok('block and transaction pages: copy link', async () => {
+  const c = await b.newContext({ permissions: ['clipboard-read', 'clipboard-write'] }); const p = await c.newPage();
+  await c.route(/mempool\.space/, (route) => { const u = new URL(route.request().url()), m = MOCK[u.pathname]; if (u.pathname.startsWith('/api/v1/block/')) return route.fulfill({ contentType: 'application/json', body: JSON.stringify(JSON.parse(fx('blocks.json'))[0]) }); if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+  await p.goto(base + '#/block/840000'); await p.click('.btn-copy'); await until(p, () => /Link copied/.test(document.querySelector('#toast').textContent));
+  assert.equal(await p.evaluate(() => navigator.clipboard.readText()), base + '#/block/840000'); await c.close(); });
+await ok('German: dashboard, block page and settings have no English left', async () => {
+  await page.goto(base); await page.click('#btn-settings'); await page.click('[data-k=format]'); await page.selectOption('#st-lang', 'de');
+  assert.equal(await page.locator('[data-k=display]').innerText(), 'Anzeige'); await page.keyboard.press('Escape');
+  await until(page, () => /977/.test(document.querySelector('#h')?.textContent || '') && document.querySelectorAll('.blk').length > 0); const d = await page.locator('main').textContent();
+  for (const w of ['Blöcke übrig', 'Blöcke tief', 'Kanäle', 'Moskau', 'vor ', 'nach Gebühr']) assert.ok(d.includes(w), w);
+  for (const w of [' ago', 'blocks deep', 'channels', 'of epoch', 'issued', 'Since last']) assert.ok(!d.includes(w), 'English left: ' + w);
+  await page.goto(base + '#/block/840000'); await page.waitForSelector('.panel dl', { timeout: 6000 }); assert.ok((await page.locator('main').innerText()).includes('Transaktionen'));
+  await page.goto(base); await page.click('#btn-settings'); await page.click('[data-k=format]'); await page.selectOption('#st-lang', 'en'); await page.keyboard.press('Escape'); });
 await ok('only mempool.space is contacted', async () => { assert.ok(external.length > 0); });
 await ok('no script errors', async () => { assert.deepEqual(errs, []); });
 await b.close(); srv.close();

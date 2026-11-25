@@ -38,7 +38,7 @@ test('formatting', () => {
   assert.equal(L.fmtDifficulty(134823837323272.7), '134.82 T');
   assert.equal(L.fmtDuration(90061), '1d 1h 1m');
   assert.equal(L.fmtAgo(30), '30s');
-  assert.equal(L.fmtFee(1), '1.0'); assert.equal(L.fmtFee(55.4), '55');
+  assert.equal(L.fmtFee(1), '1.0'); assert.equal(L.fmtFee(55.4), '55'); assert.equal(L.fmtFee(3600000), (3600000).toLocaleString());
   assert.equal(L.fmtDate(Date.UTC(2024, 3, 20, 0, 9), { utc: true }), '2024-04-20 00:09');
   assert.equal(L.fmtDate(Date.UTC(2024, 3, 20, 15, 9), { utc: true, h12: true, dateFmt: 'mdy' }), '04/20/2024 3:09 PM');
   assert.equal(L.moscowTime(1676), '16:76');
@@ -110,4 +110,32 @@ test('version number matches in the app, the offline cache name and the README',
   const v = read('src/app.js').match(/VERSION = '([\d.]+)'/)[1];
   assert.ok(read('sw.js').includes(`'blockhorizon-v${v}'`), 'sw.js cache name');
   assert.ok(read('README.md').includes(`## Features (v${v})`), 'README');
+});
+
+test('transactions: txid check, parse a confirmed and a waiting transaction', () => {
+  assert.ok(L.isTxid(' 2bb85f4b004be6da54f766c17c1e855187327112c231ef2ff35ebad0ea67c69e ')); assert.ok(!L.isTxid('840000')); assert.ok(!L.isTxid('zz'.repeat(32)));
+  const c = L.parseTx(fx('tx-confirmed.json'), 840009);
+  assert.deepEqual([c.confirmed, c.height, c.confs, c.fee, c.vsize, c.ins, c.outs], [true, 840000, 10, 673200000, 187, 1, 2]);
+  const m = L.parseTx(fx('tx-mempool.json'), 977411);
+  assert.deepEqual([m.confirmed, m.confs, m.vsize], [false, 0, 189]); assert.ok(Math.abs(m.feeRate - 1128 / 189) < 1e-9);
+});
+
+test('transactions: place in the queue of projected blocks', () => {
+  const proj = [{ feeRange: [5, 10] }, { feeRange: [2, 4] }, { medianFee: 1 }];
+  assert.equal(L.txQueuePos(6, proj), 0); assert.equal(L.txQueuePos(3, proj), 1); assert.equal(L.txQueuePos(1, proj), 2); assert.equal(L.txQueuePos(0.5, proj), -1); assert.equal(L.txQueuePos(9, null), -1);
+});
+
+test('payment size: common address types, at least one input and output', () => {
+  assert.equal(L.txVsize(1, 2), 141); assert.equal(L.txVsize(1, 1), 110); assert.equal(L.txVsize(2, 2), 209);
+  assert.equal(L.txVsize(1, 2, 'taproot'), 154); assert.equal(L.txVsize(1, 2, 'legacy'), 226); assert.equal(L.txVsize(0, 0), L.txVsize(1, 1));
+});
+
+test('translations: same {placeholders} as English, and every key the app uses exists', () => {
+  const ph = (s) => (s.match(/\{\w+\}/g) || []).sort().join();
+  for (const [l, tab] of Object.entries(TABLES)) for (const [k, v] of Object.entries(tab)) assert.equal(ph(v), ph(TABLES.en[k]), `${l}.${k}`);
+  const app = fs.readFileSync(new URL('../src/app.js', import.meta.url), 'utf8');
+  const used = new Set([...app.matchAll(/\bt\('(\w+)'/g)].map((m) => m[1]));
+  for (const m of app.matchAll(/\['\/[\w/]*', '(\w+)'\]/g)) used.add(m[1]); // menu entries
+  for (const k of ['minedAbout', 'estimated', 'tab_display', 'tab_format', 'tab_sounds']) used.add(k); // picked at run time
+  for (const k of used) if (!k.endsWith('_')) assert.ok(TABLES.en[k], 'missing key ' + k);
 });

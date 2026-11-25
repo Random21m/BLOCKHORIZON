@@ -28,6 +28,7 @@ export const api = {
   prices: () => getJSON('/v1/prices', { cacheKey: 'prices' }),
   hashrate: () => getJSON('/v1/mining/hashrate/1y', { cacheKey: 'hashrate' }),
   lightning: () => getJSON('/v1/lightning/statistics/latest', { cacheKey: 'ln' }),
+  tx: (id) => getJSON('/tx/' + id),
   byTime: (ts) => getJSON('/v1/mining/blocks/timestamp/' + ts),
 };
 
