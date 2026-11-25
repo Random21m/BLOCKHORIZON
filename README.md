@@ -80,7 +80,8 @@ There is nothing to build: the site is plain static files, so any static host wo
 
 - **On your computer:** clone this repository, run `python3 -m http.server 8080` in it, and open http://localhost:8080.
 - **On GitHub Pages:** fork the repository, open **Settings, Pages** and set **Source** to **GitHub Actions**. The included workflow publishes the site on every push to `main` (you can also start it from the **Actions** tab).
-- **On your node (Docker, Umbrel):** `docker build -t blockhorizon . && docker run -p 8080:80 -e MEMPOOL_URL=http://<node>:<port> blockhorizon` serves the app and passes `/api` through to your node's mempool, so your browser talks only to your node (and Kraken for the price). See [packaging/README.md](packaging/README.md) for the published image and the Umbrel app.
+- **On Umbrel or StartOS:** submitted to both app stores ([Umbrel](https://github.com/getumbrel/umbrel-apps/pull/6425), [StartOS package](https://github.com/Random21m/blockhorizon-startos)); there it reads all chain data from your node's Mempool.
+- **On your node (Docker):** `docker build -t blockhorizon . && docker run -p 8080:80 -e MEMPOOL_URL=http://<node>:<port> blockhorizon` serves the app and passes `/api` through to your node's mempool, so your browser talks only to your node (and Kraken for the price). See [packaging/README.md](packaging/README.md) for the published image and the Umbrel app.
 - **Anywhere else:** upload `index.html`, `embed.html`, `embed.css`, `style.css`, `sw.js`, `manifest.webmanifest`, `privacy.html`, `config.json`, `.nojekyll` and the `icons`, `src` and `docs` folders. Paths are relative, so a sub-folder works too.
 - **Link previews:** the preview card tags in `index.html` (`og:url`, `og:image`, `canonical`) point at this site's address; change them to yours in a fork.
 

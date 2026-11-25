@@ -23,31 +23,31 @@ cross-origin requests, and on an https page it must be https too). A self-hosted
 
 ## Umbrel
 
-`umbrel/blockhorizon/` holds the app definition in the layout of the Umbrel app store (`getumbrel/umbrel-apps`).
-It depends on the Mempool app and reads from its web container at `${APP_MEMPOOL_IP}:${APP_MEMPOOL_PORT}`,
-the address the Mempool app exports (its own widget server and other apps such as am-i-exposed use the same).
-Port 3027 was free across the store when this was written. `umbrel/gallery/` has the three 1440x900 gallery images.
+Submitted to the Umbrel App Store as [getumbrel/umbrel-apps#6425](https://github.com/getumbrel/umbrel-apps/pull/6425),
+from the `add-blockhorizon` branch of the fork `Random21m/umbrel-apps`. `umbrel/blockhorizon/` here is a copy of the
+submitted folder; keep the two identical.
 
-Ready:
-- the image `ghcr.io/random21m/blockhorizon:v0.15.1` (amd64 and arm64, public), pinned by digest in `docker-compose.yml`
-- the package passes Umbrel's linter (`npm run lint:apps -- blockhorizon --check-images`); the only error left is the
-  empty `submission`, which is the link to the pull request itself
-- the gallery images, for the pull request (Umbrel makes the final App Store images, so the manifest keeps `gallery: []`)
-- the pull request text: `umbrel/PR-BODY.md`, following Umbrel's template
+It depends on the Mempool app and reads from its web container at `${APP_MEMPOOL_IP}:${APP_MEMPOOL_PORT}`, the
+address the Mempool app exports (its own widget server and other apps such as am-i-exposed use the same). Port 3027
+was free across the store when it was submitted. `umbrel/gallery/` holds the screenshots shown in the pull request;
+the manifest keeps `gallery: []` because Umbrel makes the final App Store images. `umbrel/PR-BODY.md` is the pull
+request text.
 
-To submit:
-1. Fork `getumbrel/umbrel-apps` on GitHub and copy `umbrel/blockhorizon/` into it as `blockhorizon/`.
-2. Test it on your Umbrel: sync the folder into the device's app store directory and install it (Umbrel's
-   `.agents/skills/umbrel-test-app/SKILL.md` has the commands), open it, restart it, and tick what you tested in
-   the pull request text.
-3. Open the pull request titled "Add BLOCKHORIZON" with `umbrel/PR-BODY.md` as its text and the three gallery images
-   attached, then set `submission:` in your fork's `blockhorizon/umbrel-app.yml` to the pull request's link and push.
-
-For a new version: bump VERSION in `src/state.js`, start the "Container image" workflow from the Actions tab
-(it tags the image with the version), then update the image and digest here.
+For a new version:
+1. Bump VERSION in `src/state.js`, merge, then start the "Container image" workflow from the Actions tab (it tags the
+   image with the version).
+2. Read the new image's index digest: `docker buildx imagetools inspect ghcr.io/random21m/blockhorizon:v<version>`.
+3. In both `umbrel/blockhorizon/` here and the fork's `blockhorizon/`, update `version:` in `umbrel-app.yml` and the
+   image tag and digest in `docker-compose.yml`, then run Umbrel's linter in the fork:
+   `npm run lint:apps -- blockhorizon --check-images`.
+4. Push the fork branch (that updates the pull request, or opens an update once the app is in the store).
 
 ## Start9
 
-StartOS packages are built with Start9's SDK as a separate wrapper repository around this image.
-The container needs only `MEMPOOL_URL` pointed at the node's mempool service, so the wrapper is mostly
-configuration; see Start9's packaging guide for the current SDK.
+The StartOS package lives in its own repository, [Random21m/blockhorizon-startos](https://github.com/Random21m/blockhorizon-startos),
+as Start9's process requires. It runs this same image with `MEMPOOL_URL` set to the StartOS Mempool service's Web UI
+address, and depends on Mempool. Its build workflow (Start9's own) produces the `.s9pk` files for x86_64 and aarch64.
+
+It was submitted to the Start9 Community Registry by email to submissions@start9.com. Start9 forks the repository into
+the Start9-Community GitHub organization and reviews it there; from then on, changes and new versions are pull requests
+against that fork. Its `UPDATING.md` says how to move it to a new image.
