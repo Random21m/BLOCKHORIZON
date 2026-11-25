@@ -3,7 +3,7 @@ import * as L from './lib.js';
 import { store } from './api.js';
 import { setLang, detectLang } from './i18n.js';
 
-export const VERSION = '0.12.0';
+export const VERSION = '0.13.0';
 export const TIP_ADDR = 'npub1vj8zjhnmkhekv93e2xmrz7kfwuxq25vrzw53u4dqhwd2lp5smvks3mwu2n@npub.cash';
 export const $ = (s, r = document) => r.querySelector(s);
 export const US = /^en-US/i.test((typeof navigator !== 'undefined' && navigator.language) || '');
@@ -16,6 +16,8 @@ export const save = () => store('settings', S);
 export const st = { shown: NaN, shownCur: '', dir: 0, raf: 0, pct: {}, priceLive: false, priceAt: 0, tip: NaN, blocks: [], diff: null, fees: null, mem: null, proj: null, prices: null, hr: null, ln: null, last: 0, conn: 'off' };
 export const alarms = () => store('alarms') || [];
 export const feeAlerts = () => store('feeAlerts') || [];
+export const priceAlerts = () => store('priceAlerts') || [];
+export const fmtPrice = (v, cur) => L.fmtNum(v, L.priceDigits(v)) + ' ' + cur;
 export const FEE_LVL_KEYS = { next: 'lvlNext', h30: 'lvl30', h1: 'lvl60' }; // translation keys for the fee alert speeds
 export function tzShort(ms) { try { const p = new Intl.DateTimeFormat(undefined, { timeZoneName: 'short' }).formatToParts(new Date(ms)).find((x) => x.type === 'timeZoneName'); return p ? p.value : ''; } catch { return ''; } }
 export const fmtD = (ms, o) => { const opt = Object.assign({ h12: S.h12, dateFmt: S.dateFmt, utc: S.utc }, o); const base = L.fmtDate(ms, opt); return opt.dateOnly ? base : base + ' ' + (opt.utc ? 'UTC' : tzShort(ms)); };
@@ -38,4 +40,4 @@ export const price = () => (st.prices && st.prices[S.cur]) || NaN;
 export const NAVS = [['/', 'dash'], ['/clock', 'clock'], ['/mining', 'mining'], ['/alarm', 'alarm'], ['/calc', 'calc'], ['/charts', 'charts'], ['/my', 'myBlock'], ['/replay', 'replay'], ['/events', 'events'], ['/glossary', 'glossary'], ['/watch', 'watch'], ['/about', 'about']];
 export const priceStr = (v) => L.fmtNum(v, v < 100 ? 2 : 0) + ' ' + S.cur;
 // Set by app.js: lets the views and the data layer repaint without importing app.js (which would be circular).
-export const hooks = { render: () => {}, renderView: () => {} };
+export const hooks = { render: () => {}, renderView: () => {}, alerts: () => {} }; // alerts: the trading chart redraws its alert lines

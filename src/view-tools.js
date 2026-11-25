@@ -3,7 +3,8 @@ import * as L from './lib.js';
 import { store } from './api.js';
 import { t } from './i18n.js';
 import { play, ALARM_SOUNDS } from './sound.js';
-import { hooks, $, S, st, alarms, feeAlerts, FEE_LVL_KEYS, fmtD, el, toast, price } from './state.js';
+import { hooks, $, S, st, alarms, feeAlerts, priceAlerts, fmtPrice, FEE_LVL_KEYS, fmtD, el, toast, price } from './state.js';
+import { CURRENCIES } from './price.js';
 import { askNotify } from './data.js';
 
 export function viewAlarm() {
@@ -18,7 +19,7 @@ export function viewAlarm() {
   inH.addEventListener('input', preview); inB.addEventListener('input', preview);
   root.append(el('div', { class: 'row' }, inH, inB, inL, sel, el('button', { class: 'btn-go', onclick: () => { const hh = preview(); if (hh == null) return toast(t('notFound')); const a = alarms(); a.push({ height: hh, label: inL.value.trim(), sound: sel.value }); store('alarms', a); play(sel.value); askNotify(); hooks.renderView(); } }, t('setAlarm')), el('button', { onclick: () => play(sel.value) }, '▶ ' + t('test'))), out);
   const list = alarms(); root.append(el('h2', { class: 'dim mono' }, t('active')), list.length ? el('table', null, el('tbody', null, list.map((a, i) => el('tr', null, el('td', null, L.fmtNum(a.height)), el('td', null, a.label || ''), el('td', null, t('nBlocks', { n: L.fmtNum(a.height - st.tip) })), el('td', null, el('button', { onclick: () => { const x = alarms(); x.splice(i, 1); store('alarms', x); hooks.renderView(); } }, t('remove'))))))) : el('p', { class: 'dim' }, t('noneYet')));
-  root.append(feePanel());
+  root.append(pricePanel(), feePanel());
   preview(); return root;
 }
 // The "Now: x sat/vB" line under the fee alert. Called on every data update too (from app.js), so it fills in even when
@@ -46,6 +47,27 @@ function feePanel() {
     el('div', { class: 'row' }, lvl, max, snd, el('button', { class: 'btn-go', id: 'fa-go', onclick: add }, t('setFee')), el('button', { onclick: () => play(snd.value) }, '▶ ' + t('test'))), now,
     el('h2', { class: 'dim mono' }, t('activeFee')), list.length ? el('table', { id: 'fa-list' }, el('tbody', null, list.map((a, i) => el('tr', null, el('td', null, t(FEE_LVL_KEYS[a.level] || 'lvlNext')), el('td', null, '≤ ' + L.fmtFee(a.max) + ' sat/vB'),
       el('td', null, el('button', { onclick: () => { const x = feeAlerts(); x.splice(i, 1); store('feeAlerts', x); hooks.renderView(); } }, t('remove'))))))) : el('p', { class: 'dim' }, t('noneYet')));
+}
+// Price alert: a sound and a message when BTC reaches a price (up or down from now). Also set from the trading chart.
+export function addPriceAlert(cur, p, sound) {
+  const now = st.prices && st.prices[cur]; if (!Number.isFinite(now)) { toast(t('priceMissing')); return false; }
+  const a = priceAlerts(); a.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), cur, price: p, dir: L.alertDir(p, now), sound: sound || S.asound });
+  store('priceAlerts', a); askNotify(); toast(t('priceAlertSet', { p: fmtPrice(p, cur) })); hooks.alerts(); return true;
+}
+export function removePriceAlert(id) { store('priceAlerts', priceAlerts().filter((a) => a.id !== id)); hooks.alerts(); }
+function pricePanel() {
+  const inP = el('input', { id: 'pa-p', type: 'text', inputmode: 'decimal', placeholder: t('priceL'), 'aria-label': t('priceL'), size: 12 });
+  const cur = el('select', { id: 'pa-c', 'aria-label': t('currency') }, CURRENCIES.map((c) => el('option', { value: c, selected: c === S.cur }, c)));
+  const snd = el('select', { id: 'pa-s', 'aria-label': t('sound') }, Object.entries(ALARM_SOUNDS).map(([k, v]) => el('option', { value: k, selected: k === S.asound }, v)));
+  const now = el('div', { class: 'dim', id: 'pa-now' });
+  const paintNow = () => { const p = st.prices && st.prices[cur.value]; now.textContent = Number.isFinite(p) ? t('priceNow', { p: fmtPrice(p, cur.value) }) : ''; };
+  cur.addEventListener('change', paintNow); queueMicrotask(paintNow);
+  const add = () => { const p = L.parsePriceInput(inP.value); if (!Number.isFinite(p)) return toast(t('priceBad')); if (addPriceAlert(cur.value, p, snd.value)) play(snd.value); };
+  const list = priceAlerts();
+  return el('section', { class: 'pricealert' }, el('h2', { class: 'dim mono', style: 'margin-top:28px' }, t('priceAlert')), el('p', { class: 'dim' }, t('priceAlertIntro')),
+    el('div', { class: 'row' }, inP, cur, snd, el('button', { class: 'btn-go', id: 'pa-go', onclick: add }, t('setPrice')), el('button', { onclick: () => play(snd.value) }, '▶ ' + t('test'))), now,
+    el('h2', { class: 'dim mono' }, t('activePrice')), list.length ? el('table', { id: 'pa-list' }, el('tbody', null, list.map((a) => el('tr', null, el('td', null, (a.dir === 'up' ? '≥ ' : '≤ ') + fmtPrice(a.price, a.cur)),
+      el('td', null, el('button', { onclick: () => removePriceAlert(a.id) }, t('remove'))))))) : el('p', { class: 'dim' }, t('noneYet')));
 }
 export function viewCalc() {
   const root = el('div'); root.append(el('h1', null, t('calc').toUpperCase()));

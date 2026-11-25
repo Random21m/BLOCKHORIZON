@@ -1,8 +1,8 @@
 // Offline shell. App files are fetched network-first (so a new version shows up on the next open) and kept in the cache
 // for offline use; live API calls always go to the network (the app keeps its own last-value cache).
-const CACHE = 'blockhorizon-v0.12.0';
+const CACHE = 'blockhorizon-v0.13.0';
 const FILES = ['./', 'index.html', 'embed.html', 'embed.css', 'style.css', 'privacy.html', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png', 'docs/support-qr.svg',
-  'src/app.js', 'src/state.js', 'src/data.js', 'src/ui.js', 'src/view-dash.js', 'src/view-chain.js', 'src/view-tools.js', 'src/view-info.js', 'src/view-charts.js', 'src/view-my.js', 'src/view-mining.js', 'src/block-scene.js', 'src/arrival.js', 'src/embed.js', 'src/modals.js', 'src/price.js', 'src/api.js', 'src/lib.js', 'src/i18n.js', 'src/sound.js', 'src/content.js', 'src/content-i18n.js', 'src/strings.js'];
+  'src/app.js', 'src/state.js', 'src/data.js', 'src/ui.js', 'src/view-dash.js', 'src/view-chain.js', 'src/view-tools.js', 'src/view-info.js', 'src/view-charts.js', 'src/trade-chart.js', 'src/trade-side.js', 'src/view-my.js', 'src/view-mining.js', 'src/block-scene.js', 'src/arrival.js', 'src/embed.js', 'src/modals.js', 'src/price.js', 'src/api.js', 'src/lib.js', 'src/i18n.js', 'src/sound.js', 'src/content.js', 'src/content-i18n.js', 'src/strings.js'];
 // cache: 'reload' skips the browser's HTTP cache, so a new version never caches yesterday's files.
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES.map((f) => new Request(f, { cache: 'reload' })))).then(() => self.skipWaiting())); });
 self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then((k) => Promise.all(k.filter((x) => x !== CACHE).map((x) => caches.delete(x)))).then(() => self.clients.claim())); });

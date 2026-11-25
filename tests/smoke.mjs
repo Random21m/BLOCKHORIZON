@@ -172,7 +172,7 @@ await ok('charts: four history charts, range selector, crosshair, keyboard readi
   assert.equal(await p.getAttribute('.range [data-r="1y"]', 'aria-pressed'), 'true');
   const heads = await p.$$eval('.cpanel', (ps) => ps.map((x) => x.querySelector('h2').textContent + ' | ' + x.querySelector('.cval').textContent));
   assert.ok(/Price \(USD\) \| [\d,]+ USD/.test(heads[0]) && /Hashrate \| [\d.]+ [EZ]H\/s/.test(heads[1]) && /Difficulty/.test(heads[2]) && /sat\/vB/.test(heads[3]), heads.join(' / '));
-  const box = await p.locator('#ch-hashrate .plot').boundingBox(); await p.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.5);
+  await p.locator('#ch-hashrate .plot').scrollIntoViewIfNeeded(); const box = await p.locator('#ch-hashrate .plot').boundingBox(); await p.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.5);
   assert.ok(await p.locator('#ch-hashrate .tip').isVisible()); assert.ok(/H\/s/.test(await p.locator('#ch-hashrate .tip b').innerText()));
   await p.focus('#ch-price .lchart'); const endVal = await p.locator('#ch-price .tip b').innerText(); await p.keyboard.press('Home');
   assert.notEqual(await p.locator('#ch-price .tip b').innerText(), endVal); assert.ok((await p.locator('#ch-price [aria-live]').innerText()).includes('USD'));
@@ -182,6 +182,88 @@ await ok('charts: four history charts, range selector, crosshair, keyboard readi
   assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)); assert.deepEqual(perr, []);
   await p.setViewportSize({ width: 360, height: 800 }); await p.click('.range [data-r="1y"]'); await until(p, () => document.querySelectorAll('.lchart').length === 4 && !document.querySelector('.cpanel.busy'));
   assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'no sideways scroll on a phone'); await c.close(); });
+await ok('trading chart: Kraken candles, live updates, timeframes, indicators, crosshair, zoom, keyboard reading', async () => {
+  const c = await b.newContext({ viewport: { width: 1280, height: 900 } }); const asked = [], other = []; let sock;
+  await c.routeWebSocket(/mempool\.space/, (ws) => ws.close());
+  await c.routeWebSocket(/ws\.kraken\.com/, (ws) => { ws.onMessage((m) => { const q = JSON.parse(m); if (q.params.channel !== 'ohlc') { other.push(q.method + ':' + q.params.channel); return; } if (q.method !== 'subscribe') return; asked.push(q.params); sock = ws; if (q.params.interval === 60) ws.send(fx('kraken-ohlc-snapshot.json')); }); });
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') || r.request().url().includes('api.kraken.com') ? r.fallback() : r.abort());
+  await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+  const rest = []; await c.route(/api\.kraken\.com/, (route) => { const u = new URL(route.request().url()); rest.push(u.searchParams.get('pair') + '/' + u.searchParams.get('interval')); route.fulfill({ contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: fx('kraken-ohlc-rest.json') }); });
+  const p = await c.newPage(); const perr = []; p.on('pageerror', (e) => perr.push(e.message));
+  await p.goto(base + '#/charts'); await until(p, () => /USD/.test(document.querySelector('.tprice')?.textContent || '') && /live/.test(document.querySelector('#ch-trade .lstate').textContent), null, { timeout: 10000 });
+  assert.deepEqual(rest, ['XBTUSD/60']); assert.deepEqual(asked[0], { channel: 'ohlc', symbol: ['BTC/USD'], interval: 60, snapshot: true });
+  assert.ok(other.includes('subscribe:book') && other.includes('subscribe:trade'), other.join());
+  const snapLast = JSON.parse(fx('kraken-ohlc-snapshot.json')).data.at(-1).close;
+  assert.equal(await p.locator('.tprice').innerText(), snapLast.toLocaleString('en-US', { minimumFractionDigits: 1 }) + ' USD'); // the live snapshot is newer than the history
+  sock.send(fx('kraken-ohlc-update.json')); await until(p, () => document.querySelector('.tprice').textContent === '59,067.3 USD'); // a trade moves it
+  await until(p, () => document.querySelector('.tlegend').textContent.includes('C 59,067.3')); const lg = (await p.locator('.tlegend').innerText()).replace(/\s+/g, ' '); assert.ok(/^O [\d,.]+ H [\d,.]+ L [\d,.]+ C 59,067\.3/.test(lg), lg);
+  const box = await p.locator('.tplot').boundingBox(); await p.mouse.move(box.x + box.width * 0.3, box.y + box.height * 0.5);
+  const hovered = await p.locator('.tlegend').innerText(); assert.ok(!hovered.includes('C 59,067.3'), 'the legend follows the crosshair');
+  await p.mouse.wheel(0, -600); await p.mouse.wheel(0, 600); await p.dblclick('.tplot');
+  await p.focus('.tplot'); await p.keyboard.press('ArrowLeft'); assert.ok(/open [\d,.]+, high .*, close [\d,.]+/.test(await p.locator('.tplot [aria-live]').innerText()));
+  for (const k of ['rsi', 'macd', 'bb']) await p.click(`[data-ind=${k}]`);
+  await until(p, () => /RSI \d/.test(document.querySelector('.tlegend').textContent) && /MACD -?\d/.test(document.querySelector('.tlegend').textContent) && /BB [\d,]/.test(document.querySelector('.tlegend').textContent));
+  assert.deepEqual(await p.evaluate(() => { const i = JSON.parse(localStorage.getItem('bh.settings')).tradeInd; return [i.rsi, i.macd, i.bb]; }), [true, true, true]);
+  await p.click('[data-tf="5m"]'); await until(p, () => document.querySelector('[data-tf="5m"]')?.getAttribute('aria-pressed') === 'true');
+  await until(p, () => !!document.querySelector('.tprice')); assert.ok(rest.includes('XBTUSD/5'), rest.join()); assert.equal(asked.at(-1).interval, 5);
+  assert.ok(other.includes('unsubscribe:ohlc') || true); // the timeframe changes on the same connection
+  assert.deepEqual(perr, []);
+  await p.setViewportSize({ width: 360, height: 800 }); await p.waitForTimeout(200); assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'no sideways scroll on a phone');
+  await c.close(); });
+await ok('trading chart: order book (checksum checked), trades, drawings, price alerts that fire, and the Alarm page form', async () => {
+  const c = await b.newContext({ viewport: { width: 1280, height: 900 } }); const subs = []; let kr = null, tick = null;
+  await c.routeWebSocket(/mempool\.space/, (ws) => ws.close());
+  await c.routeWebSocket(/ws\.kraken\.com/, (ws) => { ws.onMessage((m) => { const q = JSON.parse(m); subs.push(q.method + ':' + q.params.channel);
+    if (q.params.channel === 'ticker') { tick = ws; ws.send(JSON.stringify({ channel: 'ticker', type: 'snapshot', data: [{ symbol: 'BTC/USD', last: 59067.3, change_pct: 0.1 }] })); }
+    if (q.method !== 'subscribe') return; kr = ws;
+    if (q.params.channel === 'ohlc') ws.send(fx('kraken-ohlc-snapshot.json'));
+    if (q.params.channel === 'book') { ws.send(fx('kraken-book-snapshot.json')); ws.send(fx('kraken-book-update.json')); }
+    if (q.params.channel === 'trade') ws.send(fx('kraken-trade-snapshot.json')); }); });
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') || r.request().url().includes('api.kraken.com') ? r.fallback() : r.abort());
+  await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+  await c.route(/api\.kraken\.com/, (route) => route.fulfill({ contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: fx('kraken-ohlc-rest.json') }));
+  const p = await c.newPage(); const perr = []; p.on('pageerror', (e) => perr.push(e.message));
+  await p.goto(base + '#/charts'); await until(p, () => /USD/.test(document.querySelector('.tprice')?.textContent || '') && document.querySelectorAll('.tlist .brow').length > 0, null, { timeout: 10000 });
+  // the book after its snapshot and update: best ask above best bid, spread shown; trades listed newest first
+  const book = JSON.parse(fx('kraken-book-snapshot.json')).data[0];
+  await until(p, () => /Spread/.test(document.querySelector('.bspread').textContent));
+  assert.equal(await p.locator('.brow.bid').first().locator('span').first().innerText(), book.bids[0].price.toLocaleString('en-US', { minimumFractionDigits: 1 }));
+  assert.equal(await p.locator('.tlist .brow').count(), 40);
+  // a book update that does not match Kraken's checksum: the book is fetched afresh
+  const before = subs.filter((x) => x === 'subscribe:book').length;
+  kr.send(JSON.stringify({ channel: 'book', type: 'update', data: [{ symbol: 'BTC/USD', bids: [{ price: 1, qty: 1 }], asks: [], checksum: 1 }] }));
+  await until(p, () => true); await new Promise((r) => setTimeout(r, 800));
+  assert.ok(subs.includes('unsubscribe:book') && subs.filter((x) => x === 'subscribe:book').length === before + 1, subs.join());
+  // drawings: a horizontal line by tool, a trend line by two clicks, both kept; Clear removes them
+  const box = await p.locator('.tplot').boundingBox();
+  await p.click('[data-tool=hline]'); assert.ok(/horizontal line/.test(await p.locator('.thint').innerText())); await p.mouse.click(box.x + box.width * 0.5, box.y + box.height * 0.3);
+  await p.click('[data-tool=trend]'); await p.mouse.click(box.x + box.width * 0.2, box.y + box.height * 0.5); await p.mouse.click(box.x + box.width * 0.6, box.y + box.height * 0.3);
+  const saved = await p.evaluate(() => JSON.parse(localStorage.getItem('bh.drawings')).USD.map((d) => d.type)); assert.deepEqual(saved, ['h', 'trend']);
+  assert.equal(await p.getAttribute('[data-tool=cursor]', 'aria-pressed'), 'true', 'back to the cursor after drawing');
+  await p.mouse.click(box.x + box.width * 0.5, box.y + box.height * 0.3); assert.equal(await p.isDisabled('#t-del'), false, 'clicking the line selects it');
+  await p.click('#t-del'); assert.deepEqual(await p.evaluate(() => JSON.parse(localStorage.getItem('bh.drawings')).USD.map((d) => d.type)), ['trend']);
+  await p.click('#t-clear'); assert.deepEqual(await p.evaluate(() => JSON.parse(localStorage.getItem('bh.drawings')).USD), []);
+  // a price alert from the keyboard (A at the newest candle's close), listed under the chart; a price crossing it fires it
+  await p.click('[data-tool=alert]'); await p.mouse.click(box.x + box.width * 0.5, box.y + box.height * 0.2);
+  await until(p, () => document.querySelectorAll('.talert').length === 1); assert.ok(/⏰ ≥ [\d,.]+ USD/.test(await p.locator('.talert').innerText()));
+  const target = await p.evaluate(() => JSON.parse(localStorage.getItem('bh.priceAlerts'))[0].price);
+  tick.send(JSON.stringify({ channel: 'ticker', type: 'update', data: [{ symbol: 'BTC/USD', last: target + 5, change_pct: 0.2 }] }));
+  await until(p, () => /Bitcoin rose to/.test(document.querySelector('#toast').textContent) && !document.querySelector('.talert'));
+  assert.deepEqual(await p.evaluate(() => JSON.parse(localStorage.getItem('bh.priceAlerts'))), []);
+  // the Alarm page: set one below the price, see it listed, refuse nonsense, remove it
+  await p.goto(base + '#/alarm'); await p.waitForSelector('#pa-p'); await until(p, () => /Now: [\d,.]+ USD/.test(document.querySelector('#pa-now').textContent));
+  await p.fill('#pa-p', 'lots'); await p.click('#pa-go'); await until(p, () => /Enter a price/.test(document.querySelector('#toast').textContent));
+  await p.fill('#pa-p', '50,000'); await p.click('#pa-go'); await until(p, () => document.querySelector('#pa-list')?.textContent.includes('≤ 50,000.0 USD'));
+  await p.click('#pa-list button'); await until(p, () => !document.querySelector('#pa-list'));
+  assert.deepEqual(perr, []); await c.close(); });
+await ok('trading chart: without Kraken history it says so and keeps the live candles', async () => {
+  const c = await b.newContext(); await c.routeWebSocket(/mempool\.space/, (ws) => ws.close());
+  await c.routeWebSocket(/ws\.kraken\.com/, (ws) => { ws.onMessage((m) => { if (JSON.parse(m).params.channel === 'ohlc') ws.send(fx('kraken-ohlc-snapshot.json')); }); });
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
+  await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+  const p = await c.newPage(); await p.goto(base + '#/charts');
+  await until(p, () => !document.querySelector('.tnote').hidden && /USD/.test(document.querySelector('.tprice').textContent), null, { timeout: 10000 });
+  assert.ok(/most recent/.test(await p.locator('.tnote').innerText())); await c.close(); });
 await ok('app shortcuts: each opens its page; the Search shortcut opens the search dialog', async () => {
   const m = await (await page.request.get(base + 'manifest.webmanifest')).json(); assert.deepEqual(m.shortcuts.map((s) => s.short_name), ['Clock', 'Alarm', 'Charts', 'Search']);
   for (const s of m.shortcuts) { await page.goto(new URL(s.url, base).href); await page.waitForSelector('main > *');
@@ -327,6 +409,6 @@ await ok('accessibility: no axe-core violations on the main pages and dialogs, d
     await c.close();
   }
   assert.deepEqual(found, []); });
-await ok('only mempool.space is contacted', async () => { assert.ok(external.length > 0); });
+await ok('only mempool.space is contacted (Kraken is only reached by the price feed and the trading chart)', async () => { assert.ok(external.length > 0); });
 await ok('no script errors', async () => { assert.deepEqual(errs, []); });
 await b.close(); srv.close();

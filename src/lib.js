@@ -64,10 +64,11 @@ export function satsPerUnit(price) { return price > 0 ? Math.floor(1e8 / price) 
 export function fmtDate(ms, o = {}) {
   const d = new Date(ms), p = (n) => String(n).padStart(2, '0');
   const utc = o.utc, Y = utc ? d.getUTCFullYear() : d.getFullYear(), M = (utc ? d.getUTCMonth() : d.getMonth()) + 1, D = utc ? d.getUTCDate() : d.getDate();
-  let hh = utc ? d.getUTCHours() : d.getHours(); const mm = utc ? d.getUTCMinutes() : d.getMinutes(); let suf = '';
+  let hh = utc ? d.getUTCHours() : d.getHours(); const mm = utc ? d.getUTCMinutes() : d.getMinutes(), ss = utc ? d.getUTCSeconds() : d.getSeconds(); let suf = '';
   if (o.h12) { suf = hh >= 12 ? ' PM' : ' AM'; hh = hh % 12 || 12; }
   const date = o.dateFmt === 'dmy' ? `${p(D)}.${p(M)}.${Y}` : o.dateFmt === 'mdy' ? `${p(M)}/${p(D)}/${Y}` : `${Y}-${p(M)}-${p(D)}`;
-  return o.dateOnly ? date : `${date} ${o.h12 ? hh : p(hh)}:${p(mm)}${suf}`;
+  const time = `${o.h12 ? hh : p(hh)}:${p(mm)}${o.sec ? ':' + p(ss) : ''}${suf}`; // o.sec adds seconds, o.timeOnly drops the date (the live chart)
+  return o.dateOnly ? date : o.timeOnly ? time : `${date} ${time}`;
 }
 
 // Hashrate series from mempool.space /v1/mining/hashrate/*: {hashrates:[{timestamp,avgHashrate}], currentHashrate}
@@ -171,6 +172,150 @@ export const SERIES = {
 };
 export const RANGES = { '1m': 30 * 864e5, '1y': 365 * 864e5, all: Infinity };
 export function inRange(pts, range, now = Date.now()) { const span = RANGES[range] || Infinity; return span === Infinity ? pts : pts.filter((p) => p.t >= now - span); }
+// ---- Trading chart (Kraken candles) ----
+// Timeframes: key -> minutes (Kraken's own intervals, for both REST and websocket).
+export const TIMEFRAMES = { '1m': 1, '5m': 5, '15m': 15, '1h': 60, '4h': 240, '1D': 1440, '1W': 10080 };
+// Kraken's REST pair names (it calls bitcoin XBT).
+export const krakenPair = (cur) => 'XBT' + cur;
+const candle = (t, o, h, l, c, v) => ({ t, o, h, l, c, v });
+const okCandle = (k) => Number.isFinite(k.t) && [k.o, k.h, k.l, k.c].every((x) => Number.isFinite(x) && x > 0) && Number.isFinite(k.v);
+// Pure: Kraken REST /0/public/OHLC JSON -> candles ascending ({t: open time ms, o, h, l, c, v}). Rows: [time, o, h, l, c, vwap, volume, count].
+export function parseKrakenRest(r) {
+  if (!r || (Array.isArray(r.error) && r.error.length) || !r.result) return [];
+  const k = Object.keys(r.result).find((x) => x !== 'last' && Array.isArray(r.result[x])); if (!k) return [];
+  return r.result[k].map((x) => candle(x[0] * 1000, +x[1], +x[2], +x[3], +x[4], +x[6])).filter(okCandle).sort((a, b) => a.t - b.t);
+}
+// Pure: Kraken v2 websocket text -> { type: 'snapshot'|'update', cur, interval, candles } for BTC ohlc frames, else null.
+export function parseOhlc(raw) {
+  try {
+    const m = JSON.parse(raw);
+    if (!m || m.channel !== 'ohlc' || (m.type !== 'snapshot' && m.type !== 'update') || !Array.isArray(m.data)) return null;
+    let cur = '', interval = 0;
+    const candles = m.data.filter((d) => d && /^BTC\/[A-Z]{3}$/.test(d.symbol)).map((d) => { cur = d.symbol.slice(4); interval = d.interval; return candle(Date.parse(d.interval_begin), d.open, d.high, d.low, d.close, d.volume); })
+      .filter(okCandle).sort((a, b) => a.t - b.t);
+    return candles.length ? { type: m.type, cur, interval, candles } : null;
+  } catch { return null; }
+}
+// Merge newer candles into an ascending series: same open time replaces, later ones append, older ones are ignored
+// unless they fill a gap. Keeps at most `max` (the oldest drop off).
+export function mergeCandles(series, add, max = 2000) {
+  const out = series.slice();
+  for (const k of add) {
+    const last = out[out.length - 1];
+    if (!last || k.t > last.t) out.push(k);
+    else if (k.t === last.t) out[out.length - 1] = k;
+    else { let lo = 0, hi = out.length - 1; while (lo < hi) { const m = (lo + hi) >> 1; if (out[m].t < k.t) lo = m + 1; else hi = m; } if (out[lo].t === k.t) out[lo] = k; else out.splice(lo, 0, k); }
+  }
+  return out.length > max ? out.slice(out.length - max) : out;
+}
+// Time axis spacing for the trading chart: the smallest round step (minutes; 43200 = a month) that keeps labels ~100 px apart.
+export const TIME_STEPS = [1, 2, 5, 10, 15, 30, 60, 120, 180, 360, 720, 1440, 2880, 10080, 43200, 129600, 525600];
+export function timeStep(tfMinutes, pxPerCandle, minPx = 100) { return TIME_STEPS.find((s) => s >= tfMinutes && s / tfMinutes * pxPerCandle >= minPx) || 525600; }
+// Does a step boundary fall in (prev, t]? Hours and days count in local time (or UTC); months and years on the calendar.
+export function onStep(t, prev, step, utc) {
+  const d = new Date(t), p = new Date(prev), mo = (x) => (utc ? x.getUTCFullYear() * 12 + x.getUTCMonth() : x.getFullYear() * 12 + x.getMonth());
+  if (step >= 43200) { const n = step / 43200; return Math.floor(mo(d) / n) !== Math.floor(mo(p) / n); }
+  const off = (x) => (utc ? 0 : x.getTimezoneOffset() * 6e4), k = (ms, x) => Math.floor((ms - off(x)) / (step * 6e4));
+  if (step === 10080) { const wk = (ms, x) => Math.floor((ms - off(x) - 4 * 864e5) / 6048e5); return wk(t, d) !== wk(prev, p); } // weeks start Monday
+  return k(t, d) !== k(prev, p);
+}
+// Moving averages and RSI over closes. Entries before there is enough data are NaN (not drawn).
+export function sma(vals, n) {
+  const out = new Array(vals.length).fill(NaN); let sum = 0;
+  for (let i = 0; i < vals.length; i++) { sum += vals[i]; if (i >= n) sum -= vals[i - n]; if (i >= n - 1) out[i] = sum / n; }
+  return out;
+}
+export function ema(vals, n) {
+  const out = new Array(vals.length).fill(NaN), k = 2 / (n + 1); if (vals.length < n) return out;
+  let e = vals.slice(0, n).reduce((a, b) => a + b, 0) / n; out[n - 1] = e; // seeded with the simple average
+  for (let i = n; i < vals.length; i++) { e = vals[i] * k + e * (1 - k); out[i] = e; }
+  return out;
+}
+// Wilder's RSI.
+export function rsi(vals, n = 14) {
+  const out = new Array(vals.length).fill(NaN); if (vals.length <= n) return out;
+  let g = 0, l = 0;
+  for (let i = 1; i <= n; i++) { const d = vals[i] - vals[i - 1]; if (d > 0) g += d; else l -= d; }
+  g /= n; l /= n; out[n] = l === 0 ? 100 : 100 - 100 / (1 + g / l);
+  for (let i = n + 1; i < vals.length; i++) { const d = vals[i] - vals[i - 1]; g = (g * (n - 1) + Math.max(d, 0)) / n; l = (l * (n - 1) + Math.max(-d, 0)) / n; out[i] = l === 0 ? 100 : 100 - 100 / (1 + g / l); }
+  return out;
+}
+// Bollinger Bands (n, k standard deviations) and MACD (fast, slow, signal) over closes; NaN until there is enough data.
+export function bollinger(vals, n = 20, k = 2) {
+  const mid = sma(vals, n), up = mid.slice(), lo = mid.slice();
+  for (let i = n - 1; i < vals.length; i++) { let v = 0; for (let j = i - n + 1; j <= i; j++) v += (vals[j] - mid[i]) ** 2; const sd = Math.sqrt(v / n); up[i] = mid[i] + k * sd; lo[i] = mid[i] - k * sd; }
+  return { mid, up, lo };
+}
+export function macd(vals, fast = 12, slow = 26, sig = 9) {
+  const f = ema(vals, fast), s = ema(vals, slow), line = vals.map((_, i) => f[i] - s[i]);
+  const start = line.findIndex(Number.isFinite), signal = new Array(vals.length).fill(NaN);
+  if (start >= 0) { const e = ema(line.slice(start), sig); for (let i = 0; i < e.length; i++) signal[start + i] = e[i]; }
+  return { macd: line, signal, hist: line.map((v, i) => v - signal[i]) };
+}
+// ---- Order book and trades (Kraken v2 websocket) ----
+// Kraken's precision for BTC pairs: prices to 0.1 (JPY to 1), amounts to 8 decimals. Used by the book checksum.
+export const pricePrecision = (cur) => (cur === 'JPY' ? 0 : 1);
+const lvl = (x) => ({ p: x.price, q: x.qty });
+// Pure: raw text -> { type, cur, bids, asks, checksum } for a BTC book frame, else null.
+export function parseBook(raw) {
+  try {
+    const m = JSON.parse(raw); if (!m || m.channel !== 'book' || !Array.isArray(m.data) || !m.data[0]) return null;
+    const d = m.data[0]; if (!/^BTC\/[A-Z]{3}$/.test(d.symbol)) return null;
+    const ok = (a) => (Array.isArray(a) ? a : []).filter((x) => x && Number.isFinite(x.price) && Number.isFinite(x.qty)).map(lvl);
+    return { type: m.type, cur: d.symbol.slice(4), bids: ok(d.bids), asks: ok(d.asks), checksum: d.checksum };
+  } catch { return null; }
+}
+// Apply a frame to a book ({bids: best first, asks: best first}). A snapshot replaces it; in an update an amount of 0
+// removes the level. Levels beyond `depth` are dropped, as Kraken expects.
+export function applyBook(book, f, depth = 25) {
+  const side = (cur, ch, desc) => {
+    const m = new Map(f.type === 'snapshot' ? [] : cur.map((x) => [x.p, x.q]));
+    for (const x of ch) { if (x.q === 0) m.delete(x.p); else m.set(x.p, x.q); }
+    return [...m].map(([p, q]) => ({ p, q })).sort((a, b) => (desc ? b.p - a.p : a.p - b.p)).slice(0, depth);
+  };
+  return { bids: side(book ? book.bids : [], f.bids, true), asks: side(book ? book.asks : [], f.asks, false) };
+}
+// CRC32 (IEEE), as Kraken's book checksum uses.
+let CRC;
+export function crc32(str) {
+  if (!CRC) { CRC = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; CRC[n] = c >>> 0; } }
+  let c = 0xFFFFFFFF; for (let i = 0; i < str.length; i++) c = CRC[(c ^ str.charCodeAt(i)) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+// Kraken's checksum of the top 10 asks then the top 10 bids: price and amount at their precision, without the point or leading zeros.
+export function bookChecksum(book, pp, qp = 8) {
+  const f = (v, d) => v.toFixed(d).replace('.', '').replace(/^0+/, '');
+  const part = (a) => a.slice(0, 10).map((x) => f(x.p, pp) + f(x.q, qp)).join('');
+  return crc32(part(book.asks) + part(book.bids));
+}
+// Pure: raw text -> { type, cur, trades: [{ id, t, side, p, q }] } (newest last) for BTC trade frames, else null.
+export function parseTrades(raw) {
+  try {
+    const m = JSON.parse(raw); if (!m || m.channel !== 'trade' || !Array.isArray(m.data)) return null; let cur = '';
+    const trades = m.data.filter((d) => d && /^BTC\/[A-Z]{3}$/.test(d.symbol) && Number.isFinite(d.price) && Number.isFinite(d.qty)).map((d) => { cur = d.symbol.slice(4); return { id: d.trade_id, t: Date.parse(d.timestamp), side: d.side === 'sell' ? 'sell' : 'buy', p: d.price, q: d.qty }; });
+    return trades.length ? { type: m.type, cur, trades } : null;
+  } catch { return null; }
+}
+// ---- Price alerts: { id, cur, price, dir: 'up' | 'down', sound } fire once when the price reaches them ----
+export const alertDir = (target, now) => (target >= now ? 'up' : 'down');
+export function splitPriceAlerts(list, prices) {
+  const hit = [], rest = [];
+  for (const a of list || []) { const p = prices && prices[a.cur]; (Number.isFinite(p) && (a.dir === 'up' ? p >= a.price : p <= a.price) ? hit : rest).push(a); }
+  return { hit, rest };
+}
+// "60,000", "60.000,5", "59 500.5", "1,5": the last of ',' and '.' is the decimal mark when both appear; a lone ',' is
+// a thousands mark only in groups of three.
+export function parsePriceInput(s) {
+  let x = String(s).trim().replace(/[\s'’]/g, ''); const lc = x.lastIndexOf(','), ld = x.lastIndexOf('.');
+  if (lc >= 0 && ld >= 0) x = lc > ld ? x.replace(/\./g, '').replace(',', '.') : x.replace(/,/g, '');
+  else if (lc >= 0) x = /^\d{1,3}(,\d{3})+$/.test(x) ? x.replace(/,/g, '') : x.replace(',', '.');
+  else if (/^\d{1,3}(\.\d{3}){2,}$/.test(x)) x = x.replace(/\./g, '');
+  if (!/^\d+(\.\d+)?$/.test(x)) return NaN;
+  const v = parseFloat(x); return v > 0 && v < 1e12 ? v : NaN;
+}
+// Price label precision for a value (JPY prices are big, small moves still need cents elsewhere).
+export const priceDigits = (v) => (v >= 1e5 ? 0 : v >= 100 ? 1 : 2);
+
 // At most n points, evenly spread by index, always keeping the first and the last.
 export function thin(pts, n = 400) {
   if (pts.length <= n) return pts;

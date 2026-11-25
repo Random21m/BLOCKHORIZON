@@ -38,6 +38,14 @@ export const api = {
   byTime: (ts) => getJSON('/v1/mining/blocks/timestamp/' + ts),
 };
 
+// Trading chart history: Kraken's last 720 candles of one timeframe (Kraken's public REST API, no key). Not cached.
+export const KRAKEN_REST = 'https://api.kraken.com/0/public/OHLC';
+export async function krakenCandles(pair, minutes) {
+  const r = await fetch(KRAKEN_REST + '?pair=' + encodeURIComponent(pair) + '&interval=' + minutes, { cache: 'no-store' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+
 // Live feed with reconnect (3 s), paused while the page is hidden or offline.
 // The Mining page asks for the next block's transactions too (track-mempool-block 0, -1 to stop); sent again after a reconnect.
 let sock = null, tracking = false;
