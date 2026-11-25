@@ -32,7 +32,7 @@ export function searchModal() {
   const goD = async (e) => { e.preventDefault(); if (!di.value) return; const ts = Math.floor(Date.parse(di.value + 'T00:00:00Z') / 1000); if (!Number.isFinite(ts) || ts < 1231006505) { msg.textContent = t('notFound'); return; }
     msg.textContent = '…'; try { const r = await api.byTime(ts); closeModal(); location.hash = '#/block/' + r.height; } catch { msg.textContent = t('notFound'); } };
   const goT = (e) => { e.preventDefault(); if (!L.isTxid(ti.value)) { msg.textContent = t('notTxid'); return; } goTx(ti.value); };
-  openModal(el('div', null, el('h1', null, t('search').toUpperCase()), el('form', { class: 'row', onsubmit: goH }, el('label', null, t('byHeight') + ' '), hi, el('button', { class: 'btn-go', type: 'submit' }, t('go'))),
+  openModal(el('div', null, el('h1', null, t('search').toLocaleUpperCase(document.documentElement.lang)), el('form', { class: 'row', onsubmit: goH }, el('label', null, t('byHeight') + ' '), hi, el('button', { class: 'btn-go', type: 'submit' }, t('go'))),
     el('form', { class: 'row', onsubmit: goD }, el('label', null, t('byDate') + ' (UTC) '), di, el('button', { class: 'btn-go', type: 'submit' }, t('go'))),
     el('form', { class: 'row', onsubmit: goT }, el('label', null, t('byTx') + ' '), ti, el('button', { class: 'btn-go', type: 'submit' }, t('go'))), msg));
 }
@@ -66,5 +66,5 @@ export function settingsModal() {
   for (const k of keys) bar2.append(el('button', { role: 'tab', id: 'tab-' + k, 'data-k': k, 'aria-controls': 'st-panel', onclick: () => show(k),
     onkeydown: (e) => { const d = { ArrowRight: 1, ArrowLeft: -1 }[e.key]; if (!d) return; e.preventDefault(); const n = keys[(keys.indexOf(k) + d + keys.length) % keys.length]; show(n); $('#tab-' + n).focus(); } }, t('tab_' + k)));
   const reopen = settingsModal.tab; settingsModal.tab = null;
-  openModal(el('div', null, el('h1', null, t('settings').toUpperCase()), bar2, body, el('p', { class: 'dim' }, t('storedOnly')))); show(reopen || 'display');
+  openModal(el('div', null, el('h1', null, t('settings').toLocaleUpperCase(document.documentElement.lang)), bar2, body, el('p', { class: 'dim' }, t('storedOnly')))); show(reopen || 'display');
 }

@@ -1,6 +1,6 @@
 // Data: REST refresh, live feeds (blocks, price), block alarms and notifications.
 import * as L from './lib.js';
-import { api, store } from './api.js';
+import { api, store, isTracking } from './api.js';
 import { t } from './i18n.js';
 import { play } from './sound.js';
 import { ingest } from './block-scene.js';
@@ -32,8 +32,8 @@ export async function refreshAll() {
 }
 export function onNewBlock(b) {
   if (!b || !Number.isFinite(b.height)) return;
-  const fresh = b.height > st.tip;
-  st.blocks = [b, ...st.blocks.filter((x) => x.height !== b.height)].slice(0, 15);
+  const fresh = !(b.height <= st.tip); // also when no height is known yet (first start, or just after switching servers)
+  st.blocks = L.mergeBlocks(st.blocks, [b]); // newest first even when a reorg resends a lower block
   if (fresh) { st.tip = b.height; if (S.sound) play(S.bsound); api.difficulty().then((v) => { st.diff = v; hooks.render(); }).catch(() => {}); }
   hooks.render();
 }
@@ -42,7 +42,7 @@ export function onLive(m) {
   if (m.blocks && m.blocks.length && !st.blocks.length) { st.blocks = m.blocks.slice().sort((a, b) => b.height - a.height); st.tip = st.blocks[0].height; }
   if (m.mempoolInfo) { st.mem = Object.assign({}, st.mem, { count: m.mempoolInfo.size, vsize: m.mempoolInfo.bytes || st.mem && st.mem.vsize }); }
   if (m['mempool-blocks']) st.proj = m['mempool-blocks'];
-  const pbt = m['projected-block-transactions']; if (pbt && pbt.index === 0) ingest(pbt);
+  const pbt = m['projected-block-transactions']; if (pbt && pbt.index === 0 && isTracking()) ingest(pbt);
   if (m.fees) st.fees = m.fees;
   if (m.vBytesPerSecond != null) st.inflow = m.vBytesPerSecond;
   hooks.render();
@@ -71,6 +71,7 @@ export function onPriceTick(tk) {
 }
 // Runs on every render, so an alarm fires however the new height arrived (live feed, the minute poll, or a reopened app).
 export let alarmTip = NaN;
+export const resetAlarmTip = () => { alarmTip = NaN; }; // another server (maybe another network, with lower heights)
 export function checkAlarms() {
   if (!(st.tip > alarmTip) && Number.isFinite(alarmTip)) return; alarmTip = st.tip;
   const { hit, rest } = L.splitAlarms(alarms(), st.tip);

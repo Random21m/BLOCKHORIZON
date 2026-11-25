@@ -7,7 +7,7 @@ import { VERSION, TIP_ADDR, S, st, fmtD, el, toast } from './state.js';
 import { kv, bar } from './ui.js';
 
 export function viewReplay() {
-  const root = el('div'); root.append(el('h1', null, t('replay').toUpperCase()), el('p', { class: 'dim' }, t('replayIntro')));
+  const root = el('div'); root.append(el('h1', null, t('replay').toLocaleUpperCase(document.documentElement.lang)), el('p', { class: 'dim' }, t('replayIntro')));
   const last = Math.floor((Number.isFinite(st.tip) ? st.tip : 0) / L.EPOCH);
   const rows = Array.from({ length: Math.max(last, 0) + 2 }, (_, e) => ({ e, h: e * L.EPOCH, reward: L.subsidy(e * L.EPOCH), supply: e ? L.supplyAt(e * L.EPOCH - 1) : 0, date: L.HALVINGS[e] }));
   const out = el('div', { class: 'panel' }), slider = el('input', { type: 'range', min: 0, max: rows.length - 1, value: 0, id: 'rp', 'aria-label': t('halvingStep'), style: 'width:100%' });
@@ -32,20 +32,20 @@ export function viewEvents() {
   return root;
 }
 export function viewGlossary() {
-  const root = el('div'); root.append(el('h1', null, t('glossary').toUpperCase()));
+  const root = el('div'); root.append(el('h1', null, t('glossary').toLocaleUpperCase(document.documentElement.lang)));
   root.append(el('dl', { class: 'glossary panel' }, (GLOSSARY_TR[getLang()] || GLOSSARY).map(([k, v]) => el('div', null, el('dt', null, k), el('dd', null, v))))); return root;
 }
 export function viewWatch() {
   const list = [...CHANNELS].sort((x, y) => x.localeCompare(y, 'en', { sensitivity: 'base' }));
   const sites = [...SITES].sort((x, y) => x.name.localeCompare(y.name, 'en', { sensitivity: 'base' }));
-  return el('div', null, el('h1', null, t('watch').toUpperCase()), el('div', { class: 'panel' },
+  return el('div', null, el('h1', null, t('watch').toLocaleUpperCase(document.documentElement.lang)), el('div', { class: 'panel' },
     el('p', { class: 'dim' }, t('watchIntro')),
     el('ul', { class: 'channels' }, list.map((h) => el('li', null, el('a', { href: 'https://www.youtube.com/@' + h, target: '_blank', rel: 'noopener noreferrer' }, '@' + h + ' ↗')))),
     el('h2', { class: 'sites-h' }, t('sites')),
     el('ul', { class: 'channels sites' }, sites.map((x) => el('li', null, el('a', { href: x.url, target: '_blank', rel: 'noopener noreferrer' }, x.name + ' ↗'))))));
 }
 export function viewAbout() {
-  const root = el('div'); root.append(el('h1', null, t('about').toUpperCase()), el('div', { class: 'panel' },
+  const root = el('div'); root.append(el('h1', null, t('about').toLocaleUpperCase(document.documentElement.lang)), el('div', { class: 'panel' },
     el('p', null, t('about1')), el('p', null, t('about2')),
     el('p', { class: 'dim' }, t('version', { v: VERSION })), el('p', null, el('a', { href: 'https://github.com/Random21m/blockhorizon' }, t('source')), ' · ', el('a', { href: 'privacy.html' }, t('privacy')))));
   const copy = async () => { try { await navigator.clipboard.writeText(TIP_ADDR); toast(t('copied')); } catch { const r = document.createRange(); r.selectNodeContents(addr); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); toast(t('selectCopy')); } };

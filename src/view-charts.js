@@ -30,7 +30,7 @@ export function viewCharts() {
       .catch(() => { if (r === range) { p.querySelector('.cbody').replaceChildren(el('p', { class: 'dim' }, t('chartError'))); p.classList.remove('busy'); } });
   });
   queueMicrotask(load);
-  return el('div', null, el('h1', null, t('charts').toUpperCase()), el('p', { class: 'dim' }, t('chartsIntro')),
+  return el('div', null, el('h1', null, t('charts').toLocaleUpperCase(document.documentElement.lang)), el('p', { class: 'dim' }, t('chartsIntro')),
     tradeChart(), el('h2', { class: 'hist' }, t('historyL')), el('div', { class: 'tabs range', role: 'group', 'aria-label': t('rangeL') }, buttons), el('div', { class: 'chartgrid' }, panels));
 }
 

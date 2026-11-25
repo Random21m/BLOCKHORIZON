@@ -56,6 +56,26 @@ await ok('phone: projected blocks shown, next one and latest mined block both in
   const r = await page.evaluate(() => { const inView = (e) => { const b = e.getBoundingClientRect(); return b.width > 0 && b.left >= -1 && b.right <= innerWidth + 1; };
     return { next: inView(document.querySelector('.strip2 .blk.proj')), latest: inView(document.querySelector('.strip2 a.blk:not(.proj)')) }; });
   assert.deepEqual(r, { next: true, latest: true }); await page.setViewportSize({ width: 360, height: 800 }); });
+await ok('dashboard tiles never clip or overlap their content, laptop to tablet sizes', async () => {
+  for (const [w, h] of [[1024, 660], [1280, 720], [1366, 768], [1536, 864], [1920, 1080], [768, 1024], [390, 664]]) { await page.setViewportSize({ width: w, height: h }); await page.goto(base);
+    await until(page, () => document.querySelectorAll('.tile').length >= 10 && /61,/.test(document.querySelector('#btc')?.textContent || ''));
+    const bad = await page.evaluate(() => [...document.querySelectorAll('.tile:not(.hero)')].flatMap((t) => { const tb = t.getBoundingClientRect(); const out = [...t.querySelectorAll('*')].some((e) => { const b = e.getBoundingClientRect(); return b.height && (b.bottom > tb.bottom + 1 || b.top < tb.top - 1); });
+      const inner = [...t.querySelectorAll('div')].some((e) => e.clientHeight > 0 && e.scrollHeight > e.clientHeight + 1); return out || inner ? [t.className] : []; }));
+    assert.deepEqual(bad, [], `${w}x${h}`); }
+  await page.setViewportSize({ width: 360, height: 800 }); });
+await ok('menu stays on one row; pages that do not fit are in More, which lights up when one is open', async () => {
+  await page.setViewportSize({ width: 1024, height: 768 }); await page.goto(base + '#/about');
+  const r = await page.evaluate(() => { const links = [...document.querySelectorAll('nav a')], tops = new Set(links.filter((a) => a.offsetWidth).map((a) => Math.round(a.getBoundingClientRect().top)));
+    return { rows: tops.size, hidden: links.filter((a) => !a.offsetWidth).length, more: !!document.querySelector('nav .navmore').offsetWidth, cur: document.querySelector('nav .navmore').classList.contains('cur') }; });
+  assert.equal(r.rows, 1); assert.ok(r.hidden > 0 && r.more && r.cur, JSON.stringify(r));
+  await page.click('nav .navmore'); const items = await page.locator('.morelist a').allInnerTexts(); assert.equal(items.length, r.hidden); assert.ok(items.includes('About'), items.join()); await page.keyboard.press('Escape');
+  await page.setViewportSize({ width: 1920, height: 1080 }); await page.goto(base + '#/about'); await until(page, () => [...document.querySelectorAll('nav a')].every((a) => a.offsetWidth) && !document.querySelector('nav .navmore').offsetWidth, null, { timeout: 4000 });
+  await page.setViewportSize({ width: 360, height: 800 }); });
+await ok('phone with browser toolbars: block strip sits above the bottom tab bar without scrolling', async () => {
+  for (const [w, h] of [[390, 664], [360, 600]]) { await page.setViewportSize({ width: w, height: h }); await page.goto(base); await until(page, () => document.querySelectorAll('.strip2 .blk.proj').length > 0 && document.querySelectorAll('.strip2 a.blk:not(.proj)').length > 0);
+    const r = await page.evaluate(() => ({ strip: document.querySelector('.strip2').getBoundingClientRect().bottom, nav: document.querySelector('nav').getBoundingClientRect().top }));
+    assert.ok(r.strip <= r.nav, `${w}x${h}: strip ends at ${r.strip}, tab bar starts at ${r.nav}`); }
+  await page.setViewportSize({ width: 360, height: 800 }); });
 await ok('no horizontal scroll at 360 px', async () => { assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)); });
 await ok('block page', async () => { await page.goto(base + '#/block/840000'); await page.waitForSelector('.panel dl', { timeout: 6000 }); assert.ok((await page.locator('main').innerText()).includes('Transactions')); });
 await ok('block page has a visible way back to the dashboard on a phone', async () => { const back = page.locator('main a.back'); assert.ok(await back.isVisible()); const bx = await back.boundingBox(); assert.ok(bx.height >= 44 && bx.x >= 0 && bx.x + bx.width <= 360, JSON.stringify(bx));
