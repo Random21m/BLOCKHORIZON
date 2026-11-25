@@ -96,3 +96,18 @@ test('every language has every label and no empty strings', () => {
   for (const [l, tab] of Object.entries(TABLES)) { assert.deepEqual(Object.keys(tab).sort(), en, l); for (const v of Object.values(tab)) assert.ok(typeof v === 'string' && v.trim().length > 0, l); }
   assert.ok(Object.keys(TABLES).length >= 8);
 });
+
+test('alarms: reached at or below the tip, waiting above it, nothing before the tip is known', () => {
+  const list = [{ height: 100 }, { height: 101 }, { height: 102, label: 'x' }];
+  const r = L.splitAlarms(list, 101);
+  assert.deepEqual(r.hit.map((a) => a.height), [100, 101]); assert.deepEqual(r.rest.map((a) => a.height), [102]);
+  assert.deepEqual(L.splitAlarms(list, NaN), { hit: [], rest: list });
+  assert.deepEqual(L.splitAlarms(null, 5), { hit: [], rest: [] });
+});
+
+test('version number matches in the app, the offline cache name and the README', () => {
+  const read = (f) => fs.readFileSync(new URL('../' + f, import.meta.url), 'utf8');
+  const v = read('src/app.js').match(/VERSION = '([\d.]+)'/)[1];
+  assert.ok(read('sw.js').includes(`'blockhorizon-v${v}'`), 'sw.js cache name');
+  assert.ok(read('README.md').includes(`## Features (v${v})`), 'README');
+});

@@ -1,14 +1,13 @@
 import * as L from './lib.js';
 import { api, live, store } from './api.js';
-import { livePrice } from './price.js';
+import { livePrice, CURRENCIES } from './price.js';
 import { t, setLang, detectLang, LANGS } from './i18n.js';
 import { play, BLOCK_SOUNDS, ALARM_SOUNDS } from './sound.js';
 import { GLOSSARY, ANNIVERSARIES, CHANNELS, SITES } from './content.js';
 
-export const VERSION = '0.5.5';
+export const VERSION = '0.5.6';
 export const TIP_ADDR = 'npub1vj8zjhnmkhekv93e2xmrz7kfwuxq25vrzw53u4dqhwd2lp5smvks3mwu2n@npub.cash';
 const $ = (s, r = document) => r.querySelector(s);
-const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'CHF', 'AUD', 'JPY'];
 const US = /^en-US/i.test((typeof navigator !== 'undefined' && navigator.language) || '');
 const DEF = { theme: 'dark', lang: detectLang(), cur: 'USD', h12: US, dateFmt: US ? 'mdy' : 'iso', utc: false, showFees: true, feesRtl: false, showPool: true, showMoscow: true, showCap: true,
   hr: 'd14', ripple: true, pulse: true, reduced: false, sound: false, bsound: 'drop', asound: 'clock', satsSym: 'sats' };
@@ -56,7 +55,7 @@ function onNewBlock(b) {
   if (!b || !Number.isFinite(b.height)) return;
   const fresh = b.height > st.tip;
   st.blocks = [b, ...st.blocks.filter((x) => x.height !== b.height)].slice(0, 15);
-  if (fresh) { st.tip = b.height; if (S.sound) play(S.bsound); checkAlarms(); api.difficulty().then((v) => { st.diff = v; render(); }).catch(() => {}); animateNew(); }
+  if (fresh) { st.tip = b.height; if (S.sound) play(S.bsound); api.difficulty().then((v) => { st.diff = v; render(); }).catch(() => {}); }
   render();
 }
 function onLive(m) {
@@ -90,12 +89,23 @@ function onPriceTick(t) {
   if (t.cur === S.cur) { if (Number.isFinite(prev) && t.price !== prev) st.dir = t.price > prev ? 1 : -1; glidePrice(); }
   if (!tickTimer) tickTimer = setTimeout(() => { tickTimer = null; store('prices', st.prices); render(); }, 400);
 }
+// Runs on every render, so an alarm fires however the new height arrived (live feed, the minute poll, or a reopened app).
+let alarmTip = NaN;
 function checkAlarms() {
-  const a = alarms(), hit = a.filter((x) => st.tip >= x.height), rest = a.filter((x) => st.tip < x.height);
+  if (!(st.tip > alarmTip) && Number.isFinite(alarmTip)) return; alarmTip = st.tip;
+  const { hit, rest } = L.splitAlarms(alarms(), st.tip);
   if (!hit.length) return; store('alarms', rest);
-  for (const x of hit) { toast(`⏰ Block ${L.fmtNum(x.height)} reached${x.label ? ': ' + x.label : ''}`); play(x.sound || S.asound); }
+  for (const x of hit) { const msg = `⏰ Block ${L.fmtNum(x.height)} reached${x.label ? ': ' + x.label : ''}`; toast(msg); play(x.sound || S.asound); notify(msg); }
 }
-function animateNew() { /* no flashing: the number simply updates */ }
+// A system notification as well, so an alarm is seen while the tab is in the background. Only if the user allowed it.
+function notify(body) {
+  if (typeof Notification === 'undefined' || Notification.permission !== 'granted' || !document.hidden) return;
+  const o = { body, icon: 'icons/icon-192.png', tag: 'bh-alarm-' + body };
+  // Android only allows notifications through the service worker; elsewhere the plain constructor works.
+  const viaSw = 'serviceWorker' in navigator && navigator.serviceWorker.controller ? navigator.serviceWorker.ready.then((r) => r.showNotification('BLOCKHORIZON', o)) : Promise.reject();
+  viaSw.catch(() => { try { new Notification('BLOCKHORIZON', o); } catch { /* not supported */ } });
+}
+function askNotify() { try { if (typeof Notification !== 'undefined' && Notification.permission === 'default') Notification.requestPermission().catch(() => {}); } catch { /* old Safari: callback form only */ } }
 
 // ---------- views ----------
 const panel = (title, ...kids) => el('section', { class: 'panel' }, el('h2', null, title), ...kids);
@@ -132,13 +142,6 @@ function gapsChart(blocks) {
   const w = 320, h = 80, max = Math.max(1200, ...gaps), bw = w / gaps.length, y600 = h - 600 / max * h;
   const bars = gaps.map((g, i) => { const bh = Math.max(2, g / max * h); return `<rect x="${(i * bw + 1.5).toFixed(1)}" y="${(h - bh).toFixed(1)}" width="${(bw - 3).toFixed(1)}" height="${bh.toFixed(1)}" fill="${g >= 600 ? 'var(--accent)' : 'var(--dim)'}"/>`; }).join('');
   return chart(w, h, bars + `<line x1="0" x2="${w}" y1="${y600.toFixed(1)}" y2="${y600.toFixed(1)}" stroke="var(--text)" stroke-width="1" stroke-dasharray="4 3" vector-effect="non-scaling-stroke"/>`, 'Time between the last blocks against the 10 minute target');
-}
-function difficultyChart(hist) {
-  const d = (hist || []).filter((x) => Number.isFinite(x.adjustment)).slice(-14);
-  if (d.length < 2) return null;
-  const w = 320, h = 80, mid = h / 2, pcts = d.map((x) => (x.adjustment - 1) * 100), max = Math.max(5, ...pcts.map(Math.abs)), bw = w / d.length;
-  const bars = pcts.map((p, i) => { const bh = Math.max(1.5, Math.abs(p) / max * (mid - 4)); return `<rect x="${(i * bw + 2).toFixed(1)}" y="${(p >= 0 ? mid - bh : mid).toFixed(1)}" width="${(bw - 4).toFixed(1)}" height="${bh.toFixed(1)}" fill="${p >= 0 ? 'var(--accent)' : 'var(--blue)'}"/>`; }).join('');
-  return chart(w, h, bars + `<line x1="0" x2="${w}" y1="${mid}" y2="${mid}" stroke="var(--dim)" stroke-width="1" vector-effect="non-scaling-stroke"/>`, 'Recent difficulty adjustments, up or down');
 }
 function emissionChart(epoch) {
   const w = 320, h = 80, n = 12, bw = w / n;
@@ -223,7 +226,7 @@ function viewAlarm() {
   const preview = () => { const hh = inB.value ? st.tip + (parseInt(inB.value, 10) || 0) : L.parseHeightInput(inH.value); if (!Number.isFinite(hh)) { out.textContent = ''; return null; }
     const f = L.futureEstimate(hh, st.tip); out.textContent = f.past ? 'That block is already mined.' : `${L.fmtNum(f.blocks)} blocks away · about ${fmtD(f.ms)}`; return f.past ? null : hh; };
   inH.addEventListener('input', preview); inB.addEventListener('input', preview);
-  root.append(el('div', { class: 'row' }, inH, inB, inL, sel, el('button', { class: 'btn-go', onclick: () => { const hh = preview(); if (hh == null) return toast(t('notFound')); const a = alarms(); a.push({ height: hh, label: inL.value.trim(), sound: sel.value }); store('alarms', a); play(sel.value); renderView(); } }, 'Set alarm'), el('button', { onclick: () => play(sel.value) }, '▶ Test')), out);
+  root.append(el('div', { class: 'row' }, inH, inB, inL, sel, el('button', { class: 'btn-go', onclick: () => { const hh = preview(); if (hh == null) return toast(t('notFound')); const a = alarms(); a.push({ height: hh, label: inL.value.trim(), sound: sel.value }); store('alarms', a); play(sel.value); askNotify(); renderView(); } }, 'Set alarm'), el('button', { onclick: () => play(sel.value) }, '▶ Test')), out);
   const list = alarms(); root.append(el('h2', { class: 'dim mono' }, 'ACTIVE ALARMS'), list.length ? el('table', null, el('tbody', null, list.map((a, i) => el('tr', null, el('td', null, L.fmtNum(a.height)), el('td', null, a.label || ''), el('td', null, L.fmtNum(a.height - st.tip) + ' blocks'), el('td', null, el('button', { onclick: () => { const x = alarms(); x.splice(i, 1); store('alarms', x); renderView(); } }, 'Remove')))))) : el('p', { class: 'dim' }, 'None yet.'));
   preview(); return root;
 }
@@ -312,10 +315,28 @@ function renderView() {
   document.body.classList.toggle('fit', r.path === '/'); const v = r.path === '/block' ? viewBlock(r.arg) : VIEWS[r.path](); m.replaceChildren(v); if (r.path === '/') stripScroll([]); renderNav(r.path);
   document.title = 'BLOCKHORIZON' + (Number.isFinite(st.tip) ? ' · ' + L.fmtNum(st.tip) : ''); scrollTo(0, r.path === '/' ? y : 0);
 }
+// Make the live node `a` match the freshly built node `b`, touching only what differs: unchanged text and elements stay
+// in place, so hover, keyboard focus, screen readers and the strips' scroll are left alone by live updates.
+function morph(a, b) {
+  if (a.nodeType !== b.nodeType || a.nodeName !== b.nodeName) { a.replaceWith(b); return; }
+  if (a.nodeType === 3) { if (a.data !== b.data) a.data = b.data; return; }
+  if (a.nodeType !== 1) return;
+  for (const { name } of [...a.attributes]) if (!b.hasAttribute(name)) a.removeAttribute(name);
+  for (const { name, value } of [...b.attributes]) if (a.getAttribute(name) !== value) a.setAttribute(name, value);
+  const ak = [...a.childNodes], bk = [...b.childNodes];
+  bk.forEach((n, i) => { if (ak[i]) morph(ak[i], n); else a.append(n); });
+  for (let i = bk.length; i < ak.length; i++) ak[i].remove();
+}
 let rendering = false;
 function render() { // live updates only repaint the dashboard; other views keep their inputs
-  if (route === '/' && !rendering) { rendering = true; try { const y = scrollY, sx = stripScroll(); renderView(); scrollTo(0, y); stripScroll(sx); } finally { rendering = false; } }
+  if (route === '/' && !rendering) {
+    rendering = true;
+    try { const cur = $('#main').firstElementChild;
+      if (!cur || !cur.classList.contains('dashgrid')) renderView();
+      else { const sx = stripScroll(); morph(cur, viewDash()); stripScroll(sx); document.title = 'BLOCKHORIZON' + (Number.isFinite(st.tip) ? ' · ' + L.fmtNum(st.tip) : ''); }
+    } finally { rendering = false; } }
   else if (route !== '/') document.title = 'BLOCKHORIZON · ' + L.fmtNum(st.tip);
+  checkAlarms();
   const c = $('#conn'); if (c) { c.className = 'conn ' + (st.conn === 'on' ? 'on' : st.conn === 'poll' ? 'poll' : ''); c.title = st.conn === 'on' ? 'Live' : st.conn === 'poll' ? 'Polling' : t('offline'); }
 }
 

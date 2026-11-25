@@ -23,7 +23,11 @@ export function futureEstimate(target, tip, nowMs = Date.now()) {
   const d = target - tip;
   return { blocks: d, ms: nowMs + d * TARGET_SEC * 1000, past: d <= 0 };
 }
-export function sparse(n) { return n; }
+// Alarms reached at this tip height vs still waiting. A NaN tip (not loaded yet) reaches nothing.
+export function splitAlarms(list, tip) {
+  const all = Array.isArray(list) ? list : [];
+  return { hit: all.filter((a) => tip >= a.height), rest: all.filter((a) => !(tip >= a.height)) };
+}
 
 export function fmtNum(n, d = 0, loc) {
   if (!Number.isFinite(n)) return '–';
