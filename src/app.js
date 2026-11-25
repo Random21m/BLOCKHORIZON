@@ -1,12 +1,12 @@
 // BLOCKHORIZON entry point: routing, live repaint, boot.
 import * as L from './lib.js';
 import { live, trackBlock, loadConfig, setServer, reconnect, store, source, FALLBACK } from './api.js';
-import { mountScene } from './block-scene.js';
+import { mountScene, dropLive } from './block-scene.js';
 import { livePrice } from './price.js';
-import { t } from './i18n.js';
+import { t, getLang } from './i18n.js';
 import { VERSION, $, S, st, el, toast, applyLook, NAVS, PHONE_TABS, NAV_ICONS, hooks } from './state.js';
 import { refreshAll, onLive, onPriceTick, checkAlarms, checkFeeAlerts } from './data.js';
-import { sinceText } from './ui.js';
+import { sinceText, srcHost } from './ui.js';
 import { viewDash, viewClock } from './view-dash.js';
 import { viewBlock, viewTx } from './view-chain.js';
 import { viewAlarm, viewCalc, paintFeeNow } from './view-tools.js';
@@ -31,8 +31,14 @@ function parseRoute() {
 const navIco = (d) => { const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('class', 'nico'); s.setAttribute('aria-hidden', 'true');
   const p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.setAttribute('d', d); s.append(p); return s; };
 // Desktop: every page in a row. Phones (CSS): four tabs along the bottom and 'More' for the rest, highlighted when one of them is open.
+let navLang = '';
 function renderNav(cur) {
   const nav = $('#nav'), inMore = !PHONE_TABS.includes(cur) && NAVS.some(([p]) => p === cur);
+  if (navLang === getLang() && nav.children.length) { // same links: only move the highlight, so a focused link keeps its focus
+    nav.querySelectorAll('a').forEach((a) => { if (a.getAttribute('href') === '#' + cur) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+    nav.querySelector('.navmore').classList.toggle('cur', inMore); return;
+  }
+  navLang = getLang();
   nav.replaceChildren(...NAVS.map(([p, k]) => el('a', { href: '#' + p, class: PHONE_TABS.includes(p) ? 'tab' : 'xtra', 'aria-current': p === cur ? 'page' : false }, NAV_ICONS[p] ? navIco(NAV_ICONS[p]) : null, el('span', null, t(k)))),
     el('button', { class: 'tab navmore' + (inMore ? ' cur' : ''), type: 'button', 'aria-haspopup': 'dialog', onclick: moreModal }, navIco(NAV_ICONS.more), el('span', null, t('navMore'))));
 }
@@ -56,6 +62,7 @@ function renderView() {
   const r = parseRoute(), wasMining = route === '/mining'; route = r.path; routeArg = r.arg || ''; const m = $('#main'); const y = scrollY;
   // following another transaction on the Mining page: update in place, so the block picture keeps going
   if (wasMining && r.path === '/mining' && m.firstElementChild && m.firstElementChild.classList.contains('minegrid')) { morph(m.firstElementChild, viewMining(routeArg)); mountScene(); return; }
+  if (wasMining && r.path !== '/mining') dropLive(); // its live list stops updating once the page is left
   document.body.classList.toggle('fit', r.path === '/'); document.body.classList.toggle('clockmode', r.path === '/clock'); keepAwake(r.path === '/clock');
   const v = r.path === '/block' ? viewBlock(r.arg) : r.path === '/tx' ? viewTx(r.arg) : r.path === '/my' ? viewMy(r.arg) : VIEWS[r.path](routeArg); m.replaceChildren(v); if (r.path === '/') stripScroll([]); renderNav(r.path);
   document.title = docTitle(); scrollTo(0, r.path === '/' ? y : 0);
@@ -92,18 +99,28 @@ function render() {
   else if (!LIVE[route]) document.title = 'BLOCKHORIZON · ' + L.fmtNum(st.tip);
   trackBlock(route === '/mining'); if (route === '/mining') mountScene();
   checkAlarms(); checkFeeAlerts(); paintFeeNow(); paintMySince();
+  paintFoot();
   const c = $('#conn'), fb = source === FALLBACK; // on the backup source the dot is amber and says so
   if (c) { c.className = 'conn ' + (fb ? 'poll' : st.conn === 'on' ? 'on' : st.conn === 'poll' ? 'poll' : ''); c.title = fb ? t('srcFallback', { s: FALLBACK.replace(/^https?:\/\//, '') }) : st.conn === 'on' ? t('connLive') : st.conn === 'poll' ? t('connPoll') : t('offline'); }
 }
 
-let wake = null;
-async function keepAwake(on) { // Screen Wake Lock: released by the browser when the page is hidden, so it is asked for again on return
-  try {
-    if (on && !wake && !document.hidden && navigator.wakeLock) { wake = await navigator.wakeLock.request('screen'); wake.addEventListener('release', () => { wake = null; }); }
-    else if (!on && wake) { const w = wake; wake = null; await w.release(); }
-  } catch { wake = null; }
+// The footer, in the chosen language, naming the data host actually in use (mempool.space, your node or the backup).
+function paintFoot() {
+  const set = (id, v) => { const e = $(id); if (e && e.textContent !== v) e.textContent = v; };
+  set('#f-priv', t('footPrivacy')); set('#f-sup', t('footSupport')); set('#f-data', t('footData', { s: srcHost() }));
 }
-// Copy link and (where the system offers it) Share for a block or transaction page.
+let wake = null, asking = false;
+// Screen Wake Lock for Clock mode: released by the browser when the page is hidden, so it is asked for again on return.
+// One request at a time, and a lock that arrives after Clock mode was left is released straight away.
+async function keepAwake(on) {
+  try {
+    if (on && !wake && !asking && !document.hidden && navigator.wakeLock) {
+      asking = true; const w = await navigator.wakeLock.request('screen'); asking = false;
+      if (route !== '/clock') { await w.release(); return; }
+      wake = w; w.addEventListener('release', () => { if (wake === w) wake = null; });
+    } else if (!on && wake) { const w = wake; wake = null; await w.release(); }
+  } catch { asking = false; }
+}
 // ---------- boot ----------
 function tickClock() { const s = $('#since'); if (s && st.blocks[0]) s.textContent = sinceText(Date.now()); paintMining(); }
 export async function boot() {
@@ -119,9 +136,9 @@ export async function boot() {
   addEventListener('keydown', (e) => { if (e.key === 'Escape') { if (!$('#modal').hidden) closeModal(); else if (route === '/clock') location.hash = '#/'; } });
   addEventListener('hashchange', renderView); matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyLook);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) keepAwake(route === '/clock'); });
-  renderView(); livePrice(onPriceTick, (on) => { if (st.priceLive !== on) { st.priceLive = on; render(); } }); // the price does not depend on the data server
+  renderView(); paintFoot(); livePrice(onPriceTick, (on) => { if (st.priceLive !== on) { st.priceLive = on; render(); } }); // the price does not depend on the data server
   await loadConfig(S.server); refreshAll();
-  live(onLive, (s) => { st.conn = s; render(); });
+  live(onLive, (s) => { st.conn = s; if (s !== 'on') dropLive(); render(); });
   setInterval(tickClock, 1000); setInterval(refreshAll, 60000);
   pullToRefresh();
   $('#btn-refresh').onclick = hardRefresh;

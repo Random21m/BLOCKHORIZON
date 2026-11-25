@@ -50,11 +50,13 @@ function soundButton() {
   bellIcon(), t('soundNew'));
 }
 
-let pools = null, rewards = null, poolsAt = 0;
+let pools = null, rewards = null, poolsAt = 0, poolsNa = false, rewardsNa = false;
 function loadPools() { // once per 10 minutes while the page is open; a failure retries after a minute
   if (Date.now() - poolsAt < 600000) return; poolsAt = Date.now();
-  api.pools().then((v) => { pools = v; hooks.render(); }).catch(() => { poolsAt = Date.now() - 540000; });
-  api.rewards().then((v) => { rewards = v; hooks.render(); }).catch(() => { /* the panel waits for the next try */ });
+  // a server that answers 4xx does not offer mining statistics (a node without mining indexing): say so instead of "Loading…"
+  const na = (e) => !!(e && e.status >= 400 && e.status < 500);
+  api.pools().then((v) => { pools = v; poolsNa = false; hooks.render(); }).catch((e) => { poolsNa = na(e) && !pools; poolsAt = Date.now() - 540000; hooks.render(); });
+  api.rewards().then((v) => { rewards = v; rewardsNa = false; hooks.render(); }).catch((e) => { rewardsNa = na(e) && !rewards; hooks.render(); });
 }
 const still = () => S.reduced || (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches);
 function randomHash() { const a = new Uint8Array(32); crypto.getRandomValues(a); return [...a].map((x) => x.toString(16).padStart(2, '0')).join(''); }
@@ -91,7 +93,9 @@ export function viewMining(arg = '') {
     el('div', { class: 'mineinfo' },
       el('div', { class: 'minetop' }, el('div', { class: 'eyebrow' }, t('mineEyebrow')), soundButton()), el('div', { class: 'myh', id: 'h' }, Number.isFinite(next) ? '#' + L.fmtNum(next) : '…'),
       el('p', { class: 'since' }, t('searching') + ': ', el('b', { id: 'since' }, sinceText(now))),
-      x.elapsed < 90 && Number.isFinite(gap) ? el('p', { class: 'found', role: 'status' }, t('justFound', { n: L.fmtNum(b0.height), t: L.fmtDuration(gap) }) + (b0.pool ? ' · ' + b0.pool : '')) : null,
+      // always present (hidden when there is nothing to say), so the elements after it keep their place across live updates
+      // and the transaction field keeps what is typed in it and its focus
+      x.elapsed < 90 && Number.isFinite(gap) ? el('p', { class: 'found', role: 'status' }, t('justFound', { n: L.fmtNum(b0.height), t: L.fmtDuration(gap) }) + (b0.pool ? ' · ' + b0.pool : '')) : el('p', { class: 'found', role: 'status', hidden: true }),
       followBox(txId),
       el('div', { class: 'hasher' },
         el('div', { class: 'hrow' }, el('b', { id: 'tries', class: 'mono' }, L.fmtSci(x.tries)), el('span', { class: 'dim' }, ' ' + t('triesSoFar'))),
@@ -117,7 +121,7 @@ export function viewMining(arg = '') {
     el('ol', { class: 'pools' }, sh.map((p) => el('li', null, el('span', null, p.name || t('otherPools')), el('b', null, (p.share * 100).toFixed(1) + '%'),
       el('i', { class: 'bar-track' }, el('i', { class: 'bar-fill' + (p.name ? '' : ' rest'), style: `width:${(p.share / sh[0].share * 100).toFixed(1)}%` }))))),
     b0 && b0.pool ? el('p', null, t('lastBy', { p: b0.pool })) : null,
-    el('p', { class: 'dim note' }, t('whoNote'))] : el('p', { class: 'dim' }, t('loading'))));
+    el('p', { class: 'dim note' }, t('whoNote'))] : el('p', { class: 'dim' }, poolsNa ? t('naServer') : t('loading'))));
 
   // What miners earned over the last 144 blocks: revenue, the part from fees, and the hashprice (what 1 PH/s earns a day).
   const ec = L.minerEconomics(rewards, x.hr);
@@ -125,7 +129,7 @@ export function viewMining(arg = '') {
     el('p', { class: 'big' }, L.satsToBtc(ec.reward, 2) + ' BTC'), el('p', { class: 'dim' }, t('mineDaySub', { n: L.fmtNum(ec.blocks) }) + fiat(ec.reward)),
     kv([[t('fromFees'), (ec.feeShare * 100).toFixed(ec.feeShare < 0.1 ? 2 : 1) + '%'], [t('avgBlock'), btc(ec.perBlock)], [t('txs'), L.fmtNum(ec.tx)],
       [t('hashprice'), Number.isFinite(ec.hashprice) ? L.fmtNum(ec.hashprice, 0) + ' sats' + fiat(ec.hashprice) : '–']]),
-    el('p', { class: 'dim note' }, t('mineDayNote'))] : el('p', { class: 'dim' }, t('loading'))));
+    el('p', { class: 'dim note' }, t('mineDayNote'))] : el('p', { class: 'dim' }, rewardsNa ? t('naServer') : t('loading'))));
 
   grid.append(el('section', { class: 'panel' }, el('h2', null, t('mineSearch')),
     kv([[t('hashrate'), x.hr > 0 ? L.fmtHashrate(x.hr) : '–'], [t('hashesNeeded'), L.fmtSci(x.d * L.TWO32)]]),

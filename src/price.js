@@ -13,18 +13,18 @@ export function parseTicker(raw) {
   } catch { return []; }
 }
 
-export function livePrice(onTick, onState) {
+export function livePrice(onTick, onState) { // the same one-socket rules as live() in api.js
   let ws, timer, stopped = false, delay = 3000;
   const open = () => {
     clearTimeout(timer);
-    if (stopped || document.hidden || navigator.onLine === false) return;
-    try { ws = new WebSocket(KRAKEN_URL); } catch { onState(false); return; }
-    ws.onopen = () => { delay = 3000; ws.send(JSON.stringify({ method: 'subscribe', params: { channel: 'ticker', symbol: CURRENCIES.map((c) => 'BTC/' + c) } })); };
-    ws.onmessage = (e) => { const t = parseTicker(e.data); if (t.length) { onState(true); t.forEach(onTick); } };
-    ws.onclose = () => { onState(false); if (!stopped) { timer = setTimeout(open, delay); delay = Math.min(delay * 2, 30000); } };
-    ws.onerror = () => { try { ws.close(); } catch { /* */ } };
+    if (stopped || document.hidden || navigator.onLine === false || (ws && ws.readyState <= 1)) return;
+    let s; try { s = ws = new WebSocket(KRAKEN_URL); } catch { onState(false); return; }
+    s.onopen = () => { if (s !== ws) return s.close(); delay = 3000; s.send(JSON.stringify({ method: 'subscribe', params: { channel: 'ticker', symbol: CURRENCIES.map((c) => 'BTC/' + c) } })); };
+    s.onmessage = (e) => { if (s !== ws) return; const t = parseTicker(e.data); if (t.length) { onState(true); t.forEach(onTick); } };
+    s.onclose = () => { if (s !== ws) return; onState(false); if (!stopped) { timer = setTimeout(open, delay); delay = Math.min(delay * 2, 30000); } };
+    s.onerror = () => { try { s.close(); } catch { /* */ } };
   };
-  document.addEventListener('visibilitychange', () => { if (!document.hidden && (!ws || ws.readyState > 1)) open(); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) open(); });
   addEventListener('online', open);
   open();
   return () => { stopped = true; clearTimeout(timer); try { ws && ws.close(); } catch { /* */ } };
@@ -42,9 +42,10 @@ export function liveMarket(cur, minutes, on, onState, alive) {
   const open = () => {
     clearTimeout(timer);
     if (stopped || document.hidden || navigator.onLine === false) return;
-    try { ws = new WebSocket(KRAKEN_URL); } catch { onState(false); return; }
-    ws.onopen = () => { delay = 3000; book = null; sub({ channel: 'ohlc', interval: tf }); if (on.book) sub(bookSub); if (on.trades) sub({ channel: 'trade' }); };
-    ws.onmessage = (e) => {
+    let s; try { s = ws = new WebSocket(KRAKEN_URL); } catch { onState(false); return; }
+    s.onopen = () => { if (s !== ws) return s.close(); delay = 3000; book = null; sub({ channel: 'ohlc', interval: tf }); if (on.book) sub(bookSub); if (on.trades) sub({ channel: 'trade' }); };
+    s.onmessage = (e) => {
+      if (s !== ws) return;
       if (!alive()) return stop();
       const f = parseOhlc(e.data); if (f) { if (f.cur === cur && f.interval === tf) { onState(true); on.candles(f); } return; }
       const b = on.book && parseBook(e.data);
@@ -56,8 +57,8 @@ export function liveMarket(cur, minutes, on, onState, alive) {
       }
       const tr = on.trades && parseTrades(e.data); if (tr && tr.cur === cur) on.trades(tr);
     };
-    ws.onclose = () => { if (stopped) return; onState(false); timer = setTimeout(open, delay); delay = Math.min(delay * 2, 30000); };
-    ws.onerror = () => { try { ws.close(); } catch { /* */ } };
+    s.onclose = () => { if (stopped || s !== ws) return; onState(false); timer = setTimeout(open, delay); delay = Math.min(delay * 2, 30000); };
+    s.onerror = () => { try { s.close(); } catch { /* */ } };
   };
   const wake = () => { if (!alive()) return stop(); if (!document.hidden && (!ws || ws.readyState > 1)) open(); };
   const watch = setInterval(() => { if (!alive()) stop(); }, 2000);

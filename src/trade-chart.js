@@ -113,6 +113,8 @@ export function tradeChart() {
     const onFs = () => { if (!alive()) return document.removeEventListener('fullscreenchange', onFs); if (fsBtn) pressed(fsBtn, document.fullscreenElement === panel); requestAnimationFrame(() => { fit(); paint(); }); };
     const onAlerts = () => { if (!alive()) return document.removeEventListener('bh-alerts', onAlerts); if (sel && sel.kind === 'alert' && !priceAlerts().some((a) => a.id === sel.id)) { sel = null; syncSel(); } alertsList(); paint(); };
     document.addEventListener('fullscreenchange', onFs); document.addEventListener('bh-alerts', onAlerts);
+    // once the chart is gone (another page), drop these listeners too, or each visit would keep a whole chart in memory
+    const gone = setInterval(() => { if (alive()) return; clearInterval(gone); document.removeEventListener('fullscreenchange', onFs); document.removeEventListener('bh-alerts', onAlerts); }, 2000);
     alertsList();
   });
 

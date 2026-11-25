@@ -466,3 +466,8 @@ export function minerEconomics(r, hashrate) {
   return { blocks: n, reward, fee, tx, feeShare: fee / reward, perBlock: reward / n,
     hashprice: hashrate > 0 ? reward * (144 / n) / (hashrate / 1e15) : NaN }; // scaled to 144 blocks so a short window still reads per day
 }
+// Blocks on screen + a fresh list -> one list, newest first, one entry per height (the fresh copy wins), at most 15.
+export function mergeBlocks(cur, fresh) {
+  const by = new Map(); for (const b of [...(cur || []), ...(fresh || [])]) if (b && Number.isFinite(b.height)) by.set(b.height, b);
+  return [...by.values()].sort((a, b) => b.height - a.height).slice(0, 15);
+}

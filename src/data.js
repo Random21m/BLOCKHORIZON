@@ -8,15 +8,19 @@ import { hooks, S, st, alarms, feeAlerts, priceAlerts, fmtPrice, FEE_LVL_KEYS, t
 
 // ---------- data ----------
 export async function refreshAll() {
+  // The live feed can be ahead of this refresh (a block arrives while it is in flight, or the REST answer is a saved copy):
+  // the height never goes back, blocks are merged by height, and a saved copy never replaces data already on screen.
   const jobs = {
-    tip: api.tip().then((v) => { const h = L.parseTipHeight(v); if (Number.isFinite(h)) st.tip = h; }),
-    blocks: api.blocks().then((b) => { if (Array.isArray(b)) st.blocks = b; }),
-    diff: api.difficulty().then((v) => { st.diff = v; }), fees: api.fees().then((v) => { st.fees = v; }),
-    mem: api.mempool().then((v) => { st.mem = v; }), proj: api.projected().then((v) => { st.proj = v; }),
-    prices: api.prices().then((v) => { st.prices = Date.now() - st.priceAt < 30000 ? Object.assign({}, v, st.prices) : v; if (v && !v.__stale) checkPriceAlerts(v); }), hr: api.hashrate().then((v) => { st.hr = v; }), ln: api.lightning().then((v) => { st.ln = v.latest || v; }),
+    tip: api.tip().then((v) => { const h = L.parseTipHeight(v); if (Number.isFinite(h) && !(h < st.tip)) st.tip = h; return v; }),
+    blocks: api.blocks().then((b) => { if (Array.isArray(b) && !(b.__stale && st.blocks.length)) st.blocks = L.mergeBlocks(st.blocks, b); return b; }),
+    diff: api.difficulty().then((v) => { if (!(v.__stale && st.diff)) st.diff = v; return v; }), fees: api.fees().then((v) => { if (!(v.__stale && st.fees)) st.fees = v; return v; }),
+    mem: api.mempool().then((v) => { if (!(v.__stale && st.mem)) st.mem = v; return v; }), proj: api.projected().then((v) => { if (!(v.__stale && st.proj)) st.proj = v; return v; }),
+    prices: api.prices().then((v) => { st.prices = Date.now() - st.priceAt < 30000 ? Object.assign({}, v, st.prices) : v; if (v && !v.__stale) checkPriceAlerts(v); return v; }), hr: api.hashrate().then((v) => { if (!(v.__stale && st.hr)) st.hr = v; return v; }), ln: api.lightning().then((v) => { if (!(v.__stale && st.ln)) st.ln = v.latest || v; return v; }),
   };
   const r = await Promise.allSettled(Object.values(jobs));
-  if (r.every((x) => x.status === 'rejected')) st.conn = 'off';
+  // nothing reached the network (every answer failed or was a saved copy): say so, unless the live feed is up
+  const fresh = r.some((x) => x.status === 'fulfilled' && !(x.value && x.value.__stale));
+  if (!fresh && st.conn !== 'on') st.conn = 'off'; else if (fresh && st.conn === 'off') st.conn = 'poll'; // back online, live feed not (yet)
   if (!Number.isFinite(st.tip) && st.blocks[0]) st.tip = st.blocks[0].height;
   hooks.render();
 }
@@ -64,15 +68,15 @@ export let alarmTip = NaN;
 export function checkAlarms() {
   if (!(st.tip > alarmTip) && Number.isFinite(alarmTip)) return; alarmTip = st.tip;
   const { hit, rest } = L.splitAlarms(alarms(), st.tip);
-  if (!hit.length) return; store('alarms', rest);
+  if (!hit.length) return; store('alarms', rest); hooks.alerts(); // the Alarm page, if open, drops the fired ones
   for (const x of hit) { const msg = '⏰ ' + t('reached', { h: L.fmtNum(x.height) }) + (x.label ? ': ' + x.label : ''); toast(msg); play(x.sound || S.asound); notify(msg); }
 }
 // Fee alerts: checked whenever new fee data arrives (live feed or the minute refresh). Each fires once, then is removed.
 let feeSeen = null;
 export function checkFeeAlerts() {
-  if (!st.fees || st.fees === feeSeen) return; feeSeen = st.fees;
+  if (!st.fees || st.fees === feeSeen || st.fees.__stale) return; feeSeen = st.fees; // never on fees saved earlier
   const { hit, rest } = L.splitFeeAlerts(feeAlerts(), st.fees);
-  if (!hit.length) return; store('feeAlerts', rest);
+  if (!hit.length) return; store('feeAlerts', rest); hooks.alerts();
   for (const a of hit) { const msg = '⏰ ' + t('feeReached', { l: t(FEE_LVL_KEYS[a.level] || 'lvlNext'), f: L.fmtFee(st.fees[L.FEE_LEVELS[a.level] || 'fastestFee']), m: L.fmtFee(a.max) }); toast(msg); play(a.sound || S.asound); notify(msg); }
 }
 // Price alerts: checked against fresh prices only, each Kraken trade or a minute refresh that reached the network (never
