@@ -13,8 +13,9 @@ function noise(t0, dur, vol = 0.12, hp = 4000) {
   const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = b; f.type = 'highpass'; f.frequency.value = hp; g.gain.value = vol;
   s.connect(f).connect(g).connect(c.destination); s.start(c.currentTime + t0);
 }
-export const BLOCK_SOUNDS = { drop: 'Water drop', bell: 'Bell', chime: 'Door chime', cymbal: 'Cymbal', whoosh: 'Whoosh' };
-export const ALARM_SOUNDS = { clock: 'Alarm clock', gong: 'Gong', grandfather: 'Grandfather clock', beep: 'Beeps' };
+// Sound ids and the key of each one's name in strings.js (shown with t()).
+export const BLOCK_SOUNDS = { drop: 'sDrop', bell: 'sBell', chime: 'sChime', cymbal: 'sCymbal', whoosh: 'sWhoosh' };
+export const ALARM_SOUNDS = { clock: 'sClock', gong: 'sGong', grandfather: 'sGrand', beep: 'sBeep' };
 export function play(name) {
   switch (name) {
     case 'drop': tone(900, 0, 0.25, 'sine', 0.25, 300); break;

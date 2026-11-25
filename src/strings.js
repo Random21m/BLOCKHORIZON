@@ -2,6 +2,8 @@
 // tests/lib.test.mjs checks that every language has every key and the same {placeholders} as English.
 export const MORE = {
   en: {
+    units: "y d h m s", myBefore1: "That was the day before the genesis block: Bitcoin did not exist yet.", gapsAria: "Time between the last blocks against the 10 minute target", emissionAria: "Block reward by epoch, halving every 210,000 blocks",
+    sDrop: "Water drop", sBell: "Bell", sChime: "Door chime", sCymbal: "Cymbal", sWhoosh: "Whoosh", sClock: "Alarm clock", sGong: "Gong", sGrand: "Grandfather clock", sBeep: "Beeps",
     finalBlock: "Final bitcoin block", finalNote: "{n} blocks to go. The last block that creates new bitcoin, expected around {y}.", finalDone: "Mined: every bitcoin there will ever be now exists.",
     skipTo: "Skip to content", refreshL: "Refresh", homeL: "BLOCKHORIZON home", mainNav: "Main",
     naServer: "Not available from this data server.", srvHttps: "This page is https, so the server must be https too. Use your node's https address (Umbrel and Start9 offer one), or run BLOCKHORIZON on the node itself.",
@@ -51,6 +53,8 @@ export const MORE = {
     storedOnly: "Settings are stored only in this browser.",
   },
   de: {
+    units: "J T h min s", myBefore1: "Das war der Tag vor dem Genesis-Block: Bitcoin gab es noch nicht.", gapsAria: "Zeit zwischen den letzten Blöcken im Vergleich zum 10-Minuten-Ziel", emissionAria: "Blockbelohnung je Epoche, Halbierung alle 210.000 Blöcke",
+    sDrop: "Wassertropfen", sBell: "Glocke", sChime: "Türgong", sCymbal: "Becken", sWhoosh: "Rauschen", sClock: "Wecker", sGong: "Gong", sGrand: "Standuhr", sBeep: "Pieptöne",
     finalBlock: "Letzter Bitcoin-Block", finalNote: "Noch {n} Blöcke. Der letzte Block, der neue Bitcoin erzeugt, erwartet um {y}.", finalDone: "Gemined: Jeder Bitcoin, den es je geben wird, existiert jetzt.",
     skipTo: "Zum Inhalt springen", refreshL: "Aktualisieren", homeL: "BLOCKHORIZON Startseite", mainNav: "Hauptmenü",
     naServer: "Von diesem Datenserver nicht verfügbar.", srvHttps: "Diese Seite nutzt https, also muss der Server auch https nutzen. Nimm die https-Adresse deines Nodes (Umbrel und Start9 bieten eine) oder betreibe BLOCKHORIZON direkt auf dem Node.",
@@ -100,6 +104,8 @@ export const MORE = {
     storedOnly: "Einstellungen werden nur in diesem Browser gespeichert.",
   },
   es: {
+    units: "a d h min s", myBefore1: "Eso fue el día antes del bloque génesis: Bitcoin aún no existía.", gapsAria: "Tiempo entre los últimos bloques frente al objetivo de 10 minutos", emissionAria: "Recompensa por bloque en cada época, se reduce a la mitad cada 210.000 bloques",
+    sDrop: "Gota de agua", sBell: "Campana", sChime: "Timbre", sCymbal: "Platillo", sWhoosh: "Zumbido", sClock: "Despertador", sGong: "Gong", sGrand: "Reloj de pie", sBeep: "Pitidos",
     finalBlock: "Último bloque de bitcoin", finalNote: "Faltan {n} bloques. El último bloque que crea bitcoin nuevo, previsto hacia {y}.", finalDone: "Minado: ya existe todo el bitcoin que habrá jamás.",
     skipTo: "Saltar al contenido", refreshL: "Actualizar", homeL: "Inicio de BLOCKHORIZON", mainNav: "Principal",
     naServer: "No disponible en este servidor de datos.", srvHttps: "Esta página usa https, así que el servidor también debe usarlo. Usa la dirección https de tu nodo (Umbrel y Start9 la ofrecen) o ejecuta BLOCKHORIZON en el propio nodo.",
@@ -149,6 +155,8 @@ export const MORE = {
     storedOnly: "Los ajustes se guardan solo en este navegador.",
   },
   fr: {
+    units: "a j h min s", myBefore1: "C’était la veille du bloc genèse : Bitcoin n’existait pas encore.", gapsAria: "Temps entre les derniers blocs par rapport à l’objectif de 10 minutes", emissionAria: "Récompense de bloc par époque, divisée par deux tous les 210 000 blocs",
+    sDrop: "Goutte d’eau", sBell: "Cloche", sChime: "Carillon", sCymbal: "Cymbale", sWhoosh: "Souffle", sClock: "Réveil", sGong: "Gong", sGrand: "Horloge comtoise", sBeep: "Bips",
     finalBlock: "Dernier bloc de bitcoin", finalNote: "Encore {n} blocs. Le dernier bloc qui crée de nouveaux bitcoins, attendu vers {y}.", finalDone: "Miné : tous les bitcoins qui existeront jamais existent désormais.",
     skipTo: "Aller au contenu", refreshL: "Actualiser", homeL: "Accueil BLOCKHORIZON", mainNav: "Principal",
     naServer: "Non disponible sur ce serveur de données.", srvHttps: "Cette page est en https, le serveur doit donc l'être aussi. Utilisez l'adresse https de votre nœud (Umbrel et Start9 en proposent une) ou installez BLOCKHORIZON sur le nœud lui-même.",
@@ -198,6 +206,8 @@ export const MORE = {
     storedOnly: "Les réglages sont enregistrés uniquement dans ce navigateur.",
   },
   pt: {
+    units: "a d h min s", myBefore1: "Isso foi no dia anterior ao bloco gênese: o Bitcoin ainda não existia.", gapsAria: "Tempo entre os últimos blocos em relação à meta de 10 minutos", emissionAria: "Recompensa por bloco em cada época, reduzida à metade a cada 210.000 blocos",
+    sDrop: "Gota d’água", sBell: "Sino", sChime: "Campainha", sCymbal: "Prato", sWhoosh: "Sopro", sClock: "Despertador", sGong: "Gongo", sGrand: "Relógio de pêndulo", sBeep: "Bipes",
     finalBlock: "Último bloco de bitcoin", finalNote: "Faltam {n} blocos. O último bloco que cria bitcoin novo, previsto por volta de {y}.", finalDone: "Minerado: todo o bitcoin que existirá já existe.",
     skipTo: "Pular para o conteúdo", refreshL: "Atualizar", homeL: "Início do BLOCKHORIZON", mainNav: "Principal",
     naServer: "Não disponível neste servidor de dados.", srvHttps: "Esta página usa https, então o servidor também precisa usar. Use o endereço https do seu nó (Umbrel e Start9 oferecem um) ou rode o BLOCKHORIZON no próprio nó.",
@@ -247,6 +257,8 @@ export const MORE = {
     storedOnly: "As configurações ficam salvas só neste navegador.",
   },
   it: {
+    units: "a g h min s", myBefore1: "Era il giorno prima del blocco genesi: Bitcoin non esisteva ancora.", gapsAria: "Tempo tra gli ultimi blocchi rispetto all’obiettivo di 10 minuti", emissionAria: "Ricompensa per blocco per epoca, dimezzata ogni 210.000 blocchi",
+    sDrop: "Goccia d’acqua", sBell: "Campana", sChime: "Campanello", sCymbal: "Piatto", sWhoosh: "Fruscio", sClock: "Sveglia", sGong: "Gong", sGrand: "Pendolo", sBeep: "Bip",
     finalBlock: "Ultimo blocco di bitcoin", finalNote: "Mancano {n} blocchi. L'ultimo blocco che crea nuovi bitcoin, previsto intorno al {y}.", finalDone: "Minato: ogni bitcoin che esisterà mai ora esiste.",
     skipTo: "Vai al contenuto", refreshL: "Aggiorna", homeL: "Home di BLOCKHORIZON", mainNav: "Principale",
     naServer: "Non disponibile da questo server dati.", srvHttps: "Questa pagina usa https, quindi anche il server deve usarlo. Usa l'indirizzo https del tuo nodo (Umbrel e Start9 ne offrono uno) o esegui BLOCKHORIZON sul nodo stesso.",
@@ -296,6 +308,8 @@ export const MORE = {
     storedOnly: "Le impostazioni sono salvate solo in questo browser.",
   },
   nl: {
+    units: "j d u m s", myBefore1: "Dat was de dag voor het genesisblok: Bitcoin bestond nog niet.", gapsAria: "Tijd tussen de laatste blokken tegenover het doel van 10 minuten", emissionAria: "Blokbeloning per tijdperk, gehalveerd elke 210.000 blokken",
+    sDrop: "Waterdruppel", sBell: "Bel", sChime: "Deurgong", sCymbal: "Bekken", sWhoosh: "Zoef", sClock: "Wekker", sGong: "Gong", sGrand: "Staande klok", sBeep: "Piepjes",
     finalBlock: "Laatste bitcoinblok", finalNote: "Nog {n} blokken. Het laatste blok dat nieuwe bitcoin maakt, verwacht rond {y}.", finalDone: "Gemined: elke bitcoin die er ooit zal zijn, bestaat nu.",
     skipTo: "Naar de inhoud", refreshL: "Vernieuwen", homeL: "BLOCKHORIZON startpagina", mainNav: "Hoofdmenu",
     naServer: "Niet beschikbaar via deze gegevensserver.", srvHttps: "Deze pagina gebruikt https, dus de server moet dat ook. Gebruik het https-adres van je node (Umbrel en Start9 bieden er een) of draai BLOCKHORIZON op de node zelf.",
@@ -345,6 +359,8 @@ export const MORE = {
     storedOnly: "Instellingen worden alleen in deze browser bewaard.",
   },
   tr: {
+    units: "y g sa dk sn", myBefore1: "Bu, genesis bloğundan bir gün önceydi: Bitcoin henüz yoktu.", gapsAria: "Son bloklar arasındaki süre ve 10 dakikalık hedef", emissionAria: "Dönem başına blok ödülü, her 210.000 blokta yarıya iner",
+    sDrop: "Su damlası", sBell: "Zil", sChime: "Kapı zili", sCymbal: "Zil (simbal)", sWhoosh: "Hışırtı", sClock: "Çalar saat", sGong: "Gong", sGrand: "Sarkaçlı saat", sBeep: "Bip sesleri",
     finalBlock: "Son bitcoin bloğu", finalNote: "{n} blok kaldı. Yeni bitcoin üreten son blok, {y} civarında bekleniyor.", finalDone: "Kazıldı: var olacak her bitcoin artık var.",
     skipTo: "İçeriğe geç", refreshL: "Yenile", homeL: "BLOCKHORIZON ana sayfa", mainNav: "Ana menü",
     naServer: "Bu veri sunucusunda yok.", srvHttps: "Bu sayfa https kullanıyor, bu yüzden sunucu da https olmalı. Düğümünüzün https adresini kullanın (Umbrel ve Start9 sunar) ya da BLOCKHORIZON'u düğümün kendisinde çalıştırın.",

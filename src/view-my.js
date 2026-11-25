@@ -24,7 +24,7 @@ export function viewMy(query) {
   let ts = L.noonTs(d); if (!ts) return root;
   const g0 = Math.floor(L.GENESIS_TS / 86400) * 86400; if (ts >= g0 && ts < L.GENESIS_TS) ts = L.GENESIS_TS; // 3 Jan 2009 is the genesis block's own day (mined at 18:15 UTC, after our noon)
   const name = l || t('myDefault'), now = Date.now();
-  if (ts < L.GENESIS_TS) { out.append(el('div', { class: 'panel' }, el('div', { class: 'eyebrow' }, name), el('p', { class: 'big' }, t('myBefore', { n: L.fmtNum(Math.round((g0 - Math.floor(ts / 86400) * 86400) / 86400)) })))); return root; }
+  if (ts < L.GENESIS_TS) { out.append(el('div', { class: 'panel' }, el('div', { class: 'eyebrow' }, name), el('p', { class: 'big' }, ((n) => t(n === 1 ? 'myBefore1' : 'myBefore', { n: L.fmtNum(n) }))(Math.round((g0 - Math.floor(ts / 86400) * 86400) / 86400))))); return root; }
   if (ts * 1000 > now) {
     const h = Number.isFinite(st.tip) ? L.heightAt(ts, st.tip, now) : NaN;
     out.append(el('div', { class: 'panel mycard' }, el('div', { class: 'eyebrow' }, name), el('div', { class: 'myh' }, Number.isFinite(h) ? '#' + L.fmtNum(h) : '…'),

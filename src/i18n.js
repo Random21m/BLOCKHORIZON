@@ -1,6 +1,7 @@
 // Small string tables. English is the fallback for any missing key.
 export const LANGS = { en: 'English', de: 'Deutsch', es: 'Español', fr: 'Français', pt: 'Português', it: 'Italiano', nl: 'Nederlands', tr: 'Türkçe' };
 import { MORE } from './strings.js';
+import { setUnits } from './lib.js';
 const T = {
   en: { dash: 'Horizon', alarm: 'Alarm', calc: 'Calculator', replay: 'Halving replay', events: 'Calendar', glossary: 'Glossary', about: 'About', watch: "Watch", search: 'Search',
     height: 'Block height', since: 'Since last block', halving: 'Next halving', difficulty: 'Difficulty adjustment', hashrate: 'Hashrate', production: 'Block production',
@@ -26,7 +27,7 @@ const T = {
 for (const l of Object.keys(T)) Object.assign(T[l], MORE[l]); // the longer texts live in strings.js
 export const TABLES = T;
 let cur = 'en';
-export function setLang(l) { cur = T[l] ? l : 'en'; }
+export function setLang(l) { cur = T[l] ? l : 'en'; const [y, d, h, m, s] = (T[cur].units || T.en.units).split(' '); setUnits({ y, d, h, m, s }); }
 // t('key') or t('key', { n: 5 }): {name} placeholders are filled from the second argument.
 export function t(k, v) {
   const s = (T[cur] && T[cur][k]) || T.en[k] || k;
