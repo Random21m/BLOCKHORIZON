@@ -228,10 +228,12 @@ await ok('block arrival: blocks glide one slot and the height rolls in; nothing 
     await until(p, (h) => [document.querySelector('#h').textContent, document.querySelector('.strip2 a.blk:not(.proj) b').textContent].every((x) => x.replace(/\D/g, '') === String(h)), nb.height, { timeout: 8000 });
     counts[motion] = await p.evaluate(() => window.__n); await c.close(); }
   assert.ok(counts['no-preference'] >= 10, 'animated ' + counts['no-preference']); assert.equal(counts.reduce, 0); });
-await ok('mining: the next block fills live from the feed, a tx can be opened, the hash count runs, and a found block slides away', async () => {
-  const frames = JSON.parse(fx('projected-txs.json')), c = await b.newContext({ viewport: { width: 1280, height: 900 } }); let sock = null, asked = '';
+await ok('mining: the next block fills live from the feed, a tx can be followed until it is mined, the hash count runs, and a found block slides away', async () => {
+  const frames = JSON.parse(fx('projected-txs.json')), c = await b.newContext({ viewport: { width: 1280, height: 900 } }); let sock = null, asked = '', mined = 0;
   await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
-  await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+  await c.route(/mempool\.space\/api\/tx\//, (route) => { const id = new URL(route.request().url()).pathname.split('/').pop(); // the followed transaction: waiting, then mined
+    route.fulfill({ contentType: 'application/json', body: JSON.stringify({ txid: id, fee: 2000, weight: 800, vin: [{}], vout: [{ value: 5000 }], status: mined ? { confirmed: true, block_height: mined, block_time: Math.floor(Date.now() / 1000) } : { confirmed: false } }) }); });
+  await c.route(/mempool\.space\/(?!api\/tx\/)/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
   await c.routeWebSocket(/mempool\.space/, (ws) => { sock = ws; ws.onMessage((m) => { asked += m; if (String(m).includes('"track-mempool-block":0')) ws.send(JSON.stringify({ 'projected-block-transactions': frames[0] })); }); });
   const p = await c.newPage(); const errs = []; p.on('pageerror', (e) => errs.push(e.message));
   await p.goto(base); await until(p, () => !!document.querySelector('.strip2 a.blk.proj.mining'));
@@ -247,16 +249,28 @@ await ok('mining: the next block fills live from the feed, a tx can be opened, t
   const t1 = await p.locator('#tries').innerText(); assert.ok(/10/.test(t1), t1); assert.ok(/^0{19}/.test((await p.locator('.hash.target').innerText()).trim()));
   assert.equal(await p.locator('#tries-list li').count(), 5); assert.equal(await p.locator('.pools li').count(), 7);
   assert.ok((await p.locator('main').innerText()).includes('Foundry USA'));
-  // hover shows the transaction, a click opens it
+  // hover shows the transaction; a tap follows it: outlined in the picture, its status beside it (the page is not rebuilt)
   const box = await p.locator('canvas.scene').boundingBox(); await p.mouse.move(box.x + 3, box.y + box.height - 3); await until(p, () => !document.querySelector('.scene-tip').hidden);
   assert.ok(/sat\/vB/.test(await p.locator('.scene-tip').innerText()));
+  await p.evaluate(() => { window.__cv0 = document.querySelector('canvas.scene'); });
+  await p.mouse.click(box.x + 3, box.y + box.height - 3); await until(p, () => /^#\/mining\?tx=[0-9a-f]{64}$/.test(location.hash) && document.querySelector('#mf-tx')?.value.length === 64);
+  const fid = await p.evaluate(() => location.hash.split('=')[1]); assert.ok(await p.evaluate(() => window.__cv0 === document.querySelector('canvas.scene')), 'same picture, not rebuilt');
+  assert.equal(await p.inputValue('#mf-tx'), fid); await until(p, () => /In this block/.test(document.querySelector('.fstatus')?.textContent || ''));
+  assert.ok(/10 sat\/vB/.test(await p.locator('.fstatus').innerText()), await p.locator('.fstatus').innerText());
+  assert.equal(await p.getAttribute('.flinks a[href^="#/tx/"]', 'href'), '#/tx/' + fid);
+  // a mistyped ID is explained, the picture stays
+  await p.fill('#mf-tx', 'abc'); await p.click('.follow .btn-go'); await until(p, () => !document.querySelector('#toast').hidden); assert.ok(/#\/mining\?tx=/.test(await p.evaluate(() => location.hash)));
+  // sound: the toggle switches the block sound on and keeps it
+  assert.equal(await p.getAttribute('.soundbtn', 'aria-pressed'), 'false'); await p.click('.soundbtn'); assert.equal(await p.getAttribute('.soundbtn', 'aria-pressed'), 'true');
+  assert.equal(await p.evaluate(() => JSON.parse(localStorage.getItem('bh.settings')).sound), true);
   // a block is found: the picture keeps its canvas (live repaint leaves it alone) and the height moves on
   const before = await p.evaluate(() => { window.__cv = document.querySelector('canvas.scene'); return document.querySelector('#h').textContent; });
   const bl = JSON.parse(fx('blocks.json')), nb = Object.assign({}, bl[0], { height: bl[0].height + 1, id: '00000000000000000000' + 'b'.repeat(44), timestamp: Math.floor(Date.now() / 1000) });
-  sock.send(JSON.stringify({ block: nb })); await until(p, (h) => document.querySelector('#h').textContent.replace(/\D/g, '') === String(h + 1), bl[0].height + 1);
+  mined = nb.height; sock.send(JSON.stringify({ block: nb })); await until(p, (h) => document.querySelector('#h').textContent.replace(/\D/g, '') === String(h + 1), bl[0].height + 1);
+  await until(p, () => /It made it/.test(document.querySelector('.fstatus')?.textContent || '')); assert.ok((await p.locator('.fstatus').innerText()).includes((mined).toLocaleString('en')));
   assert.notEqual(before, await p.locator('#h').innerText()); assert.ok(await p.evaluate(() => window.__cv === document.querySelector('canvas.scene') && window.__cv.isConnected));
   assert.ok(/Found: block/.test(await p.locator('.found').innerText()));
-  await p.mouse.click(box.x + 3, box.y + box.height - 3); await until(p, () => /^#\/tx\/[0-9a-f]{64}$/.test(location.hash));
+  await p.click('.flinks a[href^="#/tx/"]'); await until(p, () => /^#\/tx\/[0-9a-f]{64}$/.test(location.hash));
   for (let i = 0; i < 50 && !asked.includes('"track-mempool-block":-1'); i++) await p.waitForTimeout(100);
   assert.ok(asked.includes('"track-mempool-block":-1'), 'stops asking when the page is left');
   assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)); assert.deepEqual(errs, []); await c.close(); });
@@ -264,6 +278,17 @@ await ok('mining: phone layout, and without the live feed an approximate block i
   await page.setViewportSize({ width: 360, height: 800 }); await page.goto(base + '#/mining'); await until(page, () => /approximate/.test(document.querySelector('.scenebox figcaption')?.textContent || ''));
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'no horizontal scroll');
   const w = await page.evaluate(() => document.querySelector('canvas.scene').getBoundingClientRect().width); assert.ok(w > 280, 'picture wide on a phone: ' + w); });
+await ok('mining: a waiting transaction links to following it; the embed widget draws the block being mined', async () => {
+  await page.setViewportSize({ width: 1280, height: 800 }); await page.goto(base + '#/tx/' + TXM); await page.waitForSelector('.watchlink');
+  await page.click('.watchlink'); await until(page, (id) => location.hash === '#/mining?tx=' + id && document.querySelector('#mf-tx')?.value === id, TXM);
+  await until(page, () => /blocks back|below the next|In this block/.test(document.querySelector('.fstatus')?.textContent || ''));
+  await page.goto(base + '#/tx/' + TXC); await page.waitForSelector('.panel dl'); assert.equal(await page.locator('.watchlink').count(), 0, 'not for a confirmed one');
+  await page.goto(base + 'embed.html?show=mining&theme=light'); await until(page, () => /#977,412/.test(document.querySelector('#num')?.textContent || ''));
+  assert.ok(/Being mined now/i.test(await page.locator('#lab').innerText())); assert.ok(/3,870 tx/.test(await page.locator('#sub').innerText()));
+  assert.ok((await page.getAttribute('#w', 'href')).endsWith('#/mining'));
+  await until(page, () => { const cv = document.querySelector('#w canvas'); if (!cv || !cv.width) return false; const d = cv.getContext('2d').getImageData(0, 0, cv.width, cv.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 200) n++; return n / (d.length / 4) > 0.3; });
+  await page.goto(base + '#/about'); await page.selectOption('#emb-what', 'mining');
+  assert.ok((await page.inputValue('#emb-code')).includes('embed.html?show=mining') && (await page.inputValue('#emb-code')).includes('height="150"')); });
 await ok('your block: a date becomes its block with live facts, a shareable link and an image; future and pre-Bitcoin dates', async () => {
   await page.goto(base); await until(page, () => /977/.test(document.querySelector('#h')?.textContent || '')); await page.click('#nav a[href="#/my"]'); await page.waitForSelector('#my-d');
   await page.fill('#my-d', '2023-11-14'); await page.fill('#my-l', 'First sats'); await page.click('#my-out ~ form button, form .btn-go');
@@ -294,7 +319,7 @@ await ok('accessibility: no axe-core violations on the main pages and dialogs, d
     const c = await b.newContext({ viewport: { width: 1280, height: 800 }, bypassCSP: true, reducedMotion: 'reduce' }); await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
     await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
     await c.addInitScript((t) => localStorage.setItem('bh.settings', JSON.stringify({ theme: t, _v: 2, lang: 'en' })), theme); const p = await c.newPage();
-    for (const pg of ['#/', '#/clock', '#/alarm', '#/calc', '#/charts', '#/glossary', '#/about', '#/my?d=2023-11-14&l=First%20sats', '#/mining', '#/tx/' + TXC, 'search', 'settings', 'embed.html?show=height', 'embed.html?show=halving&theme=light']) {
+    for (const pg of ['#/', '#/clock', '#/alarm', '#/calc', '#/charts', '#/glossary', '#/about', '#/my?d=2023-11-14&l=First%20sats', '#/mining', '#/mining?tx=' + TXM, '#/tx/' + TXC, 'embed.html?show=mining', 'search', 'settings', 'embed.html?show=height', 'embed.html?show=halving&theme=light']) {
       if (pg === 'search' || pg === 'settings') { await p.goto(base); await p.waitForSelector('#h'); await p.click('#btn-' + pg); } else await p.goto(pg.startsWith('embed') ? base + pg : base + pg);
       await p.waitForTimeout(700); await p.evaluate(AXE);
       for (const v of await p.evaluate(async () => (await axe.run(document, { resultTypes: ['violations'] })).violations.map((x) => x.id + ': ' + x.nodes.map((n) => n.target.join(' ')).slice(0, 3).join(', ')))) found.push(`${theme} ${pg} ${v}`);

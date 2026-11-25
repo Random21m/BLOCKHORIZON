@@ -17,14 +17,15 @@ import { measure, arrive } from './arrival.js';
 import { viewReplay, viewEvents, viewGlossary, viewWatch, viewAbout } from './view-info.js';
 import { closeModal, searchModal, settingsModal, trapFocus } from './modals.js';
 
-let route = '/';
+let route = '/', routeArg = '';
 const VIEWS = { '/': viewDash, '/clock': viewClock, '/mining': viewMining, '/alarm': viewAlarm, '/calc': viewCalc, '/charts': viewCharts, '/replay': viewReplay, '/events': viewEvents, '/glossary': viewGlossary, '/watch': viewWatch, '/about': viewAbout };
 const LIVE = { '/': 'dashgrid', '/clock': 'clockview', '/mining': 'minegrid' }; // views repainted on every live update (the others keep their inputs)
 function parseRoute() {
   const h = location.hash.replace(/^#/, '') || '/';
   let m = h.match(/^\/block\/(\d+)$/); if (m) return { path: '/block', arg: m[1] };
   m = h.match(/^\/tx\/([0-9a-fA-F]{64})$/); if (m) return { path: '/tx', arg: m[1].toLowerCase() };
-  m = h.match(/^\/my(?:\?(.*))?$/); if (m) return { path: '/my', arg: m[1] || '' }; // 'Your block': the date travels in the link
+  m = h.match(/^\/my(?:\?(.*))?$/); if (m) return { path: '/my', arg: m[1] || '' };
+  m = h.match(/^\/mining(?:\?(.*))?$/); if (m) return { path: '/mining', arg: m[1] || '' }; // a transaction to follow travels in the link // 'Your block': the date travels in the link
   return { path: VIEWS[h] ? h : '/' };
 }
 function renderNav(cur) { const nav = $('#nav'); nav.replaceChildren(...NAVS.map(([p, k]) => el('a', { href: '#' + p, 'aria-current': p === cur ? 'page' : false }, t(k)))); }
@@ -41,9 +42,11 @@ const docTitle = () => 'BLOCKHORIZON' + (Number.isFinite(st.tip) ? ' · ' + L.fm
 function renderView() {
   // #/search (the app's Search shortcut) opens the dashboard with the search dialog
   if (location.hash === '#/search') { history.replaceState(null, '', '#/'); queueMicrotask(searchModal); }
-  const r = parseRoute(); route = r.path; const m = $('#main'); const y = scrollY;
+  const r = parseRoute(), wasMining = route === '/mining'; route = r.path; routeArg = r.arg || ''; const m = $('#main'); const y = scrollY;
+  // following another transaction on the Mining page: update in place, so the block picture keeps going
+  if (wasMining && r.path === '/mining' && m.firstElementChild && m.firstElementChild.classList.contains('minegrid')) { morph(m.firstElementChild, viewMining(routeArg)); mountScene(); return; }
   document.body.classList.toggle('fit', r.path === '/'); document.body.classList.toggle('clockmode', r.path === '/clock'); keepAwake(r.path === '/clock');
-  const v = r.path === '/block' ? viewBlock(r.arg) : r.path === '/tx' ? viewTx(r.arg) : r.path === '/my' ? viewMy(r.arg) : VIEWS[r.path](); m.replaceChildren(v); if (r.path === '/') stripScroll([]); renderNav(r.path);
+  const v = r.path === '/block' ? viewBlock(r.arg) : r.path === '/tx' ? viewTx(r.arg) : r.path === '/my' ? viewMy(r.arg) : VIEWS[r.path](routeArg); m.replaceChildren(v); if (r.path === '/') stripScroll([]); renderNav(r.path);
   document.title = docTitle(); scrollTo(0, r.path === '/' ? y : 0);
   trackBlock(r.path === '/mining'); if (r.path === '/mining') mountScene();
 }
@@ -71,7 +74,7 @@ function render() {
       else {
         const top = st.blocks[0] ? st.blocks[0].height : NaN, moved = { height: st.tip > shownTip, blocks: top > shownTop };
         const before = moved.height || moved.blocks ? measure() : null; // a new block: remember where everything stood
-        const sx = stripScroll(); morph(cur, VIEWS[route]()); stripScroll(sx); document.title = docTitle(); arrive(before, moved);
+        const sx = stripScroll(); morph(cur, VIEWS[route](routeArg)); stripScroll(sx); document.title = docTitle(); arrive(before, moved);
       }
       shownTip = st.tip; shownTop = st.blocks[0] ? st.blocks[0].height : NaN;
     } finally { rendering = false; } }

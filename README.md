@@ -28,7 +28,7 @@ BLOCKHORIZON is built around one idea: in Bitcoin, time is measured in blocks. T
 - Sats per unit in 7 currencies, Moscow time, market cap, Lightning network capacity
 
 **More pages**
-- **Mining:** watch the next block being built and mined, live. Every waiting transaction in it is a square, sized by its size and coloured by its fee rate; new ones drop in as they arrive, and when the block is found it turns purple and slides away while the next one starts to fill. Beside it: hashes tried so far, a stream of tries against the target, the chance it is found in the next minutes, what is in it (fees, reward) and which pool is likely to find it
+- **Mining:** watch the next block being built and mined, live. Every waiting transaction in it is a square, sized by its size and coloured by its fee rate; new ones drop in as they arrive, and when the block is found it turns purple and slides away while the next one starts to fill. Beside it: hashes tried so far, a stream of tries against the target, the chance it is found in the next minutes, what is in it (fees, reward) and which pool is likely to find it. Follow your own transaction: paste its ID (or tap its square, or use the link on its transaction page) and it is outlined in the block, with where it stands, until the moment it is mined. A bell button turns on the sound for each block found
 - **Your block:** pick a day that matters (a birthday, your first bitcoin) and see the block mined that day, how many blocks have passed since, the next milestone, the reward and price back then, and save it as an image to share
 - **Clock:** just the height, time since the last block and the price, as large as the screen allows, with the screen kept awake (for a spare screen or an old tablet)
 - **Charts:** price, hashrate, difficulty and median fee over 1 month, 1 year or all time
@@ -64,7 +64,7 @@ Show the live block height, the halving countdown or the price on your own websi
 <iframe src="https://random21m.github.io/BLOCKHORIZON/embed.html?show=height" width="320" height="120" style="border:0" title="BLOCKHORIZON: Block height" loading="lazy"></iframe>
 ```
 
-Options: `show=height|halving|price`, `theme=auto|dark|light`, `lang=en|de|es|fr|pt|it|nl|tr`, and `cur=USD|EUR|GBP|CAD|CHF|AUD|JPY` for the price. The widget updates itself and links back to the app.
+Options: `show=height|halving|price|mining` (`mining` draws a small picture of the block being mined; give it `height="150"`), `theme=auto|dark|light`, `lang=en|de|es|fr|pt|it|nl|tr`, and `cur=USD|EUR|GBP|CAD|CHF|AUD|JPY` for the price. The widget updates itself and links back to the app.
 
 ## Privacy
 
@@ -91,7 +91,7 @@ No build step and no dependencies. The accessibility check in the browser tests 
 
 Code layout (`src/`): `app.js` routing, live repaint and start-up · `state.js` settings and shared state · `data.js` data feeds, block alarms and fee alerts · `ui.js` tiles, charts and other building blocks · `view-dash.js` dashboard and clock · `view-chain.js` block and transaction pages · `view-tools.js` alarm and calculator · `view-info.js` replay, calendar, glossary, watch, about · `view-charts.js` history charts · `view-my.js` Your block · `view-mining.js`, `block-scene.js` the Mining page and its live block picture · `arrival.js` the block arrival animation · `embed.js` the embeddable widget · `modals.js` search and settings · `lib.js` pure helpers (unit-tested) · `api.js`, `price.js` network · `i18n.js`, `strings.js`, `content.js`, `content-i18n.js` texts.
 
-Version 0.11.1. Not built yet: an art gallery, conference listings and chain-state totals (addresses, UTXOs, disk size), for lack of a free, trustworthy public source.
+Version 0.12.0. Not built yet: an art gallery, conference listings and chain-state totals (addresses, UTXOs, disk size), for lack of a free, trustworthy public source.
 
 ## Support
 
