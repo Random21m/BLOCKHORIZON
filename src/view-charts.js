@@ -59,7 +59,7 @@ function lineChart(pts, { log, step, fmt, axis, timeFmt, label }) {
   svg.innerHTML = tk.map((v) => `<line class="grid" x1="0" x2="100" y1="${Y(v).toFixed(2)}" y2="${Y(v).toFixed(2)}" vector-effect="non-scaling-stroke"/>`).join('')
     + `<path class="ln" vector-effect="non-scaling-stroke" d="${pts.map((p, i) => (i ? (step ? 'H' + X(p.t).toFixed(2) + 'V' : 'L' + X(p.t).toFixed(2) + ' ') : 'M' + X(p.t).toFixed(2) + ' ') + Y(p.v).toFixed(2)).join('')}"/>`;
   const xh = el('div', { class: 'xh', hidden: true }), dot = el('div', { class: 'xd', hidden: true }), tip = el('div', { class: 'tip', hidden: true }), said = el('span', { class: 'sr-only', 'aria-live': 'polite' });
-  const plot = el('div', { class: 'plot' }, svg, tk.map((v) => el('span', { class: 'ylab', style: `top:${Y(v).toFixed(2)}%` }, axis(v))), xh, dot, tip);
+  const plot = el('div', { class: 'plot' }, svg, tk.map((v) => el('span', { class: 'ylab', style: `top:${Y(v).toFixed(2)}%` }, L.trimZeros(axis(v)))), xh, dot, tip);
   let cur = -1;
   const show = (i, speak) => {
     cur = Math.max(0, Math.min(pts.length - 1, i)); const p = pts[cur], x = X(p.t), y = Y(p.v);

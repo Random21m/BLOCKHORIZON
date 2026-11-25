@@ -38,6 +38,7 @@ test('formatting', () => {
   assert.equal(L.fmtHashrate(1.0378e21), '1.04 ZH/s');
   assert.equal(L.fmtHashrate(950e18), '950 EH/s');
   assert.equal(L.fmtDifficulty(134823837323272.7), '134.82 T');
+  assert.equal(L.trimZeros('100.00K'), '100K'); assert.equal(L.trimZeros('92.50 T'), '92.5 T'); assert.equal(L.trimZeros('0.05'), '0.05'); assert.equal(L.trimZeros('1,100'), '1,100');
   assert.equal(L.fmtDuration(90061), '1d 1h 1m');
   assert.equal(L.fmtAgo(30), '30s');
   assert.equal(L.fmtFee(1), '1.0'); assert.equal(L.fmtFee(55.4), '55'); assert.equal(L.fmtFee(3600000), (3600000).toLocaleString());
