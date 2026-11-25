@@ -256,6 +256,21 @@ await ok('trading chart: order book (checksum checked), trades, drawings, price 
   await p.fill('#pa-p', '50,000'); await p.click('#pa-go'); await until(p, () => document.querySelector('#pa-list')?.textContent.includes('≤ 50,000.0 USD'));
   await p.click('#pa-list button'); await until(p, () => !document.querySelector('#pa-list'));
   assert.deepEqual(perr, []); await c.close(); });
+await ok('price alerts ignore the saved prices an offline start falls back to, and fire on a fresh refresh', async () => {
+  const c = await b.newContext(); await c.routeWebSocket(/./, (ws) => ws.close());
+  await c.addInitScript(() => { if (sessionStorage.getItem('seeded')) return; sessionStorage.setItem('seeded', '1');
+    localStorage.setItem('bh.prices', JSON.stringify({ USD: 90000, EUR: 80000 })); // days old
+    localStorage.setItem('bh.priceAlerts', JSON.stringify([{ id: 'x', cur: 'USD', price: 70000, dir: 'up', sound: 'beep' }])); });
+  let online = false;
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
+  await c.route(/mempool\.space/, (route) => { if (!online) return route.abort(); const path = new URL(route.request().url()).pathname;
+    if (path === '/api/v1/prices') return route.fulfill({ contentType: 'application/json', body: JSON.stringify({ time: 1, USD: 71000, EUR: 65000 }) });
+    const m = MOCK[path]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+  const p = await c.newPage(); await p.goto(base + '#/alarm'); await p.waitForSelector('#pa-list'); await p.waitForTimeout(1500);
+  assert.equal(await p.locator('#pa-list tr').count(), 1, 'not fired by a stale saved price'); assert.ok(!/Bitcoin rose/.test(await p.locator('#toast').innerText().catch(() => '')));
+  online = true; await p.evaluate(() => dispatchEvent(new Event('online'))); await p.reload(); // the next refresh reaches the network
+  await until(p, () => /Bitcoin rose to 70,000\.0 USD \(now 71,000\.0 USD\)/.test(document.querySelector('#toast').textContent), null, { timeout: 10000 });
+  assert.equal(await p.evaluate(() => localStorage.getItem('bh.priceAlerts')), '[]'); await c.close(); });
 await ok('trading chart: without Kraken history it says so and keeps the live candles', async () => {
   const c = await b.newContext(); await c.routeWebSocket(/mempool\.space/, (ws) => ws.close());
   await c.routeWebSocket(/ws\.kraken\.com/, (ws) => { ws.onMessage((m) => { if (JSON.parse(m).params.channel === 'ohlc') ws.send(fx('kraken-ohlc-snapshot.json')); }); });

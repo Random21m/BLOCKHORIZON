@@ -13,7 +13,7 @@ export async function refreshAll() {
     blocks: api.blocks().then((b) => { if (Array.isArray(b)) st.blocks = b; }),
     diff: api.difficulty().then((v) => { st.diff = v; }), fees: api.fees().then((v) => { st.fees = v; }),
     mem: api.mempool().then((v) => { st.mem = v; }), proj: api.projected().then((v) => { st.proj = v; }),
-    prices: api.prices().then((v) => { st.prices = Date.now() - st.priceAt < 30000 ? Object.assign({}, v, st.prices) : v; }), hr: api.hashrate().then((v) => { st.hr = v; }), ln: api.lightning().then((v) => { st.ln = v.latest || v; }),
+    prices: api.prices().then((v) => { st.prices = Date.now() - st.priceAt < 30000 ? Object.assign({}, v, st.prices) : v; if (v && !v.__stale) checkPriceAlerts(v); }), hr: api.hashrate().then((v) => { st.hr = v; }), ln: api.lightning().then((v) => { st.ln = v.latest || v; }),
   };
   const r = await Promise.allSettled(Object.values(jobs));
   if (r.every((x) => x.status === 'rejected')) st.conn = 'off';
@@ -56,7 +56,7 @@ export function glidePrice() { // the big price eases toward each new trade pric
 export function onPriceTick(tk) {
   const prev = st.prices && st.prices[tk.cur];
   st.prices = Object.assign({}, st.prices, { [tk.cur]: tk.price }); st.priceAt = Date.now(); if (tk.pct != null) st.pct[tk.cur] = tk.pct;
-  checkPriceAlerts();
+  checkPriceAlerts({ [tk.cur]: tk.price });
   if (tk.cur === S.cur) { if (Number.isFinite(prev) && tk.price !== prev) st.dir = tk.price > prev ? 1 : -1; glidePrice(); }
   if (!tickTimer) tickTimer = setTimeout(() => { tickTimer = null; store('prices', st.prices); hooks.render(); }, 400);
 }
@@ -76,12 +76,13 @@ export function checkFeeAlerts() {
   if (!hit.length) return; store('feeAlerts', rest);
   for (const a of hit) { const msg = '⏰ ' + t('feeReached', { l: t(FEE_LVL_KEYS[a.level] || 'lvlNext'), f: L.fmtFee(st.fees[L.FEE_LEVELS[a.level] || 'fastestFee']), m: L.fmtFee(a.max) }); toast(msg); play(a.sound || S.asound); notify(msg); }
 }
-// Price alerts: checked on every price (each Kraken trade, or the minute refresh). Each fires once, then is removed.
-export function checkPriceAlerts() {
-  const list = priceAlerts(); if (!list.length || !st.prices) return;
-  const { hit, rest } = L.splitPriceAlerts(list, st.prices); if (!hit.length) return;
+// Price alerts: checked against fresh prices only, each Kraken trade or a minute refresh that reached the network (never
+// the saved prices an offline start falls back to, which can be days old). Each fires once, then is removed.
+export function checkPriceAlerts(fresh) {
+  const list = priceAlerts(); if (!list.length || !fresh) return;
+  const { hit, rest } = L.splitPriceAlerts(list, fresh); if (!hit.length) return;
   store('priceAlerts', rest);
-  for (const a of hit) { const msg = '⏰ ' + t(a.dir === 'up' ? 'priceUpTo' : 'priceDownTo', { p: fmtPrice(a.price, a.cur), n: fmtPrice(st.prices[a.cur], a.cur) }); toast(msg); play(a.sound || S.asound); notify(msg); }
+  for (const a of hit) { const msg = '⏰ ' + t(a.dir === 'up' ? 'priceUpTo' : 'priceDownTo', { p: fmtPrice(a.price, a.cur), n: fmtPrice(fresh[a.cur], a.cur) }); toast(msg); play(a.sound || S.asound); notify(msg); }
   hooks.alerts();
 }
 // A system notification as well, so an alarm is seen while the tab is in the background. Only if the user allowed it.
