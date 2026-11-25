@@ -192,8 +192,11 @@ await ok('tile titles stay on one line on phones and tablets (short titles), in 
     const c = await b.newContext({ viewport: { width: w, height: 800 } }); await c.routeWebSocket(/./, (ws) => ws.close()); await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
     await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
     await c.addInitScript((l) => localStorage.setItem('bh.settings', JSON.stringify({ lang: l, _v: 2 })), lang); const p = await c.newPage(); await p.goto(base); await until(p, () => document.querySelectorAll('.tile').length >= 10);
-    const wrapped = await p.$$eval('.tile h2', (hs) => hs.filter((h) => h.getBoundingClientRect().height > parseFloat(getComputedStyle(h).fontSize) * 2).map((h) => h.innerText));
-    assert.deepEqual(wrapped, [], `${w}px ${lang}`); await c.close(); } });
+    const r = await p.$$eval('.tile h2', (hs) => ({ wrapped: hs.filter((h) => h.getBoundingClientRect().height > parseFloat(getComputedStyle(h).fontSize) * 2).map((h) => h.innerText),
+      cut: hs.filter((h) => h.scrollWidth > h.clientWidth + 1).map((h) => h.innerText) }));
+    assert.deepEqual(r.wrapped, [], `${w}px ${lang} wrapped`);
+    if (r.cut.length) console.log(`      note: ${w}px ${lang} title shortened with an ellipsis in this browser's font: ${r.cut.join(', ')}`);
+    if (lang === 'en' || w >= 900) assert.deepEqual(r.cut, [], `${w}px ${lang} cut`); await c.close(); } });
 await ok('link preview card: tags point at a 1200x630 image that is published', async () => {
   const html = await (await page.request.get(base)).text(); const meta = (k) => (html.match(new RegExp(`<meta (?:property|name)="${k}" content="([^"]+)"`)) || [])[1];
   assert.ok(meta('og:title') && meta('og:description') && meta('twitter:card') === 'summary_large_image'); assert.equal(meta('og:image:width') + 'x' + meta('og:image:height'), '1200x630');
