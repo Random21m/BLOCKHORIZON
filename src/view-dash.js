@@ -4,6 +4,8 @@ import { t } from './i18n.js';
 import { S, st, fmtD, el, price } from './state.js';
 import { bar, arc, spark, gapsChart, emissionChart, stack, feeBands, minis, less, minedCube, upcomingCube, more, pct24, tile, priceLine, sinceText } from './ui.js';
 
+// '11 fast · 3 slow · target 10m': the target part is dropped on narrow tiles, where it was cut off in longer languages
+const fastSlow = (x) => { const p = x.split(' · '); return p.length > 2 ? [more(x), less(p.slice(0, -1).join(' · '))] : x; };
 export function viewDash() {
   const h = st.tip, now = Date.now(), root = el('div', { class: 'dashgrid' }, el('h1', { class: 'sr-only' }, 'BLOCKHORIZON')), p = price();
   const hv = Number.isFinite(h) ? L.halvingInfo(h, now) : null, sp = Number.isFinite(h) ? L.supplyAt(h) : NaN;
@@ -20,7 +22,7 @@ export function viewDash() {
     root.append(tile('t-last', t('last'), el('a', { href: '#/block/' + b.height }, '#' + L.fmtNum(b.height)), [[`${L.fmtNum(b.txs)} tx · ${(x0.size / 1e6).toFixed(2)} MB`, S.showPool && b.pool ? more(' · ' + b.pool) : null]],
       el('div', { class: 'lastviz' }, el('div', { class: 'bigcube' }, minedCube(x0)), el('div', { class: 'fillnote' }, t('full', { p: Math.round((x0.weight || 0) / 4e4) }), el('div', { class: 'stripe', style: `background:${L.feeStripes(b.feeRange)}` }), el('small', null, b.feeRange.length ? t('feesRange', { a: L.fmtFee(b.feeRange[0]), b: L.fmtFee(b.feeRange[b.feeRange.length - 1]) }) : ''))))); }
   if (st.blocks.length > 1) { const bs = L.blockTimeStats(st.blocks, now / 1000);
-    root.append(tile('t-prod', [t('production'), t('prodShort')], L.fmtDuration(bs.avg), [t('fastSlow', { f: bs.fast, s: bs.slow })], gapsChart(st.blocks))); }
+    root.append(tile('t-prod', [t('production'), t('prodShort')], L.fmtDuration(bs.avg), [fastSlow(t('fastSlow', { f: bs.fast, s: bs.slow }))], gapsChart(st.blocks))); }
   if (S.showFees && st.fees) { const f = st.fees, cells = [[f.fastestFee, t('feeNext'), t('eta10')], [f.halfHourFee, t('fee30'), t('eta30')], [f.hourFee, t('fee1h'), t('eta60')], [f.economyFee, t('feeSlow'), t('etaLater')]];
     root.append(tile('t-fees', [t('fees'), t('feesShort')], el('div', { class: 'fees' + (S.feesRtl ? ' rtl' : '') }, cells.map(([v, l, e]) => el('div', { style: `border-top:3px solid ${L.feeColor(v)}` }, el('b', null, L.fmtFee(v)), el('small', null, l), el('small', { class: 'est' }, e)))))); }
   if (S.showFees && st.mem) root.append(tile('t-mem', t('mempool'), L.fmtNum(st.mem.count) + ' tx', [[t('deep', { n: L.fmtNum(L.mempoolDepth(st.mem), 1) }), st.inflow != null ? more(t('inflow', { n: L.fmtNum(st.inflow, 0) })) : null]],

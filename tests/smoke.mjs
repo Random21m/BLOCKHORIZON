@@ -502,6 +502,16 @@ await ok('your block: shares to Nostr through a browser signer (or copies the no
   await p.evaluate(() => { window.nostr = { signEvent: async (e) => ({ ...e, id: 'ab'.repeat(32), pubkey: 'cd'.repeat(32), sig: 'ef'.repeat(64) }) }; });
   await p.click('#my-nostr'); await until(p, () => /Posted to Nostr \(3 relays\)/.test(document.querySelector('#toast').textContent));
   assert.equal(sent.length, 3); assert.equal(sent[0].kind, 1); assert.ok(sent[0].content.includes('816,785')); await c.close(); });
+await ok('live feeds: going offline and back online several times keeps one connection per feed', async () => {
+  const c = await b.newContext(); const opened = { mempool: 0, kraken: 0 }, openNow = { mempool: 0, kraken: 0 };
+  await c.routeWebSocket(/mempool\.space|ws\.kraken\.com/, (ws) => { const k = /kraken/.test(ws.url()) ? 'kraken' : 'mempool'; opened[k]++; openNow[k]++; ws.onClose(() => { openNow[k]--; }); });
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
+  await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+  const p = await c.newPage(); const perr = []; p.on('pageerror', (e) => perr.push(e.message));
+  await p.goto(base); await until(p, () => /977/.test(document.querySelector('#h')?.textContent || '')); await new Promise((r) => setTimeout(r, 800));
+  for (let i = 0; i < 3; i++) await p.evaluate(() => { dispatchEvent(new Event('online')); dispatchEvent(new Event('online')); });
+  await new Promise((r) => setTimeout(r, 1500));
+  assert.deepEqual(opened, { mempool: 1, kraken: 1 }, JSON.stringify(opened)); assert.deepEqual(perr, []); await c.close(); });
 await ok('keyboard: Tab stays inside an open dialog, Escape closes it and focus goes back', async () => {
   await page.goto(base); await page.focus('#btn-settings'); await page.keyboard.press('Enter'); await page.waitForSelector('#st-theme');
   for (let i = 0; i < 25; i++) { await page.keyboard.press('Tab'); assert.ok(await page.evaluate(() => document.querySelector('#modal').contains(document.activeElement)), 'focus left the dialog at Tab ' + (i + 1)); }

@@ -5,6 +5,8 @@ import { t } from './i18n.js';
 import { play, ALARM_SOUNDS } from './sound.js';
 import { hooks, $, S, st, alarms, feeAlerts, priceAlerts, fmtPrice, FEE_LVL_KEYS, fmtD, el, toast, price } from './state.js';
 import { CURRENCIES } from './price.js';
+// Remove this entry from the saved list as it is now (not by its row number: another may have fired since the page was drawn).
+const without = (list, a) => { const k = JSON.stringify(a), i = list.findIndex((x) => JSON.stringify(x) === k); if (i >= 0) list.splice(i, 1); return list; };
 import { askNotify } from './data.js';
 
 export function viewAlarm() {
@@ -18,7 +20,7 @@ export function viewAlarm() {
     const f = L.futureEstimate(hh, st.tip); out.textContent = f.past ? t('alreadyMined') : t('away', { n: L.fmtNum(f.blocks), d: fmtD(f.ms) }); return f.past ? null : hh; };
   inH.addEventListener('input', preview); inB.addEventListener('input', preview);
   blk.append(el('div', { class: 'row' }, inH, inB, inL, sel, el('button', { class: 'btn-go', onclick: () => { const hh = preview(); if (hh == null) return toast(t('notFound')); const a = alarms(); a.push({ height: hh, label: inL.value.trim(), sound: sel.value }); store('alarms', a); play(sel.value); askNotify(); hooks.renderView(); } }, t('setAlarm')), el('button', { onclick: () => play(sel.value) }, '▶ ' + t('test'))), out);
-  const list = alarms(); blk.append(el('h3', { class: 'sec' }, t('active')), list.length ? el('table', null, el('tbody', null, list.map((a, i) => el('tr', null, el('td', null, L.fmtNum(a.height)), el('td', null, a.label || ''), el('td', null, t('nBlocks', { n: L.fmtNum(a.height - st.tip) })), el('td', null, el('button', { onclick: () => { const x = alarms(); x.splice(i, 1); store('alarms', x); hooks.renderView(); } }, t('remove'))))))) : el('p', { class: 'dim' }, t('noneYet')));
+  const list = alarms(); blk.append(el('h3', { class: 'sec' }, t('active')), list.length ? el('table', null, el('tbody', null, list.map((a, i) => el('tr', null, el('td', null, L.fmtNum(a.height)), el('td', null, a.label || ''), el('td', null, t('nBlocks', { n: L.fmtNum(a.height - st.tip) })), el('td', null, el('button', { onclick: () => { store('alarms', without(alarms(), a)); hooks.renderView(); } }, t('remove'))))))) : el('p', { class: 'dim' }, t('noneYet')));
   root.append(pricePanel(), feePanel());
   preview(); return root;
 }
@@ -46,7 +48,7 @@ function feePanel() {
   return el('section', { class: 'panel feealert' }, el('h2', null, t('feeAlert')), el('p', { class: 'dim' }, t('feeIntro')),
     el('div', { class: 'row' }, lvl, max, snd, el('button', { class: 'btn-go', id: 'fa-go', onclick: add }, t('setFee')), el('button', { onclick: () => play(snd.value) }, '▶ ' + t('test'))), now,
     el('h3', { class: 'sec' }, t('activeFee')), list.length ? el('table', { id: 'fa-list' }, el('tbody', null, list.map((a, i) => el('tr', null, el('td', null, t(FEE_LVL_KEYS[a.level] || 'lvlNext')), el('td', null, '≤ ' + L.fmtFee(a.max) + ' sat/vB'),
-      el('td', null, el('button', { onclick: () => { const x = feeAlerts(); x.splice(i, 1); store('feeAlerts', x); hooks.renderView(); } }, t('remove'))))))) : el('p', { class: 'dim' }, t('noneYet')));
+      el('td', null, el('button', { onclick: () => { store('feeAlerts', without(feeAlerts(), a)); hooks.renderView(); } }, t('remove'))))))) : el('p', { class: 'dim' }, t('noneYet')));
 }
 // Price alert: a sound and a message when BTC reaches a price (up or down from now). Also set from the trading chart.
 export function addPriceAlert(cur, p, sound) {

@@ -53,6 +53,7 @@ export function settingsModal() {
     data: () => { const inp = el('input', { id: 'st-server', type: 'url', inputmode: 'url', placeholder: DEFAULT_SERVER, value: S.server || '', autocomplete: 'off', spellcheck: 'false' }), msg = el('p', { class: 'dim', role: 'status' }, t('srvNow', { s: getServer().replace(/^https?:\/\//, '') }));
       const use = async (v) => {
         const n = v.trim() ? normServer(v) : ''; if (v.trim() && !n) { msg.textContent = t('srvBad'); return; }
+        if (n && location.protocol === 'https:' && n.startsWith('http:')) { msg.textContent = t('srvHttps'); return; } // browsers block it (mixed content)
         if (n) { msg.textContent = '…'; try { const r = await fetch(n + '/api/blocks/tip/height', { cache: 'no-store' }); if (!r.ok || !(parseInt(await r.text(), 10) > 0)) throw new Error('bad'); } catch { msg.textContent = t('srvFail', { s: n }); return; } }
         S.server = n; save(); hooks.server(); msg.textContent = t('srvOk', { s: (n || DEFAULT_SERVER).replace(/^https?:\/\//, '') });
       };

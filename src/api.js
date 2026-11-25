@@ -49,7 +49,8 @@ export async function getJSON(path, { cacheKey, text } = {}) {
     if (cacheKey) store(cacheKey, v);
     return v;
   } catch (e) {
-    if (cacheKey) { const c = store(cacheKey); if (c !== null) { c.__stale = true; return c; } }
+    // the saved copy, marked stale (a text answer such as the height is boxed, since a string cannot carry the mark)
+    if (cacheKey) { const c = store(cacheKey); if (c !== null) return typeof c === 'object' ? Object.assign(c, { __stale: true }) : Object.assign(new String(c), { __stale: true }); }
     throw e;
   }
 }
@@ -86,30 +87,34 @@ export async function krakenCandles(pair, minutes) {
 
 // Live feed with reconnect (3 s), paused while the page is hidden or offline.
 // The Mining page asks for the next block's transactions too (track-mempool-block 0, -1 to stop); sent again after a reconnect.
-let sock = null, tracking = false;
+let sock = null, tracking = false, reopen = null;
 export function trackBlock(on) {
   if (on === tracking) return; tracking = on;
   try { if (sock && sock.readyState === 1) sock.send(JSON.stringify({ 'track-mempool-block': on ? 0 : -1 })); } catch { /* sent on the next connect */ }
 }
+// Each socket's handlers act only on that socket: an old one closing late never closes or replaces the current one, and
+// 'online' / page-visible only open a socket when none is open or connecting. Retries back off from 3 s to 30 s (a server
+// without a live feed is not hammered); a successful connection resets the delay.
 export function live(onMsg, onState) {
-  let ws, timer, stopped = false;
+  let ws, timer, stopped = false, delay = 3000;
+  reopen = () => { delay = 3000; try { if (ws) ws.close(); } catch { /* */ } }; // its close handler opens the next one 3 s later
   const open = () => {
     clearTimeout(timer);
-    if (stopped || document.hidden || navigator.onLine === false) return;
-    try { ws = sock = new WebSocket(wsUrl()); } catch { onState('poll'); return; }
-    ws.onopen = () => { onState('on'); ws.send(JSON.stringify({ action: 'init' })); ws.send(JSON.stringify({ action: 'want', data: ['blocks', 'stats', 'mempool-blocks'] })); if (tracking) ws.send(JSON.stringify({ 'track-mempool-block': 0 })); };
-    ws.onmessage = (e) => { try { onMsg(JSON.parse(e.data)); } catch { /* ignore bad frame */ } };
-    ws.onclose = () => { onState('poll'); if (!stopped) timer = setTimeout(open, 3000); };
-    ws.onerror = () => { try { ws.close(); } catch { /* */ } };
+    if (stopped || document.hidden || navigator.onLine === false || (ws && ws.readyState <= 1)) return;
+    let s; try { s = ws = sock = new WebSocket(wsUrl()); } catch { onState('poll'); return; }
+    s.onopen = () => { if (s !== ws) return s.close(); delay = 3000; onState('on'); s.send(JSON.stringify({ action: 'init' })); s.send(JSON.stringify({ action: 'want', data: ['blocks', 'stats', 'mempool-blocks'] })); if (tracking) s.send(JSON.stringify({ 'track-mempool-block': 0 })); };
+    s.onmessage = (e) => { if (s !== ws) return; try { onMsg(JSON.parse(e.data)); } catch { /* ignore bad frame */ } };
+    s.onclose = () => { if (s !== ws) return; onState('poll'); if (!stopped) { timer = setTimeout(open, delay); delay = Math.min(delay * 2, 30000); } };
+    s.onerror = () => { try { s.close(); } catch { /* */ } };
   };
-  document.addEventListener('visibilitychange', () => { if (!document.hidden && (!ws || ws.readyState > 1)) open(); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) open(); });
   addEventListener('online', open);
   addEventListener('offline', () => onState('off'));
   open();
   return () => { stopped = true; clearTimeout(timer); try { ws && ws.close(); } catch { /* */ } };
 }
 // After the server changes: drop the live connection; its close handler reopens it (3 s later) at the new address.
-export function reconnect() { try { if (sock) sock.close(); } catch { /* */ } }
+export function reconnect() { if (reopen) reopen(); }
 // Pick the server: the user's own choice (Settings) wins, then config.json beside the app (a self-hosted copy sets its node
 // there), then mempool.space. config.json is optional; a slow or missing one never holds up the start for more than 1.5 s.
 export async function loadConfig(userServer) {

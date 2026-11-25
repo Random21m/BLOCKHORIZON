@@ -22,6 +22,9 @@ export function ingest(frame) {
   L.applyBlockFrame(txs, frame); liveData = true; version++; schedule();
 }
 export function liveFeed() { return liveData; }
+// The live feed stopped (or the page stopped asking for it): forget its transactions, so the picture falls back to the
+// approximate block, marked so, instead of showing old ones as live. A fresh full list arrives when it is back.
+export function dropLive() { if (!liveData) return; liveData = false; txs.clear(); needSort = true; version++; kick(); }
 // The transaction someone follows: outlined, with guide lines to the edges so even a tiny square is easy to find.
 export function setMark(id) { if (id !== mark) { mark = id || ''; kick(); } }
 export const sceneHas = (id) => !!id && placed.has(id);

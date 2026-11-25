@@ -327,3 +327,9 @@ test('miner economics: revenue, fee share and hashprice from reward-stats', () =
   assert.equal(Math.round(e.perBlock), Math.round(e.reward / 144)); assert.equal(Math.round(e.hashprice), Math.round(e.reward / 1e6));
   assert.equal(L.minerEconomics(null, 1), null); assert.ok(Number.isNaN(L.minerEconomics(fx('reward-stats.json'), 0).hashprice));
 });
+test('blocks from a refresh merge with the live ones: newest first, one per height, never losing a newer block', () => {
+  const b = (h, tag) => ({ height: h, id: 'x' + h + (tag || '') });
+  const live = [b(102), b(101), b(100)], rest = [b(101, 'r'), b(100, 'r'), b(99, 'r')];
+  assert.deepEqual(L.mergeBlocks(live, rest).map((x) => x.id), ['x102', 'x101r', 'x100r', 'x99r']);
+  assert.equal(L.mergeBlocks([], Array.from({ length: 20 }, (_, i) => b(i))).length, 15);
+});
