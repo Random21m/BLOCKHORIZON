@@ -29,6 +29,10 @@ export const api = {
   hashrate: () => getJSON('/v1/mining/hashrate/1y', { cacheKey: 'hashrate' }),
   lightning: () => getJSON('/v1/lightning/statistics/latest', { cacheKey: 'ln' }),
   tx: (id) => getJSON('/tx/' + id),
+  // history for the Charts page (not saved in localStorage: the price history is over a megabyte)
+  priceHistory: (cur) => getJSON('/v1/historical-price?currency=' + encodeURIComponent(cur)),
+  hashrateHistory: (r) => getJSON('/v1/mining/hashrate/' + r),
+  feeHistory: (r) => getJSON('/v1/mining/blocks/fee-rates/' + r),
   byTime: (ts) => getJSON('/v1/mining/blocks/timestamp/' + ts),
 };
 

@@ -10,6 +10,8 @@ const MOCK = { '/api/blocks/tip/height': ['text/plain', 'tip.txt'], '/api/v1/blo
   '/api/v1/fees/recommended': ['application/json', 'fees.json'], '/api/mempool': ['application/json', 'mempool.json'], '/api/v1/fees/mempool-blocks': ['application/json', 'mempool-blocks.json'],
   '/api/v1/prices': ['application/json', 'prices.json'], '/api/v1/mining/hashrate/1y': ['application/json', 'hashrate.json'], '/api/v1/lightning/statistics/latest': ['application/json', 'lightning.json'],
   '/api/block-height/840000': ['text/plain', 'h840000.txt'],
+  '/api/v1/historical-price': ['application/json', 'price-history.json'], '/api/v1/mining/hashrate/1m': ['application/json', 'hashrate-1m.json'], '/api/v1/mining/hashrate/1y': ['application/json', 'hashrate-1y.json'],
+  '/api/v1/mining/blocks/fee-rates/1m': ['application/json', 'feerates-1m.json'], '/api/v1/mining/blocks/fee-rates/1y': ['application/json', 'feerates-1y.json'],
   '/api/tx/2bb85f4b004be6da54f766c17c1e855187327112c231ef2ff35ebad0ea67c69e': ['application/json', 'tx-confirmed.json'], '/api/tx/213b7d2f946122a8c9add976cc6689d71bf567ffbe4212cfb571255ae8d3ff19': ['application/json', 'tx-mempool.json'], '/api/v1/mining/blocks/timestamp/1700000000': ['application/json', 'bytime.json'] };
 // page.waitForFunction evaluates a string in the page, which the site's CSP (no unsafe-eval) can refuse; poll with evaluate instead.
 async function until(page, fn, arg, { timeout = 30000 } = {}) {
@@ -161,6 +163,30 @@ await ok('fee alert: the "Now" line fills in when the Alarm page is the first pa
   const p = await c.newPage(); await p.goto(base + '#/alarm'); await p.waitForSelector('#fa-m');
   await until(p, () => document.querySelector('#fa-now')?.textContent === 'Now: 5.0 sat/vB', null, { timeout: 8000 });
   await p.fill('#fa-m', '3'); await until(p, () => document.querySelector('#fa-m').value === '3'); await c.close(); });
+await ok('charts: four history charts, range selector, crosshair, keyboard reading, table, and a clear message when data is missing', async () => {
+  const c = await b.newContext({ viewport: { width: 1280, height: 900 } }); await c.clock.install({ time: JSON.parse(fx('price-history.json')).prices[0].time * 1000 + 60000 });
+  await c.routeWebSocket(/./, (ws) => ws.close()); await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
+  await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+  const p = await c.newPage(); const perr = []; p.on('pageerror', (e) => perr.push(e.message));
+  await p.goto(base); await p.click('#nav a[href="#/charts"]'); await until(p, () => document.querySelectorAll('.lchart').length === 4, null, { timeout: 10000 });
+  assert.equal(await p.getAttribute('.range [data-r="1y"]', 'aria-pressed'), 'true');
+  const heads = await p.$$eval('.cpanel', (ps) => ps.map((x) => x.querySelector('h2').textContent + ' | ' + x.querySelector('.cval').textContent));
+  assert.ok(/Price \(USD\) \| [\d,]+ USD/.test(heads[0]) && /Hashrate \| [\d.]+ [EZ]H\/s/.test(heads[1]) && /Difficulty/.test(heads[2]) && /sat\/vB/.test(heads[3]), heads.join(' / '));
+  const box = await p.locator('#ch-hashrate .plot').boundingBox(); await p.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.5);
+  assert.ok(await p.locator('#ch-hashrate .tip').isVisible()); assert.ok(/H\/s/.test(await p.locator('#ch-hashrate .tip b').innerText()));
+  await p.focus('#ch-price .lchart'); const endVal = await p.locator('#ch-price .tip b').innerText(); await p.keyboard.press('Home');
+  assert.notEqual(await p.locator('#ch-price .tip b').innerText(), endVal); assert.ok((await p.locator('#ch-price [aria-live]').innerText()).includes('USD'));
+  await p.click('#ch-fees summary'); assert.equal(await p.locator('#ch-fees tbody tr').count(), 13);
+  await p.click('.range [data-r="1m"]'); await until(p, () => !document.querySelector('.cpanel.busy') && /1 month/.test(document.querySelector('#ch-price .chead').textContent));
+  await p.click('.range [data-r="all"]'); await until(p, () => /Could not load/.test(document.querySelector('#ch-hashrate').textContent)); // 'all' is not recorded: shown as a message, not a crash
+  assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)); assert.deepEqual(perr, []);
+  await p.setViewportSize({ width: 360, height: 800 }); await p.click('.range [data-r="1y"]'); await until(p, () => document.querySelectorAll('.lchart').length === 4 && !document.querySelector('.cpanel.busy'));
+  assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'no sideways scroll on a phone'); await c.close(); });
+await ok('app shortcuts: each opens its page; the Search shortcut opens the search dialog', async () => {
+  const m = await (await page.request.get(base + 'manifest.webmanifest')).json(); assert.deepEqual(m.shortcuts.map((s) => s.short_name), ['Clock', 'Alarm', 'Charts', 'Search']);
+  for (const s of m.shortcuts) { await page.goto(new URL(s.url, base).href); await page.waitForSelector('main > *');
+    if (s.short_name === 'Search') { await page.waitForSelector('#s-h'); assert.equal(new URL(page.url()).hash, '#/'); await page.keyboard.press('Escape'); }
+    else assert.equal(await page.locator('#nav a[aria-current=page]').getAttribute('href'), '#/' + s.short_name.toLowerCase()); } });
 await ok('keyboard: Tab stays inside an open dialog, Escape closes it and focus goes back', async () => {
   await page.goto(base); await page.focus('#btn-settings'); await page.keyboard.press('Enter'); await page.waitForSelector('#st-theme');
   for (let i = 0; i < 25; i++) { await page.keyboard.press('Tab'); assert.ok(await page.evaluate(() => document.querySelector('#modal').contains(document.activeElement)), 'focus left the dialog at Tab ' + (i + 1)); }
@@ -179,7 +205,7 @@ await ok('accessibility: no axe-core violations on the main pages and dialogs, d
     const c = await b.newContext({ viewport: { width: 1280, height: 800 }, bypassCSP: true, reducedMotion: 'reduce' }); await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
     await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
     await c.addInitScript((t) => localStorage.setItem('bh.settings', JSON.stringify({ theme: t, _v: 2, lang: 'en' })), theme); const p = await c.newPage();
-    for (const pg of ['#/', '#/clock', '#/alarm', '#/calc', '#/glossary', '#/about', '#/tx/' + TXC, 'search', 'settings']) {
+    for (const pg of ['#/', '#/clock', '#/alarm', '#/calc', '#/charts', '#/glossary', '#/about', '#/tx/' + TXC, 'search', 'settings']) {
       if (pg === 'search' || pg === 'settings') { await p.goto(base); await p.waitForSelector('#h'); await p.click('#btn-' + pg); } else await p.goto(base + pg);
       await p.waitForTimeout(700); await p.evaluate(AXE);
       for (const v of await p.evaluate(async () => (await axe.run(document, { resultTypes: ['violations'] })).violations.map((x) => x.id + ': ' + x.nodes.map((n) => n.target.join(' ')).slice(0, 3).join(', ')))) found.push(`${theme} ${pg} ${v}`);

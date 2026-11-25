@@ -158,3 +158,45 @@ export function splitFeeAlerts(list, fees) {
   return { hit, rest: all.filter((a) => !hit.includes(a)) };
 }
 export function parseFeeLimit(s) { const v = parseFloat(String(s).trim().replace(',', '.')); return Number.isFinite(v) && v > 0 && v < 100000 ? v : NaN; }
+
+// ---- history charts ----
+// mempool.space responses -> ascending [{ t: ms, v }] series. Missing or unavailable values (the API uses -1) are dropped.
+const asc = (pts) => pts.filter((p) => Number.isFinite(p.t) && Number.isFinite(p.v) && p.v > 0).sort((a, b) => a.t - b.t);
+export const SERIES = {
+  price: (r, cur) => asc(((r && r.prices) || []).map((p) => ({ t: p.time * 1000, v: p[cur] }))),
+  hashrate: (r) => asc(((r && r.hashrates) || []).map((p) => ({ t: p.timestamp * 1000, v: p.avgHashrate }))),
+  difficulty: (r) => asc(((r && r.difficulty) || []).map((p) => ({ t: p.time * 1000, v: p.difficulty }))),
+  // Median fee rate per group of blocks. Often 0 in quiet times: a real value, so kept (unlike missing prices).
+  fees: (r) => (Array.isArray(r) ? r : []).map((p) => ({ t: p.timestamp * 1000, v: p.avgFee_50 })).filter((p) => Number.isFinite(p.t) && Number.isFinite(p.v) && p.v >= 0).sort((a, b) => a.t - b.t),
+};
+export const RANGES = { '1m': 30 * 864e5, '1y': 365 * 864e5, all: Infinity };
+export function inRange(pts, range, now = Date.now()) { const span = RANGES[range] || Infinity; return span === Infinity ? pts : pts.filter((p) => p.t >= now - span); }
+// At most n points, evenly spread by index, always keeping the first and the last.
+export function thin(pts, n = 400) {
+  if (pts.length <= n) return pts;
+  const out = []; for (let i = 0; i < n; i++) out.push(pts[Math.round(i * (pts.length - 1) / (n - 1))]); return out;
+}
+// Axis ticks. Linear: 1/2/5 x 10^k steps covering [lo, hi]. Log: powers of ten inside the range (with 2 and 5 between when few).
+export function ticks(lo, hi, log, count = 4) {
+  if (!(hi > lo)) return [lo];
+  if (log) {
+    const out = [], a = Math.floor(Math.log10(lo)), b = Math.ceil(Math.log10(hi));
+    for (let e = a; e <= b; e++) for (const m of b - a <= 2 ? [1, 2, 5] : [1]) { const v = m * 10 ** e; if (v >= lo && v <= hi) out.push(v); }
+    return out.length ? out : [lo, hi];
+  }
+  const raw = (hi - lo) / count, mag = 10 ** Math.floor(Math.log10(raw)), step = [1, 2, 5, 10].map((m) => m * mag).reduce((a, s) => (Math.abs(Math.log(s / raw)) < Math.abs(Math.log(a / raw)) ? s : a)); // the 1/2/5 step nearest the ideal
+  const out = []; for (let v = Math.ceil(lo / step) * step; v <= hi + step * 1e-9; v += step) out.push(+v.toPrecision(12)); return out;
+}
+// Index of the point nearest to time t (points ascending).
+export function nearest(pts, t) {
+  let lo = 0, hi = pts.length - 1; if (hi < 0) return -1;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (pts[m].t < t) lo = m; else hi = m; }
+  return Math.abs(pts[lo].t - t) <= Math.abs(pts[hi].t - t) ? lo : hi;
+}
+// Trailing mean over the last `days` days at each point (ascending series). days <= 0 returns the series unchanged.
+export function smoothDays(pts, days) {
+  if (!(days > 0)) return pts;
+  const w = days * 864e5, out = []; let j = 0, sum = 0;
+  for (let i = 0; i < pts.length; i++) { sum += pts[i].v; while (pts[i].t - pts[j].t >= w) sum -= pts[j++].v; out.push({ t: pts[i].t, v: sum / (i - j + 1) }); }
+  return out;
+}
