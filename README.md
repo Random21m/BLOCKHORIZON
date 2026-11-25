@@ -24,10 +24,11 @@ Settings (currency, language, time format, theme, sounds) are kept only in your 
 There is nothing to build: the site is plain static files, so any static host works (it must be served over HTTPS, or from `localhost`, so that the offline mode can start).
 
 - **On your computer:** clone this repository and run `python3 -m http.server 8080` in it, then open http://localhost:8080.
+- **Link previews:** the preview card tags in `index.html` point at this site's address (`og:url`, `og:image`, `canonical`); change them to yours in a fork.
 - **On GitHub Pages:** fork the repository, open **Settings, Pages** and set **Source** to **GitHub Actions**. The included workflow publishes the site on every push to `main` (you can also start it by hand from the **Actions** tab).
 - **Anywhere else:** upload `index.html`, `style.css`, `sw.js`, `manifest.webmanifest`, `privacy.html`, `.nojekyll` and the `icons` and `src` folders. The file paths are relative, so it also works in a sub-folder.
 
-## Features (v0.8.1)
+## Features (v0.8.2)
 - Everything on one screen, no scrolling: a tile grid that fills desktop, laptop and phone
 - Live block height clock with an optional sound and the time since the last block
 - Next halving (arc, blocks to go, estimated date, reward) and supply issued

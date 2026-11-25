@@ -56,8 +56,10 @@ export const minedCube = (x) => cube((x.weight || 0) / 4e6, `linear-gradient(${L
 export const upcomingCube = (b) => cube((b.blockVSize || 0) / 1e6, L.feeStripes(b.feeRange), L.UPCOMING_EMPTY);
 export const more = (x) => el('span', { class: 'more' }, x);
 export const pct24 = () => (st.pct[S.cur] >= 0 ? '▲ ' : '▼ ') + Math.abs(st.pct[S.cur]).toFixed(2) + '%';
+// title is a string, or [full, short]: the short one is shown instead below 900px, where tiles are narrow.
 export function tile(cls, title, value, subs = [], extra) {
-  return el('section', { class: 'tile ' + cls }, el('h2', null, title), el('div', { class: 'tv' }, value), ...[].concat(extra || []), ...subs.filter(Boolean).map((x, i) => el('div', { class: 'ts s' + i }, x)));
+  const h = Array.isArray(title) && title[1] !== title[0] ? [el('span', { class: 'tfull' }, title[0]), el('span', { class: 'tshort' }, title[1])] : [].concat(title)[0];
+  return el('section', { class: 'tile ' + cls }, el('h2', null, h), el('div', { class: 'tv' }, value), ...[].concat(extra || []), ...subs.filter(Boolean).map((x, i) => el('div', { class: 'ts s' + i }, x)));
 }
 // The big price line under the block height (dashboard and clock).
 export function priceLine() {
