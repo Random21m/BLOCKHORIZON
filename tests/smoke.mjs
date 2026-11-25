@@ -282,9 +282,10 @@ await ok('trading chart: order-book prices by keyboard, dragging lines and alert
   await until(p, async () => true); assert.equal((await drawn()).length, 1);
   await p.click('#t-clear'); await p.click('.talert button'); await until(p, () => !document.querySelector('.talert'));
   // drag a horizontal line down: it moves, and it is saved when let go
-  await p.evaluate(() => scrollTo(0, 0)); // focusing a book price scrolled the page; measure the plot where it is now
+  // focusing a book price scrolled the page: back to the top at once (the page scrolls smoothly), then measure the plot
+  await p.evaluate(() => scrollTo({ top: 0, behavior: 'instant' })); await until(p, () => scrollY === 0);
   const box = await p.locator('.tplot').boundingBox(), X = (f) => box.x + box.width * f, Y = (f) => box.y + box.height * f;
-  await p.click('[data-tool=hline]'); await p.mouse.click(X(0.5), Y(0.3)); const h0 = (await drawn())[0].p;
+  await p.click('[data-tool=hline]'); await p.mouse.click(X(0.5), Y(0.3)); const h0 = (await drawn())[0]?.p; assert.ok(h0 > 0, 'a line was placed where the plot was measured');
   await p.mouse.move(X(0.4), Y(0.3)); await p.mouse.down(); await p.mouse.move(X(0.4), Y(0.4), { steps: 5 }); await p.mouse.move(X(0.4), Y(0.45), { steps: 5 }); await p.mouse.up();
   const h1 = (await drawn())[0].p; assert.ok(h1 < h0, `moved down: ${h0} -> ${h1}`); assert.equal((await drawn()).length, 1);
   // a trend line: dragging its end moves only that end; dragging the middle moves both ends
