@@ -5,7 +5,7 @@ import { S, st, fmtD, el, price } from './state.js';
 import { bar, arc, spark, gapsChart, emissionChart, stack, feeBands, minis, minedCube, upcomingCube, more, pct24, tile, priceLine, sinceText } from './ui.js';
 
 export function viewDash() {
-  const h = st.tip, now = Date.now(), root = el('div', { class: 'dashgrid' }), p = price();
+  const h = st.tip, now = Date.now(), root = el('div', { class: 'dashgrid' }, el('h1', { class: 'sr-only' }, 'BLOCKHORIZON')), p = price();
   const hv = Number.isFinite(h) ? L.halvingInfo(h, now) : null, sp = Number.isFinite(h) ? L.supplyAt(h) : NaN;
   root.append(el('section', { class: 'tile hero' }, el('div', { class: 'eyebrow' }, t('height')), el('div', { class: 'height', id: 'h' }, L.fmtNum(h)),
     el('div', { class: 'since' }, t('since') + ': ', el('b', { id: 'since' }, sinceText(now))), priceLine()));
@@ -30,8 +30,8 @@ export function viewDash() {
   if (st.ln && st.ln.channel_count) { const l = st.ln;
     root.append(tile('t-ln', t('lightning'), L.fmtNum(l.total_capacity / 1e8, 0) + ' BTC', [[t('channels', { n: L.fmtNum(l.channel_count) }), more(t('nodes', { n: L.fmtNum(l.node_count) }))]],
       l.tor_nodes != null ? [stack([{ v: l.clearnet_nodes, c: 'var(--accent)', label: 'clearnet' }, { v: l.tor_nodes, c: 'var(--blue)', label: 'tor' }, { v: l.clearnet_tor_nodes || 0, c: 'var(--dim)', label: 'both' }, { v: l.unannounced_nodes || 0, c: 'var(--line)', label: 'unannounced' }]), el('div', { class: 'cap' }, t('lnKinds'))] : null)); }
-  const proj = S.showFees && st.proj && st.proj.length ? el('div', { class: 'sgrp' }, el('h2', null, t('projected')), el('div', { class: 'blocks' }, st.proj.slice(0, 6).map((b, i) => el('div', { class: 'blk proj' }, upcomingCube(b), el('b', null, `~${L.fmtFee(b.medianFee)}`), el('span', null, `${L.fmtNum(b.nTx)} tx`), el('span', null, t('minAhead', { n: (i + 1) * 10 })))))) : null;
-  const rec = st.blocks.length ? el('div', { class: 'sgrp' }, el('h2', null, t('recent')), el('div', { class: 'blocks' }, st.blocks.slice(0, 12).map((x, i) => { const b = L.parseBlock(x); return el('a', { class: 'blk' + (i === 0 ? ' cur' : ''), href: '#/block/' + b.height }, minedCube(x), el('b', null, L.fmtNum(b.height)), el('span', null, L.fmtNum(b.txs) + ' tx'), el('span', null, t('ago', { t: L.fmtAgo(now / 1000 - b.ts) }))); }))) : null;
+  const proj = S.showFees && st.proj && st.proj.length ? el('div', { class: 'sgrp' }, el('h2', null, t('projected')), el('div', { class: 'blocks', tabindex: 0, role: 'region', 'aria-label': t('projected') }, st.proj.slice(0, 6).map((b, i) => el('div', { class: 'blk proj' }, upcomingCube(b), el('b', null, `~${L.fmtFee(b.medianFee)}`), el('span', null, `${L.fmtNum(b.nTx)} tx`), el('span', null, t('minAhead', { n: (i + 1) * 10 })))))) : null;
+  const rec = st.blocks.length ? el('div', { class: 'sgrp' }, el('h2', null, t('recent')), el('div', { class: 'blocks', tabindex: 0, role: 'region', 'aria-label': t('recent') }, st.blocks.slice(0, 12).map((x, i) => { const b = L.parseBlock(x); return el('a', { class: 'blk' + (i === 0 ? ' cur' : ''), href: '#/block/' + b.height }, minedCube(x), el('b', null, L.fmtNum(b.height)), el('span', null, L.fmtNum(b.txs) + ' tx'), el('span', null, t('ago', { t: L.fmtAgo(now / 1000 - b.ts) }))); }))) : null;
   if (proj || rec) root.append(el('section', { class: 'strip2' }, proj, rec));
   if (!Number.isFinite(h)) root.append(el('p', { class: 'dim' }, t('loading')));
   return root;
@@ -39,7 +39,7 @@ export function viewDash() {
 // Clock mode: the block height, time since the last block and the price, large, for a spare screen. The screen is kept awake.
 export function viewClock() {
   const now = Date.now();
-  return el('div', { class: 'clockview' }, el('a', { class: 'clock-x', href: '#/', 'aria-label': t('close'), title: t('close') }, '✕'),
+  return el('div', { class: 'clockview' }, el('h1', { class: 'sr-only' }, 'BLOCKHORIZON · ' + t('clock')), el('a', { class: 'clock-x', href: '#/', 'aria-label': t('close'), title: t('close') }, '✕'),
     el('div', { class: 'eyebrow' }, t('height')), el('div', { class: 'clock-h', id: 'h' }, L.fmtNum(st.tip)),
     el('div', { class: 'since' }, t('since') + ': ', el('b', { id: 'since' }, sinceText(now))), priceLine());
 }

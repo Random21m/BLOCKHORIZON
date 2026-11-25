@@ -3,7 +3,7 @@ import * as L from './lib.js';
 import { store } from './api.js';
 import { t } from './i18n.js';
 import { play, ALARM_SOUNDS } from './sound.js';
-import { hooks, $, S, st, alarms, fmtD, el, toast, price } from './state.js';
+import { hooks, $, S, st, alarms, feeAlerts, FEE_LVL_KEYS, fmtD, el, toast, price } from './state.js';
 import { askNotify } from './data.js';
 
 export function viewAlarm() {
@@ -18,7 +18,28 @@ export function viewAlarm() {
   inH.addEventListener('input', preview); inB.addEventListener('input', preview);
   root.append(el('div', { class: 'row' }, inH, inB, inL, sel, el('button', { class: 'btn-go', onclick: () => { const hh = preview(); if (hh == null) return toast(t('notFound')); const a = alarms(); a.push({ height: hh, label: inL.value.trim(), sound: sel.value }); store('alarms', a); play(sel.value); askNotify(); hooks.renderView(); } }, t('setAlarm')), el('button', { onclick: () => play(sel.value) }, '▶ ' + t('test'))), out);
   const list = alarms(); root.append(el('h2', { class: 'dim mono' }, t('active')), list.length ? el('table', null, el('tbody', null, list.map((a, i) => el('tr', null, el('td', null, L.fmtNum(a.height)), el('td', null, a.label || ''), el('td', null, t('nBlocks', { n: L.fmtNum(a.height - st.tip) })), el('td', null, el('button', { onclick: () => { const x = alarms(); x.splice(i, 1); store('alarms', x); hooks.renderView(); } }, t('remove'))))))) : el('p', { class: 'dim' }, t('noneYet')));
+  root.append(feePanel());
   preview(); return root;
+}
+// Fee alert: a sound and a message when the chosen fee level drops to the user's limit or below.
+function feePanel() {
+  const cur = (lvl) => (st.fees ? st.fees[L.FEE_LEVELS[lvl]] : NaN);
+  const lvl = el('select', { id: 'fa-l', 'aria-label': t('feeLevel') }, Object.keys(L.FEE_LEVELS).map((k) => el('option', { value: k }, t(FEE_LVL_KEYS[k]))));
+  const max = el('input', { id: 'fa-m', type: 'text', inputmode: 'decimal', placeholder: t('feeMax'), 'aria-label': t('feeMax'), size: 12 });
+  const snd = el('select', { id: 'fa-s', 'aria-label': t('sound') }, Object.entries(ALARM_SOUNDS).map(([k, v]) => el('option', { value: k, selected: k === S.asound }, v)));
+  const now = el('div', { class: 'dim', id: 'fa-now' });
+  const showNow = () => { const f = cur(lvl.value); now.textContent = Number.isFinite(f) ? t('feeNow', { f: L.fmtFee(f) }) : ''; };
+  lvl.addEventListener('change', showNow);
+  const add = () => {
+    const m = L.parseFeeLimit(max.value); if (!Number.isFinite(m)) return toast(t('feeBadLimit'));
+    if (cur(lvl.value) <= m) return toast(t('feeAlready'));
+    const a = feeAlerts(); a.push({ level: lvl.value, max: m, sound: snd.value }); store('feeAlerts', a); play(snd.value); askNotify(); hooks.renderView();
+  };
+  const list = feeAlerts(); showNow();
+  return el('section', { class: 'feealert' }, el('h2', { class: 'dim mono', style: 'margin-top:28px' }, t('feeAlert')), el('p', { class: 'dim' }, t('feeIntro')),
+    el('div', { class: 'row' }, lvl, max, snd, el('button', { class: 'btn-go', id: 'fa-go', onclick: add }, t('setFee')), el('button', { onclick: () => play(snd.value) }, '▶ ' + t('test'))), now,
+    el('h2', { class: 'dim mono' }, t('activeFee')), list.length ? el('table', { id: 'fa-list' }, el('tbody', null, list.map((a, i) => el('tr', null, el('td', null, t(FEE_LVL_KEYS[a.level] || 'lvlNext')), el('td', null, '≤ ' + L.fmtFee(a.max) + ' sat/vB'),
+      el('td', null, el('button', { onclick: () => { const x = feeAlerts(); x.splice(i, 1); store('feeAlerts', x); hooks.renderView(); } }, t('remove'))))))) : el('p', { class: 'dim' }, t('noneYet')));
 }
 export function viewCalc() {
   const root = el('div'); root.append(el('h1', null, t('calc').toUpperCase()));

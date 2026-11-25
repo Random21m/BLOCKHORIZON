@@ -27,6 +27,8 @@ await ctx.route(/mempool\.space/, (route) => { const u = new URL(route.request()
   if (u.pathname.startsWith('/api/v1/block/')) return route.fulfill({ contentType: 'application/json', body: JSON.stringify(JSON.parse(fx('blocks.json'))[0]) });
   if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
 await ctx.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
+// The real mempool.space live feed is closed so every run sees the same recorded data (live fees would otherwise leak in).
+await ctx.routeWebSocket(/mempool\.space/, (ws) => ws.close());
 await ctx.routeWebSocket(/ws\.kraken\.com/, (ws) => { ws.onMessage(() => { ws.send(JSON.stringify({ channel: 'ticker', type: 'snapshot', data: [{ symbol: 'BTC/USD', last: 61234.5, change_pct: 1.25 }] })); setTimeout(() => ws.send(JSON.stringify({ channel: 'ticker', type: 'update', data: [{ symbol: 'BTC/USD', last: 61300.2, change_pct: 1.4 }] })), 1500); }); });
 const ok = async (name, fn) => { try { await fn(); console.log('ok   ', name); } catch (e) { console.log('FAIL ', name, e.message); process.exitCode = 1; } };
 await page.goto(base);
@@ -42,7 +44,7 @@ await ok('block colours: mined purple-to-blue, upcoming fee stripes', async () =
 await ok('sats per dollar shown', async () => { assert.ok(/1,6\d\d\s+sats/.test(await page.locator('main').innerText())); });
 await ok('dashboard fits one screen on phone, laptop and wide screens', async () => {
   for (const [w, h] of [[390, 844], [1280, 720], [1440, 900], [1920, 1080]]) {
-    await page.setViewportSize({ width: w, height: h }); await page.goto(base); await until(page, () => /977/.test(document.querySelector('#h')?.textContent || ''));
+    await page.setViewportSize({ width: w, height: h }); await page.goto(base); await until(page, () => /977/.test(document.querySelector('#h')?.textContent || '') && document.querySelectorAll('.tile').length >= 10);
     const m = await page.evaluate(() => { const mn = document.querySelector('main'); return { sh: mn.scrollHeight, ch: mn.clientHeight, doc: document.documentElement.scrollHeight, ih: innerHeight, tiles: document.querySelectorAll('.tile').length }; });
     assert.ok(m.tiles >= 10, 'tiles ' + m.tiles); assert.ok(m.sh <= m.ch + 1 && m.doc <= m.ih + 1, `${w}x${h}: main ${m.sh}/${m.ch} doc ${m.doc}/${m.ih}`);
   } await page.setViewportSize({ width: 360, height: 800 }); });
@@ -143,6 +145,42 @@ await ok('German: dashboard, block page and settings have no English left', asyn
   for (const w of [' ago', 'blocks deep', 'channels', 'of epoch', 'issued', 'Since last']) assert.ok(!d.includes(w), 'English left: ' + w);
   await page.goto(base + '#/block/840000'); await page.waitForSelector('.panel dl', { timeout: 6000 }); assert.ok((await page.locator('main').innerText()).includes('Transaktionen'));
   await page.goto(base); await page.click('#btn-settings'); await page.click('[data-k=format]'); await page.selectOption('#st-lang', 'en'); await page.keyboard.press('Escape'); });
+await ok('fee alert: fires when fees are at or below the limit, then is removed', async () => {
+  await page.goto(base + 'privacy.html'); await page.evaluate(() => localStorage.setItem('bh.feeAlerts', JSON.stringify([{ level: 'next', max: 6, sound: 'clock' }, { level: 'next', max: 0.5 }])));
+  await page.goto(base); await until(page, () => /Fees dropped: Next block is 5\.0 sat\/vB \(your limit 6\.0\)/.test(document.querySelector('#toast')?.textContent || ''), null, { timeout: 8000 });
+  assert.deepEqual(await page.evaluate(() => JSON.parse(localStorage.getItem('bh.feeAlerts')).map((a) => a.max)), [0.5]); await page.evaluate(() => localStorage.removeItem('bh.feeAlerts')); });
+await ok('fee alert: set and list one on the Alarm page; a limit already reached is refused', async () => {
+  await page.goto(base); await until(page, () => document.querySelectorAll('.blk.proj').length > 0); await page.goto(base + '#/alarm'); await page.waitForSelector('#fa-m');
+  assert.equal(await page.locator('#fa-now').innerText(), 'Now: 5.0 sat/vB');
+  await page.fill('#fa-m', '9'); await page.click('#fa-go'); await until(page, () => /already at or below/.test(document.querySelector('#toast').textContent));
+  await page.selectOption('#fa-l', 'h30'); await page.fill('#fa-m', '2,5'); await page.click('#fa-go'); await page.waitForSelector('#fa-list');
+  assert.ok((await page.locator('#fa-list').innerText()).includes('≤ 2.5 sat/vB')); await page.click('#fa-list button'); await until(page, () => !document.querySelector('#fa-list')); });
+await ok('keyboard: Tab stays inside an open dialog, Escape closes it and focus goes back', async () => {
+  await page.goto(base); await page.focus('#btn-settings'); await page.keyboard.press('Enter'); await page.waitForSelector('#st-theme');
+  for (let i = 0; i < 25; i++) { await page.keyboard.press('Tab'); assert.ok(await page.evaluate(() => document.querySelector('#modal').contains(document.activeElement)), 'focus left the dialog at Tab ' + (i + 1)); }
+  assert.equal(await page.getAttribute('#modal', 'aria-labelledby'), 'modal-title');
+  await page.focus('#tab-display'); await page.keyboard.press('ArrowRight'); assert.equal(await page.evaluate(() => document.activeElement.id), 'tab-format'); assert.equal(await page.getAttribute('#tab-format', 'aria-selected'), 'true');
+  await page.keyboard.press('Escape'); assert.ok(await page.locator('#modal').isHidden()); assert.equal(await page.evaluate(() => document.activeElement.id), 'btn-settings'); });
+await ok('French: glossary and anniversaries are translated', async () => {
+  await page.goto(base); await page.click('#btn-settings'); await page.click('[data-k=format]'); await page.selectOption('#st-lang', 'fr'); await page.keyboard.press('Escape');
+  await page.goto(base + '#/glossary'); const g = await page.locator('main').innerText(); assert.ok(g.includes('Hauteur de bloc') && g.includes('chaîne'), g.slice(0, 200));
+  await page.goto(base + '#/events'); assert.ok((await page.locator('main').innerText()).includes('Quatrième halving'));
+  await page.goto(base); await page.click('#btn-settings'); await page.click('[data-k=format]'); await page.selectOption('#st-lang', 'en'); await page.keyboard.press('Escape'); });
+await ok('accessibility: no axe-core violations on the main pages and dialogs, dark and light', async () => {
+  let AXE; try { AXE = fs.readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8'); } catch { console.log('      (skipped: axe-core not installed; CI installs it)'); return; }
+  const found = [];
+  for (const theme of ['dark', 'light']) {
+    const c = await b.newContext({ viewport: { width: 1280, height: 800 }, bypassCSP: true, reducedMotion: 'reduce' }); await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
+    await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+    await c.addInitScript((t) => localStorage.setItem('bh.settings', JSON.stringify({ theme: t, _v: 2, lang: 'en' })), theme); const p = await c.newPage();
+    for (const pg of ['#/', '#/clock', '#/alarm', '#/calc', '#/glossary', '#/about', '#/tx/' + TXC, 'search', 'settings']) {
+      if (pg === 'search' || pg === 'settings') { await p.goto(base); await p.waitForSelector('#h'); await p.click('#btn-' + pg); } else await p.goto(base + pg);
+      await p.waitForTimeout(700); await p.evaluate(AXE);
+      for (const v of await p.evaluate(async () => (await axe.run(document, { resultTypes: ['violations'] })).violations.map((x) => x.id + ': ' + x.nodes.map((n) => n.target.join(' ')).slice(0, 3).join(', ')))) found.push(`${theme} ${pg} ${v}`);
+    }
+    await c.close();
+  }
+  assert.deepEqual(found, []); });
 await ok('only mempool.space is contacted', async () => { assert.ok(external.length > 0); });
 await ok('no script errors', async () => { assert.deepEqual(errs, []); });
 await b.close(); srv.close();

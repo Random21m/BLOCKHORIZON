@@ -190,3 +190,7 @@ html{overscroll-behavior-y:none}
 .clock-x{position:absolute;top:calc(12px + env(safe-area-inset-top));right:16px;color:var(--dim);text-decoration:none;font-size:20px;padding:8px 12px;border-radius:4px}.clock-x:hover{color:var(--text)}
 .txid{word-break:break-all;margin:-4px 0 12px}.share{margin-top:12px}
 .paytable{width:100%;margin-top:6px;font-size:14px}.paytable td{padding:4px 8px 4px 0;white-space:nowrap}.paytable td.num{text-align:right;white-space:nowrap}@media (max-width:480px){.paytable td.rate{display:none}}
+/* Accessibility: text for screen readers only; focus ring on the scrollable block strips; readable button and tab text */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.blocks:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn-go{color:var(--bg)}.tabs button[aria-selected=true]{color:var(--text)}

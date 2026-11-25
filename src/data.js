@@ -3,7 +3,7 @@ import * as L from './lib.js';
 import { api, store } from './api.js';
 import { t } from './i18n.js';
 import { play } from './sound.js';
-import { hooks, S, st, alarms, toast, price, priceStr } from './state.js';
+import { hooks, S, st, alarms, feeAlerts, FEE_LVL_KEYS, toast, price, priceStr } from './state.js';
 
 // ---------- data ----------
 export async function refreshAll() {
@@ -64,6 +64,14 @@ export function checkAlarms() {
   const { hit, rest } = L.splitAlarms(alarms(), st.tip);
   if (!hit.length) return; store('alarms', rest);
   for (const x of hit) { const msg = '⏰ ' + t('reached', { h: L.fmtNum(x.height) }) + (x.label ? ': ' + x.label : ''); toast(msg); play(x.sound || S.asound); notify(msg); }
+}
+// Fee alerts: checked whenever new fee data arrives (live feed or the minute refresh). Each fires once, then is removed.
+let feeSeen = null;
+export function checkFeeAlerts() {
+  if (!st.fees || st.fees === feeSeen) return; feeSeen = st.fees;
+  const { hit, rest } = L.splitFeeAlerts(feeAlerts(), st.fees);
+  if (!hit.length) return; store('feeAlerts', rest);
+  for (const a of hit) { const msg = '⏰ ' + t('feeReached', { l: t(FEE_LVL_KEYS[a.level] || 'lvlNext'), f: L.fmtFee(st.fees[L.FEE_LEVELS[a.level] || 'fastestFee']), m: L.fmtFee(a.max) }); toast(msg); play(a.sound || S.asound); notify(msg); }
 }
 // A system notification as well, so an alarm is seen while the tab is in the background. Only if the user allowed it.
 export function notify(body) {

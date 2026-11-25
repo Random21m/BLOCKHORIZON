@@ -1,7 +1,8 @@
 // Halving replay, chain calendar, glossary, watch list, about.
 import * as L from './lib.js';
-import { t } from './i18n.js';
+import { t, getLang } from './i18n.js';
 import { GLOSSARY, ANNIVERSARIES, CHANNELS, SITES } from './content.js';
+import { GLOSSARY_TR, ANNIV_TR } from './content-i18n.js';
 import { VERSION, TIP_ADDR, S, st, fmtD, el, toast } from './state.js';
 import { kv, bar } from './ui.js';
 
@@ -26,13 +27,13 @@ export function viewEvents() {
   upcoming.sort((a, b) => a[0] - b[0]);
   root.append(el('div', { class: 'panel' }, el('h2', null, t('comingUp')), el('table', null, el('tbody', null, upcoming.map(([ms, tx]) => el('tr', null, el('td', null, fmtD(ms, { dateOnly: true })), el('td', null, tx)))))));
   const d = new Date(now), key = (d.getMonth() + 1) * 100 + d.getDate();
-  const ann = ANNIVERSARIES.slice().sort((a, b) => ((a.m * 100 + a.d - key + 1300) % 1300) - ((b.m * 100 + b.d - key + 1300) % 1300));
+  const tr = ANNIV_TR[getLang()], ann = ANNIVERSARIES.map((a, i) => Object.assign({}, a, { text: (tr && tr[i]) || a.text })).sort((a, b) => ((a.m * 100 + a.d - key + 1300) % 1300) - ((b.m * 100 + b.d - key + 1300) % 1300));
   root.append(el('div', { class: 'panel', style: 'margin-top:12px' }, el('h2', null, t('anniversaries')), el('table', null, el('tbody', null, ann.map((a) => el('tr', null, el('td', null, `${String(a.m).padStart(2, '0')}-${String(a.d).padStart(2, '0')}`), el('td', null, `${a.text} (${a.y})`)))))));
   root.append(el('p', { class: 'dim' }, t('noConf'))); return root;
 }
 export function viewGlossary() {
   const root = el('div'); root.append(el('h1', null, t('glossary').toUpperCase()));
-  root.append(el('dl', { class: 'glossary' }, GLOSSARY.flatMap(([k, v]) => [el('dt', null, k), el('dd', null, v)]))); return root;
+  root.append(el('dl', { class: 'glossary' }, (GLOSSARY_TR[getLang()] || GLOSSARY).flatMap(([k, v]) => [el('dt', null, k), el('dd', null, v)]))); return root;
 }
 export function viewWatch() {
   const list = [...CHANNELS].sort((x, y) => x.localeCompare(y, 'en', { sensitivity: 'base' }));

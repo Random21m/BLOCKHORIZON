@@ -4,13 +4,13 @@ import { live } from './api.js';
 import { livePrice } from './price.js';
 import { t } from './i18n.js';
 import { VERSION, $, st, el, toast, applyLook, NAVS, hooks } from './state.js';
-import { refreshAll, onLive, onPriceTick, checkAlarms } from './data.js';
+import { refreshAll, onLive, onPriceTick, checkAlarms, checkFeeAlerts } from './data.js';
 import { sinceText } from './ui.js';
 import { viewDash, viewClock } from './view-dash.js';
 import { viewBlock, viewTx } from './view-chain.js';
 import { viewAlarm, viewCalc } from './view-tools.js';
 import { viewReplay, viewEvents, viewGlossary, viewWatch, viewAbout } from './view-info.js';
-import { closeModal, searchModal, settingsModal } from './modals.js';
+import { closeModal, searchModal, settingsModal, trapFocus } from './modals.js';
 
 let route = '/';
 const VIEWS = { '/': viewDash, '/clock': viewClock, '/alarm': viewAlarm, '/calc': viewCalc, '/replay': viewReplay, '/events': viewEvents, '/glossary': viewGlossary, '/watch': viewWatch, '/about': viewAbout };
@@ -59,7 +59,7 @@ function render() {
       else { const sx = stripScroll(); morph(cur, VIEWS[route]()); stripScroll(sx); document.title = docTitle(); }
     } finally { rendering = false; } }
   else if (!LIVE[route]) document.title = 'BLOCKHORIZON · ' + L.fmtNum(st.tip);
-  checkAlarms();
+  checkAlarms(); checkFeeAlerts();
   const c = $('#conn'); if (c) { c.className = 'conn ' + (st.conn === 'on' ? 'on' : st.conn === 'poll' ? 'poll' : ''); c.title = st.conn === 'on' ? t('connLive') : st.conn === 'poll' ? t('connPoll') : t('offline'); }
 }
 
@@ -78,6 +78,7 @@ export function boot() {
   applyLook(); $('#ver').textContent = 'BLOCKHORIZON ' + VERSION;
   $('#btn-search').onclick = searchModal; $('#btn-settings').onclick = settingsModal; $('#modal-x').onclick = closeModal;
   $('#modal').addEventListener('click', (e) => { if (e.target.id === 'modal') closeModal(); });
+  addEventListener('keydown', trapFocus);
   addEventListener('keydown', (e) => { if (e.key === 'Escape') { if (!$('#modal').hidden) closeModal(); else if (route === '/clock') location.hash = '#/'; } });
   addEventListener('hashchange', renderView); matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyLook);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) keepAwake(route === '/clock'); });

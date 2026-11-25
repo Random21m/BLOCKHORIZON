@@ -7,8 +7,23 @@ import { play, BLOCK_SOUNDS } from './sound.js';
 import { hooks, $, S, save, st, el, applyLook } from './state.js';
 
 // ---------- modals ----------
-export function openModal(node) { const m = $('#modal'); $('#modal-body').replaceChildren(node); m.hidden = false; const f = m.querySelector('input,select,button:not(.x)'); (f || $('#modal-x')).focus(); }
-export function closeModal() { $('#modal').hidden = true; }
+// Dialogs are named by their heading, keep keyboard focus inside while open, and hand it back to where it was on close.
+let opener = null;
+const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex="0"]';
+export function openModal(node) {
+  const m = $('#modal'); if (m.hidden) opener = document.activeElement;
+  $('#modal-body').replaceChildren(node); m.hidden = false;
+  const h = node.querySelector('h1'); if (h) { h.id = 'modal-title'; m.setAttribute('aria-labelledby', 'modal-title'); }
+  const f = m.querySelector('input,select,button:not(.x)'); (f || $('#modal-x')).focus();
+}
+export function closeModal() { const m = $('#modal'); if (m.hidden) return; m.hidden = true; if (opener && document.contains(opener)) opener.focus(); opener = null; }
+export function trapFocus(e) { // Tab and Shift+Tab wrap around inside the open dialog
+  const m = $('#modal'); if (e.key !== 'Tab' || m.hidden) return;
+  const f = [...m.querySelectorAll(FOCUSABLE)].filter((x) => x.offsetParent !== null); if (!f.length) return;
+  const first = f[0], last = f[f.length - 1];
+  if (e.shiftKey && (document.activeElement === first || !m.contains(document.activeElement))) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && (document.activeElement === last || !m.contains(document.activeElement))) { e.preventDefault(); first.focus(); }
+}
 export function searchModal() {
   const hi = el('input', { id: 's-h', inputmode: 'numeric', placeholder: t('eg', { x: '840000' }), 'aria-label': t('byHeight') }), di = el('input', { id: 's-d', type: 'date', 'aria-label': t('byDate') }), msg = el('div', { class: 'dim', id: 's-msg' });
   const ti = el('input', { id: 's-t', placeholder: t('txid'), 'aria-label': t('byTx'), autocomplete: 'off', spellcheck: 'false' });
@@ -25,7 +40,7 @@ export function settingsModal() {
   const sel = (key, opts, onchg) => el('select', { id: 'st-' + key, onchange: (e) => { S[key] = e.target.value === 'true' ? true : e.target.value === 'false' ? false : e.target.value; save(); applyLook(); if (onchg) onchg(); hooks.renderView(); } },
     opts.map(([v, l]) => el('option', { value: String(v), selected: String(S[key]) === String(v) }, l)));
   const chk = (key, label) => el('label', { class: 'chk' }, el('input', { type: 'checkbox', id: 'st-' + key, checked: !!S[key], onchange: (e) => { S[key] = e.target.checked; save(); applyLook(); hooks.renderView(); } }), label);
-  const row = (l, c) => el('div', { class: 'row' }, el('label', { style: 'min-width:130px' }, l), c);
+  const row = (l, c) => el('div', { class: 'row' }, el('label', { for: c.id, style: 'min-width:130px' }, l), c);
   const days = (n) => t('days', { n });
   const tabs = { display: () => el('div', null, row(t('theme'), sel('theme', [['dark', t('dark')], ['light', t('light')], ['auto', t('auto')]])), row(t('currency'), sel('cur', CURRENCIES.map((c) => [c, c]))),
       row(t('satsSym'), sel('satsSym', [['sats', 'sats'], ['SATS', 'SATS'], ['sat', 'sat']])), row(t('hrAvg'), sel('hr', [['d7', days(7)], ['d14', days(14)], ['d30', days(30)], ['d90', days(90)]])),
@@ -34,9 +49,11 @@ export function settingsModal() {
     format: () => el('div', null, row(t('language'), sel('lang', Object.entries(LANGS), () => { settingsModal.tab = 'format'; settingsModal(); })), row(t('timeL'), sel('h12', [[false, t('h24f')], [true, t('h12f')]])), row(t('dateL'), sel('dateFmt', [['iso', '2026-11-24'], ['dmy', '24.11.2026'], ['mdy', '11/24/2026']])), row(t('zone'), sel('utc', [[false, t('local')], [true, 'UTC']]))),
     sounds: () => el('div', null, chk('sound', t('soundNew')), row(t('blockSound'), sel('bsound', Object.entries(BLOCK_SOUNDS))), el('button', { onclick: () => play(S.bsound) }, '▶ ' + t('test')),
       chk('reduced', t('reduce'))) };
-  const body = el('div'), bar2 = el('div', { class: 'tabs', role: 'tablist' });
-  const show = (k) => { bar2.querySelectorAll('button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.k === k))); body.replaceChildren(tabs[k]()); };
-  for (const k of Object.keys(tabs)) bar2.append(el('button', { role: 'tab', 'data-k': k, onclick: () => show(k) }, t('tab_' + k)));
+  const body = el('div', { id: 'st-panel', role: 'tabpanel' }), bar2 = el('div', { class: 'tabs', role: 'tablist', 'aria-label': t('settings') });
+  const show = (k) => { bar2.querySelectorAll('button').forEach((b) => { b.setAttribute('aria-selected', String(b.dataset.k === k)); b.tabIndex = b.dataset.k === k ? 0 : -1; }); body.setAttribute('aria-labelledby', 'tab-' + k); body.replaceChildren(tabs[k]()); };
+  const keys = Object.keys(tabs);
+  for (const k of keys) bar2.append(el('button', { role: 'tab', id: 'tab-' + k, 'data-k': k, 'aria-controls': 'st-panel', onclick: () => show(k),
+    onkeydown: (e) => { const d = { ArrowRight: 1, ArrowLeft: -1 }[e.key]; if (!d) return; e.preventDefault(); const n = keys[(keys.indexOf(k) + d + keys.length) % keys.length]; show(n); $('#tab-' + n).focus(); } }, t('tab_' + k)));
   const reopen = settingsModal.tab; settingsModal.tab = null;
   openModal(el('div', null, el('h1', null, t('settings').toUpperCase()), bar2, body, el('p', { class: 'dim' }, t('storedOnly')))); show(reopen || 'display');
 }
