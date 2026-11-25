@@ -17,7 +17,10 @@ let canvas = null, ctx = null, tip = null, raf = 0, timer = 0, hover = null, ro 
 const still = () => S.reduced || document.hidden || (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches);
 
 // A projected-block-transactions frame from the live feed (a full list starts the block over, deltas change it).
-export function ingest(frame) { if ((frame && frame.blockTransactions) || !liveData) needSort = true; L.applyBlockFrame(txs, frame); liveData = true; version++; schedule(); }
+export function ingest(frame) {
+  if ((frame && frame.blockTransactions) || !liveData) { needSort = true; appliedAt = -1e9; } // a whole block (or the first live data) shows at once, not batched
+  L.applyBlockFrame(txs, frame); liveData = true; version++; schedule();
+}
 export function liveFeed() { return liveData; }
 export function sceneStats() { const list = source(); return { n: list.length, vsize: list.reduce((a, t) => a + t.vsize, 0), live: liveData }; }
 function source() {

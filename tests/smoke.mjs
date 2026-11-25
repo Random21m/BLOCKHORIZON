@@ -240,9 +240,10 @@ await ok('mining: the next block fills live from the feed, a tx can be opened, t
   await until(p, () => /live/.test(document.querySelector('.scenebox figcaption')?.textContent || '')); assert.ok(asked.includes('"track-mempool-block":0'), 'asks for the block transactions');
   const n0 = frames[0].blockTransactions.length; assert.ok((await p.locator('.scenebox figcaption').innerText()).includes(n0 + ' tx'));
   for (const f of frames.slice(1)) sock.send(JSON.stringify({ 'projected-block-transactions': f }));
-  await p.waitForTimeout(1200);
-  const lit = await p.evaluate(() => { const cv = document.querySelector('canvas.scene'), d = cv.getContext('2d').getImageData(0, 0, cv.width, cv.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 200) n++; return n / (d.length / 4); });
-  assert.ok(lit > 0.02, 'squares drawn: ' + lit);
+  const litNow = () => p.evaluate(() => { const cv = document.querySelector('canvas.scene'), d = cv.getContext('2d').getImageData(0, 0, cv.width, cv.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 200) n++; return n / (d.length / 4); });
+  const t0 = Date.now(); let lit = 0; while (Date.now() - t0 < 4000 && (lit = await litNow()) <= 0.02) await p.waitForTimeout(100);
+  assert.ok(lit > 0.02, 'squares drawn: ' + lit + (errs.length ? ' · ' + errs.join(' | ') : ''));
+  assert.ok(Date.now() - t0 < 2500, 'the live block shows within a moment: ' + (Date.now() - t0) + ' ms');
   const t1 = await p.locator('#tries').innerText(); assert.ok(/10/.test(t1), t1); assert.ok(/^0{19}/.test((await p.locator('.hash.target').innerText()).trim()));
   assert.equal(await p.locator('#tries-list li').count(), 5); assert.equal(await p.locator('.pools li').count(), 7);
   assert.ok((await p.locator('main').innerText()).includes('Foundry USA'));
