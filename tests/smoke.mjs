@@ -35,7 +35,7 @@ await ctx.routeWebSocket(/ws\.kraken\.com/, (ws) => { ws.onMessage(() => { ws.se
 const ok = async (name, fn) => { try { await fn(); console.log('ok   ', name); } catch (e) { console.log('FAIL ', name, e.message); process.exitCode = 1; } };
 await page.goto(base);
 await ok('dashboard shows the tip height', async () => { await until(page, () => document.querySelector('#h') && document.querySelector('#h').textContent.replace(/\D/g, '') === '977411', null, { timeout: 8000 }); });
-await ok('panels render (halving, difficulty, hashrate, fees, mempool, price)', async () => { const t = await page.locator('main').innerText(); for (const w of ['NEXT HALVING', 'DIFFICULTY ADJUSTMENT', 'HASHRATE', 'FEES', 'MEMPOOL', 'PRICE', '72,589']) assert.ok(t.toUpperCase().includes(w.replace(/,/g, '').length ? w.toUpperCase() : w), w); });
+await ok('panels render (halving, difficulty, hashrate, fees, mempool, price)', async () => { const t = await page.locator('main').innerText(); for (const w of ['NEXT HALVING', 'DIFFICULTY', 'HASHRATE', 'FEES', 'MEMPOOL', 'PRICE', '72,589']) assert.ok(t.toUpperCase().includes(w.replace(/,/g, '').length ? w.toUpperCase() : w), w); });
 await ok('live price streams in under the block height', async () => { await until(page, () => /61,23[45]/.test(document.querySelector('#btc')?.textContent || ''), null, { timeout: 8000 }); assert.ok((await page.locator('.btc').innerText()).toLowerCase().includes('live')); });
 await ok('price moves live: a later trade changes the big price and shows the direction', async () => { await until(page, () => /61,300/.test(document.querySelector('#btc')?.textContent || ''), null, { timeout: 9000 }); assert.equal((await page.locator('#btcdir').innerText()).trim(), '▲'); });
 await ok('block colours: mined purple-to-blue, upcoming fee stripes', async () => {
@@ -187,6 +187,19 @@ await ok('app shortcuts: each opens its page; the Search shortcut opens the sear
   for (const s of m.shortcuts) { await page.goto(new URL(s.url, base).href); await page.waitForSelector('main > *');
     if (s.short_name === 'Search') { await page.waitForSelector('#s-h'); assert.equal(new URL(page.url()).hash, '#/'); await page.keyboard.press('Escape'); }
     else assert.equal(await page.locator('#nav a[aria-current=page]').getAttribute('href'), '#/' + s.short_name.toLowerCase()); } });
+await ok('tile titles stay on one line on phones and tablets (short titles), in the longest languages', async () => {
+  for (const [w, lang] of [[360, 'fr'], [360, 'it'], [360, 'es'], [360, 'en'], [700, 'it'], [1280, 'fr']]) {
+    const c = await b.newContext({ viewport: { width: w, height: 800 } }); await c.routeWebSocket(/./, (ws) => ws.close()); await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
+    await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+    await c.addInitScript((l) => localStorage.setItem('bh.settings', JSON.stringify({ lang: l, _v: 2 })), lang); const p = await c.newPage(); await p.goto(base); await until(p, () => document.querySelectorAll('.tile').length >= 10);
+    const wrapped = await p.$$eval('.tile h2', (hs) => hs.filter((h) => h.getBoundingClientRect().height > parseFloat(getComputedStyle(h).fontSize) * 2).map((h) => h.innerText));
+    assert.deepEqual(wrapped, [], `${w}px ${lang}`); await c.close(); } });
+await ok('link preview card: tags point at a 1200x630 image that is published', async () => {
+  const html = await (await page.request.get(base)).text(); const meta = (k) => (html.match(new RegExp(`<meta (?:property|name)="${k}" content="([^"]+)"`)) || [])[1];
+  assert.ok(meta('og:title') && meta('og:description') && meta('twitter:card') === 'summary_large_image'); assert.equal(meta('og:image:width') + 'x' + meta('og:image:height'), '1200x630');
+  const img = new URL(meta('og:image')).pathname.replace(/^\/BLOCKHORIZON\//, ''); const buf = await (await page.request.get(base + img)).body();
+  assert.equal(buf.toString('ascii', 1, 4), 'PNG'); assert.equal(buf.readUInt32BE(16) + 'x' + buf.readUInt32BE(20), '1200x630');
+  const wf = fs.readFileSync(path.join(root, '.github/workflows/pages.yml'), 'utf8'); assert.ok(/cp -r[^\n]* icons/.test(wf), 'icons folder is published'); });
 await ok('keyboard: Tab stays inside an open dialog, Escape closes it and focus goes back', async () => {
   await page.goto(base); await page.focus('#btn-settings'); await page.keyboard.press('Enter'); await page.waitForSelector('#st-theme');
   for (let i = 0; i < 25; i++) { await page.keyboard.press('Tab'); assert.ok(await page.evaluate(() => document.querySelector('#modal').contains(document.activeElement)), 'focus left the dialog at Tab ' + (i + 1)); }

@@ -12,7 +12,7 @@ export function viewDash() {
   if (hv) root.append(tile('t-halving', t('halving'), L.fmtNum(hv.blocksToGo) + ' ' + t('blocksToGo'),
     [[t('est', { d: fmtD(hv.estMs, { dateOnly: true }) }), more(t('atBlock', { n: L.fmtNum(hv.nextHeight) }))]], arc(hv.progress, (hv.progress * 100).toFixed(0) + '%', t('ofEpoch'))));
   if (st.diff) { const d = L.parseDifficulty(st.diff);
-    root.append(tile('t-diff', t('difficulty'), (d.change >= 0 ? '+' : '') + d.change.toFixed(2) + '%', [[t('nBlocks', { n: L.fmtNum(d.blocksLeft) }), more(t('estAt', { d: fmtD(d.estMs) }))]], arc(d.progress, (d.progress * 100).toFixed(0) + '%', t('ofPeriod')))); }
+    root.append(tile('t-diff', [t('difficulty'), t('diffShort')], (d.change >= 0 ? '+' : '') + d.change.toFixed(2) + '%', [[t('nBlocks', { n: L.fmtNum(d.blocksLeft) }), more(t('estAt', { d: fmtD(d.estMs) }))]], arc(d.progress, (d.progress * 100).toFixed(0) + '%', t('ofPeriod')))); }
   if (st.hr) { const a = L.hashrateAverages(st.hr.hashrates, st.hr.currentHashrate), sel = S.hr || 'd14', lab = { d7: '7d', d14: '14d', d30: '30d', d90: '90d' }[sel];
     root.append(tile('t-hash', t('hashrate'), L.fmtHashrate(a.current), [t('avgOf', { p: lab, v: L.fmtHashrate(a[sel]) })], spark((st.hr.hashrates || []).slice(-120).map((x) => x.avgHashrate)))); }
   if (hv) root.append(tile('t-supply', t('supply'), (sp / 1e14).toFixed(3) + 'M BTC', [[t('issued', { p: (sp / L.MAX_SATS * 100).toFixed(2) }), more(t('btcLeft', { n: L.fmtNum((L.MAX_SATS - sp) / 1e8, 0) }))]], [bar(sp / L.MAX_SATS), emissionChart(hv.epoch)]));
@@ -20,7 +20,7 @@ export function viewDash() {
     root.append(tile('t-last', t('last'), el('a', { href: '#/block/' + b.height }, '#' + L.fmtNum(b.height)), [[`${L.fmtNum(b.txs)} tx · ${(x0.size / 1e6).toFixed(2)} MB`, S.showPool && b.pool ? more(' · ' + b.pool) : null]],
       el('div', { class: 'lastviz' }, el('div', { class: 'bigcube' }, minedCube(x0)), el('div', { class: 'fillnote' }, t('full', { p: Math.round((x0.weight || 0) / 4e4) }), el('div', { class: 'stripe', style: `background:${L.feeStripes(b.feeRange)}` }), el('small', null, b.feeRange.length ? t('feesRange', { a: L.fmtFee(b.feeRange[0]), b: L.fmtFee(b.feeRange[b.feeRange.length - 1]) }) : ''))))); }
   if (st.blocks.length > 1) { const bs = L.blockTimeStats(st.blocks, now / 1000);
-    root.append(tile('t-prod', t('production'), L.fmtDuration(bs.avg), [t('fastSlow', { f: bs.fast, s: bs.slow })], gapsChart(st.blocks))); }
+    root.append(tile('t-prod', [t('production'), t('prodShort')], L.fmtDuration(bs.avg), [t('fastSlow', { f: bs.fast, s: bs.slow })], gapsChart(st.blocks))); }
   if (S.showFees && st.fees) { const f = st.fees, cells = [[f.fastestFee, t('feeNext'), t('eta10')], [f.halfHourFee, t('fee30'), t('eta30')], [f.hourFee, t('fee1h'), t('eta60')], [f.economyFee, t('feeSlow'), t('etaLater')]];
     root.append(tile('t-fees', t('fees'), el('div', { class: 'fees' + (S.feesRtl ? ' rtl' : '') }, cells.map(([v, l, e]) => el('div', { style: `border-top:3px solid ${L.feeColor(v)}` }, el('b', null, L.fmtFee(v)), el('small', null, l), el('small', { class: 'est' }, e)))))); }
   if (S.showFees && st.mem) root.append(tile('t-mem', t('mempool'), L.fmtNum(st.mem.count) + ' tx', [[t('deep', { n: L.fmtNum(L.mempoolDepth(st.mem), 1) }), st.inflow != null ? more(t('inflow', { n: L.fmtNum(st.inflow, 0) })) : null]],
