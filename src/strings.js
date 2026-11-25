@@ -2,6 +2,7 @@
 // tests/lib.test.mjs checks that every language has every key and the same {placeholders} as English.
 export const MORE = {
   en: {
+    embedTitle: "Embed on your site", embedIntro: "Put a live BLOCKHORIZON number on your own website or blog: pick what to show, copy the code and paste it into your page. It updates itself and links back here.", embedWhat: "Show", embedPreview: "Preview", embedCode: "Code to paste", copyCode: "Copy code", codeCopied: "Code copied",
     diffShort: "Difficulty", prodShort: "Block production", supplyShort: "Supply", feesShort: "Fees (sat/vB)", lnShort: "Lightning", // short tile titles for phone widths
     avgDays: "{n}-day average",
     charts: "Charts", chartsIntro: "How price, hashrate, difficulty and fees have moved. Hover, tap or use the arrow keys on a chart to read values.", rangeL: "Range", r1m: "1 month", r1y: "1 year", rAll: "All time", diffChart: "Difficulty", feeChart: "Median fee rate", logScale: "log scale", showTable: "Show as table", valueL: "Value", chartError: "Could not load this chart. Check your connection and try again.", noData: "No data for this range.", overRange: "{c} over {r}", chartAria: "{n}, {r}: from {a} to {b}.", chartKeys: "Use the left and right arrow keys to read values.",
@@ -42,6 +43,7 @@ export const MORE = {
     storedOnly: "Settings are stored only in this browser.",
   },
   de: {
+    embedTitle: "Auf der eigenen Website einbinden", embedIntro: "Eine live BLOCKHORIZON-Zahl auf deiner Website oder deinem Blog: auswählen, Code kopieren und in die Seite einfügen. Sie aktualisiert sich selbst und verlinkt hierher.", embedWhat: "Zeigen", embedPreview: "Vorschau", embedCode: "Code zum Einfügen", copyCode: "Code kopieren", codeCopied: "Code kopiert",
     diffShort: "Schwierigkeit", prodShort: "Blockproduktion", supplyShort: "Angebot", feesShort: "Gebühren (sat/vB)", lnShort: "Lightning", // short tile titles for phone widths
     avgDays: "{n}-Tage-Mittel",
     charts: "Charts", chartsIntro: "Wie sich Preis, Hashrate, Schwierigkeit und Gebühren entwickelt haben. Zum Ablesen auf ein Diagramm zeigen, tippen oder die Pfeiltasten nutzen.", rangeL: "Zeitraum", r1m: "1 Monat", r1y: "1 Jahr", rAll: "Gesamt", diffChart: "Schwierigkeit", feeChart: "Mittlerer Gebührensatz", logScale: "logarithmisch", showTable: "Als Tabelle zeigen", valueL: "Wert", chartError: "Dieses Diagramm konnte nicht geladen werden. Verbindung prüfen und erneut versuchen.", noData: "Keine Daten für diesen Zeitraum.", overRange: "{c} in {r}", chartAria: "{n}, {r}: von {a} auf {b}.", chartKeys: "Mit den Pfeiltasten links und rechts Werte ablesen.",
@@ -82,6 +84,7 @@ export const MORE = {
     storedOnly: "Einstellungen werden nur in diesem Browser gespeichert.",
   },
   es: {
+    embedTitle: "Insértalo en tu web", embedIntro: "Pon un dato en vivo de BLOCKHORIZON en tu web o blog: elige qué mostrar, copia el código y pégalo en tu página. Se actualiza solo y enlaza aquí.", embedWhat: "Mostrar", embedPreview: "Vista previa", embedCode: "Código para pegar", copyCode: "Copiar código", codeCopied: "Código copiado",
     diffShort: "Dificultad", prodShort: "Ritmo de bloques", supplyShort: "Suministro", feesShort: "Comisiones (sat/vB)", lnShort: "Lightning", // short tile titles for phone widths
     avgDays: "media de {n} días",
     charts: "Gráficos", chartsIntro: "Cómo han evolucionado el precio, el hashrate, la dificultad y las comisiones. Pasa el ratón, toca o usa las flechas en un gráfico para leer los valores.", rangeL: "Periodo", r1m: "1 mes", r1y: "1 año", rAll: "Todo", diffChart: "Dificultad", feeChart: "Comisión mediana", logScale: "escala logarítmica", showTable: "Ver como tabla", valueL: "Valor", chartError: "No se pudo cargar este gráfico. Comprueba la conexión e inténtalo de nuevo.", noData: "No hay datos para este periodo.", overRange: "{c} en {r}", chartAria: "{n}, {r}: de {a} a {b}.", chartKeys: "Usa las flechas izquierda y derecha para leer los valores.",
@@ -122,6 +125,7 @@ export const MORE = {
     storedOnly: "Los ajustes se guardan solo en este navegador.",
   },
   fr: {
+    embedTitle: "L’intégrer à votre site", embedIntro: "Affichez un chiffre BLOCKHORIZON en direct sur votre site ou blog : choisissez quoi afficher, copiez le code et collez-le dans votre page. Il se met à jour tout seul et renvoie ici.", embedWhat: "Afficher", embedPreview: "Aperçu", embedCode: "Code à coller", copyCode: "Copier le code", codeCopied: "Code copié",
     diffShort: "Difficulté", prodShort: "Rythme des blocs", supplyShort: "Offre", feesShort: "Frais (sat/vB)", lnShort: "Lightning", // short tile titles for phone widths
     avgDays: "moyenne sur {n} jours",
     charts: "Graphiques", chartsIntro: "L’évolution du prix, du hashrate, de la difficulté et des frais. Survolez, touchez ou utilisez les flèches sur un graphique pour lire les valeurs.", rangeL: "Période", r1m: "1 mois", r1y: "1 an", rAll: "Tout", diffChart: "Difficulté", feeChart: "Taux de frais médian", logScale: "échelle logarithmique", showTable: "Afficher en tableau", valueL: "Valeur", chartError: "Impossible de charger ce graphique. Vérifiez la connexion et réessayez.", noData: "Pas de données pour cette période.", overRange: "{c} sur {r}", chartAria: "{n}, {r} : de {a} à {b}.", chartKeys: "Utilisez les flèches gauche et droite pour lire les valeurs.",
@@ -162,6 +166,7 @@ export const MORE = {
     storedOnly: "Les réglages sont enregistrés uniquement dans ce navigateur.",
   },
   pt: {
+    embedTitle: "Incorporar no seu site", embedIntro: "Coloque um número ao vivo do BLOCKHORIZON no seu site ou blog: escolha o que mostrar, copie o código e cole na sua página. Ele se atualiza sozinho e aponta para cá.", embedWhat: "Mostrar", embedPreview: "Prévia", embedCode: "Código para colar", copyCode: "Copiar código", codeCopied: "Código copiado",
     diffShort: "Dificuldade", prodShort: "Ritmo de blocos", supplyShort: "Oferta", feesShort: "Taxas (sat/vB)", lnShort: "Lightning", // short tile titles for phone widths
     avgDays: "média de {n} dias",
     charts: "Gráficos", chartsIntro: "Como o preço, o hashrate, a dificuldade e as taxas evoluíram. Passe o mouse, toque ou use as setas num gráfico para ler os valores.", rangeL: "Período", r1m: "1 mês", r1y: "1 ano", rAll: "Tudo", diffChart: "Dificuldade", feeChart: "Taxa mediana", logScale: "escala logarítmica", showTable: "Ver como tabela", valueL: "Valor", chartError: "Não foi possível carregar este gráfico. Verifique a conexão e tente de novo.", noData: "Sem dados para este período.", overRange: "{c} em {r}", chartAria: "{n}, {r}: de {a} para {b}.", chartKeys: "Use as setas para a esquerda e para a direita para ler os valores.",
@@ -202,6 +207,7 @@ export const MORE = {
     storedOnly: "As configurações ficam salvas só neste navegador.",
   },
   it: {
+    embedTitle: "Inseriscilo nel tuo sito", embedIntro: "Metti un dato BLOCKHORIZON dal vivo sul tuo sito o blog: scegli cosa mostrare, copia il codice e incollalo nella pagina. Si aggiorna da solo e rimanda qui.", embedWhat: "Mostra", embedPreview: "Anteprima", embedCode: "Codice da incollare", copyCode: "Copia codice", codeCopied: "Codice copiato",
     diffShort: "Difficoltà", prodShort: "Ritmo dei blocchi", supplyShort: "Offerta", feesShort: "Fee (sat/vB)", lnShort: "Lightning", // short tile titles for phone widths
     avgDays: "media su {n} giorni",
     charts: "Grafici", chartsIntro: "Come sono cambiati prezzo, hashrate, difficoltà e commissioni. Passa il mouse, tocca o usa le frecce su un grafico per leggere i valori.", rangeL: "Periodo", r1m: "1 mese", r1y: "1 anno", rAll: "Tutto", diffChart: "Difficoltà", feeChart: "Commissione mediana", logScale: "scala logaritmica", showTable: "Mostra come tabella", valueL: "Valore", chartError: "Impossibile caricare questo grafico. Controlla la connessione e riprova.", noData: "Nessun dato per questo periodo.", overRange: "{c} in {r}", chartAria: "{n}, {r}: da {a} a {b}.", chartKeys: "Usa le frecce sinistra e destra per leggere i valori.",
@@ -242,6 +248,7 @@ export const MORE = {
     storedOnly: "Le impostazioni sono salvate solo in questo browser.",
   },
   nl: {
+    embedTitle: "Op je eigen site zetten", embedIntro: "Zet een live BLOCKHORIZON-getal op je eigen website of blog: kies wat je toont, kopieer de code en plak die in je pagina. Het werkt zichzelf bij en linkt hierheen.", embedWhat: "Tonen", embedPreview: "Voorbeeld", embedCode: "Code om te plakken", copyCode: "Code kopiëren", codeCopied: "Code gekopieerd",
     diffShort: "Moeilijkheid", prodShort: "Blokproductie", supplyShort: "Aanbod", feesShort: "Kosten (sat/vB)", lnShort: "Lightning", // short tile titles for phone widths
     avgDays: "{n}-daags gemiddelde",
     charts: "Grafieken", chartsIntro: "Hoe prijs, hashrate, moeilijkheid en kosten zich hebben ontwikkeld. Wijs aan, tik of gebruik de pijltjestoetsen op een grafiek om waarden af te lezen.", rangeL: "Periode", r1m: "1 maand", r1y: "1 jaar", rAll: "Alles", diffChart: "Moeilijkheid", feeChart: "Mediaan tarief", logScale: "logaritmische schaal", showTable: "Als tabel tonen", valueL: "Waarde", chartError: "Deze grafiek kon niet worden geladen. Controleer de verbinding en probeer het opnieuw.", noData: "Geen gegevens voor deze periode.", overRange: "{c} in {r}", chartAria: "{n}, {r}: van {a} naar {b}.", chartKeys: "Gebruik de pijltjestoetsen links en rechts om waarden af te lezen.",
@@ -282,6 +289,7 @@ export const MORE = {
     storedOnly: "Instellingen worden alleen in deze browser bewaard.",
   },
   tr: {
+    embedTitle: "Kendi sitene ekle", embedIntro: "Kendi web sitene ya da bloguna canlı bir BLOCKHORIZON değeri koy: neyin gösterileceğini seç, kodu kopyala ve sayfana yapıştır. Kendini günceller ve buraya bağlantı verir.", embedWhat: "Göster", embedPreview: "Önizleme", embedCode: "Yapıştırılacak kod", copyCode: "Kodu kopyala", codeCopied: "Kod kopyalandı",
     diffShort: "Zorluk", prodShort: "Blok üretimi", supplyShort: "Arz", feesShort: "Ücretler (sat/vB)", lnShort: "Lightning", // short tile titles for phone widths
     avgDays: "{n} günlük ortalama",
     charts: "Grafikler", chartsIntro: "Fiyat, hashrate, zorluk ve ücretlerin nasıl değiştiği. Değerleri okumak için grafiğin üzerine gelin, dokunun ya da ok tuşlarını kullanın.", rangeL: "Dönem", r1m: "1 ay", r1y: "1 yıl", rAll: "Tümü", diffChart: "Zorluk", feeChart: "Medyan ücret oranı", logScale: "logaritmik ölçek", showTable: "Tablo olarak göster", valueL: "Değer", chartError: "Bu grafik yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin.", noData: "Bu dönem için veri yok.", overRange: "{r}: {c}", chartAria: "{n}, {r}: {a} değerinden {b} değerine.", chartKeys: "Değerleri okumak için sol ve sağ ok tuşlarını kullanın.",

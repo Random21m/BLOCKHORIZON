@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BLOCKHORIZON widget</title>
+<meta name="robots" content="noindex">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://mempool.space wss://mempool.space wss://ws.kraken.com; manifest-src 'self'; base-uri 'none'; form-action 'none'">
+<link rel="stylesheet" href="embed.css">
+</head>
+<!-- The embeddable widget: one live number in a small card that links back to the app. Options in the URL:
+     show=height|halving|price, theme=auto|dark|light, lang=en|de|es|fr|pt|it|nl|tr, cur=USD|EUR|... (for price). -->
+<body>
+<main>
+<h1 class="sr-only">BLOCKHORIZON</h1>
+<a id="w" class="w" href="./" target="_blank" rel="noopener">
+  <span class="lab" id="lab"></span>
+  <span class="num" id="num">–</span>
+  <span class="sub" id="sub"></span>
+  <span class="brand"><svg viewBox="0 0 32 32" width="12" height="12" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="none" stroke="currentColor" stroke-width="3"/><path d="M3 20h26" stroke="currentColor" stroke-width="3"/><circle cx="16" cy="20" r="4" fill="currentColor"/></svg>BLOCKHORIZON ↗</span>
+</a>
+</main>
+<script type="module" src="src/embed.js"></script>
+</body>
+</html>

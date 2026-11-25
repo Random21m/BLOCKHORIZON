@@ -26,9 +26,9 @@ There is nothing to build: the site is plain static files, so any static host wo
 - **On your computer:** clone this repository and run `python3 -m http.server 8080` in it, then open http://localhost:8080.
 - **Link previews:** the preview card tags in `index.html` point at this site's address (`og:url`, `og:image`, `canonical`); change them to yours in a fork.
 - **On GitHub Pages:** fork the repository, open **Settings, Pages** and set **Source** to **GitHub Actions**. The included workflow publishes the site on every push to `main` (you can also start it by hand from the **Actions** tab).
-- **Anywhere else:** upload `index.html`, `style.css`, `sw.js`, `manifest.webmanifest`, `privacy.html`, `.nojekyll` and the `icons` and `src` folders. The file paths are relative, so it also works in a sub-folder.
+- **Anywhere else:** upload `index.html`, `embed.html`, `embed.css`, `style.css`, `sw.js`, `manifest.webmanifest`, `privacy.html`, `.nojekyll` and the `icons` and `src` folders. The file paths are relative, so it also works in a sub-folder.
 
-## Features (v0.9.0)
+## Features (v0.9.1)
 - Everything on one screen, no scrolling: a tile grid that fills desktop, laptop and phone
 - Live block height clock with an optional sound and the time since the last block; when a block is mined the strip glides one slot and the height rolls over (calm, no flashing, off with reduce motion)
 - Next halving (arc, blocks to go, estimated date, reward) and supply issued
@@ -46,6 +46,7 @@ There is nothing to build: the site is plain static files, so any static host wo
 - Block alarm and fee alert (a sound and a message when the next-block, 30-minute or 1-hour fee drops to your limit) with sounds and a system notification in the background, if allowed; calculator (sats/fiat, height/date, what a payment costs now at each fee level), halving replay, chain calendar, glossary
 - Settings: dark/light/auto, currency, sats symbol, time/date format, UTC, language (everything, glossary and anniversaries included, in English, German, Spanish, French, Portuguese, Italian, Dutch, Turkish), sounds, reduced motion, full screen
 - Accessible: checked with axe-core on every page in both themes (part of the test run), keyboard-friendly dialogs and tabs, screen-reader headings and labels
+- Embeddable widget: put the live block height, halving countdown or price on your own site with one line of HTML (About page, "Embed on your site"); options in the URL: `embed.html?show=height|halving|price&theme=auto|dark|light&lang=..&cur=..`
 - App shortcuts: long-press the installed app's icon for Clock, Alarm, Charts or Search
 - Installable PWA that works offline (cached shell and last values) and updates itself on the next open; pull down from the top (or tap ↻) to refresh
 

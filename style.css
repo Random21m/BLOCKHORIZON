@@ -218,3 +218,6 @@ main:empty+.foot{visibility:hidden} /* until the app has drawn the page, so the 
 @media (max-width:899px){.tile h2,.hero .eyebrow,.sgrp h2,.tile .fees small{font-size:11px}.tile h2{letter-spacing:.06em} /* tighter so titles wrap no more often than before */.strip2 .blk,.btc .chg,.btc .src{font-size:11.5px}.ts{font-size:clamp(11.5px,1.55vh,13px)}}
 /* Tile titles: the short form on phone and tablet widths (narrow tiles), the full form on desktop */
 .tile h2 .tshort{display:none}@media (max-width:899px){.tile h2 .tfull{display:none}.tile h2 .tshort{display:inline}.tile h2{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}} /* never wrap: a font wider than expected ends in an ellipsis instead of pushing the tile down */
+/* About page: embed section */
+#embed textarea{width:100%;font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:4px;padding:8px;resize:vertical}
+.emb-prev{display:block;border:0;max-width:100%;margin:4px 0 12px;border-radius:6px}
