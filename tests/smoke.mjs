@@ -9,7 +9,7 @@ await new Promise((ok) => srv.listen(0, '127.0.0.1', ok)); const base = `http://
 const MOCK = { '/api/blocks/tip/height': ['text/plain', 'tip.txt'], '/api/v1/blocks': ['application/json', 'blocks.json'], '/api/v1/difficulty-adjustment': ['application/json', 'difficulty.json'],
   '/api/v1/fees/recommended': ['application/json', 'fees.json'], '/api/mempool': ['application/json', 'mempool.json'], '/api/v1/fees/mempool-blocks': ['application/json', 'mempool-blocks.json'],
   '/api/v1/prices': ['application/json', 'prices.json'], '/api/v1/mining/hashrate/1y': ['application/json', 'hashrate.json'], '/api/v1/lightning/statistics/latest': ['application/json', 'lightning.json'], '/api/v1/mining/pools/1w': ['application/json', 'pools-1w.json'],
-  '/api/block-height/840000': ['text/plain', 'h840000.txt'],
+  '/api/block-height/840000': ['text/plain', 'h840000.txt'], '/api/v1/mining/reward-stats/144': ['application/json', 'reward-stats.json'],
   '/api/v1/historical-price': ['application/json', 'price-history.json'], '/api/v1/mining/hashrate/1m': ['application/json', 'hashrate-1m.json'], '/api/v1/mining/hashrate/1y': ['application/json', 'hashrate-1y.json'],
   '/api/v1/mining/blocks/fee-rates/1m': ['application/json', 'feerates-1m.json'], '/api/v1/mining/blocks/fee-rates/1y': ['application/json', 'feerates-1y.json'],
   '/api/tx/2bb85f4b004be6da54f766c17c1e855187327112c231ef2ff35ebad0ea67c69e': ['application/json', 'tx-confirmed.json'], '/api/tx/213b7d2f946122a8c9add976cc6689d71bf567ffbe4212cfb571255ae8d3ff19': ['application/json', 'tx-mempool.json'], '/api/v1/mining/blocks/timestamp/1700000000': ['application/json', 'bytime.json'] };
@@ -37,7 +37,8 @@ await page.goto(base);
 await ok('dashboard shows the tip height', async () => { await until(page, () => document.querySelector('#h') && document.querySelector('#h').textContent.replace(/\D/g, '') === '977411', null, { timeout: 8000 }); });
 await ok('panels render (halving, difficulty, hashrate, fees, mempool, price)', async () => { const t = await page.locator('main').innerText(); for (const w of ['NEXT HALVING', 'DIFFICULTY', 'HASHRATE', 'FEES', 'MEMPOOL', 'PRICE', '72,589']) assert.ok(t.toUpperCase().includes(w.replace(/,/g, '').length ? w.toUpperCase() : w), w); });
 await ok('live price streams in under the block height', async () => { await until(page, () => /61,23[45]/.test(document.querySelector('#btc')?.textContent || ''), null, { timeout: 8000 }); assert.ok((await page.locator('.btc').innerText()).toLowerCase().includes('live')); });
-await ok('price moves live: a later trade changes the big price and shows the direction', async () => { await until(page, () => /61,300/.test(document.querySelector('#btc')?.textContent || ''), null, { timeout: 9000 }); assert.equal((await page.locator('#btcdir').innerText()).trim(), '▲'); });
+await ok('price moves live: a later trade changes the big price; only the 24 h change carries an arrow', async () => { await until(page, () => /61,300/.test(document.querySelector('#btc')?.textContent || ''), null, { timeout: 9000 });
+  const line = await page.locator('.hero .btc').innerText(); assert.equal((line.match(/[▲▼]/g) || []).length, (await page.locator('.hero .btc .chg').count()) ? 1 : 0, line); });
 await ok('block colours: mined purple-to-blue, upcoming fee stripes', async () => {
   const mined = await page.evaluate(() => getComputedStyle(document.querySelector('.strip2 a.blk:not(.proj) .cube i')).backgroundImage);
   assert.ok(mined.includes('rgb(147, 57, 244)') && mined.includes('rgb(16, 95, 176)'), mined);
@@ -103,9 +104,10 @@ await ok('a connection that never answers still opens the saved app within a few
   try { const t0 = Date.now(); await page.reload({ waitUntil: 'commit' }); await until(page, () => document.querySelector('#h') && /977/.test(document.querySelector('#h').textContent), null, { timeout: 10000 });
     assert.ok(Date.now() - t0 < 9000, 'took ' + (Date.now() - t0) + ' ms'); } finally { await ctx.unroute(/127\.0\.0\.1/, hang); } });
 const TXC = '2bb85f4b004be6da54f766c17c1e855187327112c231ef2ff35ebad0ea67c69e', TXM = '213b7d2f946122a8c9add976cc6689d71bf567ffbe4212cfb571255ae8d3ff19';
-await ok('clock: own menu tab, big height and price, no header, Escape goes back', async () => {
-  await page.goto(base); await page.click('#nav a[href="#/clock"]'); await until(page, () => location.hash === '#/clock' && /977,411/.test(document.querySelector('.clock-h')?.textContent || ''));
-  assert.equal(await page.locator('#nav a[aria-current=page]').innerText(), 'Clock'); assert.ok(!(await page.locator('header.bar').isVisible()));
+await ok('clock: reached from More on a phone, big height and price, no header, Escape goes back', async () => {
+  await page.goto(base); assert.ok(!(await page.locator('#nav a[href="#/clock"]').isVisible()), 'only four tabs and More on a phone');
+  await page.click('#nav .navmore'); await page.click('.morelist a[href="#/clock"]'); await until(page, () => location.hash === '#/clock' && /977,411/.test(document.querySelector('.clock-h')?.textContent || ''));
+  assert.equal((await page.locator('#nav a[aria-current=page]').textContent()).trim(), 'Clock'); assert.ok(!(await page.locator('header.bar').isVisible()));
   await until(page, () => /61,/.test(document.querySelector('.clockview #btc')?.textContent || ''), null, { timeout: 8000 });
   await page.keyboard.press('Escape'); await until(page, () => location.hash === '#/' && !!document.querySelector('.dashgrid')); });
 await ok('clock keeps the screen awake while open and lets go when you leave', async () => {
@@ -463,6 +465,43 @@ await ok('your block: a date becomes its block with live facts, a shareable link
   await page.goto(base + '#/my?d=2035-06-01'); await until(page, () => /Still to come/.test(document.querySelector('#my-out')?.textContent || '')); assert.ok(/#[\d,]{9}/.test(await page.locator('.mycard .myh').innerText()));
   await page.goto(base + '#/my?d=2000-01-01'); await until(page, () => /did not exist yet/.test(document.querySelector('#my-out')?.textContent || ''));
   await page.goto(base + '#/my?d=2023-02-30'); assert.equal(await page.locator('#my-out').innerText(), ''); });
+await ok('backup source: with mempool.space down the essentials come from blockstream.info and the dot says so; Settings, Data picks your own server after checking it', async () => {
+  const c = await b.newContext({ viewport: { width: 1280, height: 800 } }); await c.routeWebSocket(/./, (ws) => ws.close()); const hosts = new Set(); let nodeUp = true;
+  const ESPLORA = { '/api/blocks/tip/height': ['text/plain', fx('tip.txt')], '/api/blocks': ['application/json', fx('blocks.json')], '/api/mempool': ['application/json', fx('mempool.json')], '/api/fee-estimates': ['application/json', '{"1":9.1,"3":6,"6":4,"144":1.2}'] };
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => { const u = new URL(r.request().url()); hosts.add(u.host); const cors = { 'access-control-allow-origin': '*' };
+    if (u.host === 'blockstream.info') { const m = ESPLORA[u.pathname]; return m ? r.fulfill({ contentType: m[0], headers: cors, body: m[1] }) : r.fulfill({ status: 404, headers: cors, body: '' }); }
+    if (u.host === 'node.example' && nodeUp) { const m = MOCK[u.pathname]; return m ? r.fulfill({ contentType: m[0], headers: cors, body: fx(m[1]) }) : r.fulfill({ status: 404, headers: cors, body: '' }); }
+    return r.abort(); });
+  const p = await c.newPage(); const perr = []; p.on('pageerror', (e) => perr.push(e.message));
+  await p.goto(base); await until(p, () => /977,411/.test(document.querySelector('#h')?.textContent || '') && /9\.1/.test(document.querySelector('.t-fees')?.textContent || ''));
+  assert.ok(hosts.has('blockstream.info')); assert.match(await p.getAttribute('#conn', 'class'), /poll/); assert.match(await p.getAttribute('#conn', 'title'), /blockstream\.info/);
+  // Settings, Data: a server that does not answer is refused; one that does is used from then on (and remembered)
+  await p.click('#btn-settings'); await p.click('#tab-data'); nodeUp = false; await p.fill('#st-server', 'node.example'); await p.click('#st-panel .btn-go');
+  await until(p, () => /No answer from https:\/\/node\.example/.test(document.querySelector('#st-panel').textContent));
+  nodeUp = true; await p.click('#st-panel .btn-go'); await until(p, () => /Now using node\.example\./.test(document.querySelector('#st-panel [role=status]').textContent));
+  assert.equal(await p.evaluate(() => JSON.parse(localStorage.getItem('bh.settings')).server), 'https://node.example');
+  await p.keyboard.press('Escape'); await until(p, () => /on/.test(document.querySelector('#conn').className) || !/blockstream/.test(document.querySelector('#conn').title));
+  hosts.clear(); await p.reload(); await until(p, () => /977,411/.test(document.querySelector('#h')?.textContent || '')); await new Promise((r) => setTimeout(r, 800));
+  assert.ok(hosts.has('node.example') && !hosts.has('mempool.space'), [...hosts].join());
+  await p.click('#btn-settings'); await p.click('#tab-data'); await p.click('#st-panel button:not(.btn-go)'); await until(p, () => /Now using mempool\.space/.test(document.querySelector('#st-panel [role=status]').textContent));
+  assert.equal(await p.evaluate(() => JSON.parse(localStorage.getItem('bh.settings')).server), '');
+  assert.deepEqual(perr, []); await c.close(); });
+await ok("mining: miners' last day shows revenue, the fee share and the hashprice", async () => {
+  await page.goto(base + '#/mining'); await until(page, () => /Hashprice/.test(document.querySelector('.mgrid')?.textContent || '') && /452\.84 BTC/.test(document.querySelector('.mgrid')?.textContent || ''));
+  const txt = await page.locator('.mgrid').innerText(); for (const w of ['earned over the last 144 blocks', 'From fees', '0.63%', 'Average per block', 'sats']) assert.ok(txt.includes(w), w + ' in ' + txt); });
+await ok('your block: shares to Nostr through a browser signer (or copies the note without one)', async () => {
+  const c = await b.newContext({ viewport: { width: 1280, height: 800 }, permissions: ['clipboard-read', 'clipboard-write'] }); const sent = [];
+  await c.routeWebSocket(/mempool\.space|kraken/, (ws) => ws.close());
+  await c.routeWebSocket(/relay\.damus\.io|nos\.lol|relay\.primal\.net/, (ws) => ws.onMessage((m) => { const [k, ev] = JSON.parse(m); if (k === 'EVENT') { sent.push(ev); ws.send(JSON.stringify(['OK', ev.id, true, ''])); } }));
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
+  await c.route(/mempool\.space/, (route) => { const u = new URL(route.request().url()), m = MOCK[u.pathname] || (u.pathname.startsWith('/api/v1/mining/blocks/timestamp/') ? MOCK['/api/v1/mining/blocks/timestamp/1700000000'] : null); if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+  const p = await c.newPage();
+  await p.goto(base + '#/my?d=2023-11-14&l=First%20sats'); await p.waitForSelector('#my-nostr');
+  await p.click('#my-nostr'); await until(p, () => /Copied\. Paste it into your Nostr app/.test(document.querySelector('#toast').textContent));
+  assert.match(await p.evaluate(() => navigator.clipboard.readText()), /^First sats: block 816,785 was mined on .*\n.*#\/my\?d=2023-11-14&l=First%20sats\n#bitcoin$/);
+  await p.evaluate(() => { window.nostr = { signEvent: async (e) => ({ ...e, id: 'ab'.repeat(32), pubkey: 'cd'.repeat(32), sig: 'ef'.repeat(64) }) }; });
+  await p.click('#my-nostr'); await until(p, () => /Posted to Nostr \(3 relays\)/.test(document.querySelector('#toast').textContent));
+  assert.equal(sent.length, 3); assert.equal(sent[0].kind, 1); assert.ok(sent[0].content.includes('816,785')); await c.close(); });
 await ok('keyboard: Tab stays inside an open dialog, Escape closes it and focus goes back', async () => {
   await page.goto(base); await page.focus('#btn-settings'); await page.keyboard.press('Enter'); await page.waitForSelector('#st-theme');
   for (let i = 0; i < 25; i++) { await page.keyboard.press('Tab'); assert.ok(await page.evaluate(() => document.querySelector('#modal').contains(document.activeElement)), 'focus left the dialog at Tab ' + (i + 1)); }

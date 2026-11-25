@@ -12,6 +12,8 @@ When a block is mined, you see it happen: the blocks glide one slot along and th
 
 ![Animation: block 977,412 is mined; the recent blocks glide one slot to the right and the new block slides in from the divider](docs/block-arrival.gif)
 
+![The Mining page: the next block being filled with waiting transactions, coloured by fee rate, beside the hashes tried so far and the target](docs/mining.png)
+
 | On a phone | History charts | On your own site |
 |---|---|---|
 | ![The dashboard on a phone, on one screen](docs/phone.png) | ![The Charts page: price, hashrate, difficulty and median fee rate over a year](docs/charts.png) | ![The embeddable widget: block height, halving countdown and price, in dark and light](docs/widgets.png) |
@@ -28,8 +30,8 @@ BLOCKHORIZON is built around one idea: in Bitcoin, time is measured in blocks. T
 - Sats per unit in 7 currencies, Moscow time, market cap, Lightning network capacity
 
 **More pages**
-- **Mining:** watch the next block being built and mined, live. Every waiting transaction in it is a square, sized by its size and coloured by its fee rate; new ones drop in as they arrive, and when the block is found it turns purple and slides away while the next one starts to fill. Beside it: hashes tried so far, a stream of tries against the target, the chance it is found in the next minutes, what is in it (fees, reward) and which pool is likely to find it. Follow your own transaction: paste its ID (or tap its square, or use the link on its transaction page) and it is outlined in the block, with where it stands, until the moment it is mined. A bell button turns on the sound for each block found
-- **Your block:** pick a day that matters (a birthday, your first bitcoin) and see the block mined that day, how many blocks have passed since, the next milestone, the reward and price back then, and save it as an image to share
+- **Mining:** watch the next block being built and mined, live. Every waiting transaction in it is a square, sized by its size and coloured by its fee rate; new ones drop in as they arrive, and when the block is found it turns purple and slides away while the next one starts to fill. Beside it: hashes tried so far, a stream of tries against the target, the chance it is found in the next minutes, what is in it (fees, reward) and which pool is likely to find it. Follow your own transaction: paste its ID (or tap its square, or use the link on its transaction page) and it is outlined in the block, with where it stands, until the moment it is mined. A bell button turns on the sound for each block found. Below: who is likely to find it, and what miners earned over the last day (revenue, the part from fees, and the hashprice: what one PH/s earns a day)
+- **Your block:** pick a day that matters (a birthday, your first bitcoin) and see the block mined that day, how many blocks have passed since, the next milestone, the reward and price back then, and save it as an image or share it on Nostr (signed by your Nostr browser extension, or copied for your Nostr app)
 - **Clock:** just the height, time since the last block and the price, as large as the screen allows, with the screen kept awake (for a spare screen or an old tablet)
 - **Charts:** a live trading chart: BTC candlesticks from Kraken in your currency, 1 minute to 1 week candles, the newest moving with every trade. Volume, EMA 20, SMA 50, SMA 200, Bollinger Bands, RSI and MACD; a crosshair with open, high, low and close; horizontal and trend lines (kept per currency, moved by dragging or with the arrow keys); price alerts set by clicking the chart; the live order book (checked against Kraken's checksum) and recent trades beside it; zoom and scroll by mouse, touch or keyboard; full screen. Below it: price, hashrate, difficulty and median fee over 1 month, 1 year or all time
 - **Alarm:** a sound and a message when the chain reaches a block height, when bitcoin reaches a price, or when fees drop to your limit (with a system notification in the background, if you allow it)
@@ -38,6 +40,8 @@ BLOCKHORIZON is built around one idea: in Bitcoin, time is measured in blocks. T
 - Halving replay, chain calendar, glossary, and a Watch page of Bitcoin channels
 
 **Everywhere**
+- Your own node: point it at your own mempool server (**Settings, Data**), or run it on your node with the container (see [packaging](packaging/README.md)). If the data server stops answering, the height, blocks, fees and mempool come from blockstream.info until it is back, and the connection dot turns amber
+- On a phone, the four main pages sit in a tab bar along the bottom, the rest under **More**
 - Dark, light or automatic; English, German, Spanish, French, Portuguese, Italian, Dutch and Turkish; your currency, time and date format
 - Accessible: keyboard-friendly, screen-reader labels, and checked with axe-core on every page in both themes as part of the tests
 - Calm by design: flat, no flashing, no glow, and nothing moves if you turn on reduce motion
@@ -68,7 +72,7 @@ Options: `show=height|halving|price|mining` (`mining` draws a small picture of t
 
 ## Privacy
 
-Your browser asks the public mempool.space API for block, fee and mempool data, and Kraken's public feed for the price (plus Kraken's public API for past candles on the trading chart). Nothing else is contacted, there are no cookies or analytics, and nothing about you is stored anywhere but your own browser. Details: [privacy.html](https://random21m.github.io/BLOCKHORIZON/privacy.html).
+Your browser asks the public mempool.space API (or the server you chose in Settings) for block, fee and mempool data, blockstream.info only while that server is not answering, and Kraken's public feed for the price (plus Kraken's public API for past candles on the trading chart). Nothing else is contacted, there are no cookies or analytics, and nothing about you is stored anywhere but your own browser. Details: [privacy.html](https://random21m.github.io/BLOCKHORIZON/privacy.html).
 
 ## Run your own copy
 
@@ -76,7 +80,8 @@ There is nothing to build: the site is plain static files, so any static host wo
 
 - **On your computer:** clone this repository, run `python3 -m http.server 8080` in it, and open http://localhost:8080.
 - **On GitHub Pages:** fork the repository, open **Settings, Pages** and set **Source** to **GitHub Actions**. The included workflow publishes the site on every push to `main` (you can also start it from the **Actions** tab).
-- **Anywhere else:** upload `index.html`, `embed.html`, `embed.css`, `style.css`, `sw.js`, `manifest.webmanifest`, `privacy.html`, `.nojekyll` and the `icons`, `src` and `docs` folders. Paths are relative, so a sub-folder works too.
+- **On your node (Docker, Umbrel):** `docker build -t blockhorizon . && docker run -p 8080:80 -e MEMPOOL_URL=http://<node>:<port> blockhorizon` serves the app and passes `/api` through to your node's mempool, so your browser talks only to your node (and Kraken for the price). See [packaging/README.md](packaging/README.md) for the published image and the Umbrel app.
+- **Anywhere else:** upload `index.html`, `embed.html`, `embed.css`, `style.css`, `sw.js`, `manifest.webmanifest`, `privacy.html`, `config.json`, `.nojekyll` and the `icons`, `src` and `docs` folders. Paths are relative, so a sub-folder works too.
 - **Link previews:** the preview card tags in `index.html` (`og:url`, `og:image`, `canonical`) point at this site's address; change them to yours in a fork.
 
 ## Develop and test
@@ -85,13 +90,14 @@ There is nothing to build: the site is plain static files, so any static host wo
 node --test tests/lib.test.mjs     # unit tests on recorded API responses (tests/fixtures)
 node tests/smoke.mjs               # Playwright browser checks with the API mocked
 python3 -m http.server 8080        # then open http://localhost:8080
+node tests/screenshots.mjs         # remake the pictures in docs/ from live data
 ```
 
 No build step and no dependencies. The accessibility check in the browser tests runs when `axe-core` is installed (`npm install --no-save axe-core`), as it is in CI.
 
-Code layout (`src/`): `app.js` routing, live repaint and start-up · `state.js` settings and shared state · `data.js` data feeds, block alarms and fee alerts · `ui.js` tiles, charts and other building blocks · `view-dash.js` dashboard and clock · `view-chain.js` block and transaction pages · `view-tools.js` alarm and calculator · `view-info.js` replay, calendar, glossary, watch, about · `view-charts.js` history charts · `trade-chart.js`, `trade-side.js` the live trading chart, order book and trades · `view-my.js` Your block · `view-mining.js`, `block-scene.js` the Mining page and its live block picture · `arrival.js` the block arrival animation · `embed.js` the embeddable widget · `modals.js` search and settings · `lib.js` pure helpers (unit-tested) · `api.js`, `price.js` network · `i18n.js`, `strings.js`, `content.js`, `content-i18n.js` texts.
+Code layout (`src/`): `app.js` routing, live repaint and start-up · `state.js` settings and shared state · `data.js` data feeds, block alarms and fee alerts · `ui.js` tiles, charts and other building blocks · `view-dash.js` dashboard and clock · `view-chain.js` block and transaction pages · `view-tools.js` alarm and calculator · `view-info.js` replay, calendar, glossary, watch, about · `view-charts.js` history charts · `trade-chart.js`, `trade-side.js` the live trading chart, order book and trades · `view-my.js` Your block · `view-mining.js`, `block-scene.js` the Mining page and its live block picture · `arrival.js` the block arrival animation · `embed.js` the embeddable widget · `modals.js` search and settings · `lib.js` pure helpers (unit-tested) · `api.js`, `price.js` network (data server, backup source, Kraken) · `nostr.js` sharing to Nostr · `i18n.js`, `strings.js`, `content.js`, `content-i18n.js` texts.
 
-Version 0.14.0. Not built yet: an art gallery, conference listings and chain-state totals (addresses, UTXOs, disk size), for lack of a free, trustworthy public source.
+Version 0.15.0. Not built yet: an art gallery, conference listings and chain-state totals (addresses, UTXOs, disk size), for lack of a free, trustworthy public source.
 
 ## Support
 

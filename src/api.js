@@ -1,14 +1,51 @@
-// Network layer: mempool.space public REST + websocket. Last good values are cached in localStorage.
-export const BASE = 'https://mempool.space/api';
-export const WS_URL = 'wss://mempool.space/api/v1/ws';
+// Network layer: a mempool.space-compatible REST API + websocket. Last good values are cached in localStorage.
+// The server is mempool.space unless the user picks their own (Settings, or the optional config.json of a self-hosted copy,
+// e.g. on an Umbrel or Start9 node). If the server cannot be reached, the essentials (height, blocks, fees, mempool,
+// transactions) come from blockstream.info's Esplora API instead, so the dashboard keeps counting blocks.
+export const DEFAULT_SERVER = 'https://mempool.space';
+export const FALLBACK = 'https://blockstream.info';
+let server = DEFAULT_SERVER;
+// 'mempool.example.com' -> 'https://mempool.example.com'; a trailing slash or /api is dropped; '' or junk -> ''.
+export function normServer(s) {
+  s = String(s || '').trim().replace(/\/+$/, '').replace(/\/api$/, ''); if (!s) return '';
+  if (s === '/' || s === '.' || s === 'self') return location.origin + location.pathname.replace(/\/[^/]*$/, ''); // the copy's own address (a node proxies /api)
+  if (/^[a-z][a-z0-9+.-]*:/i.test(s) && !/^https?:\/\//i.test(s) && !/^[^/]+:\d+(\/|$)/.test(s)) return ''; // another scheme (but host:port is fine)
+  if (!/^https?:\/\//i.test(s)) s = 'https://' + s;
+  try { const u = new URL(s); return u.protocol.startsWith('http') && !u.search && !u.hash ? (u.origin + u.pathname).replace(/\/+$/, '') : ''; } catch { return ''; }
+}
+export function setServer(s) { server = normServer(s) || DEFAULT_SERVER; }
+export const getServer = () => server;
+export const isDefaultServer = () => server === DEFAULT_SERVER;
+export const wsUrl = () => server.replace(/^http/, 'ws') + '/api/v1/ws';
+// Which host answered last ('' until something did): shown beside the connection dot, so a fallback is never silent.
+export let source = '';
 
 export function store(key, val) { try { if (val === undefined) { const s = localStorage.getItem('bh.' + key); return s ? JSON.parse(s) : null; } localStorage.setItem('bh.' + key, JSON.stringify(val)); } catch { /* storage may be blocked */ } return val === undefined ? null : val; }
 
+async function fetchFrom(base, path, text) {
+  const r = await fetch(base + '/api' + path, { cache: 'no-store' });
+  if (!r.ok) { const e = new Error('HTTP ' + r.status); e.status = r.status; throw e; }
+  return text ? r.text() : r.json();
+}
+// Esplora (blockstream.info) answers a few of the same questions in its own shape; null = no fallback for this path.
+export function esploraFor(path) {
+  if (path === '/blocks/tip/height' || path === '/mempool' || /^\/block-height\/\d+$/.test(path) || /^\/tx\/[0-9a-f]{64}$/.test(path)) return { path };
+  let m = path.match(/^\/v1\/blocks(?:\/(\d+))?$/); if (m) return { path: '/blocks' + (m[1] ? '/' + m[1] : '') };
+  if (path === '/v1/fees/recommended') return { path: '/fee-estimates', map: esploraFees };
+  return null;
+}
+// Esplora's {blocks-to-confirm: sat/vB} -> mempool.space's recommended fees.
+export function esploraFees(e) { const g = (n) => Math.max(1, Math.round((e[n] ?? e[String(n)] ?? 1) * 10) / 10);
+  return { fastestFee: g(1), halfHourFee: g(3), hourFee: g(6), economyFee: g(144), minimumFee: 1 }; }
+
 export async function getJSON(path, { cacheKey, text } = {}) {
   try {
-    const r = await fetch(BASE + path, { cache: 'no-store' });
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const v = text ? await r.text() : await r.json();
+    let v;
+    try { v = await fetchFrom(server, path, text); source = server; }
+    catch (e) { // a 4xx is an answer (not found, bad request); only an unreachable server or a 5xx falls back
+      const f = e.status && e.status < 500 ? null : esploraFor(path); if (!f) throw e;
+      v = await fetchFrom(FALLBACK, f.path, text); if (f.map) v = f.map(v); source = FALLBACK;
+    }
     if (cacheKey) store(cacheKey, v);
     return v;
   } catch (e) {
@@ -29,6 +66,7 @@ export const api = {
   hashrate: () => getJSON('/v1/mining/hashrate/1y', { cacheKey: 'hashrate' }),
   lightning: () => getJSON('/v1/lightning/statistics/latest', { cacheKey: 'ln' }),
   pools: () => getJSON('/v1/mining/pools/1w', { cacheKey: 'pools' }), // each pool's blocks in the past week (the Mining page)
+  rewards: () => getJSON('/v1/mining/reward-stats/144', { cacheKey: 'rewards' }), // miner revenue and fees over the last 144 blocks (a day)
   tx: (id) => getJSON('/tx/' + id),
   // history for the Charts page (not saved in localStorage: the price history is over a megabyte)
   priceHistory: (cur) => getJSON('/v1/historical-price?currency=' + encodeURIComponent(cur)),
@@ -58,7 +96,7 @@ export function live(onMsg, onState) {
   const open = () => {
     clearTimeout(timer);
     if (stopped || document.hidden || navigator.onLine === false) return;
-    try { ws = sock = new WebSocket(WS_URL); } catch { onState('poll'); return; }
+    try { ws = sock = new WebSocket(wsUrl()); } catch { onState('poll'); return; }
     ws.onopen = () => { onState('on'); ws.send(JSON.stringify({ action: 'init' })); ws.send(JSON.stringify({ action: 'want', data: ['blocks', 'stats', 'mempool-blocks'] })); if (tracking) ws.send(JSON.stringify({ 'track-mempool-block': 0 })); };
     ws.onmessage = (e) => { try { onMsg(JSON.parse(e.data)); } catch { /* ignore bad frame */ } };
     ws.onclose = () => { onState('poll'); if (!stopped) timer = setTimeout(open, 3000); };
@@ -69,4 +107,14 @@ export function live(onMsg, onState) {
   addEventListener('offline', () => onState('off'));
   open();
   return () => { stopped = true; clearTimeout(timer); try { ws && ws.close(); } catch { /* */ } };
+}
+// After the server changes: drop the live connection; its close handler reopens it (3 s later) at the new address.
+export function reconnect() { try { if (sock) sock.close(); } catch { /* */ } }
+// Pick the server: the user's own choice (Settings) wins, then config.json beside the app (a self-hosted copy sets its node
+// there), then mempool.space. config.json is optional; a slow or missing one never holds up the start for more than 1.5 s.
+export async function loadConfig(userServer) {
+  let cfg = null;
+  try { const ac = new AbortController(), to = setTimeout(() => ac.abort(), 1500); const r = await fetch('config.json', { cache: 'no-cache', signal: ac.signal }); clearTimeout(to); if (r.ok) cfg = await r.json(); } catch { /* none */ }
+  setServer(userServer || (cfg && cfg.server) || '');
+  return cfg || {};
 }

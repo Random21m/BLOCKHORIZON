@@ -1,0 +1,31 @@
+manifestVersion: 1
+id: blockhorizon
+category: bitcoin
+name: BLOCKHORIZON
+version: "0.15.0"
+tagline: A calm, live Bitcoin dashboard where time is measured in blocks
+description: >-
+  BLOCKHORIZON shows your node's view of Bitcoin on one calm screen: the block height, the next halving,
+  the difficulty adjustment, hashrate, fees, the mempool and the blocks on their way, plus a live picture of
+  the next block being mined, alarms, a clock mode for a spare screen, history charts and "your block".
+
+
+  On Umbrel it reads everything from your own Mempool app, so your browser never asks a third party for
+  block, fee or transaction data. The price comes from Kraken's public feed. No accounts, no tracking.
+developer: Random21m
+website: https://random21m.github.io/BLOCKHORIZON/
+dependencies:
+  - mempool
+repo: https://github.com/Random21m/BLOCKHORIZON
+support: https://github.com/Random21m/BLOCKHORIZON/issues
+port: 3021
+gallery:
+  - 1.jpg
+  - 2.jpg
+  - 3.jpg
+path: ""
+defaultUsername: ""
+defaultPassword: ""
+releaseNotes: ""
+submitter: Random21m
+submission: ""

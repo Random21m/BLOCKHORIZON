@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as L from '../src/lib.js';
 import { parseTicker } from '../src/price.js';
+import { normServer, esploraFor, esploraFees } from '../src/api.js';
 import { TABLES, LANGS } from '../src/i18n.js';
 import { GLOSSARY, ANNIVERSARIES } from '../src/content.js';
 import { GLOSSARY_TR, ANNIV_TR } from '../src/content-i18n.js';
@@ -304,4 +305,25 @@ test('trades and price alerts', () => {
   assert.deepEqual(L.splitPriceAlerts(list, {}).rest.length, 3);
   assert.equal(L.alertDir(61000, 60000), 'up'); assert.equal(L.alertDir(59000, 60000), 'down');
   assert.deepEqual(['60,000', '60.000,5', '59 500.5', '1,5', '1.234.567', 'abc', '0', '-5'].map(L.parsePriceInput), [60000, 60000.5, 59500.5, 1.5, 1234567, NaN, NaN, NaN]);
+});
+
+test('data server: addresses are tidied, junk is refused', () => {
+  assert.equal(normServer('mempool.example.com'), 'https://mempool.example.com');
+  assert.equal(normServer('https://node.local:4080/'), 'https://node.local:4080');
+  assert.equal(normServer('https://example.com/mempool/api/'), 'https://example.com/mempool');
+  assert.equal(normServer('http://umbrel.local:3006'), 'http://umbrel.local:3006');
+  assert.equal(normServer(''), ''); assert.equal(normServer('ftp://x.org'), ''); assert.equal(normServer('https://x.org/?a=1'), ''); assert.equal(normServer('not a url'), '');
+});
+test('backup source: only the essentials map to blockstream.info, and its fee estimates read like mempool.space', () => {
+  assert.deepEqual(esploraFor('/blocks/tip/height'), { path: '/blocks/tip/height' });
+  assert.deepEqual(esploraFor('/v1/blocks'), { path: '/blocks' }); assert.deepEqual(esploraFor('/v1/blocks/840000'), { path: '/blocks/840000' });
+  assert.equal(esploraFor('/v1/fees/recommended').path, '/fee-estimates');
+  assert.equal(esploraFor('/v1/difficulty-adjustment'), null); assert.equal(esploraFor('/v1/mining/pools/1w'), null);
+  assert.deepEqual(esploraFees({ 1: 12.34, 3: 8, 6: 5.06, 144: 0.4 }), { fastestFee: 12.3, halfHourFee: 8, hourFee: 5.1, economyFee: 1, minimumFee: 1 });
+});
+test('miner economics: revenue, fee share and hashprice from reward-stats', () => {
+  const e = L.minerEconomics(fx('reward-stats.json'), 1e21);
+  assert.equal(e.blocks, 144); assert.ok(e.reward > 4e10); assert.ok(e.feeShare > 0 && e.feeShare < 0.2);
+  assert.equal(Math.round(e.perBlock), Math.round(e.reward / 144)); assert.equal(Math.round(e.hashprice), Math.round(e.reward / 1e6));
+  assert.equal(L.minerEconomics(null, 1), null); assert.ok(Number.isNaN(L.minerEconomics(fx('reward-stats.json'), 0).hashprice));
 });

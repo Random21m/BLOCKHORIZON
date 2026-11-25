@@ -1,10 +1,10 @@
 // BLOCKHORIZON entry point: routing, live repaint, boot.
 import * as L from './lib.js';
-import { live, trackBlock } from './api.js';
+import { live, trackBlock, loadConfig, setServer, reconnect, store, source, FALLBACK } from './api.js';
 import { mountScene } from './block-scene.js';
 import { livePrice } from './price.js';
 import { t } from './i18n.js';
-import { VERSION, $, st, el, toast, applyLook, NAVS, hooks } from './state.js';
+import { VERSION, $, S, st, el, toast, applyLook, NAVS, PHONE_TABS, NAV_ICONS, hooks } from './state.js';
 import { refreshAll, onLive, onPriceTick, checkAlarms, checkFeeAlerts } from './data.js';
 import { sinceText } from './ui.js';
 import { viewDash, viewClock } from './view-dash.js';
@@ -15,7 +15,7 @@ import { viewMy, paintMySince } from './view-my.js';
 import { viewMining, paintMining } from './view-mining.js';
 import { measure, arrive } from './arrival.js';
 import { viewReplay, viewEvents, viewGlossary, viewWatch, viewAbout } from './view-info.js';
-import { closeModal, searchModal, settingsModal, trapFocus } from './modals.js';
+import { closeModal, openModal, searchModal, settingsModal, trapFocus } from './modals.js';
 
 let route = '/', routeArg = '';
 const VIEWS = { '/': viewDash, '/clock': viewClock, '/mining': viewMining, '/alarm': viewAlarm, '/calc': viewCalc, '/charts': viewCharts, '/replay': viewReplay, '/events': viewEvents, '/glossary': viewGlossary, '/watch': viewWatch, '/about': viewAbout };
@@ -28,7 +28,18 @@ function parseRoute() {
   m = h.match(/^\/mining(?:\?(.*))?$/); if (m) return { path: '/mining', arg: m[1] || '' }; // a transaction to follow travels in the link // 'Your block': the date travels in the link
   return { path: VIEWS[h] ? h : '/' };
 }
-function renderNav(cur) { const nav = $('#nav'); nav.replaceChildren(...NAVS.map(([p, k]) => el('a', { href: '#' + p, 'aria-current': p === cur ? 'page' : false }, t(k)))); }
+const navIco = (d) => { const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('class', 'nico'); s.setAttribute('aria-hidden', 'true');
+  const p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.setAttribute('d', d); s.append(p); return s; };
+// Desktop: every page in a row. Phones (CSS): four tabs along the bottom and 'More' for the rest, highlighted when one of them is open.
+function renderNav(cur) {
+  const nav = $('#nav'), inMore = !PHONE_TABS.includes(cur) && NAVS.some(([p]) => p === cur);
+  nav.replaceChildren(...NAVS.map(([p, k]) => el('a', { href: '#' + p, class: PHONE_TABS.includes(p) ? 'tab' : 'xtra', 'aria-current': p === cur ? 'page' : false }, NAV_ICONS[p] ? navIco(NAV_ICONS[p]) : null, el('span', null, t(k)))),
+    el('button', { class: 'tab navmore' + (inMore ? ' cur' : ''), type: 'button', 'aria-haspopup': 'dialog', onclick: moreModal }, navIco(NAV_ICONS.more), el('span', null, t('navMore'))));
+}
+function moreModal() {
+  openModal(el('div', null, el('h1', null, t('navMore').toUpperCase()), el('ul', { class: 'morelist' }, NAVS.filter(([p]) => !PHONE_TABS.includes(p)).map(([p, k]) =>
+    el('li', null, el('a', { href: '#' + p, onclick: closeModal, 'aria-current': '#' + p === location.hash ? 'page' : false }, t(k)))))));
+}
 // Keep the block strips' horizontal scroll across live repaints. On phones both strips share one row (.strip2 scrolls),
 // which opens at the divider so the next projected block and the latest mined block are both in view.
 function stripScroll(saved) {
@@ -81,7 +92,8 @@ function render() {
   else if (!LIVE[route]) document.title = 'BLOCKHORIZON · ' + L.fmtNum(st.tip);
   trackBlock(route === '/mining'); if (route === '/mining') mountScene();
   checkAlarms(); checkFeeAlerts(); paintFeeNow(); paintMySince();
-  const c = $('#conn'); if (c) { c.className = 'conn ' + (st.conn === 'on' ? 'on' : st.conn === 'poll' ? 'poll' : ''); c.title = st.conn === 'on' ? t('connLive') : st.conn === 'poll' ? t('connPoll') : t('offline'); }
+  const c = $('#conn'), fb = source === FALLBACK; // on the backup source the dot is amber and says so
+  if (c) { c.className = 'conn ' + (fb ? 'poll' : st.conn === 'on' ? 'on' : st.conn === 'poll' ? 'poll' : ''); c.title = fb ? t('srcFallback', { s: FALLBACK.replace(/^https?:\/\//, '') }) : st.conn === 'on' ? t('connLive') : st.conn === 'poll' ? t('connPoll') : t('offline'); }
 }
 
 let wake = null;
@@ -94,8 +106,11 @@ async function keepAwake(on) { // Screen Wake Lock: released by the browser when
 // Copy link and (where the system offers it) Share for a block or transaction page.
 // ---------- boot ----------
 function tickClock() { const s = $('#since'); if (s && st.blocks[0]) s.textContent = sinceText(Date.now()); paintMining(); }
-export function boot() {
+export async function boot() {
   hooks.render = render; hooks.renderView = renderView;
+  // Settings changed the data server: forget the old server's saved values and start over at the new one.
+  hooks.server = () => { setServer(S.server); for (const k of ['tip', 'blocks', 'diff', 'fees', 'mempool', 'projected', 'hashrate', 'ln', 'pools', 'rewards']) store(k, null);
+    Object.assign(st, { tip: NaN, blocks: [], diff: null, fees: null, mem: null, proj: null, hr: null, ln: null, pools: null, rewards: null }); reconnect(); refreshAll(); renderView(); };
   hooks.alerts = () => { if (route === '/alarm') renderView(); document.dispatchEvent(new Event('bh-alerts')); }; // price alerts changed or fired
   applyLook(); $('#ver').textContent = 'BLOCKHORIZON ' + VERSION;
   $('#btn-search').onclick = searchModal; $('#btn-settings').onclick = settingsModal; $('#modal-x').onclick = closeModal;
@@ -104,9 +119,9 @@ export function boot() {
   addEventListener('keydown', (e) => { if (e.key === 'Escape') { if (!$('#modal').hidden) closeModal(); else if (route === '/clock') location.hash = '#/'; } });
   addEventListener('hashchange', renderView); matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyLook);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) keepAwake(route === '/clock'); });
-  renderView(); refreshAll();
+  renderView(); livePrice(onPriceTick, (on) => { if (st.priceLive !== on) { st.priceLive = on; render(); } }); // the price does not depend on the data server
+  await loadConfig(S.server); refreshAll();
   live(onLive, (s) => { st.conn = s; render(); });
-  livePrice(onPriceTick, (on) => { if (st.priceLive !== on) { st.priceLive = on; render(); } });
   setInterval(tickClock, 1000); setInterval(refreshAll, 60000);
   pullToRefresh();
   $('#btn-refresh').onclick = hardRefresh;

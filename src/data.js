@@ -40,7 +40,6 @@ export function onLive(m) {
 export let tickTimer;
 export function paintPrice() {
   const e = document.getElementById('btc'); if (e && Number.isFinite(st.shown)) e.textContent = priceStr(st.shown);
-  const d = document.getElementById('btcdir'); if (d) { d.textContent = st.dir > 0 ? '▲' : st.dir < 0 ? '▼' : ''; d.className = 'dir ' + (st.dir > 0 ? 'up' : 'down'); }
 }
 export function glidePrice() { // the big price eases toward each new trade price (no flashing); reduced motion jumps straight there
   cancelAnimationFrame(st.raf);

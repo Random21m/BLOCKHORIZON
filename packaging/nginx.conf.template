@@ -1,0 +1,10 @@
+# The /api proxy (bh-proxy.inc) is written by 40-blockhorizon.sh: a proxy to MEMPOOL_URL, or empty.
+server {
+  listen 80;
+  root /usr/share/nginx/html;
+  index index.html;
+  location / { try_files $uri $uri/ =404; }
+  location = /sw.js { add_header Cache-Control "no-cache"; }
+  location = /config.json { add_header Cache-Control "no-cache"; }
+  include /etc/nginx/conf.d/bh-proxy.inc;
+}

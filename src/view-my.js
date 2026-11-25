@@ -6,6 +6,7 @@ import { api } from './api.js';
 import { t } from './i18n.js';
 import { S, st, fmtD, el, toast } from './state.js';
 import { kv, shareRow } from './ui.js';
+import { shareNostr } from './nostr.js';
 
 const params = (q) => { const p = new URLSearchParams(q || ''); return { d: p.get('d') || '', l: (p.get('l') || '').slice(0, 40) }; };
 export const myLink = (d, l) => '/my?d=' + encodeURIComponent(d) + (l ? '&l=' + encodeURIComponent(l) : '');
@@ -44,7 +45,10 @@ export function viewMy(query) {
           [t('rewardThen'), L.satsToBtc(card.reward, 8).replace(/\.?0+$/, '') + ' BTC'],
           [t('issuedThen'), t('issuedPct', { p: card.pct.toFixed(1) })],
           Number.isFinite(price) ? [t('priceThen'), t('priceAbout', { p: L.fmtNum(price, price < 100 ? 2 : 0) + ' ' + S.cur })] : null].filter(Boolean)),
-        shareRow(myLink(d, l), 'BLOCKHORIZON · ' + name), el('p', { class: 'row' }, el('button', { id: 'my-img', onclick: () => saveImage(card) }, t('saveImage')))));
+        shareRow(myLink(d, l), 'BLOCKHORIZON · ' + name), el('p', { class: 'row' }, el('button', { id: 'my-img', onclick: () => saveImage(card) }, t('saveImage')),
+          el('button', { id: 'my-nostr', onclick: async () => { const url = location.href.split('#')[0] + '#' + myLink(d, l);
+            const r = await shareNostr(t('nostrText', { name, n: L.fmtNum(h), d: fmtDay(mined), s: Number.isFinite(since) ? L.fmtNum(since) : '…', u: url }));
+            toast(r.how === 'posted' ? t('nostrPosted', { n: r.relays }) : r.how === 'copied' ? t('nostrCopied') : t('nostrFailed')); } }, t('nostrShare')))));
     } catch { if (tok === token) out.replaceChildren(el('div', { class: 'panel' }, t('notFound'))); }
   })();
   return root;

@@ -60,7 +60,14 @@ label.chk{display:flex;gap:10px;align-items:center;margin:8px 0}
 .tabs{display:flex;gap:6px;margin-bottom:12px}.tabs button[aria-selected=true]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 .reduced *,.reduced *::before{transition:none!important;scroll-behavior:auto!important}
 @media (prefers-reduced-motion:reduce){*,*::before{transition:none!important;scroll-behavior:auto!important}}
-@media (max-width:640px){nav{order:3;flex:0 0 100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}nav a{white-space:nowrap}.tools{margin-left:auto}}
+.nico{display:none}nav .navmore{display:none}
+.morelist{list-style:none;margin:0;padding:0;display:grid;gap:6px}.morelist a{display:flex;align-items:center;min-height:46px;padding:0 14px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--text);text-decoration:none}.morelist a:hover,.morelist a[aria-current=page]{border-color:var(--accent);color:var(--accent)}
+/* Phones: the menu is a tab bar along the bottom (four pages and More), within thumb reach and never cut off */
+@media (max-width:640px){nav{position:fixed;left:0;right:0;bottom:0;z-index:6;display:grid;grid-template-columns:repeat(5,1fr);gap:0;flex:none;background:var(--bg);border-top:1px solid var(--line);padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+  nav a.xtra{display:none}nav .tab,nav .navmore{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:56px;padding:6px 2px;border:0;border-radius:0;background:none;color:var(--dim);font-size:11px;line-height:1.2;text-decoration:none;white-space:nowrap;overflow:hidden}
+  nav .tab span{max-width:100%;overflow:hidden;text-overflow:ellipsis}nav .nico{display:block;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  nav a[aria-current=page],nav .navmore.cur{color:var(--accent);background:none}nav .navmore:hover{border:0}
+  body:not(.clockmode){padding-bottom:calc(57px + env(safe-area-inset-bottom))}.tools{margin-left:auto}.toast{bottom:calc(72px + env(safe-area-inset-bottom))}}
 @media (max-width:480px){main{padding:16px 14px 6px}.hero{padding:22px 14px 16px}.fees{grid-template-columns:repeat(2,1fr)}}
 :fullscreen body{overflow:auto}
 
@@ -169,10 +176,10 @@ label.chk{display:flex;gap:10px;align-items:center;margin:8px 0}
   .t-fees .tv{margin:6px 0}
 }
 
-@media (max-width:899px){.more{display:none}}
+.less{display:none}@media (max-width:899px){.more{display:none}.less{display:inline}}
 @media (min-width:900px) and (min-height:641px){.tile .fees .est{display:block}}
 
-.btc .dir{font-size:13px;color:var(--dim)}.btc .dir.up{color:var(--ok)}.btc .dir.down{color:var(--bad)}
+.btc .chg.up{color:var(--up)}.btc .chg.down{color:var(--down)}
 .support{margin-top:14px}.tip-qr{display:block;width:220px;max-width:100%;height:auto;margin:6px 0 12px;border-radius:4px;background:#fff}
 .tip-addr{display:block;overflow-wrap:anywhere;font-size:13px;padding:8px 10px;border:1px solid var(--line);border-radius:4px;margin-bottom:10px}
 .support .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}

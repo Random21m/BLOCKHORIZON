@@ -50,10 +50,11 @@ function soundButton() {
   bellIcon(), t('soundNew'));
 }
 
-let pools = null, poolsAt = 0;
+let pools = null, rewards = null, poolsAt = 0;
 function loadPools() { // once per 10 minutes while the page is open; a failure retries after a minute
   if (Date.now() - poolsAt < 600000) return; poolsAt = Date.now();
   api.pools().then((v) => { pools = v; hooks.render(); }).catch(() => { poolsAt = Date.now() - 540000; });
+  api.rewards().then((v) => { rewards = v; hooks.render(); }).catch(() => { /* the panel waits for the next try */ });
 }
 const still = () => S.reduced || (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches);
 function randomHash() { const a = new Uint8Array(32); crypto.getRandomValues(a); return [...a].map((x) => x.toString(16).padStart(2, '0')).join(''); }
@@ -117,6 +118,14 @@ export function viewMining(arg = '') {
       el('i', { class: 'bar-track' }, el('i', { class: 'bar-fill' + (p.name ? '' : ' rest'), style: `width:${(p.share / sh[0].share * 100).toFixed(1)}%` }))))),
     b0 && b0.pool ? el('p', null, t('lastBy', { p: b0.pool })) : null,
     el('p', { class: 'dim note' }, t('whoNote'))] : el('p', { class: 'dim' }, t('loading'))));
+
+  // What miners earned over the last 144 blocks: revenue, the part from fees, and the hashprice (what 1 PH/s earns a day).
+  const ec = L.minerEconomics(rewards, x.hr);
+  grid.append(el('section', { class: 'panel' }, el('h2', null, t('mineDay')), ec ? [
+    el('p', { class: 'big' }, L.satsToBtc(ec.reward, 2) + ' BTC'), el('p', { class: 'dim' }, t('mineDaySub', { n: L.fmtNum(ec.blocks) }) + fiat(ec.reward)),
+    kv([[t('fromFees'), (ec.feeShare * 100).toFixed(ec.feeShare < 0.1 ? 2 : 1) + '%'], [t('avgBlock'), btc(ec.perBlock)], [t('txs'), L.fmtNum(ec.tx)],
+      [t('hashprice'), Number.isFinite(ec.hashprice) ? L.fmtNum(ec.hashprice, 0) + ' sats' + fiat(ec.hashprice) : '–']]),
+    el('p', { class: 'dim note' }, t('mineDayNote'))] : el('p', { class: 'dim' }, t('loading'))));
 
   grid.append(el('section', { class: 'panel' }, el('h2', null, t('mineSearch')),
     kv([[t('hashrate'), x.hr > 0 ? L.fmtHashrate(x.hr) : '–'], [t('hashesNeeded'), L.fmtSci(x.d * L.TWO32)]]),

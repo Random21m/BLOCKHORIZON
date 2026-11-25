@@ -2,7 +2,7 @@
 // everything comes from the URL. Polls every 30 seconds while visible (no websocket, to stay light on other people's pages).
 // show=mining draws a small picture of the block being mined: its fee mix from the projected block (no per-transaction feed).
 import * as L from './lib.js';
-import { api } from './api.js';
+import { api, loadConfig } from './api.js';
 import { t, setLang, detectLang, LANGS } from './i18n.js';
 import { CURRENCIES } from './price.js';
 
@@ -57,5 +57,5 @@ async function refresh() {
   } catch { /* keep the last value */ }
   paint();
 }
-refresh(); setInterval(refresh, 30000); document.addEventListener('visibilitychange', refresh);
+loadConfig().then(refresh); setInterval(refresh, 30000); document.addEventListener('visibilitychange', refresh);
 if (show === 'height' || show === 'mining') setInterval(paint, 1000); // the "since last block" clock
