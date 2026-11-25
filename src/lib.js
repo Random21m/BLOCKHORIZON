@@ -221,3 +221,73 @@ export function priceAt(resp, cur, ts) {
   const pts = ((resp && resp.prices) || []).filter((p) => Number.isFinite(p[cur]) && p[cur] > 0 && p.time <= ts + 7 * 86400).sort((a, b) => a.time - b.time);
   const before = pts.filter((p) => p.time <= ts); const p = before.length ? before[before.length - 1] : pts[0]; return p ? p[cur] : NaN;
 }
+// ---- the block being mined ----
+export const TWO32 = 4294967296; // a difficulty of 1 takes 2^32 hashes on average
+// Average seconds to find a block at this difficulty and hashrate (falls back to the 10-minute target without data).
+export function expectedBlockSec(difficulty, hashrate) { return difficulty > 0 && hashrate > 0 ? difficulty * TWO32 / hashrate : TARGET_SEC; }
+// Mining has no memory: the chance of a block within the next `sec` seconds is the same however long the search has run.
+export function chanceWithin(sec, mean) { return sec > 0 && mean > 0 ? 1 - Math.exp(-sec / mean) : 0; }
+// The number a block's hash must not exceed, as 64 hex digits: 0xffff * 2^208 / difficulty.
+export function miningTarget(difficulty) {
+  if (!(difficulty >= 1) || !Number.isFinite(difficulty)) return null;
+  return ((0xffffn << 208n) / BigInt(Math.round(difficulty))).toString(16).padStart(64, '0');
+}
+export function leadingZeros(hex) { return (/^0*/.exec(String(hex || '')) || [''])[0].length; }
+// Each pool's share of the blocks in a mining/pools response, largest first; the rest are summed as one entry (name null).
+export function poolShares(resp, top = 6) {
+  const ps = ((resp && resp.pools) || []).filter((p) => p.blockCount > 0).sort((a, b) => b.blockCount - a.blockCount), total = ps.reduce((s, p) => s + p.blockCount, 0);
+  if (!total) return [];
+  const out = ps.slice(0, top).map((p) => ({ name: p.name, share: p.blockCount / total, blocks: p.blockCount })), rest = ps.slice(top).reduce((s, p) => s + p.blockCount, 0);
+  if (rest) out.push({ name: null, share: rest / total, blocks: rest });
+  return out;
+}
+const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+// Very large counts as 4.1 × 10²³ (plain digits below a million).
+export function fmtSci(n) {
+  if (!Number.isFinite(n)) return '–'; if (Math.abs(n) < 1e6) return fmtNum(n);
+  let e = Math.floor(Math.log10(Math.abs(n))), m = n / 10 ** e; if (Math.abs(m) >= 9.95) { m /= 10; e++; }
+  return m.toFixed(1) + ' × 10' + String(e).split('').map((d) => SUP[d]).join('');
+}
+// ---- the block picture: every transaction as a square ----
+// A feed row from mempool.space ([txid, fee, vsize, value, rate, ...]) as a transaction.
+export const ptx = (r) => ({ id: r[0], fee: r[1], vsize: r[2], rate: r[4] });
+// Apply a projected-block-transactions frame (a full list, or a delta of added / removed / changed) to a Map of txid -> tx.
+export function applyBlockFrame(map, f) {
+  if (!f) return map;
+  if (Array.isArray(f.blockTransactions)) { map.clear(); for (const r of f.blockTransactions) map.set(r[0], ptx(r)); return map; }
+  const d = f.delta || {};
+  for (const id of d.removed || []) map.delete(id);
+  for (const r of d.added || []) map.set(r[0], ptx(r));
+  for (const [id, rate] of d.changed || []) { const x = map.get(id); if (x && Number.isFinite(rate)) map.set(id, Object.assign({}, x, { rate })); }
+  return map;
+}
+// Pack transactions into a grid x grid block, highest fee rate first from the bottom left, each a square whose area is its
+// size. The cell size grows until everything fits, so a full block fills the square. y counts up from the bottom.
+export function packBlock(list, grid = 75) {
+  const txs = list.filter((t) => t.vsize > 0).sort((a, b) => b.rate - a.rate || b.vsize - a.vsize), cap = grid * grid * 0.94;
+  // pick the cell size so the squares cover the share of the block that is full (rounding small ones up costs area)
+  const goal = cap * Math.min(1, txs.reduce((a, t) => a + t.vsize, 0) / 1e6); let unit = 1e6 / (grid * grid), lo = unit / 50, hi = unit * 50;
+  const side = (v) => Math.max(1, Math.min(grid, Math.round(Math.sqrt(v / unit)))), area = () => txs.reduce((a, t) => a + side(t.vsize) ** 2, 0);
+  for (let k = 0; k < 24; k++) { unit = Math.sqrt(lo * hi); if (area() > goal) lo = unit; else hi = unit; } unit = hi;
+  const occ = new Uint8Array(grid * grid), first = new Int32Array(grid), out = []; let low = 0;
+  const free = (x, y, s) => { for (let j = y; j < y + s; j++) for (let i = x; i < x + s; i++) if (occ[j * grid + i]) return false; return true; };
+  for (const t of txs) {
+    const s = side(t.vsize);
+    place: for (let y = low; y + s <= grid; y++) for (let x = first[y]; x + s <= grid; x++) {
+      if (occ[y * grid + x] || !free(x, y, s)) continue;
+      for (let j = y; j < y + s; j++) { for (let i = x; i < x + s; i++) occ[j * grid + i] = 1; while (first[j] < grid && occ[j * grid + first[j]]) first[j]++; }
+      out.push({ id: t.id, x, y, s, rate: t.rate, vsize: t.vsize, fee: t.fee }); break place;
+    }
+    while (low < grid && first[low] >= grid) low++;
+  }
+  return out;
+}
+// Without the live feed: a stand-in block with the projected block's count, size and fee spread (marked approximate).
+export function approxBlock(pb, seed = 1) {
+  if (!pb || !(pb.nTx > 0)) return [];
+  let s = seed >>> 0; const rnd = () => { s = (s + 0x6d2b79f5) >>> 0; let z = s; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
+  const n = Math.min(pb.nTx, 5000), fr = (pb.feeRange || []).filter(Number.isFinite), avg = (pb.blockVSize || 0) / pb.nTx || 250, out = [];
+  const rateAt = (q) => { if (!fr.length) return pb.medianFee || 1; const p = q * (fr.length - 1), i = Math.floor(p), k = p - i; return fr[i] + ((fr[i + 1] ?? fr[i]) - fr[i]) * k; };
+  for (let i = 0; i < n; i++) { const v = avg * Math.exp((rnd() + rnd() + rnd() - 1.5) * 1.1) * (pb.nTx / n); out.push({ id: 'approx-' + i, fee: 0, vsize: v, rate: rateAt(rnd()) }); }
+  return out;
+}

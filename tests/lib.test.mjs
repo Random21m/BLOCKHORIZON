@@ -202,3 +202,34 @@ test('your block: dates, milestones, future height, price that week', () => {
   const near = hp.prices.filter((x) => x.time <= ts).sort((a, b) => b.time - a.time)[0]; assert.equal(p, near.USD);
   assert.equal(L.priceAt({ prices: [{ time: 100, USD: 5 }] }, 'USD', 50), 5); assert.ok(Number.isNaN(L.priceAt({ prices: [] }, 'USD', 50)));
 });
+
+test('mining: block time, chance, target, pool shares, big numbers', () => {
+  const hr = fx('hashrate.json'), m = L.expectedBlockSec(hr.currentDifficulty, hr.currentHashrate);
+  assert.ok(m > 500 && m < 620, String(m)); assert.equal(L.expectedBlockSec(0, 0), 600);
+  assert.ok(Math.abs(L.chanceWithin(600, 600) - (1 - Math.exp(-1))) < 1e-12); assert.equal(L.chanceWithin(0, 600), 0);
+  const tg = L.miningTarget(hr.currentDifficulty); assert.equal(tg.length, 64); assert.equal(L.leadingZeros(tg), 19);
+  assert.equal(L.miningTarget(1), '00000000ffff0000000000000000000000000000000000000000000000000000'); assert.equal(L.miningTarget(0), null);
+  const top = fx('blocks.json')[0]; assert.ok(BigInt('0x' + top.id) <= BigInt('0x' + L.miningTarget(top.difficulty)), 'a real block hash is below its target');
+  const sh = L.poolShares(fx('pools-1w.json'));
+  assert.equal(sh.length, 7); assert.equal(sh[6].name, null); assert.ok(Math.abs(sh.reduce((a, p) => a + p.share, 0) - 1) < 1e-9); assert.ok(sh[0].share >= sh[1].share);
+  assert.deepEqual(L.poolShares(null), []);
+  assert.equal(L.fmtSci(4.1e23), '4.1 × 10²³'); assert.equal(L.fmtSci(9.96e20), '1.0 × 10²¹'); assert.equal(L.fmtSci(12345), '12,345'); assert.equal(L.fmtSci(NaN), '–');
+});
+
+test('mining: live block frames apply (full list, then deltas) and pack without overlaps', () => {
+  const frames = fx('projected-txs.json'), map = new Map();
+  L.applyBlockFrame(map, frames[0]); assert.equal(map.size, frames[0].blockTransactions.length);
+  for (const f of frames.slice(1)) L.applyBlockFrame(map, f);
+  for (const f of frames.slice(1)) { for (const id of f.delta.removed) if (!frames.slice(1).some((g) => g !== f && g.delta.added.some((r) => r[0] === id))) assert.ok(!map.has(id), 'removed ' + id); }
+  const x = [...map.values()][0]; assert.ok(x.id.length === 64 && x.vsize > 0 && Number.isFinite(x.rate));
+  const big = []; for (let i = 0; i < 12; i++) for (const t of map.values()) big.push(Object.assign({}, t, { id: t.id + i }));
+  for (const [list, g] of [[[...map.values()], 75], [big, 100]]) {
+    const p = L.packBlock(list, g), seen = new Set(); let area = 0;
+    assert.equal(p.length, list.length, 'everything placed');
+    for (const q of p) { assert.ok(q.x >= 0 && q.y >= 0 && q.x + q.s <= g && q.y + q.s <= g); area += q.s * q.s; for (let j = q.y; j < q.y + q.s; j++) for (let i = q.x; i < q.x + q.s; i++) { const k = j * g + i; assert.ok(!seen.has(k), 'overlap'); seen.add(k); } }
+    assert.ok(p[0].rate >= p[p.length - 1].rate, 'highest fee rates first');
+    if (list === big) assert.ok(area / g / g > 0.8, 'a full block fills the square: ' + area / g / g);
+  }
+  const ap = L.approxBlock(fx('mempool-blocks.json')[0], 5); assert.equal(ap.length, 3870); assert.deepEqual(L.approxBlock(fx('mempool-blocks.json')[0], 5).slice(0, 3), ap.slice(0, 3), 'stable');
+  assert.deepEqual(L.approxBlock(null), []);
+});

@@ -1,6 +1,7 @@
 // BLOCKHORIZON entry point: routing, live repaint, boot.
 import * as L from './lib.js';
-import { live } from './api.js';
+import { live, trackBlock } from './api.js';
+import { mountScene } from './block-scene.js';
 import { livePrice } from './price.js';
 import { t } from './i18n.js';
 import { VERSION, $, st, el, toast, applyLook, NAVS, hooks } from './state.js';
@@ -11,13 +12,14 @@ import { viewBlock, viewTx } from './view-chain.js';
 import { viewAlarm, viewCalc, paintFeeNow } from './view-tools.js';
 import { viewCharts } from './view-charts.js';
 import { viewMy, paintMySince } from './view-my.js';
+import { viewMining, paintMining } from './view-mining.js';
 import { measure, arrive } from './arrival.js';
 import { viewReplay, viewEvents, viewGlossary, viewWatch, viewAbout } from './view-info.js';
 import { closeModal, searchModal, settingsModal, trapFocus } from './modals.js';
 
 let route = '/';
-const VIEWS = { '/': viewDash, '/clock': viewClock, '/alarm': viewAlarm, '/calc': viewCalc, '/charts': viewCharts, '/replay': viewReplay, '/events': viewEvents, '/glossary': viewGlossary, '/watch': viewWatch, '/about': viewAbout };
-const LIVE = { '/': 'dashgrid', '/clock': 'clockview' }; // views repainted on every live update (the others keep their inputs)
+const VIEWS = { '/': viewDash, '/clock': viewClock, '/mining': viewMining, '/alarm': viewAlarm, '/calc': viewCalc, '/charts': viewCharts, '/replay': viewReplay, '/events': viewEvents, '/glossary': viewGlossary, '/watch': viewWatch, '/about': viewAbout };
+const LIVE = { '/': 'dashgrid', '/clock': 'clockview', '/mining': 'minegrid' }; // views repainted on every live update (the others keep their inputs)
 function parseRoute() {
   const h = location.hash.replace(/^#/, '') || '/';
   let m = h.match(/^\/block\/(\d+)$/); if (m) return { path: '/block', arg: m[1] };
@@ -43,6 +45,7 @@ function renderView() {
   document.body.classList.toggle('fit', r.path === '/'); document.body.classList.toggle('clockmode', r.path === '/clock'); keepAwake(r.path === '/clock');
   const v = r.path === '/block' ? viewBlock(r.arg) : r.path === '/tx' ? viewTx(r.arg) : r.path === '/my' ? viewMy(r.arg) : VIEWS[r.path](); m.replaceChildren(v); if (r.path === '/') stripScroll([]); renderNav(r.path);
   document.title = docTitle(); scrollTo(0, r.path === '/' ? y : 0);
+  trackBlock(r.path === '/mining'); if (r.path === '/mining') mountScene();
 }
 // Make the live node `a` match the freshly built node `b`, touching only what differs: unchanged text and elements stay
 // in place, so hover, keyboard focus, screen readers and the strips' scroll are left alone by live updates.
@@ -50,6 +53,7 @@ function morph(a, b) {
   if (a.nodeType !== b.nodeType || a.nodeName !== b.nodeName) { a.replaceWith(b); return; }
   if (a.nodeType === 3) { if (a.data !== b.data) a.data = b.data; return; }
   if (a.nodeType !== 1) return;
+  if (a.hasAttribute('data-keep') && b.hasAttribute('data-keep')) return; // drawn by its own code (the Mining page's block picture)
   for (const { name } of [...a.attributes]) if (!b.hasAttribute(name)) a.removeAttribute(name);
   for (const { name, value } of [...b.attributes]) if (a.getAttribute(name) !== value) a.setAttribute(name, value);
   const ak = [...a.childNodes], bk = [...b.childNodes];
@@ -72,6 +76,7 @@ function render() {
       shownTip = st.tip; shownTop = st.blocks[0] ? st.blocks[0].height : NaN;
     } finally { rendering = false; } }
   else if (!LIVE[route]) document.title = 'BLOCKHORIZON · ' + L.fmtNum(st.tip);
+  trackBlock(route === '/mining'); if (route === '/mining') mountScene();
   checkAlarms(); checkFeeAlerts(); paintFeeNow(); paintMySince();
   const c = $('#conn'); if (c) { c.className = 'conn ' + (st.conn === 'on' ? 'on' : st.conn === 'poll' ? 'poll' : ''); c.title = st.conn === 'on' ? t('connLive') : st.conn === 'poll' ? t('connPoll') : t('offline'); }
 }
@@ -85,7 +90,7 @@ async function keepAwake(on) { // Screen Wake Lock: released by the browser when
 }
 // Copy link and (where the system offers it) Share for a block or transaction page.
 // ---------- boot ----------
-function tickClock() { const s = $('#since'); if (s && st.blocks[0]) s.textContent = sinceText(Date.now()); }
+function tickClock() { const s = $('#since'); if (s && st.blocks[0]) s.textContent = sinceText(Date.now()); paintMining(); }
 export function boot() {
   hooks.render = render; hooks.renderView = renderView;
   applyLook(); $('#ver').textContent = 'BLOCKHORIZON ' + VERSION;

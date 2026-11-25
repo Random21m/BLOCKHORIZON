@@ -9,13 +9,13 @@ const EASE = 'cubic-bezier(.2,.7,.2,1)';
 
 // Where things are now (call before the page is updated). Only taken when the height changes, so ordinary updates cost nothing.
 export function measure() {
-  return { blocks: new Map([...document.querySelectorAll('.strip2 a.blk')].map((a) => [heightOf(a), a.getBoundingClientRect()])) };
+  return { blocks: new Map([...document.querySelectorAll('.strip2 a.blk:not(.proj)')].map((a) => [heightOf(a), a.getBoundingClientRect()])) };
 }
 // Animate from the measured positions to the new ones (call right after the update). `moved` says what is new: the height,
 // the mined blocks, or both. Returns how many elements were animated.
 export function arrive(before, moved = { height: true, blocks: true }) {
   if (!before || still()) return 0;
-  let n = 0; const mined = moved.blocks ? [...document.querySelectorAll('.strip2 a.blk')] : [];
+  let n = 0; const mined = moved.blocks ? [...document.querySelectorAll('.strip2 a.blk:not(.proj)')] : [];
   const slot = mined.length > 1 ? mined[1].getBoundingClientRect().left - mined[0].getBoundingClientRect().left : 0;
   for (const a of mined) {
     const r = a.getBoundingClientRect(), was = before.blocks.get(heightOf(a)); if (!r.width) continue;

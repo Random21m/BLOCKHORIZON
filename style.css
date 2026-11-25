@@ -224,3 +224,24 @@ main:empty+.foot{visibility:hidden} /* until the app has drawn the page, so the 
 /* "Your block" */
 .mycard .myh{font:700 clamp(40px,10vw,84px)/1.05 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin:4px 0}.mycard .myh a{color:var(--accent);text-decoration:none}.mycard .myh a:hover{text-decoration:underline}
 .mycard .kv{margin:10px 0 4px}#my-out{margin-top:14px}
+/* "Mining": the block being mined, drawn live */
+.strip2 .blk.mining{border-color:var(--accent)}.strip2 .blk.mining span:last-child{color:var(--accent)}
+.minehead{display:grid;grid-template-columns:minmax(0,min(58vh,560px)) minmax(0,1fr);gap:24px;align-items:start;border-top-color:var(--accent)}.minehead p{margin:6px 0}.minehead .myh{color:var(--accent)}
+.scenebox{margin:0;min-width:0}
+#scene{position:relative;aspect-ratio:1;width:100%;background:var(--bg);border:1px dashed var(--line);border-radius:4px;overflow:hidden}
+canvas.scene{display:block;width:100%;height:100%;color:var(--text);touch-action:manipulation}
+.scene-tip{position:absolute;pointer-events:none;white-space:pre;background:var(--card);border:1px solid var(--line);border-radius:4px;padding:5px 8px;font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;z-index:2}.scene-tip[hidden]{display:none}
+.scenebox figcaption{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--dim);margin-top:6px}
+.legend{display:flex;align-items:center;gap:8px;margin-top:6px}.legend small{font:11px ui-monospace,Menlo,monospace;color:var(--dim);white-space:nowrap}.legend .stripe{flex:1;display:block;height:8px;border-radius:2px;border:1px solid var(--line)}
+.minehead .found{color:var(--ok);font-weight:600}
+.hasher{background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:10px 12px;margin:12px 0}.hasher small{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:8px 0 2px}
+.hasher .hrow b{font-size:20px;color:var(--text)}
+.hasher ol{list-style:none;margin:0;padding:0;overflow:hidden}.hasher li{display:flex;gap:8px;align-items:baseline}.hasher li .bad{font-size:12px}
+.panel .note{font-size:13px;margin:12px 0 0}
+.hashes{margin-top:14px}.hashes small{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:2px}.hashlink{text-decoration:none}
+.hash{display:block;font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-wrap:anywhere;word-break:break-all;color:var(--text);min-width:0}.hash .z{color:var(--accent);font-weight:700}
+.hash.miss{color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;word-break:normal}.hash.target{color:var(--text)}
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 0}
+.pools{list-style:none;margin:0;padding:0;display:grid;gap:8px}.pools li{display:grid;grid-template-columns:1fr auto;gap:2px 10px;font-size:14px}.pools b{font:600 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.pools .bar-track{grid-column:1/-1;display:block;margin:0;height:6px}.pools .bar-fill{display:block}.pools .bar-fill.rest{background:var(--dim)}
+@media (max-width:760px){.minehead{grid-template-columns:minmax(0,1fr);gap:14px}.minehead{padding:12px}}

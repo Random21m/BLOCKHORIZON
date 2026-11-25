@@ -28,6 +28,7 @@ export const api = {
   prices: () => getJSON('/v1/prices', { cacheKey: 'prices' }),
   hashrate: () => getJSON('/v1/mining/hashrate/1y', { cacheKey: 'hashrate' }),
   lightning: () => getJSON('/v1/lightning/statistics/latest', { cacheKey: 'ln' }),
+  pools: () => getJSON('/v1/mining/pools/1w', { cacheKey: 'pools' }), // each pool's blocks in the past week (the Mining page)
   tx: (id) => getJSON('/tx/' + id),
   // history for the Charts page (not saved in localStorage: the price history is over a megabyte)
   priceHistory: (cur) => getJSON('/v1/historical-price?currency=' + encodeURIComponent(cur)),
@@ -38,13 +39,19 @@ export const api = {
 };
 
 // Live feed with reconnect (3 s), paused while the page is hidden or offline.
+// The Mining page asks for the next block's transactions too (track-mempool-block 0, -1 to stop); sent again after a reconnect.
+let sock = null, tracking = false;
+export function trackBlock(on) {
+  if (on === tracking) return; tracking = on;
+  try { if (sock && sock.readyState === 1) sock.send(JSON.stringify({ 'track-mempool-block': on ? 0 : -1 })); } catch { /* sent on the next connect */ }
+}
 export function live(onMsg, onState) {
   let ws, timer, stopped = false;
   const open = () => {
     clearTimeout(timer);
     if (stopped || document.hidden || navigator.onLine === false) return;
-    try { ws = new WebSocket(WS_URL); } catch { onState('poll'); return; }
-    ws.onopen = () => { onState('on'); ws.send(JSON.stringify({ action: 'init' })); ws.send(JSON.stringify({ action: 'want', data: ['blocks', 'stats', 'mempool-blocks'] })); };
+    try { ws = sock = new WebSocket(WS_URL); } catch { onState('poll'); return; }
+    ws.onopen = () => { onState('on'); ws.send(JSON.stringify({ action: 'init' })); ws.send(JSON.stringify({ action: 'want', data: ['blocks', 'stats', 'mempool-blocks'] })); if (tracking) ws.send(JSON.stringify({ 'track-mempool-block': 0 })); };
     ws.onmessage = (e) => { try { onMsg(JSON.parse(e.data)); } catch { /* ignore bad frame */ } };
     ws.onclose = () => { onState('poll'); if (!stopped) timer = setTimeout(open, 3000); };
     ws.onerror = () => { try { ws.close(); } catch { /* */ } };

@@ -3,6 +3,7 @@ import * as L from './lib.js';
 import { api, store } from './api.js';
 import { t } from './i18n.js';
 import { play } from './sound.js';
+import { ingest } from './block-scene.js';
 import { hooks, S, st, alarms, feeAlerts, FEE_LVL_KEYS, toast, price, priceStr } from './state.js';
 
 // ---------- data ----------
@@ -31,6 +32,7 @@ export function onLive(m) {
   if (m.blocks && m.blocks.length && !st.blocks.length) { st.blocks = m.blocks.slice().sort((a, b) => b.height - a.height); st.tip = st.blocks[0].height; }
   if (m.mempoolInfo) { st.mem = Object.assign({}, st.mem, { count: m.mempoolInfo.size, vsize: m.mempoolInfo.bytes || st.mem && st.mem.vsize }); }
   if (m['mempool-blocks']) st.proj = m['mempool-blocks'];
+  const pbt = m['projected-block-transactions']; if (pbt && pbt.index === 0) ingest(pbt);
   if (m.fees) st.fees = m.fees;
   if (m.vBytesPerSecond != null) st.inflow = m.vBytesPerSecond;
   hooks.render();
