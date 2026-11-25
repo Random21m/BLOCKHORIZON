@@ -21,6 +21,13 @@ export function viewAlarm() {
   root.append(feePanel());
   preview(); return root;
 }
+// The "Now: x sat/vB" line under the fee alert. Called on every data update too (from app.js), so it fills in even when
+// the Alarm page was drawn before the fees arrived; only this line changes, so anything typed in the form stays.
+export function paintFeeNow() {
+  const lvl = $('#fa-l'), now = $('#fa-now'); if (!lvl || !now) return;
+  const f = st.fees ? st.fees[L.FEE_LEVELS[lvl.value]] : NaN, txt = Number.isFinite(f) ? t('feeNow', { f: L.fmtFee(f) }) : '';
+  if (now.textContent !== txt) now.textContent = txt;
+}
 // Fee alert: a sound and a message when the chosen fee level drops to the user's limit or below.
 function feePanel() {
   const cur = (lvl) => (st.fees ? st.fees[L.FEE_LEVELS[lvl]] : NaN);
@@ -28,14 +35,13 @@ function feePanel() {
   const max = el('input', { id: 'fa-m', type: 'text', inputmode: 'decimal', placeholder: t('feeMax'), 'aria-label': t('feeMax'), size: 12 });
   const snd = el('select', { id: 'fa-s', 'aria-label': t('sound') }, Object.entries(ALARM_SOUNDS).map(([k, v]) => el('option', { value: k, selected: k === S.asound }, v)));
   const now = el('div', { class: 'dim', id: 'fa-now' });
-  const showNow = () => { const f = cur(lvl.value); now.textContent = Number.isFinite(f) ? t('feeNow', { f: L.fmtFee(f) }) : ''; };
-  lvl.addEventListener('change', showNow);
+  lvl.addEventListener('change', paintFeeNow);
   const add = () => {
     const m = L.parseFeeLimit(max.value); if (!Number.isFinite(m)) return toast(t('feeBadLimit'));
     if (cur(lvl.value) <= m) return toast(t('feeAlready'));
     const a = feeAlerts(); a.push({ level: lvl.value, max: m, sound: snd.value }); store('feeAlerts', a); play(snd.value); askNotify(); hooks.renderView();
   };
-  const list = feeAlerts(); showNow();
+  const list = feeAlerts(); queueMicrotask(paintFeeNow); // once the panel is on the page
   return el('section', { class: 'feealert' }, el('h2', { class: 'dim mono', style: 'margin-top:28px' }, t('feeAlert')), el('p', { class: 'dim' }, t('feeIntro')),
     el('div', { class: 'row' }, lvl, max, snd, el('button', { class: 'btn-go', id: 'fa-go', onclick: add }, t('setFee')), el('button', { onclick: () => play(snd.value) }, '▶ ' + t('test'))), now,
     el('h2', { class: 'dim mono' }, t('activeFee')), list.length ? el('table', { id: 'fa-list' }, el('tbody', null, list.map((a, i) => el('tr', null, el('td', null, t(FEE_LVL_KEYS[a.level] || 'lvlNext')), el('td', null, '≤ ' + L.fmtFee(a.max) + ' sat/vB'),

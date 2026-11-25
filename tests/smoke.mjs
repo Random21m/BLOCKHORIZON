@@ -155,6 +155,12 @@ await ok('fee alert: set and list one on the Alarm page; a limit already reached
   await page.fill('#fa-m', '9'); await page.click('#fa-go'); await until(page, () => /already at or below/.test(document.querySelector('#toast').textContent));
   await page.selectOption('#fa-l', 'h30'); await page.fill('#fa-m', '2,5'); await page.click('#fa-go'); await page.waitForSelector('#fa-list');
   assert.ok((await page.locator('#fa-list').innerText()).includes('≤ 2.5 sat/vB')); await page.click('#fa-list button'); await until(page, () => !document.querySelector('#fa-list')); });
+await ok('fee alert: the "Now" line fills in when the Alarm page is the first page opened', async () => {
+  const c = await b.newContext(); await c.routeWebSocket(/mempool\.space/, (ws) => ws.close()); await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
+  await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+  const p = await c.newPage(); await p.goto(base + '#/alarm'); await p.waitForSelector('#fa-m');
+  await until(p, () => document.querySelector('#fa-now')?.textContent === 'Now: 5.0 sat/vB', null, { timeout: 8000 });
+  await p.fill('#fa-m', '3'); await until(p, () => document.querySelector('#fa-m').value === '3'); await c.close(); });
 await ok('keyboard: Tab stays inside an open dialog, Escape closes it and focus goes back', async () => {
   await page.goto(base); await page.focus('#btn-settings'); await page.keyboard.press('Enter'); await page.waitForSelector('#st-theme');
   for (let i = 0; i < 25; i++) { await page.keyboard.press('Tab'); assert.ok(await page.evaluate(() => document.querySelector('#modal').contains(document.activeElement)), 'focus left the dialog at Tab ' + (i + 1)); }
