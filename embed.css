@@ -9,3 +9,5 @@
 .sub{font-size:12px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand{display:flex;align-items:center;gap:5px;margin-top:4px;font-size:10.5px;letter-spacing:.18em;color:var(--dim);font-weight:700}.brand svg{color:var(--accent)}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.w.mining{flex-direction:row;align-items:center;justify-content:flex-start;gap:12px}.w.mining .txt{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.w.mining canvas{flex:0 0 auto;height:100%;max-height:100%;aspect-ratio:1;border:1px dashed var(--line);border-radius:3px;background:transparent}.w.mining .num{font-size:clamp(18px,7vw,28px)}

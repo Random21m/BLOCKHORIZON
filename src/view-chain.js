@@ -40,7 +40,7 @@ export function viewTx(id) {
       if (x.coinbase) rows.push([t('fee'), t('coinbase')]);
       else rows.push([t('fee'), L.fmtNum(x.fee) + ' sats' + fiat(x.fee)], [t('feeRate'), L.fmtFee(x.feeRate) + ' sat/vB']);
       rows.push([t('size'), L.fmtNum(x.vsize) + ' vB'], [t('insOuts'), `${x.ins} / ${x.outs}`], [t('totalOut'), L.satsToBtc(x.valueOut) + ' BTC' + fiat(x.valueOut)]);
-      body.replaceChildren(kv(rows), shareRow('/tx/' + id, 'BLOCKHORIZON · ' + t('txTitle')));
+      body.replaceChildren(...[kv(rows), x.confirmed ? null : el('p', null, el('a', { href: '#/mining?tx=' + id, class: 'watchlink' }, t('watchTx') + ' →')), shareRow('/tx/' + id, 'BLOCKHORIZON · ' + t('txTitle'))].filter(Boolean));
     } catch { if (tok === txToken) body.textContent = t('notFound'); }
   })();
   return root;

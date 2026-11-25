@@ -4,9 +4,44 @@
 import * as L from './lib.js';
 import { api } from './api.js';
 import { t } from './i18n.js';
-import { S, st, el, price, hooks } from './state.js';
+import { S, st, el, price, hooks, save, toast } from './state.js';
 import { kv, sinceText } from './ui.js';
-import { sceneStats } from './block-scene.js';
+import { sceneStats, setMark, sceneHas } from './block-scene.js';
+import { play } from './sound.js';
+
+// The transaction someone follows (#/mining?tx=…): looked up again after every new block, so the moment it is mined shows.
+const follow = { id: '', info: null, err: false, tip: NaN, at: 0, waited: false, busy: false };
+function lookUp(id) {
+  const fresh = id === follow.id && follow.tip === st.tip && (follow.err || (follow.info && (follow.info.confirmed || Date.now() - follow.at < 20000)));
+  if (follow.busy || fresh) return; // waiting ones are looked up again every 20 s too (a block can take a moment to show as confirmed)
+  if (id !== follow.id) Object.assign(follow, { id, info: null, err: false, waited: false });
+  follow.busy = true; const tip = st.tip;
+  api.tx(id).then((x) => { if (follow.id !== id) return; const i = L.parseTx(x, st.tip); follow.info = i; follow.err = false; if (!i.confirmed) follow.waited = true; },
+    () => { if (follow.id === id) { follow.err = true; follow.info = null; } })
+    .finally(() => { follow.busy = false; if (follow.id === id) { follow.tip = tip; follow.at = Date.now(); hooks.render(); } });
+}
+function followBox(id) {
+  const input = el('input', { id: 'mf-tx', type: 'text', value: id, spellcheck: 'false', autocomplete: 'off', placeholder: t('mineTrackPh'), 'aria-label': t('mineTrackPh') });
+  const go = (e) => { e.preventDefault(); const v = input.value.trim().toLowerCase(); if (!L.isTxid(v)) { toast(t('notTxid')); return; } location.hash = '#/mining?tx=' + v; };
+  let status = null;
+  if (id) {
+    const i = follow.id === id ? follow.info : null, inBlock = sceneHas(id);
+    const line = (cls, text) => el('p', { class: 'fstatus ' + cls, role: 'status' }, text);
+    if (i && i.confirmed) status = follow.waited && i.height === st.tip ? line('ok big2', t('txJustMined', { n: L.fmtNum(i.height) })) : line('ok', t('txMinedIn', { n: L.fmtNum(i.height), c: L.fmtNum(i.confs) }));
+    else if (inBlock) status = line('accent', t('txInBlock') + (i ? ' · ' + L.fmtFee(i.feeRate) + ' sat/vB' : ''));
+    else if (i) { const q = st.proj && st.proj.length ? L.txQueuePos(i.feeRate, st.proj) : -1; status = line('', q > 0 ? t('txNotInBlock', { f: L.fmtFee(i.feeRate), n: q }) : q === 0 ? t('txInBlock') : t('txTooLow', { f: L.fmtFee(i.feeRate) })); }
+    else if (follow.id === id && follow.err) status = line('bad', t('notFound'));
+    else status = line('dim', t('loading'));
+    status = [status, el('p', { class: 'row flinks' }, el('a', { href: '#/tx/' + id }, t('txDetails') + ' →'), el('a', { href: '#/mining' }, t('mineStop')))];
+  }
+  return el('form', { class: 'follow', onsubmit: go }, el('label', { for: 'mf-tx', class: 'eyebrow' }, t('mineTrack')),
+    el('div', { class: 'frow' }, input, el('button', { class: 'btn-go', type: 'submit' }, t('mineWatch'))), status);
+}
+function soundButton() {
+  return el('button', { class: 'soundbtn', type: 'button', 'aria-pressed': S.sound ? 'true' : 'false', title: t('soundNew'),
+    onclick: (e) => { S.sound = !S.sound; save(); e.currentTarget.setAttribute('aria-pressed', String(S.sound)); e.currentTarget.firstChild.textContent = S.sound ? '🔔' : '🔕'; if (S.sound) play(S.bsound); } },
+  el('span', { 'aria-hidden': 'true' }, S.sound ? '🔔' : '🔕'), ' ' + t('soundNew'));
+}
 
 let pools = null, poolsAt = 0;
 function loadPools() { // once per 10 minutes while the page is open; a failure retries after a minute
@@ -29,7 +64,9 @@ function inputs(now = Date.now()) {
 const longerText = (x) => Number.isFinite(x.elapsed) ? Math.round(Math.exp(-x.elapsed / x.mean) * 100) + '%' : '–';
 const tryRow = (h) => el('li', null, hashEl(h, 'miss'), el('span', { class: 'bad', 'aria-hidden': 'true' }, '✕'));
 
-export function viewMining() {
+export function viewMining(arg = '') {
+  const fid = (new URLSearchParams(arg).get('tx') || '').toLowerCase(), txId = L.isTxid(fid) ? fid : '';
+  setMark(txId); if (txId) lookUp(txId); else follow.id = '';
   loadPools(); while (tries.length < TRIES) tries.push(randomHash());
   const now = Date.now(), x = inputs(now), next = Number.isFinite(st.tip) ? st.tip + 1 : NaN, pb = st.proj && st.proj[0], sc = sceneStats();
   const b0 = x.b0 ? L.parseBlock(x.b0) : null, prev = st.blocks[1], gap = x.b0 && prev ? x.b0.timestamp - prev.timestamp : NaN, target = L.miningTarget(x.d);
@@ -44,9 +81,10 @@ export function viewMining() {
         el('span', { class: sc.live ? 'ok' : 'dim' }, sc.live ? '● ' + t('live') : t('sceneApprox'))),
       fr ? el('div', { class: 'legend' }, el('small', null, L.fmtFee(fr[0])), el('i', { class: 'stripe', style: `background:${L.feeStripes(fr)}` }), el('small', null, L.fmtFee(fr[fr.length - 1]) + ' sat/vB')) : null),
     el('div', { class: 'mineinfo' },
-      el('div', { class: 'eyebrow' }, t('mineEyebrow')), el('div', { class: 'myh', id: 'h' }, Number.isFinite(next) ? '#' + L.fmtNum(next) : '…'),
+      el('div', { class: 'minetop' }, el('div', { class: 'eyebrow' }, t('mineEyebrow')), soundButton()), el('div', { class: 'myh', id: 'h' }, Number.isFinite(next) ? '#' + L.fmtNum(next) : '…'),
       el('p', { class: 'since' }, t('searching') + ': ', el('b', { id: 'since' }, sinceText(now))),
       x.elapsed < 90 && Number.isFinite(gap) ? el('p', { class: 'found', role: 'status' }, t('justFound', { n: L.fmtNum(b0.height), t: L.fmtDuration(gap) }) + (b0.pool ? ' · ' + b0.pool : '')) : null,
+      followBox(txId),
       el('div', { class: 'hasher' },
         el('div', { class: 'hrow' }, el('b', { id: 'tries', class: 'mono' }, L.fmtSci(x.tries)), el('span', { class: 'dim' }, ' ' + t('triesSoFar'))),
         target ? [el('small', null, t('targetL')), hashEl(target, 'target'), el('small', null, t('aTry')), el('ol', { id: 'tries-list', 'aria-hidden': 'true', 'data-keep': '' }, tries.map(tryRow))] : null,

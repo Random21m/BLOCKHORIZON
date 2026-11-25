@@ -61,15 +61,16 @@ export function viewAbout() {
 function embedPanel() {
   const site = location.href.split('#')[0].split('?')[0].replace(/[^/]*$/, '');
   const opt = (id, label, pairs) => el('select', { id, 'aria-label': label }, pairs.map(([v, l]) => el('option', { value: v }, l)));
-  const what = opt('emb-what', t('embedWhat'), [['height', t('height')], ['halving', t('halving')], ['price', t('price')]]);
+  const what = opt('emb-what', t('embedWhat'), [['height', t('height')], ['halving', t('halving')], ['price', t('price')], ['mining', t('mining')]]);
   const theme = opt('emb-theme', t('theme'), [['auto', t('auto')], ['dark', t('dark')], ['light', t('light')]]);
   const code = el('textarea', { id: 'emb-code', readonly: true, rows: 4, spellcheck: 'false', 'aria-label': t('embedCode') });
   const frame = el('iframe', { id: 'emb-prev', class: 'emb-prev', title: t('embedPreview'), width: 320, height: 120 });
   const upd = () => {
     const qs = `show=${what.value}&theme=${theme.value}&lang=${S.lang}` + (what.value === 'price' ? `&cur=${S.cur}` : '');
     const label = what.options[what.selectedIndex].textContent;
-    code.value = `<iframe src="${site}embed.html?${qs}" width="320" height="120" style="border:0" title="BLOCKHORIZON: ${label}" loading="lazy"></iframe>`;
-    frame.src = 'embed.html?' + qs;
+    const hgt = what.value === 'mining' ? 150 : 120; // the mining picture needs a little more height
+    code.value = `<iframe src="${site}embed.html?${qs}" width="320" height="${hgt}" style="border:0" title="BLOCKHORIZON: ${label}" loading="lazy"></iframe>`;
+    frame.src = 'embed.html?' + qs; frame.height = hgt;
   };
   what.addEventListener('change', upd); theme.addEventListener('change', upd); upd();
   const copy = async () => { try { await navigator.clipboard.writeText(code.value); toast(t('codeCopied')); } catch { code.select(); toast(t('selectCopy')); } };

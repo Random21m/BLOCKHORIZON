@@ -13,7 +13,7 @@ const MOVE = 900, FADE = 450, SEAL = 2200, BATCH = 1000, RESORT = 30000, EASE = 
 const txs = new Map(); let liveData = false, version = 0, approxKey = '', approxList = [];
 let grid = 75, unit = 1e6 / 5625, placed = new Map(), sprites = new Map(), leaving = [], sealed = null;
 let applied = -1, appliedAt = 0, sortedAt = 0, needSort = true, shownTip = NaN, misplaced = 0;
-let canvas = null, ctx = null, tip = null, raf = 0, timer = 0, hover = null, ro = null, ink = '#fff';
+let canvas = null, ctx = null, tip = null, raf = 0, timer = 0, hover = null, ro = null, ink = '#fff', accent = '#E06A55', mark = '';
 const still = () => S.reduced || document.hidden || (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches);
 
 // A projected-block-transactions frame from the live feed (a full list starts the block over, deltas change it).
@@ -22,6 +22,9 @@ export function ingest(frame) {
   L.applyBlockFrame(txs, frame); liveData = true; version++; schedule();
 }
 export function liveFeed() { return liveData; }
+// The transaction someone follows: outlined, with guide lines to the edges so even a tiny square is easy to find.
+export function setMark(id) { if (id !== mark) { mark = id || ''; kick(); } }
+export const sceneHas = (id) => !!id && placed.has(id);
 export function sceneStats() { const list = source(); return { n: list.length, vsize: list.reduce((a, t) => a + t.vsize, 0), live: liveData }; }
 function source() {
   if (liveData) return [...txs.values()];
@@ -106,6 +109,13 @@ function frame(now) {
       ctx.save(); ctx.translate(m * w * 0.9, 0); ctx.globalAlpha = 1 - m;
       for (const q of sealed.items) { const to = q.y / sealed.g > 0.5 ? L.MINED_TOP : L.MINED_BOTTOM; ctx.fillStyle = tint < 1 ? mix(q.c, to, tint) : to; rect(q.x, q.y, q.s, sealed.g, c2); }
       ctx.restore(); } }
+  const mk = mark && sprites.get(mark);
+  if (mk && now >= mk.born) {
+    const q = now - mk.t0 < MOVE ? pos(mk, now) : mk, x0 = q.x * cell, y0 = (grid - q.y - q.s) * cell, sz = q.s * cell, cx = x0 + sz / 2, cy = y0 + sz / 2, lw = Math.max(1.5, dpr * 1.5);
+    ctx.globalAlpha = 0.85; ctx.strokeStyle = accent; ctx.lineWidth = lw; ctx.setLineDash([4 * dpr, 4 * dpr]); ctx.beginPath();
+    ctx.moveTo(0, cy); ctx.lineTo(x0 - 3 * dpr, cy); ctx.moveTo(x0 + sz + 3 * dpr, cy); ctx.lineTo(w, cy); ctx.moveTo(cx, 0); ctx.lineTo(cx, y0 - 3 * dpr); ctx.moveTo(cx, y0 + sz + 3 * dpr); ctx.lineTo(cx, w); ctx.stroke();
+    ctx.setLineDash([]); ctx.globalAlpha = 1; ctx.lineWidth = lw * 1.6; ctx.strokeRect(x0 - 2 * dpr, y0 - 2 * dpr, sz + 4 * dpr, sz + 4 * dpr);
+  }
   if (hover && placed.get(hover.id) === hover) { ctx.globalAlpha = 1; ctx.strokeStyle = ink; ctx.lineWidth = Math.max(1.5, dpr * 1.5); ctx.strokeRect(hover.x * cell, (grid - hover.y - hover.s) * cell, hover.s * cell, hover.s * cell); }
   ctx.globalAlpha = 1;
   if (busy) kick();
@@ -131,9 +141,9 @@ export function mountScene() {
   unmount(); canvas = document.createElement('canvas'); canvas.className = 'scene'; ctx = canvas.getContext('2d');
   tip = document.createElement('div'); tip.className = 'scene-tip'; tip.hidden = true; tip.setAttribute('aria-hidden', 'true');
   host.replaceChildren(canvas, tip); sprites = new Map(); placed = new Map(); leaving = []; sealed = null; needSort = true; applied = -1; shownTip = st.tip;
-  ink = getComputedStyle(canvas).color || '#fff';
+  ink = getComputedStyle(canvas).color || '#fff'; accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || accent;
   canvas.addEventListener('pointermove', showTip); canvas.addEventListener('pointerleave', () => { hover = null; tip.hidden = true; kick(); });
-  canvas.addEventListener('click', (e) => { const p = pick(e); if (p && liveData) location.hash = '#/tx/' + p.id; });
+  canvas.addEventListener('click', (e) => { const p = pick(e); if (p && liveData) location.hash = '#/mining?tx=' + p.id; }); // follow it
   if (typeof ResizeObserver === 'function') { ro = new ResizeObserver(() => kick()); ro.observe(canvas); }
   kick();
 }
