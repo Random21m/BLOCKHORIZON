@@ -4,6 +4,8 @@ import fs from 'node:fs';
 import * as L from '../src/lib.js';
 import { parseTicker } from '../src/price.js';
 import { TABLES, LANGS } from '../src/i18n.js';
+import { GLOSSARY, ANNIVERSARIES } from '../src/content.js';
+import { GLOSSARY_TR, ANNIV_TR } from '../src/content-i18n.js';
 
 const fx = (n) => JSON.parse(fs.readFileSync(new URL('./fixtures/' + n, import.meta.url), 'utf8'));
 
@@ -105,9 +107,9 @@ test('alarms: reached at or below the tip, waiting above it, nothing before the 
   assert.deepEqual(L.splitAlarms(null, 5), { hit: [], rest: [] });
 });
 
-test('version number matches in the app, the offline cache name and the README', () => {
+test('version number matches in the app (state.js), the offline cache name and the README', () => {
   const read = (f) => fs.readFileSync(new URL('../' + f, import.meta.url), 'utf8');
-  const v = read('src/app.js').match(/VERSION = '([\d.]+)'/)[1];
+  const v = read('src/state.js').match(/VERSION = '([\d.]+)'/)[1];
   assert.ok(read('sw.js').includes(`'blockhorizon-v${v}'`), 'sw.js cache name');
   assert.ok(read('README.md').includes(`## Features (v${v})`), 'README');
 });
@@ -133,9 +135,30 @@ test('payment size: common address types, at least one input and output', () => 
 test('translations: same {placeholders} as English, and every key the app uses exists', () => {
   const ph = (s) => (s.match(/\{\w+\}/g) || []).sort().join();
   for (const [l, tab] of Object.entries(TABLES)) for (const [k, v] of Object.entries(tab)) assert.equal(ph(v), ph(TABLES.en[k]), `${l}.${k}`);
-  const app = fs.readFileSync(new URL('../src/app.js', import.meta.url), 'utf8');
+  const app = fs.readdirSync(new URL('../src/', import.meta.url)).filter((f) => f.endsWith('.js') && !['i18n.js', 'strings.js'].includes(f)).map((f) => fs.readFileSync(new URL('../src/' + f, import.meta.url), 'utf8')).join('\n');
   const used = new Set([...app.matchAll(/\bt\('(\w+)'/g)].map((m) => m[1]));
   for (const m of app.matchAll(/\['\/[\w/]*', '(\w+)'\]/g)) used.add(m[1]); // menu entries
   for (const k of ['minedAbout', 'estimated', 'tab_display', 'tab_format', 'tab_sounds']) used.add(k); // picked at run time
   for (const k of used) if (!k.endsWith('_')) assert.ok(TABLES.en[k], 'missing key ' + k);
+});
+
+test('offline cache lists every source file', () => {
+  const sw = fs.readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
+  for (const f of fs.readdirSync(new URL('../src/', import.meta.url)).filter((x) => x.endsWith('.js'))) assert.ok(sw.includes(`'src/${f}'`), 'sw.js is missing src/' + f);
+});
+
+test('fee alerts: reached at or below the limit for the chosen speed; nothing without fee data', () => {
+  const fees = fx('fees.json'), list = [{ level: 'next', max: fees.fastestFee }, { level: 'next', max: fees.fastestFee - 0.5 }, { level: 'h1', max: fees.hourFee + 1 }, { level: 'h30', max: 0.01 }];
+  const r = L.splitFeeAlerts(list, fees);
+  assert.deepEqual(r.hit, [list[0], list[2]]); assert.deepEqual(r.rest, [list[1], list[3]]);
+  assert.deepEqual(L.splitFeeAlerts(list, null), { hit: [], rest: list });
+  assert.equal(L.parseFeeLimit(' 2,5 '), 2.5); assert.ok(Number.isNaN(L.parseFeeLimit('0'))); assert.ok(Number.isNaN(L.parseFeeLimit('abc')));
+});
+
+test('glossary and anniversaries: every language has every entry, none empty', () => {
+  for (const l of Object.keys(LANGS).filter((x) => x !== 'en')) {
+    assert.equal(GLOSSARY_TR[l]?.length, GLOSSARY.length, 'glossary ' + l); assert.equal(ANNIV_TR[l]?.length, ANNIVERSARIES.length, 'anniversaries ' + l);
+    for (const [k, v] of GLOSSARY_TR[l]) assert.ok(k.trim() && v.trim().length > 20, l + ' ' + k);
+    for (const x of ANNIV_TR[l]) assert.ok(x.trim(), l);
+  }
 });

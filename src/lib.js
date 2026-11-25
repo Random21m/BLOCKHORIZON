@@ -147,3 +147,14 @@ export function txVsize(ins, outs, type = 'segwit') {
   const s = TX_SIZES[type] || TX_SIZES.segwit, i = Math.max(1, Math.floor(ins) || 1), o = Math.max(1, Math.floor(outs) || 1);
   return Math.ceil(s.base + i * s.in + o * s.out);
 }
+
+// ---- fee alerts ----
+// Which mempool.space /v1/fees/recommended field each alert speed watches.
+export const FEE_LEVELS = { next: 'fastestFee', h30: 'halfHourFee', h1: 'hourFee' };
+// Alerts whose fee level is now at or below their limit vs still waiting. Missing fee data reaches nothing.
+export function splitFeeAlerts(list, fees) {
+  const all = Array.isArray(list) ? list : [], now = (a) => (fees ? fees[FEE_LEVELS[a.level] || FEE_LEVELS.next] : NaN);
+  const hit = all.filter((a) => Number.isFinite(now(a)) && now(a) <= a.max);
+  return { hit, rest: all.filter((a) => !hit.includes(a)) };
+}
+export function parseFeeLimit(s) { const v = parseFloat(String(s).trim().replace(',', '.')); return Number.isFinite(v) && v > 0 && v < 100000 ? v : NaN; }

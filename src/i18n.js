@@ -32,4 +32,5 @@ export function t(k, v) {
   const s = (T[cur] && T[cur][k]) || T.en[k] || k;
   return v ? s.replace(/\{(\w+)\}/g, (m, x) => (v[x] != null ? String(v[x]) : m)) : s;
 }
+export const getLang = () => cur;
 export function detectLang() { const n = (navigator.language || 'en').slice(0, 2); return T[n] ? n : 'en'; }

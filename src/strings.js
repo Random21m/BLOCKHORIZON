@@ -2,6 +2,7 @@
 // tests/lib.test.mjs checks that every language has every key and the same {placeholders} as English.
 export const MORE = {
   en: {
+    feeAlert: "FEE ALERT", feeIntro: "Get a sound and a message when fees drop to your limit or below. Fees are checked whenever new data arrives (live, or about once a minute). The page must stay open.", feeLevel: "Speed", lvlNext: "Next block", lvl30: "Within ~30 min", lvl60: "Within ~1 hour", feeMax: "Limit in sat/vB", setFee: "Set fee alert", feeNow: "Now: {f} sat/vB", feeAlready: "Fees are already at or below that limit.", feeBadLimit: "Enter a limit in sat/vB, for example 5.", feeReached: "Fees dropped: {l} is {f} sat/vB (your limit {m})", activeFee: "ACTIVE FEE ALERTS",
     clock: "Clock", loading: "Loading…", live: "live", h24: "24h", est: "Est. {d}", atBlock: " · block {n}", ofEpoch: "of epoch", ofPeriod: "of period",
     nBlocks: "{n} blocks", estAt: " · est. {d}", avgOf: "{p} average {v}", issued: "{p}% issued", btcLeft: " · {n} BTC left", full: "{p}% full",
     feesRange: "fees {a}–{b} sat/vB", fastSlow: "{f} fast · {s} slow · target 10m", feeNext: "Next", fee30: "30m", fee1h: "1h", feeSlow: "Slow",
@@ -38,6 +39,7 @@ export const MORE = {
     storedOnly: "Settings are stored only in this browser.",
   },
   de: {
+    feeAlert: "GEBÜHREN-ALARM", feeIntro: "Ein Ton und eine Meldung, wenn die Gebühren auf dein Limit oder darunter fallen. Geprüft wird, sobald neue Daten kommen (live oder etwa einmal pro Minute). Die Seite muss geöffnet bleiben.", feeLevel: "Tempo", lvlNext: "Nächster Block", lvl30: "In ~30 min", lvl60: "In ~1 Stunde", feeMax: "Limit in sat/vB", setFee: "Gebühren-Alarm stellen", feeNow: "Jetzt: {f} sat/vB", feeAlready: "Die Gebühren liegen schon auf oder unter diesem Limit.", feeBadLimit: "Gib ein Limit in sat/vB ein, zum Beispiel 5.", feeReached: "Gebühren gefallen: {l} kostet {f} sat/vB (dein Limit {m})", activeFee: "AKTIVE GEBÜHREN-ALARME",
     clock: "Uhr", loading: "Lädt…", live: "live", h24: "24 h", est: "Ca. {d}", atBlock: " · Block {n}", ofEpoch: "der Epoche", ofPeriod: "der Periode",
     nBlocks: "{n} Blöcke", estAt: " · ca. {d}", avgOf: "{p}-Mittel {v}", issued: "{p} % ausgegeben", btcLeft: " · {n} BTC übrig", full: "{p} % voll",
     feesRange: "Gebühren {a}–{b} sat/vB", fastSlow: "{f} schnell · {s} langsam · Ziel 10 min", feeNext: "Nächster", fee30: "30 min", fee1h: "1 h", feeSlow: "Langsam",
@@ -74,6 +76,7 @@ export const MORE = {
     storedOnly: "Einstellungen werden nur in diesem Browser gespeichert.",
   },
   es: {
+    feeAlert: "ALERTA DE COMISIONES", feeIntro: "Un sonido y un mensaje cuando las comisiones bajen a tu límite o menos. Se comprueban cada vez que llegan datos nuevos (en vivo o más o menos cada minuto). La página debe seguir abierta.", feeLevel: "Velocidad", lvlNext: "Siguiente bloque", lvl30: "En ~30 min", lvl60: "En ~1 hora", feeMax: "Límite en sat/vB", setFee: "Poner alerta de comisiones", feeNow: "Ahora: {f} sat/vB", feeAlready: "Las comisiones ya están en ese límite o por debajo.", feeBadLimit: "Escribe un límite en sat/vB, por ejemplo 5.", feeReached: "Bajaron las comisiones: {l} está a {f} sat/vB (tu límite {m})", activeFee: "ALERTAS DE COMISIONES ACTIVAS",
     clock: "Reloj", loading: "Cargando…", live: "en vivo", h24: "24 h", est: "Aprox. {d}", atBlock: " · bloque {n}", ofEpoch: "de la época", ofPeriod: "del periodo",
     nBlocks: "{n} bloques", estAt: " · aprox. {d}", avgOf: "media {p} {v}", issued: "{p} % emitido", btcLeft: " · quedan {n} BTC", full: "{p} % lleno",
     feesRange: "comisiones {a}–{b} sat/vB", fastSlow: "{f} rápidos · {s} lentos · objetivo 10 min", feeNext: "Siguiente", fee30: "30 min", fee1h: "1 h", feeSlow: "Lenta",
@@ -110,6 +113,7 @@ export const MORE = {
     storedOnly: "Los ajustes se guardan solo en este navegador.",
   },
   fr: {
+    feeAlert: "ALERTE DE FRAIS", feeIntro: "Un son et un message quand les frais descendent à votre limite ou en dessous. Les frais sont vérifiés à chaque nouvelle donnée (en direct, ou environ une fois par minute). La page doit rester ouverte.", feeLevel: "Vitesse", lvlNext: "Prochain bloc", lvl30: "Sous ~30 min", lvl60: "Sous ~1 heure", feeMax: "Limite en sat/vB", setFee: "Régler l’alerte de frais", feeNow: "Maintenant : {f} sat/vB", feeAlready: "Les frais sont déjà à cette limite ou en dessous.", feeBadLimit: "Indiquez une limite en sat/vB, par exemple 5.", feeReached: "Frais en baisse : {l} à {f} sat/vB (votre limite {m})", activeFee: "ALERTES DE FRAIS ACTIVES",
     clock: "Horloge", loading: "Chargement…", live: "en direct", h24: "24 h", est: "Env. {d}", atBlock: " · bloc {n}", ofEpoch: "de l’époque", ofPeriod: "de la période",
     nBlocks: "{n} blocs", estAt: " · env. {d}", avgOf: "moyenne {p} {v}", issued: "{p} % émis", btcLeft: " · reste {n} BTC", full: "plein à {p} %",
     feesRange: "frais {a}–{b} sat/vB", fastSlow: "{f} rapides · {s} lents · cible 10 min", feeNext: "Suivant", fee30: "30 min", fee1h: "1 h", feeSlow: "Lent",
@@ -146,6 +150,7 @@ export const MORE = {
     storedOnly: "Les réglages sont enregistrés uniquement dans ce navigateur.",
   },
   pt: {
+    feeAlert: "ALERTA DE TAXAS", feeIntro: "Um som e uma mensagem quando as taxas caírem até o seu limite ou abaixo. As taxas são verificadas sempre que chegam dados novos (ao vivo, ou cerca de uma vez por minuto). A página precisa ficar aberta.", feeLevel: "Velocidade", lvlNext: "Próximo bloco", lvl30: "Em ~30 min", lvl60: "Em ~1 hora", feeMax: "Limite em sat/vB", setFee: "Definir alerta de taxas", feeNow: "Agora: {f} sat/vB", feeAlready: "As taxas já estão nesse limite ou abaixo.", feeBadLimit: "Digite um limite em sat/vB, por exemplo 5.", feeReached: "As taxas caíram: {l} está em {f} sat/vB (seu limite {m})", activeFee: "ALERTAS DE TAXAS ATIVOS",
     clock: "Relógio", loading: "Carregando…", live: "ao vivo", h24: "24 h", est: "Aprox. {d}", atBlock: " · bloco {n}", ofEpoch: "da época", ofPeriod: "do período",
     nBlocks: "{n} blocos", estAt: " · aprox. {d}", avgOf: "média {p} {v}", issued: "{p}% emitido", btcLeft: " · faltam {n} BTC", full: "{p}% cheio",
     feesRange: "taxas {a}–{b} sat/vB", fastSlow: "{f} rápidos · {s} lentos · alvo 10 min", feeNext: "Próximo", fee30: "30 min", fee1h: "1 h", feeSlow: "Lenta",
@@ -182,6 +187,7 @@ export const MORE = {
     storedOnly: "As configurações ficam salvas só neste navegador.",
   },
   it: {
+    feeAlert: "AVVISO COMMISSIONI", feeIntro: "Un suono e un messaggio quando le commissioni scendono al tuo limite o sotto. Le commissioni vengono controllate a ogni nuovo dato (dal vivo, o circa una volta al minuto). La pagina deve restare aperta.", feeLevel: "Velocità", lvlNext: "Prossimo blocco", lvl30: "Entro ~30 min", lvl60: "Entro ~1 ora", feeMax: "Limite in sat/vB", setFee: "Imposta avviso commissioni", feeNow: "Ora: {f} sat/vB", feeAlready: "Le commissioni sono già a quel limite o sotto.", feeBadLimit: "Inserisci un limite in sat/vB, per esempio 5.", feeReached: "Commissioni scese: {l} a {f} sat/vB (il tuo limite {m})", activeFee: "AVVISI COMMISSIONI ATTIVI",
     clock: "Orologio", loading: "Caricamento…", live: "dal vivo", h24: "24 h", est: "Circa {d}", atBlock: " · blocco {n}", ofEpoch: "dell’epoca", ofPeriod: "del periodo",
     nBlocks: "{n} blocchi", estAt: " · circa {d}", avgOf: "media {p} {v}", issued: "{p}% emesso", btcLeft: " · restano {n} BTC", full: "pieno al {p}%",
     feesRange: "commissioni {a}–{b} sat/vB", fastSlow: "{f} veloci · {s} lenti · obiettivo 10 min", feeNext: "Prossimo", fee30: "30 min", fee1h: "1 h", feeSlow: "Lenta",
@@ -218,6 +224,7 @@ export const MORE = {
     storedOnly: "Le impostazioni sono salvate solo in questo browser.",
   },
   nl: {
+    feeAlert: "KOSTENALARM", feeIntro: "Een geluid en een melding als de kosten tot je limiet of lager zakken. De kosten worden gecontroleerd zodra er nieuwe gegevens zijn (live, of ongeveer één keer per minuut). De pagina moet open blijven.", feeLevel: "Snelheid", lvlNext: "Volgend blok", lvl30: "Binnen ~30 min", lvl60: "Binnen ~1 uur", feeMax: "Limiet in sat/vB", setFee: "Kostenalarm zetten", feeNow: "Nu: {f} sat/vB", feeAlready: "De kosten zitten al op of onder die limiet.", feeBadLimit: "Vul een limiet in sat/vB in, bijvoorbeeld 5.", feeReached: "Kosten gedaald: {l} kost {f} sat/vB (je limiet {m})", activeFee: "ACTIEVE KOSTENALARMEN",
     clock: "Klok", loading: "Laden…", live: "live", h24: "24 u", est: "Ca. {d}", atBlock: " · blok {n}", ofEpoch: "van het tijdperk", ofPeriod: "van de periode",
     nBlocks: "{n} blokken", estAt: " · ca. {d}", avgOf: "{p}-gemiddelde {v}", issued: "{p}% uitgegeven", btcLeft: " · nog {n} BTC", full: "{p}% vol",
     feesRange: "kosten {a}–{b} sat/vB", fastSlow: "{f} snel · {s} traag · doel 10 min", feeNext: "Volgend", fee30: "30 min", fee1h: "1 u", feeSlow: "Traag",
@@ -254,6 +261,7 @@ export const MORE = {
     storedOnly: "Instellingen worden alleen in deze browser bewaard.",
   },
   tr: {
+    feeAlert: "ÜCRET ALARMI", feeIntro: "Ücretler sınırınıza ya da altına indiğinde ses ve mesaj. Ücretler her yeni veri geldiğinde kontrol edilir (canlı veya yaklaşık dakikada bir). Sayfa açık kalmalı.", feeLevel: "Hız", lvlNext: "Sonraki blok", lvl30: "~30 dk içinde", lvl60: "~1 saat içinde", feeMax: "Sınır (sat/vB)", setFee: "Ücret alarmı kur", feeNow: "Şu an: {f} sat/vB", feeAlready: "Ücretler zaten bu sınırda ya da altında.", feeBadLimit: "sat/vB cinsinden bir sınır girin, örneğin 5.", feeReached: "Ücretler düştü: {l} {f} sat/vB (sınırınız {m})", activeFee: "ETKİN ÜCRET ALARMLARI",
     clock: "Saat", loading: "Yükleniyor…", live: "canlı", h24: "24 sa", est: "Tahmini {d}", atBlock: " · blok {n}", ofEpoch: "dönemin", ofPeriod: "periyodun",
     nBlocks: "{n} blok", estAt: " · tahmini {d}", avgOf: "{p} ortalama {v}", issued: "%{p} basıldı", btcLeft: " · {n} BTC kaldı", full: "%{p} dolu",
     feesRange: "ücretler {a}–{b} sat/vB", fastSlow: "{f} hızlı · {s} yavaş · hedef 10 dk", feeNext: "Sonraki", fee30: "30 dk", fee1h: "1 sa", feeSlow: "Yavaş",
