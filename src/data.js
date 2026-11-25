@@ -7,17 +7,23 @@ import { ingest } from './block-scene.js';
 import { hooks, S, st, alarms, feeAlerts, priceAlerts, fmtPrice, FEE_LVL_KEYS, toast, price, priceStr } from './state.js';
 
 // ---------- data ----------
+// Bumped when the data server changes: answers to a refresh started before that are dropped, so the old server's
+// height and blocks (perhaps another network's) cannot land after the switch and stick.
+let generation = 0;
+export const newGeneration = () => { generation++; };
 export async function refreshAll() {
+  const g = generation, cur = () => g === generation;
   // The live feed can be ahead of this refresh (a block arrives while it is in flight, or the REST answer is a saved copy):
   // the height never goes back, blocks are merged by height, and a saved copy never replaces data already on screen.
   const jobs = {
-    tip: api.tip().then((v) => { const h = L.parseTipHeight(v); if (Number.isFinite(h) && !(h < st.tip)) st.tip = h; return v; }),
-    blocks: api.blocks().then((b) => { if (Array.isArray(b) && !(b.__stale && st.blocks.length)) st.blocks = L.mergeBlocks(st.blocks, b); return b; }),
-    diff: api.difficulty().then((v) => { if (!(v.__stale && st.diff)) st.diff = v; return v; }), fees: api.fees().then((v) => { if (!(v.__stale && st.fees)) st.fees = v; return v; }),
-    mem: api.mempool().then((v) => { if (!(v.__stale && st.mem)) st.mem = v; return v; }), proj: api.projected().then((v) => { if (!(v.__stale && st.proj)) st.proj = v; return v; }),
-    prices: api.prices().then((v) => { st.prices = Date.now() - st.priceAt < 30000 ? Object.assign({}, v, st.prices) : v; if (v && !v.__stale) checkPriceAlerts(v); return v; }), hr: api.hashrate().then((v) => { if (!(v.__stale && st.hr)) st.hr = v; return v; }), ln: api.lightning().then((v) => { if (!(v.__stale && st.ln)) st.ln = v.latest || v; return v; }),
+    tip: api.tip().then((v) => { if (!cur()) return v; const h = L.parseTipHeight(v); if (Number.isFinite(h) && !(h < st.tip)) st.tip = h; return v; }),
+    blocks: api.blocks().then((b) => { if (!cur()) return b; if (Array.isArray(b) && !(b.__stale && st.blocks.length)) st.blocks = L.mergeBlocks(st.blocks, b); return b; }),
+    diff: api.difficulty().then((v) => { if (!cur()) return v; if (!(v.__stale && st.diff)) st.diff = v; return v; }), fees: api.fees().then((v) => { if (!cur()) return v; if (!(v.__stale && st.fees)) st.fees = v; return v; }),
+    mem: api.mempool().then((v) => { if (!cur()) return v; if (!(v.__stale && st.mem)) st.mem = v; return v; }), proj: api.projected().then((v) => { if (!cur()) return v; if (!(v.__stale && st.proj)) st.proj = v; return v; }),
+    prices: api.prices().then((v) => { if (!cur()) return v; st.prices = Date.now() - st.priceAt < 30000 ? Object.assign({}, v, st.prices) : v; if (v && !v.__stale) checkPriceAlerts(v); return v; }), hr: api.hashrate().then((v) => { if (!cur()) return v; if (!(v.__stale && st.hr)) st.hr = v; return v; }), ln: api.lightning().then((v) => { if (!cur()) return v; if (!(v.__stale && st.ln)) st.ln = v.latest || v; return v; }),
   };
   const r = await Promise.allSettled(Object.values(jobs));
+  if (!cur()) return; // the server changed meanwhile: a newer refresh is already on its way
   // nothing reached the network (every answer failed or was a saved copy): say so, unless the live feed is up
   const fresh = r.some((x) => x.status === 'fulfilled' && !(x.value && x.value.__stale));
   if (!fresh && st.conn !== 'on') st.conn = 'off'; else if (fresh && st.conn === 'off') st.conn = 'poll'; // back online, live feed not (yet)

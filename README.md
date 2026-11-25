@@ -80,7 +80,8 @@ There is nothing to build: the site is plain static files, so any static host wo
 
 - **On your computer:** clone this repository, run `python3 -m http.server 8080` in it, and open http://localhost:8080.
 - **On GitHub Pages:** fork the repository, open **Settings, Pages** and set **Source** to **GitHub Actions**. The included workflow publishes the site on every push to `main` (you can also start it from the **Actions** tab).
-- **On your node (Docker, Umbrel):** `docker build -t blockhorizon . && docker run -p 8080:80 -e MEMPOOL_URL=http://<node>:<port> blockhorizon` serves the app and passes `/api` through to your node's mempool, so your browser talks only to your node (and Kraken for the price). See [packaging/README.md](packaging/README.md) for the published image and the Umbrel app.
+- **On Umbrel or StartOS:** submitted to both app stores ([Umbrel](https://github.com/getumbrel/umbrel-apps/pull/6425), [StartOS package](https://github.com/Random21m/blockhorizon-startos)); there it reads all chain data from your node's Mempool.
+- **On your node (Docker):** `docker build -t blockhorizon . && docker run -p 8080:80 -e MEMPOOL_URL=http://<node>:<port> blockhorizon` serves the app and passes `/api` through to your node's mempool, so your browser talks only to your node (and Kraken for the price). See [packaging/README.md](packaging/README.md) for the published image and the Umbrel app.
 - **Anywhere else:** upload `index.html`, `embed.html`, `embed.css`, `style.css`, `sw.js`, `manifest.webmanifest`, `privacy.html`, `config.json`, `.nojekyll` and the `icons`, `src` and `docs` folders. Paths are relative, so a sub-folder works too.
 - **Link previews:** the preview card tags in `index.html` (`og:url`, `og:image`, `canonical`) point at this site's address; change them to yours in a fork.
 
@@ -97,7 +98,7 @@ No build step and no dependencies. The accessibility check in the browser tests 
 
 Code layout (`src/`): `app.js` routing, live repaint and start-up · `state.js` settings and shared state · `data.js` data feeds, block alarms and fee alerts · `ui.js` tiles, charts and other building blocks · `view-dash.js` dashboard and clock · `view-chain.js` block and transaction pages · `view-tools.js` alarm and calculator · `view-info.js` replay, calendar, glossary, watch, about · `view-charts.js` history charts · `trade-chart.js`, `trade-side.js` the live trading chart, order book and trades · `view-my.js` Your block · `view-mining.js`, `block-scene.js` the Mining page and its live block picture · `arrival.js` the block arrival animation · `embed.js` the embeddable widget · `modals.js` search and settings · `lib.js` pure helpers (unit-tested) · `api.js`, `price.js` network (data server, backup source, Kraken) · `nostr.js` sharing to Nostr · `i18n.js`, `strings.js`, `content.js`, `content-i18n.js` texts.
 
-Version 0.15.1. Not built yet: an art gallery, conference listings and chain-state totals (addresses, UTXOs, disk size), for lack of a free, trustworthy public source.
+Version 0.15.2. Not built yet: an art gallery, conference listings and chain-state totals (addresses, UTXOs, disk size), for lack of a free, trustworthy public source.
 
 ## Support
 
