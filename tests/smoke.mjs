@@ -172,7 +172,7 @@ await ok('charts: four history charts, range selector, crosshair, keyboard readi
   assert.equal(await p.getAttribute('.range [data-r="1y"]', 'aria-pressed'), 'true');
   const heads = await p.$$eval('.cpanel', (ps) => ps.map((x) => x.querySelector('h2').textContent + ' | ' + x.querySelector('.cval').textContent));
   assert.ok(/Price \(USD\) \| [\d,]+ USD/.test(heads[0]) && /Hashrate \| [\d.]+ [EZ]H\/s/.test(heads[1]) && /Difficulty/.test(heads[2]) && /sat\/vB/.test(heads[3]), heads.join(' / '));
-  const box = await p.locator('#ch-hashrate .plot').boundingBox(); await p.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.5);
+  await p.locator('#ch-hashrate .plot').scrollIntoViewIfNeeded(); const box = await p.locator('#ch-hashrate .plot').boundingBox(); await p.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.5);
   assert.ok(await p.locator('#ch-hashrate .tip').isVisible()); assert.ok(/H\/s/.test(await p.locator('#ch-hashrate .tip b').innerText()));
   await p.focus('#ch-price .lchart'); const endVal = await p.locator('#ch-price .tip b').innerText(); await p.keyboard.press('Home');
   assert.notEqual(await p.locator('#ch-price .tip b').innerText(), endVal); assert.ok((await p.locator('#ch-price [aria-live]').innerText()).includes('USD'));
@@ -182,6 +182,38 @@ await ok('charts: four history charts, range selector, crosshair, keyboard readi
   assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)); assert.deepEqual(perr, []);
   await p.setViewportSize({ width: 360, height: 800 }); await p.click('.range [data-r="1y"]'); await until(p, () => document.querySelectorAll('.lchart').length === 4 && !document.querySelector('.cpanel.busy'));
   assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'no sideways scroll on a phone'); await c.close(); });
+await ok('trading chart: Kraken candles, live updates, timeframes, indicators, crosshair, zoom, keyboard reading', async () => {
+  const c = await b.newContext({ viewport: { width: 1280, height: 900 } }); const asked = []; let sock;
+  await c.routeWebSocket(/mempool\.space/, (ws) => ws.close());
+  await c.routeWebSocket(/ws\.kraken\.com/, (ws) => { ws.onMessage((m) => { const q = JSON.parse(m); if (q.params.channel !== 'ohlc') return; asked.push(q.params); sock = ws; if (q.params.interval === 60) ws.send(fx('kraken-ohlc-snapshot.json')); }); });
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') || r.request().url().includes('api.kraken.com') ? r.fallback() : r.abort());
+  await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+  const rest = []; await c.route(/api\.kraken\.com/, (route) => { const u = new URL(route.request().url()); rest.push(u.searchParams.get('pair') + '/' + u.searchParams.get('interval')); route.fulfill({ contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: fx('kraken-ohlc-rest.json') }); });
+  const p = await c.newPage(); const perr = []; p.on('pageerror', (e) => perr.push(e.message));
+  await p.goto(base + '#/charts'); await until(p, () => /USD/.test(document.querySelector('.tprice')?.textContent || '') && /live/.test(document.querySelector('#ch-trade .lstate').textContent), null, { timeout: 10000 });
+  assert.deepEqual(rest, ['XBTUSD/60']); assert.deepEqual(asked[0], { channel: 'ohlc', symbol: ['BTC/USD'], interval: 60, snapshot: true });
+  const snapLast = JSON.parse(fx('kraken-ohlc-snapshot.json')).data.at(-1).close;
+  assert.equal(await p.locator('.tprice').innerText(), snapLast.toLocaleString('en-US', { minimumFractionDigits: 1 }) + ' USD'); // the live snapshot is newer than the history
+  sock.send(fx('kraken-ohlc-update.json')); await until(p, () => document.querySelector('.tprice').textContent === '59,067.3 USD'); // a trade moves it
+  await until(p, () => document.querySelector('.tlegend').textContent.includes('C 59,067.3')); const lg = (await p.locator('.tlegend').innerText()).replace(/\s+/g, ' '); assert.ok(/^O [\d,.]+ H [\d,.]+ L [\d,.]+ C 59,067\.3/.test(lg), lg);
+  const box = await p.locator('.tplot').boundingBox(); await p.mouse.move(box.x + box.width * 0.3, box.y + box.height * 0.5);
+  const hovered = await p.locator('.tlegend').innerText(); assert.ok(!hovered.includes('C 59,067.3'), 'the legend follows the crosshair');
+  await p.mouse.wheel(0, -600); await p.mouse.wheel(0, 600); await p.dblclick('.tplot');
+  await p.focus('.tplot'); await p.keyboard.press('ArrowLeft'); assert.ok(/open [\d,.]+, high .*, close [\d,.]+/.test(await p.locator('.tplot [aria-live]').innerText()));
+  await p.click('[data-ind=rsi]'); await until(p, () => /RSI \d/.test(document.querySelector('.tlegend').textContent)); assert.equal(await p.evaluate(() => JSON.parse(localStorage.getItem('bh.settings')).tradeInd.rsi), true);
+  await p.click('[data-tf="5m"]'); await until(p, () => document.querySelector('[data-tf="5m"]')?.getAttribute('aria-pressed') === 'true');
+  await until(p, () => !!document.querySelector('.tprice')); assert.ok(rest.includes('XBTUSD/5'), rest.join()); assert.equal(asked.at(-1).interval, 5);
+  assert.deepEqual(perr, []);
+  await p.setViewportSize({ width: 360, height: 800 }); await p.waitForTimeout(200); assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'no sideways scroll on a phone');
+  await c.close(); });
+await ok('trading chart: without Kraken history it says so and keeps the live candles', async () => {
+  const c = await b.newContext(); await c.routeWebSocket(/mempool\.space/, (ws) => ws.close());
+  await c.routeWebSocket(/ws\.kraken\.com/, (ws) => { ws.onMessage((m) => { if (JSON.parse(m).params.channel === 'ohlc') ws.send(fx('kraken-ohlc-snapshot.json')); }); });
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
+  await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+  const p = await c.newPage(); await p.goto(base + '#/charts');
+  await until(p, () => !document.querySelector('.tnote').hidden && /USD/.test(document.querySelector('.tprice').textContent), null, { timeout: 10000 });
+  assert.ok(/most recent/.test(await p.locator('.tnote').innerText())); await c.close(); });
 await ok('app shortcuts: each opens its page; the Search shortcut opens the search dialog', async () => {
   const m = await (await page.request.get(base + 'manifest.webmanifest')).json(); assert.deepEqual(m.shortcuts.map((s) => s.short_name), ['Clock', 'Alarm', 'Charts', 'Search']);
   for (const s of m.shortcuts) { await page.goto(new URL(s.url, base).href); await page.waitForSelector('main > *');
@@ -327,6 +359,6 @@ await ok('accessibility: no axe-core violations on the main pages and dialogs, d
     await c.close();
   }
   assert.deepEqual(found, []); });
-await ok('only mempool.space is contacted', async () => { assert.ok(external.length > 0); });
+await ok('only mempool.space is contacted (Kraken is only reached by the price feed and the trading chart)', async () => { assert.ok(external.length > 0); });
 await ok('no script errors', async () => { assert.deepEqual(errs, []); });
 await b.close(); srv.close();

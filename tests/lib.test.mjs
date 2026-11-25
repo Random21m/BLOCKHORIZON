@@ -244,3 +244,34 @@ test('mining: new transactions join a drawn block without moving anything, near 
   const low = r.placed.filter((p) => p.rate <= lay[lay.length - 1].rate); assert.ok(low.every((p) => p.y >= lay[lay.length - 1].y), 'low fees go above the existing ones');
   assert.ok(lay.unit > 0); assert.equal(L.fitInto(lay, [], 75, lay.unit).placed.length, 0);
 });
+
+test('trading chart: Kraken REST and websocket candles, merging, timeframes', () => {
+  const h = L.parseKrakenRest(fx('kraken-ohlc-rest.json'));
+  assert.equal(h.length, 300); assert.ok(h.every((k, i) => !i || k.t - h[i - 1].t === 36e5), 'hourly, ascending');
+  assert.ok(h.every((k) => k.l <= Math.min(k.o, k.c) && k.h >= Math.max(k.o, k.c) && k.v >= 0));
+  assert.deepEqual(L.parseKrakenRest({ error: ['EQuery:Unknown asset pair'] }), []); assert.deepEqual(L.parseKrakenRest(null), []);
+  const snap = L.parseOhlc(fs.readFileSync(new URL('./fixtures/kraken-ohlc-snapshot.json', import.meta.url), 'utf8'));
+  assert.equal(snap.type, 'snapshot'); assert.equal(snap.cur, 'USD'); assert.equal(snap.interval, 60); assert.equal(snap.candles.length, 10);
+  const upd = L.parseOhlc(fs.readFileSync(new URL('./fixtures/kraken-ohlc-update.json', import.meta.url), 'utf8'));
+  assert.equal(upd.type, 'update'); assert.equal(upd.candles[0].t, Date.parse('2026-11-25T04:00:00Z'));
+  assert.equal(L.parseOhlc(fs.readFileSync(new URL('./fixtures/kraken-ticker.json', import.meta.url), 'utf8')), null); assert.equal(L.parseOhlc('nope'), null);
+  // the newest candle is replaced in place, a new one appended, an old one fills its gap, and the series is capped
+  const k = (t, c) => ({ t, o: c, h: c, l: c, c, v: 1 });
+  let s = [k(1, 10), k(3, 30)]; s = L.mergeCandles(s, [k(3, 31)]); assert.deepEqual(s.map((x) => x.c), [10, 31]);
+  s = L.mergeCandles(s, [k(4, 40), k(2, 20)]); assert.deepEqual(s.map((x) => x.t), [1, 2, 3, 4]);
+  assert.deepEqual(L.mergeCandles(s, [k(5, 50)], 3).map((x) => x.t), [3, 4, 5]);
+  assert.equal(L.krakenPair('EUR'), 'XBTEUR'); assert.deepEqual(Object.values(L.TIMEFRAMES), [1, 5, 15, 60, 240, 1440, 10080]);
+  assert.equal(L.timeStep(60, 9), 720); assert.equal(L.timeStep(1, 9), 15); assert.equal(L.timeStep(1440, 9), 43200);
+  assert.equal(L.onStep(Date.UTC(2026, 0, 2), Date.UTC(2026, 0, 1, 23), 1440, true), true); assert.equal(L.onStep(Date.UTC(2026, 0, 2, 5), Date.UTC(2026, 0, 2, 4), 1440, true), false);
+  assert.equal(L.onStep(Date.UTC(2026, 1, 1), Date.UTC(2026, 0, 31), 43200, true), true);
+  assert.equal(L.fmtDate(Date.UTC(2026, 0, 2, 3, 4, 5), { utc: true, timeOnly: true, sec: true }), '03:04:05');
+});
+test('indicators: SMA, EMA and Wilder RSI', () => {
+  assert.deepEqual(L.sma([1, 2, 3, 4, 5], 3), [NaN, NaN, 2, 3, 4]);
+  const e = L.ema([1, 2, 3, 4, 5], 3); assert.ok(Number.isNaN(e[1])); assert.equal(e[2], 2); assert.equal(e[3], 3); assert.equal(e[4], 4);
+  assert.deepEqual(L.ema([1, 2], 3).every(Number.isNaN), true);
+  assert.equal(L.rsi([1, 2, 3, 4, 5, 6], 3)[5], 100); assert.equal(L.rsi([6, 5, 4, 3, 2, 1], 3)[5], 0);
+  // classic Wilder example (StockCharts): 70.53 there, from averages rounded to 2 places; 70.46 unrounded
+  const c = [44.34, 44.09, 44.15, 43.61, 44.33, 44.83, 45.10, 45.42, 45.84, 46.08, 45.89, 46.03, 45.61, 46.28, 46.28];
+  assert.ok(Math.abs(L.rsi(c, 14)[14] - 70.5) < 0.1, String(L.rsi(c, 14)[14]));
+});

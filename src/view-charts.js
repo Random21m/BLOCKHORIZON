@@ -1,10 +1,11 @@
-// History charts: price, hashrate, difficulty and median fee rate over 1 month, 1 year or all time.
+// The live trading chart (trade-chart.js), then history charts: price, hashrate, difficulty and median fee rate over 1 month, 1 year or all time.
 // One range selector scopes all four. Each chart: latest value and change, a line with recessive grid, a crosshair
 // tooltip (pointer and arrow keys), and a table view. Data is fetched when the page opens and kept for the session.
 import * as L from './lib.js';
 import { api } from './api.js';
 import { t } from './i18n.js';
 import { S, save, fmtD, el } from './state.js';
+import { tradeChart } from './trade-chart.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 const cache = new Map(); // request key -> promise, for this session (price history is large: never put in localStorage)
@@ -30,7 +31,7 @@ export function viewCharts() {
   });
   queueMicrotask(load);
   return el('div', null, el('h1', null, t('charts').toUpperCase()), el('p', { class: 'dim' }, t('chartsIntro')),
-    el('div', { class: 'tabs range', role: 'group', 'aria-label': t('rangeL') }, buttons), el('div', { class: 'chartgrid' }, panels));
+    tradeChart(), el('h2', { class: 'hist' }, t('historyL')), el('div', { class: 'tabs range', role: 'group', 'aria-label': t('rangeL') }, buttons), el('div', { class: 'chartgrid' }, panels));
 }
 
 function chartBody(c, pts, range) {

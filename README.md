@@ -31,7 +31,7 @@ BLOCKHORIZON is built around one idea: in Bitcoin, time is measured in blocks. T
 - **Mining:** watch the next block being built and mined, live. Every waiting transaction in it is a square, sized by its size and coloured by its fee rate; new ones drop in as they arrive, and when the block is found it turns purple and slides away while the next one starts to fill. Beside it: hashes tried so far, a stream of tries against the target, the chance it is found in the next minutes, what is in it (fees, reward) and which pool is likely to find it. Follow your own transaction: paste its ID (or tap its square, or use the link on its transaction page) and it is outlined in the block, with where it stands, until the moment it is mined. A bell button turns on the sound for each block found
 - **Your block:** pick a day that matters (a birthday, your first bitcoin) and see the block mined that day, how many blocks have passed since, the next milestone, the reward and price back then, and save it as an image to share
 - **Clock:** just the height, time since the last block and the price, as large as the screen allows, with the screen kept awake (for a spare screen or an old tablet)
-- **Charts:** price, hashrate, difficulty and median fee over 1 month, 1 year or all time
+- **Charts:** a live trading chart (BTC candlesticks from Kraken in your currency, 1 minute to 1 week candles, volume, EMA 20 / SMA 50 / SMA 200 and RSI 14, a crosshair with open, high, low and close, zoom and scroll by mouse, touch or keyboard, full screen; the newest candle moves with every trade), then price, hashrate, difficulty and median fee over 1 month, 1 year or all time
 - **Alarm:** a sound and a message when the chain reaches a block height, or when fees drop to your limit (with a system notification in the background, if you allow it)
 - **Calculator:** sats ⇄ fiat, block height ⇄ date, and what a payment costs right now at each fee level
 - **Search:** any block by height or date, any transaction by ID (confirmations, fee, or its place in the queue), with shareable links
@@ -68,7 +68,7 @@ Options: `show=height|halving|price|mining` (`mining` draws a small picture of t
 
 ## Privacy
 
-Your browser asks the public mempool.space API for block, fee and mempool data, and Kraken's public feed for the price. Nothing else is contacted, there are no cookies or analytics, and nothing about you is stored anywhere but your own browser. Details: [privacy.html](https://random21m.github.io/BLOCKHORIZON/privacy.html).
+Your browser asks the public mempool.space API for block, fee and mempool data, and Kraken's public feed for the price (plus Kraken's public API for past candles on the trading chart). Nothing else is contacted, there are no cookies or analytics, and nothing about you is stored anywhere but your own browser. Details: [privacy.html](https://random21m.github.io/BLOCKHORIZON/privacy.html).
 
 ## Run your own copy
 
@@ -89,9 +89,9 @@ python3 -m http.server 8080        # then open http://localhost:8080
 
 No build step and no dependencies. The accessibility check in the browser tests runs when `axe-core` is installed (`npm install --no-save axe-core`), as it is in CI.
 
-Code layout (`src/`): `app.js` routing, live repaint and start-up · `state.js` settings and shared state · `data.js` data feeds, block alarms and fee alerts · `ui.js` tiles, charts and other building blocks · `view-dash.js` dashboard and clock · `view-chain.js` block and transaction pages · `view-tools.js` alarm and calculator · `view-info.js` replay, calendar, glossary, watch, about · `view-charts.js` history charts · `view-my.js` Your block · `view-mining.js`, `block-scene.js` the Mining page and its live block picture · `arrival.js` the block arrival animation · `embed.js` the embeddable widget · `modals.js` search and settings · `lib.js` pure helpers (unit-tested) · `api.js`, `price.js` network · `i18n.js`, `strings.js`, `content.js`, `content-i18n.js` texts.
+Code layout (`src/`): `app.js` routing, live repaint and start-up · `state.js` settings and shared state · `data.js` data feeds, block alarms and fee alerts · `ui.js` tiles, charts and other building blocks · `view-dash.js` dashboard and clock · `view-chain.js` block and transaction pages · `view-tools.js` alarm and calculator · `view-info.js` replay, calendar, glossary, watch, about · `view-charts.js` history charts · `trade-chart.js` the live trading chart · `view-my.js` Your block · `view-mining.js`, `block-scene.js` the Mining page and its live block picture · `arrival.js` the block arrival animation · `embed.js` the embeddable widget · `modals.js` search and settings · `lib.js` pure helpers (unit-tested) · `api.js`, `price.js` network · `i18n.js`, `strings.js`, `content.js`, `content-i18n.js` texts.
 
-Version 0.12.0. Not built yet: an art gallery, conference listings and chain-state totals (addresses, UTXOs, disk size), for lack of a free, trustworthy public source.
+Version 0.13.0. Not built yet: an art gallery, conference listings and chain-state totals (addresses, UTXOs, disk size), for lack of a free, trustworthy public source.
 
 ## Support
 
