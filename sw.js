@@ -1,6 +1,6 @@
 // Offline shell. App files are fetched network-first (so a new version shows up on the next open) and kept in the cache
 // for offline use; live API calls always go to the network (the app keeps its own last-value cache).
-const CACHE = 'blockhorizon-v0.7.0';
+const CACHE = 'blockhorizon-v0.7.1';
 const FILES = ['./', 'index.html', 'style.css', 'privacy.html', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png', 'docs/support-qr.svg',
   'src/app.js', 'src/state.js', 'src/data.js', 'src/ui.js', 'src/view-dash.js', 'src/view-chain.js', 'src/view-tools.js', 'src/view-info.js', 'src/modals.js', 'src/price.js', 'src/api.js', 'src/lib.js', 'src/i18n.js', 'src/sound.js', 'src/content.js', 'src/content-i18n.js', 'src/strings.js'];
 // cache: 'reload' skips the browser's HTTP cache, so a new version never caches yesterday's files.

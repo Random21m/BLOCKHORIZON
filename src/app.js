@@ -8,7 +8,7 @@ import { refreshAll, onLive, onPriceTick, checkAlarms, checkFeeAlerts } from './
 import { sinceText } from './ui.js';
 import { viewDash, viewClock } from './view-dash.js';
 import { viewBlock, viewTx } from './view-chain.js';
-import { viewAlarm, viewCalc } from './view-tools.js';
+import { viewAlarm, viewCalc, paintFeeNow } from './view-tools.js';
 import { viewReplay, viewEvents, viewGlossary, viewWatch, viewAbout } from './view-info.js';
 import { closeModal, searchModal, settingsModal, trapFocus } from './modals.js';
 
@@ -59,7 +59,7 @@ function render() {
       else { const sx = stripScroll(); morph(cur, VIEWS[route]()); stripScroll(sx); document.title = docTitle(); }
     } finally { rendering = false; } }
   else if (!LIVE[route]) document.title = 'BLOCKHORIZON · ' + L.fmtNum(st.tip);
-  checkAlarms(); checkFeeAlerts();
+  checkAlarms(); checkFeeAlerts(); paintFeeNow();
   const c = $('#conn'); if (c) { c.className = 'conn ' + (st.conn === 'on' ? 'on' : st.conn === 'poll' ? 'poll' : ''); c.title = st.conn === 'on' ? t('connLive') : st.conn === 'poll' ? t('connPoll') : t('offline'); }
 }
 
