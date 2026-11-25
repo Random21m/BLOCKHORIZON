@@ -3,7 +3,7 @@ import * as L from './lib.js';
 import { store } from './api.js';
 import { setLang, detectLang } from './i18n.js';
 
-export const VERSION = '0.9.1';
+export const VERSION = '0.10.0';
 export const TIP_ADDR = 'npub1vj8zjhnmkhekv93e2xmrz7kfwuxq25vrzw53u4dqhwd2lp5smvks3mwu2n@npub.cash';
 export const $ = (s, r = document) => r.querySelector(s);
 export const US = /^en-US/i.test((typeof navigator !== 'undefined' && navigator.language) || '');
@@ -35,7 +35,7 @@ export function applyLook() {
   const m = $('meta[name=theme-color]'); if (m) m.content = dark ? '#0E0D0C' : '#EAE3D2';
 }
 export const price = () => (st.prices && st.prices[S.cur]) || NaN;
-export const NAVS = [['/', 'dash'], ['/clock', 'clock'], ['/alarm', 'alarm'], ['/calc', 'calc'], ['/charts', 'charts'], ['/replay', 'replay'], ['/events', 'events'], ['/glossary', 'glossary'], ['/watch', 'watch'], ['/about', 'about']];
+export const NAVS = [['/', 'dash'], ['/clock', 'clock'], ['/alarm', 'alarm'], ['/calc', 'calc'], ['/charts', 'charts'], ['/my', 'myBlock'], ['/replay', 'replay'], ['/events', 'events'], ['/glossary', 'glossary'], ['/watch', 'watch'], ['/about', 'about']];
 export const priceStr = (v) => L.fmtNum(v, v < 100 ? 2 : 0) + ' ' + S.cur;
 // Set by app.js: lets the views and the data layer repaint without importing app.js (which would be circular).
 export const hooks = { render: () => {}, renderView: () => {} };

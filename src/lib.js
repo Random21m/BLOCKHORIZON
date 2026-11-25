@@ -200,3 +200,24 @@ export function smoothDays(pts, days) {
   for (let i = 0; i < pts.length; i++) { sum += pts[i].v; while (pts[i].t - pts[j].t >= w) sum -= pts[j++].v; out.push({ t: pts[i].t, v: sum / (i - j + 1) }); }
   return out;
 }
+
+// ---- "Your block": a personal date on the chain ----
+export const GENESIS_TS = 1231006505; // 2009-01-03 18:15:05 UTC
+// 'YYYY-MM-DD' -> unix seconds at 12:00 UTC that day (the middle of the day in most time zones), or NaN.
+export function noonTs(s) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || '')); if (!m) return NaN;
+  const ms = Date.UTC(+m[1], +m[2] - 1, +m[3], 12); const d = new Date(ms);
+  return d.getUTCFullYear() === +m[1] && d.getUTCMonth() === +m[2] - 1 && d.getUTCDate() === +m[3] ? ms / 1000 : NaN;
+}
+// The next round number of blocks since a height: steps of 100 below 1,000, then 1,000, 10,000 and 100,000.
+export function nextMilestone(since) {
+  const step = since < 1000 ? 100 : since < 10000 ? 1000 : since < 100000 ? 10000 : 100000;
+  const n = (Math.floor(Math.max(0, since) / step) + 1) * step; return { blocks: n, inBlocks: n - since };
+}
+// A future time -> the block expected then, at one block every 10 minutes from the tip.
+export function heightAt(ts, tip, nowMs = Date.now()) { return tip + Math.round((ts * 1000 - nowMs) / (TARGET_SEC * 1000)); }
+// mempool.space /v1/historical-price?timestamp= -> the price for that time (the latest entry at or before it), or NaN.
+export function priceAt(resp, cur, ts) {
+  const pts = ((resp && resp.prices) || []).filter((p) => Number.isFinite(p[cur]) && p[cur] > 0 && p.time <= ts + 7 * 86400).sort((a, b) => a.time - b.time);
+  const before = pts.filter((p) => p.time <= ts); const p = before.length ? before[before.length - 1] : pts[0]; return p ? p[cur] : NaN;
+}

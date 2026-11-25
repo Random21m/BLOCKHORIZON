@@ -221,3 +221,6 @@ main:empty+.foot{visibility:hidden} /* until the app has drawn the page, so the 
 /* About page: embed section */
 #embed textarea{width:100%;font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:4px;padding:8px;resize:vertical}
 .emb-prev{display:block;border:0;max-width:100%;margin:4px 0 12px;border-radius:6px}
+/* "Your block" */
+.mycard .myh{font:700 clamp(40px,10vw,84px)/1.05 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin:4px 0}.mycard .myh a{color:var(--accent);text-decoration:none}.mycard .myh a:hover{text-decoration:underline}
+.mycard .kv{margin:10px 0 4px}#my-out{margin-top:14px}
