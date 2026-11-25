@@ -228,6 +228,18 @@ await ok('block arrival: blocks glide one slot and the height rolls in; nothing 
     await until(p, (h) => [document.querySelector('#h').textContent, document.querySelector('.strip2 a.blk b').textContent].every((x) => x.replace(/\D/g, '') === String(h)), nb.height, { timeout: 8000 });
     counts[motion] = await p.evaluate(() => window.__n); await c.close(); }
   assert.ok(counts['no-preference'] >= 10, 'animated ' + counts['no-preference']); assert.equal(counts.reduce, 0); });
+await ok('your block: a date becomes its block with live facts, a shareable link and an image; future and pre-Bitcoin dates', async () => {
+  await page.goto(base); await until(page, () => /977/.test(document.querySelector('#h')?.textContent || '')); await page.click('#nav a[href="#/my"]'); await page.waitForSelector('#my-d');
+  await page.fill('#my-d', '2023-11-14'); await page.fill('#my-l', 'First sats'); await page.click('#my-out ~ form button, form .btn-go');
+  await until(page, () => location.hash === '#/my?d=2023-11-14&l=First%20sats' && !!document.querySelector('.mycard .myh'));
+  const t = await page.locator('#my-out').innerText();
+  for (const w of ['FIRST SATS', '#816,785', 'Blocks since', '160,626', '200,000 blocks', '6.25 BTC', 'of all 21 million', 'Price that week', 'about ']) assert.ok(t.toUpperCase().includes(w.toUpperCase()), w + ' in ' + t);
+  assert.equal(await page.locator('#nav a[aria-current=page]').getAttribute('href'), '#/my');
+  const [dl] = await Promise.all([page.waitForEvent('download'), page.click('#my-img')]); assert.equal(dl.suggestedFilename(), 'block-816785.png');
+  const png = fs.readFileSync(await dl.path()); assert.equal(png.toString('ascii', 1, 4), 'PNG'); assert.equal(png.readUInt32BE(16) + 'x' + png.readUInt32BE(20), '1200x630');
+  await page.goto(base + '#/my?d=2035-06-01'); await until(page, () => /Still to come/.test(document.querySelector('#my-out')?.textContent || '')); assert.ok(/#[\d,]{9}/.test(await page.locator('.mycard .myh').innerText()));
+  await page.goto(base + '#/my?d=2000-01-01'); await until(page, () => /did not exist yet/.test(document.querySelector('#my-out')?.textContent || ''));
+  await page.goto(base + '#/my?d=2023-02-30'); assert.equal(await page.locator('#my-out').innerText(), ''); });
 await ok('keyboard: Tab stays inside an open dialog, Escape closes it and focus goes back', async () => {
   await page.goto(base); await page.focus('#btn-settings'); await page.keyboard.press('Enter'); await page.waitForSelector('#st-theme');
   for (let i = 0; i < 25; i++) { await page.keyboard.press('Tab'); assert.ok(await page.evaluate(() => document.querySelector('#modal').contains(document.activeElement)), 'focus left the dialog at Tab ' + (i + 1)); }
@@ -246,7 +258,7 @@ await ok('accessibility: no axe-core violations on the main pages and dialogs, d
     const c = await b.newContext({ viewport: { width: 1280, height: 800 }, bypassCSP: true, reducedMotion: 'reduce' }); await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
     await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
     await c.addInitScript((t) => localStorage.setItem('bh.settings', JSON.stringify({ theme: t, _v: 2, lang: 'en' })), theme); const p = await c.newPage();
-    for (const pg of ['#/', '#/clock', '#/alarm', '#/calc', '#/charts', '#/glossary', '#/about', '#/tx/' + TXC, 'search', 'settings', 'embed.html?show=height', 'embed.html?show=halving&theme=light']) {
+    for (const pg of ['#/', '#/clock', '#/alarm', '#/calc', '#/charts', '#/glossary', '#/about', '#/my?d=2023-11-14&l=First%20sats', '#/tx/' + TXC, 'search', 'settings', 'embed.html?show=height', 'embed.html?show=halving&theme=light']) {
       if (pg === 'search' || pg === 'settings') { await p.goto(base); await p.waitForSelector('#h'); await p.click('#btn-' + pg); } else await p.goto(pg.startsWith('embed') ? base + pg : base + pg);
       await p.waitForTimeout(700); await p.evaluate(AXE);
       for (const v of await p.evaluate(async () => (await axe.run(document, { resultTypes: ['violations'] })).violations.map((x) => x.id + ': ' + x.nodes.map((n) => n.target.join(' ')).slice(0, 3).join(', ')))) found.push(`${theme} ${pg} ${v}`);

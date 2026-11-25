@@ -192,3 +192,13 @@ test('every page file the offline cache lists is published by the Pages workflow
   const files = JSON.parse(sw.match(/const FILES = (\[[^\]]+\])/)[1].replace(/'/g, '"'));
   for (const f of files.filter((x) => x !== './')) assert.ok(cp.includes(f.split('/')[0]), f + ' is cached but not published');
 });
+
+test('your block: dates, milestones, future height, price that week', () => {
+  assert.equal(L.noonTs('2016-05-14'), 1463227200); assert.ok(Number.isNaN(L.noonTs('2016-02-30'))); assert.ok(Number.isNaN(L.noonTs('14.05.2016'))); assert.ok(Number.isNaN(L.noonTs('')));
+  assert.deepEqual(L.nextMilestone(42), { blocks: 100, inBlocks: 58 }); assert.deepEqual(L.nextMilestone(5000), { blocks: 6000, inBlocks: 1000 });
+  assert.deepEqual(L.nextMilestone(65691), { blocks: 70000, inBlocks: 4309 }); assert.deepEqual(L.nextMilestone(565691), { blocks: 600000, inBlocks: 34309 });
+  assert.equal(L.heightAt(1000 + 6000, 900000, 1000 * 1000), 900010);
+  const hp = fx('price-history.json'), ts = 1699963200; const p = L.priceAt(hp, 'USD', ts);
+  const near = hp.prices.filter((x) => x.time <= ts).sort((a, b) => b.time - a.time)[0]; assert.equal(p, near.USD);
+  assert.equal(L.priceAt({ prices: [{ time: 100, USD: 5 }] }, 'USD', 50), 5); assert.ok(Number.isNaN(L.priceAt({ prices: [] }, 'USD', 50)));
+});

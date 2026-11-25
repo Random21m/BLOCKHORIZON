@@ -10,6 +10,7 @@ import { viewDash, viewClock } from './view-dash.js';
 import { viewBlock, viewTx } from './view-chain.js';
 import { viewAlarm, viewCalc, paintFeeNow } from './view-tools.js';
 import { viewCharts } from './view-charts.js';
+import { viewMy, paintMySince } from './view-my.js';
 import { measure, arrive } from './arrival.js';
 import { viewReplay, viewEvents, viewGlossary, viewWatch, viewAbout } from './view-info.js';
 import { closeModal, searchModal, settingsModal, trapFocus } from './modals.js';
@@ -21,6 +22,7 @@ function parseRoute() {
   const h = location.hash.replace(/^#/, '') || '/';
   let m = h.match(/^\/block\/(\d+)$/); if (m) return { path: '/block', arg: m[1] };
   m = h.match(/^\/tx\/([0-9a-fA-F]{64})$/); if (m) return { path: '/tx', arg: m[1].toLowerCase() };
+  m = h.match(/^\/my(?:\?(.*))?$/); if (m) return { path: '/my', arg: m[1] || '' }; // 'Your block': the date travels in the link
   return { path: VIEWS[h] ? h : '/' };
 }
 function renderNav(cur) { const nav = $('#nav'); nav.replaceChildren(...NAVS.map(([p, k]) => el('a', { href: '#' + p, 'aria-current': p === cur ? 'page' : false }, t(k)))); }
@@ -39,7 +41,7 @@ function renderView() {
   if (location.hash === '#/search') { history.replaceState(null, '', '#/'); queueMicrotask(searchModal); }
   const r = parseRoute(); route = r.path; const m = $('#main'); const y = scrollY;
   document.body.classList.toggle('fit', r.path === '/'); document.body.classList.toggle('clockmode', r.path === '/clock'); keepAwake(r.path === '/clock');
-  const v = r.path === '/block' ? viewBlock(r.arg) : r.path === '/tx' ? viewTx(r.arg) : VIEWS[r.path](); m.replaceChildren(v); if (r.path === '/') stripScroll([]); renderNav(r.path);
+  const v = r.path === '/block' ? viewBlock(r.arg) : r.path === '/tx' ? viewTx(r.arg) : r.path === '/my' ? viewMy(r.arg) : VIEWS[r.path](); m.replaceChildren(v); if (r.path === '/') stripScroll([]); renderNav(r.path);
   document.title = docTitle(); scrollTo(0, r.path === '/' ? y : 0);
 }
 // Make the live node `a` match the freshly built node `b`, touching only what differs: unchanged text and elements stay
@@ -70,7 +72,7 @@ function render() {
       shownTip = st.tip; shownTop = st.blocks[0] ? st.blocks[0].height : NaN;
     } finally { rendering = false; } }
   else if (!LIVE[route]) document.title = 'BLOCKHORIZON · ' + L.fmtNum(st.tip);
-  checkAlarms(); checkFeeAlerts(); paintFeeNow();
+  checkAlarms(); checkFeeAlerts(); paintFeeNow(); paintMySince();
   const c = $('#conn'); if (c) { c.className = 'conn ' + (st.conn === 'on' ? 'on' : st.conn === 'poll' ? 'poll' : ''); c.title = st.conn === 'on' ? t('connLive') : st.conn === 'poll' ? t('connPoll') : t('offline'); }
 }
 
