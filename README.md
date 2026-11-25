@@ -27,7 +27,7 @@ There is nothing to build: the site is plain static files, so any static host wo
 - **On GitHub Pages:** fork the repository, open **Settings, Pages** and set **Source** to **GitHub Actions**. The included workflow publishes the site on every push to `main` (you can also start it by hand from the **Actions** tab).
 - **Anywhere else:** upload `index.html`, `style.css`, `sw.js`, `manifest.webmanifest`, `privacy.html`, `.nojekyll` and the `icons` and `src` folders. The file paths are relative, so it also works in a sub-folder.
 
-## Features (v0.5.6)
+## Features (v0.6.0)
 - Everything on one screen, no scrolling: a tile grid that fills desktop, laptop and phone
 - Live block height clock with an optional sound and the time since the last block
 - Next halving (arc, blocks to go, estimated date, reward) and supply issued
@@ -37,10 +37,12 @@ There is nothing to build: the site is plain static files, so any static host wo
 - Block colours follow the mempool.space convention (fee-rate colours for upcoming blocks, purple to blue for mined blocks), drawn flat
 - Live Bitcoin price streamed from Kraken's public feed (mempool.space as fallback), shown under the block height with the 24 h change
 - Price in 7 currencies, sats per unit, Moscow time, market cap; Lightning network capacity
-- Search by block height or date, block pages with permalinks (`#/block/840000`)
+- Search by block height, date or transaction ID; block and transaction pages with permalinks (`#/block/840000`, `#/tx/<txid>`) and a Copy link / Share button
+- Transaction lookup: confirmations, fee and fee rate, or for a waiting transaction its place in the queue of projected blocks
+- Clock mode (own menu tab): just the block height, time since the last block and the price, as large as the screen allows, with the screen kept awake; for a spare screen or old tablet
 - Watch page: Bitcoin YouTube channels, A to Z, plus a few sites (The Lot Radio)
-- Block alarm with sounds, calculator (sats/fiat, height/date), halving replay, chain calendar, glossary
-- Settings: dark/light/auto, currency, sats symbol, time/date format, UTC, language (English, German, Spanish, French, Portuguese, Italian, Dutch, Turkish), sounds, reduced motion, full screen
+- Block alarm with sounds (and a system notification in the background, if allowed), calculator (sats/fiat, height/date, what a payment costs now at each fee level), halving replay, chain calendar, glossary
+- Settings: dark/light/auto, currency, sats symbol, time/date format, UTC, language (the whole interface in English, German, Spanish, French, Portuguese, Italian, Dutch, Turkish; glossary and anniversary texts are English only), sounds, reduced motion, full screen
 - Installable PWA that works offline (cached shell and last values) and updates itself on the next open; pull down from the top (or tap ↻) to refresh
 
 Not built yet: art gallery, conference listings, chain-state totals (addresses, UTXOs, disk size: no free public source found).

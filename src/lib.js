@@ -58,7 +58,7 @@ export function fmtAgo(sec) {
   if (sec < 172800) return `${Math.round(sec / 3600)}h`;
   return `${Math.round(sec / 86400)}d`;
 }
-export function fmtFee(v) { return Number.isFinite(v) ? (v < 10 ? v.toFixed(1) : String(Math.round(v))) : '–'; }
+export function fmtFee(v) { return Number.isFinite(v) ? (v < 10 ? v.toFixed(1) : v < 1000 ? String(Math.round(v)) : fmtNum(Math.round(v))) : '–'; }
 export function satsToBtc(s, d = 8) { return (s / 1e8).toFixed(d); }
 export function satsPerUnit(price) { return price > 0 ? Math.floor(1e8 / price) : NaN; }
 export function fmtDate(ms, o = {}) {
@@ -123,4 +123,27 @@ export function feeStripes(feeRange) {
   if (!cols.length) return UPCOMING_EMPTY;
   const n = cols.length; if (n === 1) return cols[0];
   return 'linear-gradient(to right, ' + cols.map((c, i) => `${c} ${(i / n * 100).toFixed(1)}% ${((i + 1) / n * 100).toFixed(1)}%`).join(', ') + ')';
+}
+
+// ---- transactions ----
+export function isTxid(s) { return /^[0-9a-f]{64}$/i.test(String(s).trim()); }
+// mempool.space /api/tx/:txid -> what the transaction page shows. Confirmations need the current tip height.
+export function parseTx(x, tip) {
+  const s = x.status || {}, vsize = Math.ceil((x.weight || 0) / 4);
+  const out = (x.vout || []).reduce((a, o) => a + (o.value || 0), 0), coinbase = !!(x.vin && x.vin[0] && x.vin[0].is_coinbase);
+  return { id: x.txid, confirmed: !!s.confirmed, height: s.block_height, time: s.block_time,
+    confs: s.confirmed && Number.isFinite(tip) && tip >= s.block_height ? tip - s.block_height + 1 : s.confirmed ? 1 : 0,
+    fee: x.fee || 0, vsize, feeRate: vsize ? (x.fee || 0) / vsize : NaN, ins: (x.vin || []).length, outs: (x.vout || []).length, valueOut: out, coinbase };
+}
+// Which projected block an unconfirmed fee rate falls into (0 = the next block), or -1 if below every projected block.
+export function txQueuePos(feeRate, projected) {
+  const p = projected || [];
+  for (let i = 0; i < p.length; i++) { const lo = (p[i].feeRange && p[i].feeRange.length) ? p[i].feeRange[0] : p[i].medianFee; if (feeRate >= lo) return i; }
+  return -1;
+}
+// Approximate virtual size of a payment (vB) for the common address types: inputs, outputs and the fixed overhead.
+export const TX_SIZES = { segwit: { base: 10.5, in: 68, out: 31 }, taproot: { base: 10.5, in: 57.5, out: 43 }, legacy: { base: 10, in: 148, out: 34 } };
+export function txVsize(ins, outs, type = 'segwit') {
+  const s = TX_SIZES[type] || TX_SIZES.segwit, i = Math.max(1, Math.floor(ins) || 1), o = Math.max(1, Math.floor(outs) || 1);
+  return Math.ceil(s.base + i * s.in + o * s.out);
 }

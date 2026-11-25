@@ -1,5 +1,6 @@
 // Small string tables. English is the fallback for any missing key.
 export const LANGS = { en: 'English', de: 'Deutsch', es: 'Español', fr: 'Français', pt: 'Português', it: 'Italiano', nl: 'Nederlands', tr: 'Türkçe' };
+import { MORE } from './strings.js';
 const T = {
   en: { dash: 'Horizon', alarm: 'Alarm', calc: 'Calculator', replay: 'Halving replay', events: 'Calendar', glossary: 'Glossary', about: 'About', watch: "Watch", search: 'Search',
     height: 'Block height', since: 'Since last block', halving: 'Next halving', difficulty: 'Difficulty adjustment', hashrate: 'Hashrate', production: 'Block production',
@@ -22,8 +23,13 @@ const T = {
   nl: { dash: "Horizon", alarm: "Alarm", calc: "Rekenmachine", replay: "Halving-herhaling", events: "Kalender", glossary: "Woordenlijst", about: "Over", watch: "Video's", search: "Zoeken", height: "Blokhoogte", since: "Sinds laatste blok", halving: "Volgende halving", difficulty: "Moeilijkheidsaanpassing", hashrate: "Hashrate", production: "Blokproductie", last: "Laatste blok", supply: "Aanbod", fees: "Kosten (sat/vB)", mempool: "Mempool", projected: "Verwachte blokken", price: "Prijs", lightning: "Lightning-netwerk", recent: "Recente blokken", settings: "Instellingen", close: "Sluiten", go: "Ga", blocksToGo: "blokken te gaan", priority: "Prioriteit", soon: "Binnenkort", anytime: "Op elk moment", economy: "Zuinig", byHeight: "Op hoogte", byDate: "Op datum", notFound: "Niets gevonden", offline: "Offline: laatst opgeslagen waarden", theme: "Kleurmodus", language: "Taal", currency: "Valuta" },
   tr: { dash: "Ufuk", alarm: "Alarm", calc: "Hesap makinesi", replay: "Halving tekrarı", events: "Takvim", glossary: "Sözlük", about: "Hakkında", watch: "Videolar", search: "Ara", height: "Blok yüksekliği", since: "Son bloktan beri", halving: "Sonraki halving", difficulty: "Zorluk ayarı", hashrate: "Hashrate", production: "Blok üretimi", last: "Son blok", supply: "Arz", fees: "Ücretler (sat/vB)", mempool: "Mempool", projected: "Beklenen bloklar", price: "Fiyat", lightning: "Lightning ağı", recent: "Son bloklar", settings: "Ayarlar", close: "Kapat", go: "Git", blocksToGo: "blok kaldı", priority: "Öncelik", soon: "Yakında", anytime: "Her an", economy: "Ekonomik", byHeight: "Yüksekliğe göre", byDate: "Tarihe göre", notFound: "Bulunamadı", offline: "Çevrimdışı: son kaydedilen değerler", theme: "Renk modu", language: "Dil", currency: "Para birimi" }
 };
+for (const l of Object.keys(T)) Object.assign(T[l], MORE[l]); // the longer texts live in strings.js
 export const TABLES = T;
 let cur = 'en';
 export function setLang(l) { cur = T[l] ? l : 'en'; }
-export function t(k) { return (T[cur] && T[cur][k]) || T.en[k] || k; }
+// t('key') or t('key', { n: 5 }): {name} placeholders are filled from the second argument.
+export function t(k, v) {
+  const s = (T[cur] && T[cur][k]) || T.en[k] || k;
+  return v ? s.replace(/\{(\w+)\}/g, (m, x) => (v[x] != null ? String(v[x]) : m)) : s;
+}
 export function detectLang() { const n = (navigator.language || 'en').slice(0, 2); return T[n] ? n : 'en'; }
