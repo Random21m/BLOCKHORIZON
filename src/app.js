@@ -5,7 +5,7 @@ import { mountScene, dropLive } from './block-scene.js';
 import { livePrice } from './price.js';
 import { t, getLang } from './i18n.js';
 import { VERSION, $, S, st, el, toast, applyLook, NAVS, PHONE_TABS, NAV_ICONS, hooks } from './state.js';
-import { refreshAll, newGeneration, onLive, onPriceTick, checkAlarms, checkFeeAlerts } from './data.js';
+import { refreshAll, newGeneration, onLive, onPriceTick, checkAlarms, checkFeeAlerts, resetAlarmTip } from './data.js';
 import { sinceText, srcHost } from './ui.js';
 import { viewDash, viewClock } from './view-dash.js';
 import { viewBlock, viewTx } from './view-chain.js';
@@ -30,21 +30,35 @@ function parseRoute() {
 }
 const navIco = (d) => { const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('class', 'nico'); s.setAttribute('aria-hidden', 'true');
   const p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.setAttribute('d', d); s.append(p); return s; };
-// Desktop: every page in a row. Phones (CSS): four tabs along the bottom and 'More' for the rest, highlighted when one of them is open.
+// Desktop: one row of pages; those that do not fit (narrow windows, long languages) move into 'More'. Phones (CSS): four tabs along the bottom and 'More' for the rest.
+// 'More' is highlighted when the open page is one of those it holds.
 let navLang = '';
 function renderNav(cur) {
-  const nav = $('#nav'), inMore = !PHONE_TABS.includes(cur) && NAVS.some(([p]) => p === cur);
+  const nav = $('#nav');
   if (navLang === getLang() && nav.children.length) { // same links: only move the highlight, so a focused link keeps its focus
     nav.querySelectorAll('a').forEach((a) => { if (a.getAttribute('href') === '#' + cur) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
-    nav.querySelector('.navmore').classList.toggle('cur', inMore); return;
+    fitNav(); return;
   }
   navLang = getLang();
   nav.replaceChildren(...NAVS.map(([p, k]) => el('a', { href: '#' + p, class: PHONE_TABS.includes(p) ? 'tab' : 'xtra', 'aria-current': p === cur ? 'page' : false }, NAV_ICONS[p] ? navIco(NAV_ICONS[p]) : null, el('span', null, t(k)))),
-    el('button', { class: 'tab navmore' + (inMore ? ' cur' : ''), type: 'button', 'aria-haspopup': 'dialog', onclick: moreModal }, navIco(NAV_ICONS.more), el('span', null, t('navMore'))));
+    el('button', { class: 'tab navmore', type: 'button', 'aria-haspopup': 'dialog', onclick: moreModal }, navIco(NAV_ICONS.more), el('span', null, t('navMore'))));
+  fitNav();
 }
+const PHONE = matchMedia('(max-width:640px)');
+const moreLinks = () => [...$('#nav').querySelectorAll('a')].filter((a) => PHONE.matches ? a.classList.contains('xtra') : a.classList.contains('over'));
+function fitNav() {
+  const nav = $('#nav'), all = [...nav.querySelectorAll('a')], more = nav.querySelector('.navmore'); if (!more) return;
+  all.forEach((a) => a.classList.remove('over')); more.classList.remove('show');
+  if (!PHONE.matches && nav.clientWidth && nav.scrollWidth > nav.clientWidth + 1) { more.classList.add('show');
+    // the extra pages go first, from the end; on a very narrow window then the main ones too, but never the open page
+    const order = [...all.filter((a) => a.classList.contains('xtra')).reverse(), ...all.filter((a) => a.classList.contains('tab') && !a.hasAttribute('aria-current')).reverse()];
+    for (const a of order) { if (nav.scrollWidth <= nav.clientWidth + 1) break; a.classList.add('over'); } }
+  more.classList.toggle('cur', moreLinks().some((a) => a.hasAttribute('aria-current')));
+}
+let fitQueued = 0; addEventListener('resize', () => { if (!fitQueued) fitQueued = requestAnimationFrame(() => { fitQueued = 0; fitNav(); }); });
 function moreModal() {
-  openModal(el('div', null, el('h1', null, t('navMore').toUpperCase()), el('ul', { class: 'morelist' }, NAVS.filter(([p]) => !PHONE_TABS.includes(p)).map(([p, k]) =>
-    el('li', null, el('a', { href: '#' + p, onclick: closeModal, 'aria-current': '#' + p === location.hash ? 'page' : false }, t(k)))))));
+  openModal(el('div', null, el('h1', null, t('navMore').toLocaleUpperCase(document.documentElement.lang)), el('ul', { class: 'morelist' }, moreLinks().map((a) =>
+    el('li', null, el('a', { href: a.getAttribute('href'), onclick: closeModal, 'aria-current': a.hasAttribute('aria-current') ? 'page' : false }, a.textContent))))));
 }
 // Keep the block strips' horizontal scroll across live repaints. On phones both strips share one row (.strip2 scrolls),
 // which opens at the divider so the next projected block and the latest mined block are both in view.
@@ -64,7 +78,8 @@ function renderView() {
   if (wasMining && r.path === '/mining' && m.firstElementChild && m.firstElementChild.classList.contains('minegrid')) { morph(m.firstElementChild, viewMining(routeArg)); mountScene(); return; }
   if (wasMining && r.path !== '/mining') dropLive(); // its live list stops updating once the page is left
   document.body.classList.toggle('fit', r.path === '/'); document.body.classList.toggle('clockmode', r.path === '/clock'); keepAwake(r.path === '/clock');
-  const v = r.path === '/block' ? viewBlock(r.arg) : r.path === '/tx' ? viewTx(r.arg) : r.path === '/my' ? viewMy(r.arg) : VIEWS[r.path](routeArg); m.replaceChildren(v); if (r.path === '/') stripScroll([]); renderNav(r.path);
+  const hadFocus = m.contains(document.activeElement) && document.activeElement !== m; // a link inside the page was used: keep keyboard focus in the new page, not lost to <body>
+  const v = r.path === '/block' ? viewBlock(r.arg) : r.path === '/tx' ? viewTx(r.arg) : r.path === '/my' ? viewMy(r.arg) : VIEWS[r.path](routeArg); m.replaceChildren(v); if (hadFocus) m.focus({ preventScroll: true }); if (r.path === '/') stripScroll([]); renderNav(r.path);
   document.title = docTitle(); scrollTo(0, r.path === '/' ? y : 0);
   trackBlock(r.path === '/mining'); if (r.path === '/mining') mountScene();
 }
@@ -107,6 +122,8 @@ function render() {
 // The footer, in the chosen language, naming the data host actually in use (mempool.space, your node or the backup).
 function paintFoot() {
   const set = (id, v) => { const e = $(id); if (e && e.textContent !== v) e.textContent = v; };
+  const lab = (sel, v) => { const e = document.querySelector(sel); if (e && e.getAttribute('aria-label') !== v) { e.setAttribute('aria-label', v); if (e.title) e.title = v; } };
+  set('.skip', t('skipTo')); lab('#btn-refresh', t('refreshL')); lab('#btn-search', t('search')); lab('#btn-settings', t('settings')); lab('#modal-x', t('close')); lab('.brand', t('homeL')); lab('#nav', t('mainNav'));
   set('#f-priv', t('footPrivacy')); set('#f-sup', t('footSupport')); set('#f-data', t('footData', { s: srcHost() }));
 }
 let wake = null, asking = false;
@@ -126,7 +143,7 @@ function tickClock() { const s = $('#since'); if (s && st.blocks[0]) s.textConte
 export async function boot() {
   hooks.render = render; hooks.renderView = renderView;
   // Settings changed the data server: forget the old server's saved values and start over at the new one.
-  hooks.server = () => { newGeneration(); setServer(S.server); for (const k of ['tip', 'blocks', 'diff', 'fees', 'mempool', 'projected', 'hashrate', 'ln', 'pools', 'rewards']) store(k, null);
+  hooks.server = () => { newGeneration(); resetAlarmTip(); setServer(S.server); for (const k of ['tip', 'blocks', 'diff', 'fees', 'mempool', 'projected', 'hashrate', 'ln', 'pools', 'rewards']) store(k, null);
     Object.assign(st, { tip: NaN, blocks: [], diff: null, fees: null, mem: null, proj: null, hr: null, ln: null, pools: null, rewards: null }); reconnect(); refreshAll(); renderView(); };
   hooks.alerts = () => { if (route === '/alarm') renderView(); document.dispatchEvent(new Event('bh-alerts')); }; // price alerts changed or fired
   applyLook(); $('#ver').textContent = 'BLOCKHORIZON ' + VERSION;

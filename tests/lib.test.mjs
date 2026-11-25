@@ -304,7 +304,7 @@ test('trades and price alerts', () => {
   assert.deepEqual(L.splitPriceAlerts(list, { USD: 57000 }).hit.map((a) => a.id), ['b']);
   assert.deepEqual(L.splitPriceAlerts(list, {}).rest.length, 3);
   assert.equal(L.alertDir(61000, 60000), 'up'); assert.equal(L.alertDir(59000, 60000), 'down');
-  assert.deepEqual(['60,000', '60.000,5', '59 500.5', '1,5', '1.234.567', 'abc', '0', '-5'].map(L.parsePriceInput), [60000, 60000.5, 59500.5, 1.5, 1234567, NaN, NaN, NaN]);
+  assert.deepEqual(['60,000', '60.000,5', '59 500.5', '1,5', '1.234.567', '100.000', '60.5', 'abc', '0', '-5'].map(L.parsePriceInput), [60000, 60000.5, 59500.5, 1.5, 1234567, 100000, 60.5, NaN, NaN, NaN]);
 });
 
 test('data server: addresses are tidied, junk is refused', () => {

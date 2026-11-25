@@ -88,6 +88,7 @@ export async function krakenCandles(pair, minutes) {
 // Live feed with reconnect (3 s), paused while the page is hidden or offline.
 // The Mining page asks for the next block's transactions too (track-mempool-block 0, -1 to stop); sent again after a reconnect.
 let sock = null, tracking = false, reopen = null;
+export const isTracking = () => tracking; // frames still on the way after leaving the Mining page are ignored
 export function trackBlock(on) {
   if (on === tracking) return; tracking = on;
   try { if (sock && sock.readyState === 1) sock.send(JSON.stringify({ 'track-mempool-block': on ? 0 : -1 })); } catch { /* sent on the next connect */ }

@@ -57,7 +57,7 @@ export const minedCube = (x) => cube((x.weight || 0) / 4e6, `linear-gradient(${L
 export const upcomingCube = (b) => cube((b.blockVSize || 0) / 1e6, L.feeStripes(b.feeRange), L.UPCOMING_EMPTY);
 export const more = (x) => el('span', { class: 'more' }, x);
 export const less = (x) => el('span', { class: 'less' }, x); // the shorter wording, shown instead of .more below 900px
-export const pct24 = () => (st.pct[S.cur] >= 0 ? '▲ ' : '▼ ') + Math.abs(st.pct[S.cur]).toFixed(2) + '%';
+export const pct24 = () => (st.pct[S.cur] >= 0 ? '▲ ' : '▼ ') + L.fmtNum(Math.abs(st.pct[S.cur]), 2) + '%';
 // title is a string, or [full, short]: the short one is shown instead below 900px, where tiles are narrow.
 export function tile(cls, title, value, subs = [], extra) {
   const h = Array.isArray(title) && title[1] !== title[0] ? [el('span', { class: 'tfull' }, title[0]), el('span', { class: 'tshort' }, title[1])] : [].concat(title)[0];

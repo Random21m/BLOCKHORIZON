@@ -19,7 +19,7 @@ export function viewBlock(hStr) {
           [t('medianFee'), L.fmtFee(b.medianFee) + ' sat/vB'], [t('feeRange'), b.feeRange.length ? `${L.fmtFee(b.feeRange[0])} – ${L.fmtFee(b.feeRange[b.feeRange.length - 1])} sat/vB` : '–'],
           [t('subsidyFees'), `${L.satsToBtc(L.subsidy(b.height), 4)} + ${L.satsToBtc(b.fees, 4)} BTC`], [t('minedBy'), b.pool || '–'], [t('emptyBlock'), b.empty ? t('yes') : t('no')],
           b.height === 0 ? [t('special'), t('genesis')] : null].filter(Boolean)),
-        el('div', { class: 'row' }, el('a', { href: '#/block/' + (n - 1) }, '← ' + L.fmtNum(n - 1)), n < st.tip ? el('a', { href: '#/block/' + (n + 1) }, L.fmtNum(n + 1) + ' →') : null),
+        el('div', { class: 'row' }, n > 0 ? el('a', { href: '#/block/' + (n - 1) }, '← ' + L.fmtNum(n - 1)) : null, n < st.tip ? el('a', { href: '#/block/' + (n + 1) }, L.fmtNum(n + 1) + ' →') : null),
         shareRow('/block/' + n, 'BLOCKHORIZON · ' + t('blockH') + ' ' + L.fmtNum(n)));
     } catch { if (tok === blockToken) body.textContent = t('notFound'); }
   })();

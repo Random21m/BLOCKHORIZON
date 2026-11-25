@@ -21,9 +21,10 @@ export function viewMy(query) {
   const out = el('div', { id: 'my-out' });
   const root = el('div', null, el('h1', null, t('myTitle')), el('p', { class: 'dim' }, t('myIntro')),
     el('form', { class: 'row', onsubmit: go }, el('label', { for: 'my-d' }, t('myDate')), di, el('label', { for: 'my-l' }, t('myLabel')), li, el('button', { class: 'btn-go', type: 'submit' }, t('myFind'))), out);
-  const ts = L.noonTs(d); if (!ts) return root;
+  let ts = L.noonTs(d); if (!ts) return root;
+  const g0 = Math.floor(L.GENESIS_TS / 86400) * 86400; if (ts >= g0 && ts < L.GENESIS_TS) ts = L.GENESIS_TS; // 3 Jan 2009 is the genesis block's own day (mined at 18:15 UTC, after our noon)
   const name = l || t('myDefault'), now = Date.now();
-  if (ts < L.GENESIS_TS) { out.append(el('div', { class: 'panel' }, el('div', { class: 'eyebrow' }, name), el('p', { class: 'big' }, t('myBefore', { n: L.fmtNum(Math.ceil((L.GENESIS_TS - ts) / 86400)) })))); return root; }
+  if (ts < L.GENESIS_TS) { out.append(el('div', { class: 'panel' }, el('div', { class: 'eyebrow' }, name), el('p', { class: 'big' }, t('myBefore', { n: L.fmtNum(Math.round((g0 - Math.floor(ts / 86400) * 86400) / 86400)) })))); return root; }
   if (ts * 1000 > now) {
     const h = Number.isFinite(st.tip) ? L.heightAt(ts, st.tip, now) : NaN;
     out.append(el('div', { class: 'panel mycard' }, el('div', { class: 'eyebrow' }, name), el('div', { class: 'myh' }, Number.isFinite(h) ? '#' + L.fmtNum(h) : '…'),
@@ -72,7 +73,7 @@ async function saveImage(c) {
   g.strokeStyle = acc; g.lineWidth = 4; g.beginPath(); g.arc(104, 104, 22, 0, Math.PI * 2); g.stroke(); g.beginPath(); g.moveTo(80, 114); g.lineTo(128, 114); g.stroke();
   g.fillStyle = acc; g.beginPath(); g.arc(104, 114, 7, 0, Math.PI * 2); g.fill();
   g.fillStyle = ink; g.font = `700 26px ${sans}`; g.textBaseline = 'middle'; g.fillText('B L O C K H O R I Z O N', 144, 106);
-  g.fillStyle = dim; g.font = `600 30px ${sans}`; g.textBaseline = 'alphabetic'; g.fillText(c.name.toUpperCase(), 80, 230);
+  g.fillStyle = dim; g.font = `600 30px ${sans}`; g.textBaseline = 'alphabetic'; g.fillText(c.name.toLocaleUpperCase(document.documentElement.lang), 80, 230);
   g.fillStyle = acc; g.font = `700 150px ${mono}`; g.fillText('#' + L.fmtNum(c.h), 72, 380);
   g.fillStyle = ink; g.font = `400 34px ${sans}`; g.fillText(t('minedOn', { d: fmtDay(c.mined) }), 80, 450);
   g.fillStyle = dim; g.font = `400 28px ${sans}`;

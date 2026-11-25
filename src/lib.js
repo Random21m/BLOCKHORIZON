@@ -37,13 +37,13 @@ export function fmtHashrate(h) {
   if (!Number.isFinite(h)) return '–';
   const u = ['H/s', 'kH/s', 'MH/s', 'GH/s', 'TH/s', 'PH/s', 'EH/s', 'ZH/s'];
   let i = 0; while (h >= 1000 && i < u.length - 1) { h /= 1000; i++; }
-  return h.toFixed(h >= 100 ? 0 : 2) + ' ' + u[i];
+  return fmtNum(h, h >= 100 ? 0 : 2) + ' ' + u[i];
 }
 export function fmtDifficulty(d) {
   if (!Number.isFinite(d)) return '–';
   const u = ['', 'K', 'M', 'G', 'T', 'P'];
   let i = 0; while (d >= 1000 && i < u.length - 1) { d /= 1000; i++; }
-  return d.toFixed(2) + ' ' + u[i];
+  return fmtNum(d, 2) + ' ' + u[i];
 }
 export function fmtDuration(sec) {
   sec = Math.max(0, Math.round(sec));
@@ -58,7 +58,7 @@ export function fmtAgo(sec) {
   if (sec < 172800) return `${Math.round(sec / 3600)}h`;
   return `${Math.round(sec / 86400)}d`;
 }
-export function fmtFee(v) { return Number.isFinite(v) ? (v < 10 ? v.toFixed(1) : v < 1000 ? String(Math.round(v)) : fmtNum(Math.round(v))) : '–'; }
+export function fmtFee(v) { return Number.isFinite(v) ? (v < 10 ? fmtNum(v, 1) : v < 1000 ? String(Math.round(v)) : fmtNum(Math.round(v))) : '–'; }
 export function satsToBtc(s, d = 8) { return (s / 1e8).toFixed(d); }
 export function satsPerUnit(price) { return price > 0 ? Math.floor(1e8 / price) : NaN; }
 export function fmtDate(ms, o = {}) {
@@ -305,13 +305,13 @@ export function splitPriceAlerts(list, prices) {
   for (const a of list || []) { const p = prices && prices[a.cur]; (Number.isFinite(p) && (a.dir === 'up' ? p >= a.price : p <= a.price) ? hit : rest).push(a); }
   return { hit, rest };
 }
-// "60,000", "60.000,5", "59 500.5", "1,5": the last of ',' and '.' is the decimal mark when both appear; a lone ',' is
+// "60,000", "60.000,5", "100.000", "59 500.5", "1,5": the last of ',' and '.' is the decimal mark when both appear; a lone ',' is
 // a thousands mark only in groups of three.
 export function parsePriceInput(s) {
   let x = String(s).trim().replace(/[\s'’]/g, ''); const lc = x.lastIndexOf(','), ld = x.lastIndexOf('.');
   if (lc >= 0 && ld >= 0) x = lc > ld ? x.replace(/\./g, '').replace(',', '.') : x.replace(/,/g, '');
   else if (lc >= 0) x = /^\d{1,3}(,\d{3})+$/.test(x) ? x.replace(/,/g, '') : x.replace(',', '.');
-  else if (/^\d{1,3}(\.\d{3}){2,}$/.test(x)) x = x.replace(/\./g, '');
+  else if (/^\d{1,3}(\.\d{3})+$/.test(x)) x = x.replace(/\./g, ''); // '100.000' is a price of 100 000 (bitcoin is never priced near 100)
   if (!/^\d+(\.\d+)?$/.test(x)) return NaN;
   const v = parseFloat(x); return v > 0 && v < 1e12 ? v : NaN;
 }

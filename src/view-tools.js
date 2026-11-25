@@ -78,12 +78,12 @@ function pricePanel() {
       el('td', null, el('button', { onclick: () => removePriceAlert(a.id) }, t('remove'))))))) : el('p', { class: 'dim' }, t('noneYet')));
 }
 export function viewCalc() {
-  const root = el('div', { class: 'calc' }); root.append(el('h1', null, t('calc').toUpperCase()));
+  const root = el('div', { class: 'calc' }); root.append(el('h1', null, t('calc').toLocaleUpperCase(document.documentElement.lang)));
   const p = price(), res = (id) => el('div', { id, class: 'big', style: 'margin:6px 0' });
   const a = el('div', { class: 'panel' }, el('h2', null, 'Sats ⇄ ' + S.cur));
   const sats = el('input', { id: 'c-sats', inputmode: 'decimal', placeholder: 'sats', 'aria-label': 'Sats' }), fiat = el('input', { id: 'c-fiat', inputmode: 'decimal', placeholder: S.cur, 'aria-label': S.cur });
-  sats.addEventListener('input', () => { const v = parseFloat(sats.value); fiat.value = Number.isFinite(v) && p ? (v / 1e8 * p).toFixed(2) : ''; });
-  fiat.addEventListener('input', () => { const v = parseFloat(fiat.value); sats.value = Number.isFinite(v) && p ? Math.round(v / p * 1e8) : ''; });
+  sats.addEventListener('input', () => { const v = L.parsePriceInput(sats.value); fiat.value = Number.isFinite(v) && p ? (v / 1e8 * p).toFixed(2) : ''; });
+  fiat.addEventListener('input', () => { const v = L.parsePriceInput(fiat.value); sats.value = Number.isFinite(v) && p ? Math.round(v / p * 1e8) : ''; });
   a.append(el('div', { class: 'row' }, sats, el('span', { 'aria-hidden': 'true', class: 'dim' }, '⇄'), fiat), el('div', { class: 'dim' }, p ? `1 BTC = ${L.fmtNum(p)} ${S.cur}` : t('priceMissing')));
   const b = el('div', { class: 'panel' }, el('h2', null, t('heightDate')));
   const bh = el('input', { id: 'c-h', inputmode: 'numeric', placeholder: t('height'), 'aria-label': t('height') }), out = res('c-out');
