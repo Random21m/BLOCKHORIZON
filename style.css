@@ -218,6 +218,8 @@ html{overscroll-behavior-y:none}
 .clockview .eyebrow{font-size:clamp(12px,2vw,20px)}
 .clock-h{font:700 clamp(64px,21vw,38vh)/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:-.03em;color:var(--accent);font-variant-numeric:tabular-nums}
 .clockview .since{font-size:clamp(16px,2.6vw,30px)}.clockview .btc{font-size:clamp(14px,2.2vw,26px)}.clockview .btc b{font-size:clamp(22px,4.5vw,56px)}
+.clockview .final{margin-top:2.5vh;padding-top:2vh;border-top:1px dashed var(--line);max-width:min(640px,100%)}.clockview .final .eyebrow{font-size:clamp(11px,1.6vw,15px)}
+.final-t{font:700 clamp(20px,4.2vw,44px)/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums;margin:4px 0}.clockview .final p{margin:0;font-size:clamp(12px,1.6vw,16px);text-wrap:balance}
 .clock-x{position:absolute;top:calc(12px + env(safe-area-inset-top));right:16px;color:var(--dim);text-decoration:none;font-size:20px;padding:8px 12px;border-radius:4px}.clock-x:hover{color:var(--text)}
 .txid{word-break:break-all;margin:-4px 0 12px}.share{margin-top:12px}
 .paytable{width:100%;margin-top:6px;font-size:14px}.paytable td{padding:4px 8px 4px 0;white-space:nowrap}.paytable td.num{text-align:right;white-space:nowrap}

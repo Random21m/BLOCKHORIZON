@@ -7,7 +7,7 @@ import { t, getLang } from './i18n.js';
 import { VERSION, $, S, st, el, toast, applyLook, NAVS, PHONE_TABS, NAV_ICONS, hooks } from './state.js';
 import { refreshAll, newGeneration, onLive, onPriceTick, checkAlarms, checkFeeAlerts, resetAlarmTip } from './data.js';
 import { sinceText, srcHost } from './ui.js';
-import { viewDash, viewClock } from './view-dash.js';
+import { viewDash, viewClock, finalText } from './view-dash.js';
 import { viewBlock, viewTx } from './view-chain.js';
 import { viewAlarm, viewCalc, paintFeeNow } from './view-tools.js';
 import { viewCharts } from './view-charts.js';
@@ -139,7 +139,7 @@ async function keepAwake(on) {
   } catch { asking = false; }
 }
 // ---------- boot ----------
-function tickClock() { const s = $('#since'); if (s && st.blocks[0]) s.textContent = sinceText(Date.now()); paintMining(); }
+function tickClock() { const now = Date.now(), s = $('#since'), f = $('#final'); if (s && st.blocks[0]) s.textContent = sinceText(now); if (f) f.textContent = finalText(now); paintMining(); }
 export async function boot() {
   hooks.render = render; hooks.renderView = renderView;
   // Settings changed the data server: forget the old server's saved values and start over at the new one.

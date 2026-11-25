@@ -131,6 +131,11 @@ await ok('clock: reached from More on a phone, big height and price, no header, 
   assert.equal((await page.locator('#nav a[aria-current=page]').textContent()).trim(), 'Clock'); assert.ok(!(await page.locator('header.bar').isVisible()));
   await until(page, () => /61,/.test(document.querySelector('.clockview #btc')?.textContent || ''), null, { timeout: 8000 });
   await page.keyboard.press('Escape'); await until(page, () => location.hash === '#/' && !!document.querySelector('.dashgrid')); });
+await ok('clock: counts down to the final bitcoin block, every second', async () => {
+  await page.goto(base + '#/clock'); await until(page, () => /\d+y \d+d/.test(document.querySelector('#final')?.textContent || ''));
+  const a = await page.locator('#final').textContent(); await new Promise((r) => setTimeout(r, 1300)); const b = await page.locator('#final').textContent();
+  assert.notEqual(a, b); const txt = await page.locator('.clockview .final').innerText(); assert.ok(txt.includes('6,929,999') && txt.includes('5,952,588') && /21[34]\d/.test(txt), txt);
+  await page.goto(base); });
 await ok('clock keeps the screen awake while open and lets go when you leave', async () => {
   const c = await b.newContext({ viewport: { width: 1280, height: 720 } }); await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.abort());
   await c.addInitScript(() => { window.__wake = []; Object.defineProperty(navigator, 'wakeLock', { value: { request: async (t) => { window.__wake.push('on:' + t); const l = new EventTarget(); l.release = async () => { window.__wake.push('off'); }; return l; } } }); });
