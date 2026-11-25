@@ -8,7 +8,7 @@ New app
 
 App ID: blockhorizon
 Upstream project: https://github.com/Random21m/BLOCKHORIZON
-Version: 0.15.0
+Version: 0.15.1
 
 ## Summary
 
@@ -22,7 +22,7 @@ the Mempool app exports (the same address its own widget server uses), so the br
 block, fee and mempool data. The price comes from Kraken's public feed. The app has no accounts and keeps its
 settings in the browser, so it stores nothing on the device.
 
-Image: `ghcr.io/random21m/blockhorizon:v0.15.0`, built from the upstream repository's Dockerfile by its
+Image: `ghcr.io/random21m/blockhorizon:v0.15.1`, built from the upstream repository's Dockerfile by its
 "Container image" workflow; public, linux/amd64 and linux/arm64, pinned by index digest.
 
 ## Verification

@@ -29,7 +29,7 @@ the address the Mempool app exports (its own widget server and other apps such a
 Port 3027 was free across the store when this was written. `umbrel/gallery/` has the three 1440x900 gallery images.
 
 Ready:
-- the image `ghcr.io/random21m/blockhorizon:v0.15.0` (amd64 and arm64, public), pinned by digest in `docker-compose.yml`
+- the image `ghcr.io/random21m/blockhorizon:v0.15.1` (amd64 and arm64, public), pinned by digest in `docker-compose.yml`
 - the package passes Umbrel's linter (`npm run lint:apps -- blockhorizon --check-images`); the only error left is the
   empty `submission`, which is the link to the pull request itself
 - the gallery images, for the pull request (Umbrel makes the final App Store images, so the manifest keeps `gallery: []`)
