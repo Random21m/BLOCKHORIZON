@@ -81,6 +81,22 @@ await ok('pull down from the top reloads the app (installed apps have no browser
   await p.evaluate(() => { const t = document.body, pt = (y) => new Touch({ identifier: 1, target: t, clientX: 195, clientY: y }), fire = (type, y, end) => t.dispatchEvent(new TouchEvent(type, { bubbles: true, touches: end ? [] : [pt(y)], changedTouches: [pt(y)] }));
     fire('touchstart', 120); for (let y = 140; y <= 400; y += 20) fire('touchmove', y); fire('touchend', 400, true); });
   await until(p, () => window.__mark === undefined && !!document.querySelector('#ptr'), null, { timeout: 8000 }); assert.equal(await p.locator('#btn-refresh').count(), 1); await tctx.close(); });
+await ok('live updates change the numbers in place (tiles are not rebuilt)', async () => {
+  await page.goto(base); await until(page, () => /61,23[45]/.test(document.querySelector('#btc')?.textContent || ''), null, { timeout: 8000 });
+  await page.evaluate(() => { window.__tile = document.querySelector('.tile.t-fees'); window.__hero = document.querySelector('#h'); });
+  await until(page, () => /61,300/.test(document.querySelector('.t-price')?.textContent || ''), null, { timeout: 9000 }); // the later trade re-renders the dashboard
+  assert.deepEqual(await page.evaluate(() => [document.contains(window.__tile), document.querySelector('#h') === window.__hero]), [true, true]); });
+await ok('alarm goes off when the height arrives by the regular refresh (no live feed)', async () => {
+  await page.goto(base + 'privacy.html'); await page.evaluate(() => localStorage.setItem('bh.alarms', JSON.stringify([{ height: 977411, label: 'test', sound: 'clock' }, { height: 999999 }])));
+  await page.goto(base); await until(page, () => /977,411 reached: test/.test(document.querySelector('#toast')?.textContent || ''), null, { timeout: 8000 });
+  assert.deepEqual(await page.evaluate(() => JSON.parse(localStorage.getItem('bh.alarms')).map((a) => a.height)), [999999]);
+  await page.evaluate(() => localStorage.removeItem('bh.alarms')); });
+await ok('a connection that never answers still opens the saved app within a few seconds', async () => {
+  await page.goto(base); await until(page, () => navigator.serviceWorker.controller && document.querySelector('#h') && /977/.test(document.querySelector('#h').textContent));
+  const hang = (r) => { if (/\/src\/app\.js|\/style\.css/.test(r.request().url())) return; return r.fallback(); }; // never answered
+  await ctx.route(/127\.0\.0\.1/, hang);
+  try { const t0 = Date.now(); await page.reload({ waitUntil: 'commit' }); await until(page, () => document.querySelector('#h') && /977/.test(document.querySelector('#h').textContent), null, { timeout: 10000 });
+    assert.ok(Date.now() - t0 < 9000, 'took ' + (Date.now() - t0) + ' ms'); } finally { await ctx.unroute(/127\.0\.0\.1/, hang); } });
 await ok('only mempool.space is contacted', async () => { assert.ok(external.length > 0); });
 await ok('no script errors', async () => { assert.deepEqual(errs, []); });
 await b.close(); srv.close();
