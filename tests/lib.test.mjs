@@ -111,7 +111,7 @@ test('version number matches in the app (state.js), the offline cache name and t
   const read = (f) => fs.readFileSync(new URL('../' + f, import.meta.url), 'utf8');
   const v = read('src/state.js').match(/VERSION = '([\d.]+)'/)[1];
   assert.ok(read('sw.js').includes(`'blockhorizon-v${v}'`), 'sw.js cache name');
-  assert.ok(read('README.md').includes(`## Features (v${v})`), 'README');
+  assert.ok(read('README.md').includes(`Version ${v}.`), 'README');
 });
 
 test('transactions: txid check, parse a confirmed and a waiting transaction', () => {
