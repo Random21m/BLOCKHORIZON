@@ -71,11 +71,12 @@ await ok('menu stays on one row; pages that do not fit are in More, which lights
   await page.click('nav .navmore'); const items = await page.locator('.morelist a').allInnerTexts(); assert.equal(items.length, r.hidden); assert.ok(items.includes('About'), items.join()); await page.keyboard.press('Escape');
   await page.setViewportSize({ width: 1920, height: 1080 }); await page.goto(base + '#/about'); await until(page, () => [...document.querySelectorAll('nav a')].every((a) => a.offsetWidth) && !document.querySelector('nav .navmore').offsetWidth, null, { timeout: 4000 });
   await page.setViewportSize({ width: 360, height: 800 }); });
-await ok('phone with browser toolbars: block strip sits above the bottom tab bar without scrolling', async () => {
+await ok('phone with browser toolbars: the dashboard scrolls like a normal page and its end, the block strips, clears the tab bar', async () => {
   for (const [w, h] of [[390, 664], [360, 600]]) { await page.setViewportSize({ width: w, height: h }); await page.goto(base); await until(page, () => document.querySelectorAll('.strip2 .blk.proj').length > 0 && document.querySelectorAll('.strip2 a.blk:not(.proj)').length > 0);
-    const r = await page.evaluate(() => ({ strip: document.querySelector('.strip2').getBoundingClientRect().bottom, nav: document.querySelector('nav').getBoundingClientRect().top }));
-    assert.ok(r.strip <= r.nav, `${w}x${h}: strip ends at ${r.strip}, tab bar starts at ${r.nav}`); }
-  await page.setViewportSize({ width: 360, height: 800 }); });
+    const r = await page.evaluate(() => { const m = document.querySelector('main'); scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' });
+      return { page: document.documentElement.scrollHeight > innerHeight, inner: m.scrollHeight > m.clientHeight + 1, last: document.querySelector('.dashgrid').lastElementChild.classList.contains('strip2'), strip: document.querySelector('.strip2').getBoundingClientRect().bottom, nav: document.querySelector('nav').getBoundingClientRect().top }; });
+    assert.ok(r.page && !r.inner && r.last, `${w}x${h}: ` + JSON.stringify(r)); assert.ok(r.strip <= r.nav, `${w}x${h}: strip ends at ${r.strip}, tab bar starts at ${r.nav}`); }
+  await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' })); await page.setViewportSize({ width: 360, height: 800 }); });
 await ok('no horizontal scroll at 360 px', async () => { assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)); });
 await ok('block page', async () => { await page.goto(base + '#/block/840000'); await page.waitForSelector('.panel dl', { timeout: 6000 }); assert.ok((await page.locator('main').innerText()).includes('Transactions')); });
 await ok('block page has a visible way back to the dashboard on a phone', async () => { const back = page.locator('main a.back'); assert.ok(await back.isVisible()); const bx = await back.boundingBox(); assert.ok(bx.height >= 44 && bx.x >= 0 && bx.x + bx.width <= 360, JSON.stringify(bx));
