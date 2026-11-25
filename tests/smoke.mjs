@@ -203,6 +203,15 @@ await ok('link preview card: tags point at a 1200x630 image that is published', 
   const img = new URL(meta('og:image')).pathname.replace(/^\/BLOCKHORIZON\//, ''); const buf = await (await page.request.get(base + img)).body();
   assert.equal(buf.toString('ascii', 1, 4), 'PNG'); assert.equal(buf.readUInt32BE(16) + 'x' + buf.readUInt32BE(20), '1200x630');
   const wf = fs.readFileSync(path.join(root, '.github/workflows/pages.yml'), 'utf8'); assert.ok(/cp -r[^\n]* icons/.test(wf), 'icons folder is published'); });
+await ok('embed widget: height, halving and price, light theme, links back; the About page makes the code', async () => {
+  const w = async (qs) => { await page.goto(base + 'embed.html?' + qs); await until(page, () => /\d/.test(document.querySelector('#num').textContent)); return page.evaluate(() => ({ lab: document.querySelector('#lab').textContent, num: document.querySelector('#num').textContent, sub: document.querySelector('#sub').textContent, href: document.querySelector('#w').href, target: document.querySelector('#w').target, theme: document.documentElement.dataset.theme, label: document.querySelector('#w').getAttribute('aria-label') })); };
+  const h = await w('show=height&lang=en'); assert.equal(h.num, '977,411'); assert.equal(h.lab, 'Block height'); assert.ok(h.href.endsWith('/#/') && h.target === '_blank' && h.label.includes('977,411'), JSON.stringify(h));
+  const v = await w('show=halving&theme=light&lang=en'); assert.equal(v.num, '72,589'); assert.equal(v.theme, 'light'); assert.ok(v.sub.startsWith('blocks to go'), v.sub);
+  const p = await w('show=price&lang=de&cur=EUR'); assert.equal(p.lab, 'Preis'); assert.ok(/EUR$/.test(p.num), p.num);
+  await page.goto(base + '#/about'); await page.waitForSelector('#emb-code'); await page.selectOption('#emb-what', 'halving'); await page.selectOption('#emb-theme', 'dark');
+  const code = await page.inputValue('#emb-code'); assert.ok(code.startsWith('<iframe src="' + base + 'embed.html?show=halving&theme=dark&lang=') && code.includes('title="BLOCKHORIZON: Next halving"'), code);
+  // the preview reloads on every change: wait for the one with the chosen options
+  assert.equal(await until(page, () => { const d = document.querySelector('#emb-prev').contentDocument; return d && d.location.search.includes('show=halving&theme=dark') && /\d/.test(d.querySelector('#num')?.textContent || '') && d.querySelector('#num').textContent; }), '72,589'); });
 await ok('keyboard: Tab stays inside an open dialog, Escape closes it and focus goes back', async () => {
   await page.goto(base); await page.focus('#btn-settings'); await page.keyboard.press('Enter'); await page.waitForSelector('#st-theme');
   for (let i = 0; i < 25; i++) { await page.keyboard.press('Tab'); assert.ok(await page.evaluate(() => document.querySelector('#modal').contains(document.activeElement)), 'focus left the dialog at Tab ' + (i + 1)); }
@@ -221,8 +230,8 @@ await ok('accessibility: no axe-core violations on the main pages and dialogs, d
     const c = await b.newContext({ viewport: { width: 1280, height: 800 }, bypassCSP: true, reducedMotion: 'reduce' }); await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
     await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
     await c.addInitScript((t) => localStorage.setItem('bh.settings', JSON.stringify({ theme: t, _v: 2, lang: 'en' })), theme); const p = await c.newPage();
-    for (const pg of ['#/', '#/clock', '#/alarm', '#/calc', '#/charts', '#/glossary', '#/about', '#/tx/' + TXC, 'search', 'settings']) {
-      if (pg === 'search' || pg === 'settings') { await p.goto(base); await p.waitForSelector('#h'); await p.click('#btn-' + pg); } else await p.goto(base + pg);
+    for (const pg of ['#/', '#/clock', '#/alarm', '#/calc', '#/charts', '#/glossary', '#/about', '#/tx/' + TXC, 'search', 'settings', 'embed.html?show=height', 'embed.html?show=halving&theme=light']) {
+      if (pg === 'search' || pg === 'settings') { await p.goto(base); await p.waitForSelector('#h'); await p.click('#btn-' + pg); } else await p.goto(pg.startsWith('embed') ? base + pg : base + pg);
       await p.waitForTimeout(700); await p.evaluate(AXE);
       for (const v of await p.evaluate(async () => (await axe.run(document, { resultTypes: ['violations'] })).violations.map((x) => x.id + ': ' + x.nodes.map((n) => n.target.join(' ')).slice(0, 3).join(', ')))) found.push(`${theme} ${pg} ${v}`);
     }

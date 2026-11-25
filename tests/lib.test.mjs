@@ -185,3 +185,10 @@ test('history charts: trailing day average', () => {
   assert.deepEqual(L.smoothDays(pts, 2).map((p) => p.v), [0, 5, 5, 5, 5]); assert.equal(L.smoothDays(pts, 0), pts);
   assert.deepEqual(L.smoothDays(pts, 1).map((p) => p.v), [0, 10, 0, 10, 0]);
 });
+
+test('every page file the offline cache lists is published by the Pages workflow', () => {
+  const sw = fs.readFileSync(new URL('../sw.js', import.meta.url), 'utf8'), wf = fs.readFileSync(new URL('../.github/workflows/pages.yml', import.meta.url), 'utf8');
+  const cp = (wf.match(/cp -r ([^\n]+) _site\//) || [])[1].split(/\s+/);
+  const files = JSON.parse(sw.match(/const FILES = (\[[^\]]+\])/)[1].replace(/'/g, '"'));
+  for (const f of files.filter((x) => x !== './')) assert.ok(cp.includes(f.split('/')[0]), f + ' is cached but not published');
+});

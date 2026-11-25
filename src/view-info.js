@@ -54,6 +54,27 @@ export function viewAbout() {
     el('p', null, t('tipIntro')),
     el('img', { class: 'tip-qr', src: 'docs/support-qr.svg', alt: t('qrAlt'), width: 220, height: 220 }),
     addr, el('p', { class: 'row' }, el('button', { id: 'tip-copy', onclick: copy }, t('copyAddr')), el('a', { href: 'lightning:' + TIP_ADDR }, t('openWallet'))),
-    el('p', { class: 'dim' }, t('tipNote'))));
+    el('p', { class: 'dim' }, t('tipNote'))), embedPanel());
   return root;
+}
+// "Embed on your site": pick what to show, see it live, copy one line of HTML. The snippet points at this site's own address.
+function embedPanel() {
+  const site = location.href.split('#')[0].split('?')[0].replace(/[^/]*$/, '');
+  const opt = (id, label, pairs) => el('select', { id, 'aria-label': label }, pairs.map(([v, l]) => el('option', { value: v }, l)));
+  const what = opt('emb-what', t('embedWhat'), [['height', t('height')], ['halving', t('halving')], ['price', t('price')]]);
+  const theme = opt('emb-theme', t('theme'), [['auto', t('auto')], ['dark', t('dark')], ['light', t('light')]]);
+  const code = el('textarea', { id: 'emb-code', readonly: true, rows: 4, spellcheck: 'false', 'aria-label': t('embedCode') });
+  const frame = el('iframe', { id: 'emb-prev', class: 'emb-prev', title: t('embedPreview'), width: 320, height: 120 });
+  const upd = () => {
+    const qs = `show=${what.value}&theme=${theme.value}&lang=${S.lang}` + (what.value === 'price' ? `&cur=${S.cur}` : '');
+    const label = what.options[what.selectedIndex].textContent;
+    code.value = `<iframe src="${site}embed.html?${qs}" width="320" height="120" style="border:0" title="BLOCKHORIZON: ${label}" loading="lazy"></iframe>`;
+    frame.src = 'embed.html?' + qs;
+  };
+  what.addEventListener('change', upd); theme.addEventListener('change', upd); upd();
+  const copy = async () => { try { await navigator.clipboard.writeText(code.value); toast(t('codeCopied')); } catch { code.select(); toast(t('selectCopy')); } };
+  return el('div', { class: 'panel', id: 'embed' }, el('h2', null, t('embedTitle')), el('p', null, t('embedIntro')),
+    el('div', { class: 'row' }, el('label', { for: 'emb-what' }, t('embedWhat')), what, el('label', { for: 'emb-theme' }, t('theme')), theme),
+    el('p', { class: 'dim' }, t('embedPreview')), frame, el('label', { for: 'emb-code', class: 'dim' }, t('embedCode')), code,
+    el('p', { class: 'row' }, el('button', { id: 'emb-copy', onclick: copy }, t('copyCode'))));
 }
