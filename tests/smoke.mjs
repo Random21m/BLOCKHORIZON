@@ -203,6 +203,22 @@ await ok('link preview card: tags point at a 1200x630 image that is published', 
   const img = new URL(meta('og:image')).pathname.replace(/^\/BLOCKHORIZON\//, ''); const buf = await (await page.request.get(base + img)).body();
   assert.equal(buf.toString('ascii', 1, 4), 'PNG'); assert.equal(buf.readUInt32BE(16) + 'x' + buf.readUInt32BE(20), '1200x630');
   const wf = fs.readFileSync(path.join(root, '.github/workflows/pages.yml'), 'utf8'); assert.ok(/cp -r[^\n]* icons/.test(wf), 'icons folder is published'); });
+await ok('block arrival: blocks glide one slot and the height rolls in; nothing moves with reduce motion', async () => {
+  const bl = JSON.parse(fx('blocks.json')), nb = Object.assign(JSON.parse(JSON.stringify(bl[0])), { height: bl[0].height + 1, id: 'f'.repeat(64), timestamp: bl[0].timestamp + 600 });
+  const counts = {};
+  for (const motion of ['no-preference', 'reduce']) {
+    let next = false; const c = await b.newContext({ viewport: { width: 1280, height: 800 }, reducedMotion: motion }); await c.clock.install({ time: bl[0].timestamp * 1000 + 300000 });
+    await c.routeWebSocket(/./, (ws) => ws.close()); await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
+    await c.route(/mempool\.space/, (route) => { const u = new URL(route.request().url()).pathname;
+      if (next && u === '/api/blocks/tip/height') return route.fulfill({ contentType: 'text/plain', body: String(nb.height) });
+      if (next && u === '/api/v1/blocks') return route.fulfill({ contentType: 'application/json', body: JSON.stringify([nb, ...bl].slice(0, 15)) });
+      const m = MOCK[u]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+    const p = await c.newPage(); await p.goto(base); await until(p, () => document.querySelectorAll('.strip2 a.blk').length > 5 && document.querySelectorAll('.tile').length >= 10);
+    await p.evaluate(() => { window.__n = 0; const o = Element.prototype.animate; Element.prototype.animate = function (...a) { window.__n++; return o.apply(this, a); }; });
+    next = true; await p.clock.fastForward(61000); // the minute refresh: height and block list can land in separate updates
+    await until(p, (h) => [document.querySelector('#h').textContent, document.querySelector('.strip2 a.blk b').textContent].every((x) => x.replace(/\D/g, '') === String(h)), nb.height, { timeout: 8000 });
+    counts[motion] = await p.evaluate(() => window.__n); await c.close(); }
+  assert.ok(counts['no-preference'] >= 10, 'animated ' + counts['no-preference']); assert.equal(counts.reduce, 0); });
 await ok('keyboard: Tab stays inside an open dialog, Escape closes it and focus goes back', async () => {
   await page.goto(base); await page.focus('#btn-settings'); await page.keyboard.press('Enter'); await page.waitForSelector('#st-theme');
   for (let i = 0; i < 25; i++) { await page.keyboard.press('Tab'); assert.ok(await page.evaluate(() => document.querySelector('#modal').contains(document.activeElement)), 'focus left the dialog at Tab ' + (i + 1)); }
