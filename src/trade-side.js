@@ -38,7 +38,7 @@ export function sidePanel(cur, onPrice) {
           cum += x.q; btn.textContent = pf(x.p); b.textContent = qf(x.q); c.textContent = qf(cum); r.style.setProperty('--d', (cum / tot * 100).toFixed(1) + '%'); r.dataset.p = x.p; }); };
       fill(asks, book.asks); fill(bids, book.bids);
       const a = book.asks[0].p, b = book.bids[0].p, sp = a - b;
-      spread.children[0].textContent = pf((a + b) / 2); spread.children[1].textContent = t('spreadL') + ' ' + pf(sp) + ' (' + (sp / a * 100).toFixed(3) + '%)';
+      spread.children[0].textContent = pf((a + b) / 2); spread.children[1].textContent = t('spreadL') + ' ' + pf(sp) + ' (' + (sp / a * 100 < 0.01 ? '<0.01' : (sp / a * 100).toFixed(2)) + '%)';
     }
     if (list.length) {
       el_.querySelector('.twrap .bwait')?.remove();

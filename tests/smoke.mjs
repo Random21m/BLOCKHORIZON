@@ -245,7 +245,7 @@ await ok('trading chart: order book (checksum checked), trades, drawings, price 
   await p.click('#t-clear'); assert.deepEqual(await p.evaluate(() => JSON.parse(localStorage.getItem('bh.drawings')).USD), []);
   // a price alert from the keyboard (A at the newest candle's close), listed under the chart; a price crossing it fires it
   await p.click('[data-tool=alert]'); await p.mouse.click(box.x + box.width * 0.5, box.y + box.height * 0.2);
-  await until(p, () => document.querySelectorAll('.talert').length === 1); assert.ok(/⏰ ≥ [\d,.]+ USD/.test(await p.locator('.talert').innerText()));
+  await until(p, () => document.querySelectorAll('.talert').length === 1); assert.ok(/◷ ≥ [\d,.]+ USD/.test(await p.locator('.talert').innerText()));
   const target = await p.evaluate(() => JSON.parse(localStorage.getItem('bh.priceAlerts'))[0].price);
   tick.send(JSON.stringify({ channel: 'ticker', type: 'update', data: [{ symbol: 'BTC/USD', last: target + 5, change_pct: 0.2 }] }));
   await until(p, () => /Bitcoin rose to/.test(document.querySelector('#toast').textContent) && !document.querySelector('.talert'));

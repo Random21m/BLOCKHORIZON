@@ -16,7 +16,7 @@ import { sidePanel } from './trade-side.js';
 const INDS = [['ema20', 'EMA 20', '--blue'], ['sma50', 'SMA 50', '--warn'], ['sma200', 'SMA 200', '--teal'], ['bb', 'BB 20', '--pink'], ['vol', () => t('volume'), null], ['rsi', 'RSI 14', '--violet'], ['macd', 'MACD', '--blue']];
 const OVERLAYS = ['ema20', 'sma50', 'sma200'];
 const DEF_IND = { ema20: true, sma50: true, sma200: false, bb: false, vol: true, rsi: false, macd: false };
-const TOOLS = [['cursor', 'toolCursor', '↖'], ['hline', 'toolHline', '—'], ['trend', 'toolTrend', '╱'], ['alert', 'toolAlert', '⏰']];
+const TOOLS = [['cursor', 'toolCursor', '↖'], ['hline', 'toolHline', '—'], ['trend', 'toolTrend', '╱'], ['alert', 'toolAlert', '◷']];
 const AXIS_W = 72, TIME_H = 24, RIGHT_PAD = 4, MIN_N = 12, HIT = 7; // px; empty candles right of the newest; fewest candles shown; pick distance
 const MONO = '11px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace';
 const drawingsAll = () => store('drawings') || {};
@@ -120,7 +120,7 @@ export function tradeChart() {
   let moving = null; // an alert being dragged: { id, price } (saved when let go)
   const myAlerts = () => priceAlerts().filter((a) => a.cur === cur).map((a) => (moving && moving.id === a.id ? Object.assign({}, a, { price: moving.price }) : a));
   function alertsList() {
-    alertList.replaceChildren(...myAlerts().map((a) => el('span', { class: 'talert', role: 'listitem' }, '⏰ ' + (a.dir === 'up' ? '≥ ' : '≤ ') + fmtPrice(a.price, cur),
+    alertList.replaceChildren(...myAlerts().map((a) => el('span', { class: 'talert', role: 'listitem' }, '◷ ' + (a.dir === 'up' ? '≥ ' : '≤ ') + fmtPrice(a.price, cur),
       el('button', { 'aria-label': t('removeAlert', { p: fmtPrice(a.price, cur) }), onclick: () => removePriceAlert(a.id) }, '✕'))));
   }
   function setTool(k) {
@@ -232,7 +232,7 @@ export function tradeChart() {
     for (const a of myAlerts()) { const y = Math.round(Y(a.price)) + 0.5, on = sel && sel.kind === 'alert' && sel.id === a.id; if (y < 0 || y > mainH) continue; g.strokeStyle = on ? C.accent : C.warn; g.lineWidth = on ? 2 : 1; g.setLineDash([6, 4]); g.beginPath(); g.moveTo(0, y); g.lineTo(w, y); g.stroke(); g.setLineDash([]); }
     g.restore(); g.lineWidth = 1;
     for (const d of drawings) if (d.type === 'h') { const y = Y(d.p); if (y > 9 && y < mainH - 9) tag(g, pf(d.p), w, y, W - w, C.text, C.bg); }
-    for (const a of myAlerts()) { const y = Y(a.price); if (y > 9 && y < mainH - 9) tag(g, '⏰' + pf(a.price), w, y, W - w, C.warn, C.bg); }
+    for (const a of myAlerts()) { const y = Y(a.price); if (y > 9 && y < mainH - 9) tag(g, '◷' + pf(a.price), w, y, W - w, C.warn, C.bg); }
 
     // last price line and label
     const lastK = candles[candles.length - 1], ly = Y(lastK.c), lc = lastK.c >= lastK.o ? C.up : C.down;

@@ -104,6 +104,8 @@ export function parseHeightInput(s) {
 // Moscow time "HH:MM" style: sats per dollar shown as clock
 export function moscowTime(sats) { const s = String(Math.max(0, Math.min(9999, Math.floor(sats)))).padStart(4, '0'); return s.slice(0, 2) + ':' + s.slice(2); }
 export function marketCapUsd(h, price) { return supplyAt(h) / 1e8 * price; }
+// Axis labels: drop trailing zeros after the decimal point ("100.00K" -> "100K", "92.50 T" -> "92.5 T").
+export const trimZeros = (s) => String(s).replace(/(\d)\.(\d*?)0+(?!\d)/g, (m, a, b) => a + (b ? '.' + b : ''));
 export function compact(n) {
   const u = [[1e12, 'T'], [1e9, 'B'], [1e6, 'M'], [1e3, 'K']];
   for (const [v, s] of u) if (Math.abs(n) >= v) return (n / v).toFixed(2) + s; return String(Math.round(n));

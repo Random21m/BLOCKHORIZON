@@ -8,7 +8,7 @@ import { CURRENCIES } from './price.js';
 import { askNotify } from './data.js';
 
 export function viewAlarm() {
-  const root = el('div'); root.append(el('h1', null, t('alarmTitle')), el('p', { class: 'dim' }, t('alarmIntro')));
+  const root = el('div', { class: 'alarms' }), blk = el('section', { class: 'panel' }, el('h2', null, t('alarmTitle')), el('p', { class: 'dim' }, t('alarmIntro'))); root.append(el('h1', null, t('alarm')), blk);
   const inH = el('input', { id: 'al-h', type: 'text', inputmode: 'numeric', placeholder: t('height'), 'aria-label': t('height'), value: Number.isFinite(st.tip) ? String(st.tip + 6) : '' });
   const inB = el('input', { id: 'al-b', type: 'text', inputmode: 'numeric', placeholder: t('phFromNow'), 'aria-label': t('fromNow'), size: 10 });
   const inL = el('input', { id: 'al-l', type: 'text', placeholder: t('phLabel'), 'aria-label': t('label'), maxlength: 40 });
@@ -17,8 +17,8 @@ export function viewAlarm() {
   const preview = () => { const hh = inB.value ? st.tip + (parseInt(inB.value, 10) || 0) : L.parseHeightInput(inH.value); if (!Number.isFinite(hh)) { out.textContent = ''; return null; }
     const f = L.futureEstimate(hh, st.tip); out.textContent = f.past ? t('alreadyMined') : t('away', { n: L.fmtNum(f.blocks), d: fmtD(f.ms) }); return f.past ? null : hh; };
   inH.addEventListener('input', preview); inB.addEventListener('input', preview);
-  root.append(el('div', { class: 'row' }, inH, inB, inL, sel, el('button', { class: 'btn-go', onclick: () => { const hh = preview(); if (hh == null) return toast(t('notFound')); const a = alarms(); a.push({ height: hh, label: inL.value.trim(), sound: sel.value }); store('alarms', a); play(sel.value); askNotify(); hooks.renderView(); } }, t('setAlarm')), el('button', { onclick: () => play(sel.value) }, '▶ ' + t('test'))), out);
-  const list = alarms(); root.append(el('h2', { class: 'dim mono' }, t('active')), list.length ? el('table', null, el('tbody', null, list.map((a, i) => el('tr', null, el('td', null, L.fmtNum(a.height)), el('td', null, a.label || ''), el('td', null, t('nBlocks', { n: L.fmtNum(a.height - st.tip) })), el('td', null, el('button', { onclick: () => { const x = alarms(); x.splice(i, 1); store('alarms', x); hooks.renderView(); } }, t('remove'))))))) : el('p', { class: 'dim' }, t('noneYet')));
+  blk.append(el('div', { class: 'row' }, inH, inB, inL, sel, el('button', { class: 'btn-go', onclick: () => { const hh = preview(); if (hh == null) return toast(t('notFound')); const a = alarms(); a.push({ height: hh, label: inL.value.trim(), sound: sel.value }); store('alarms', a); play(sel.value); askNotify(); hooks.renderView(); } }, t('setAlarm')), el('button', { onclick: () => play(sel.value) }, '▶ ' + t('test'))), out);
+  const list = alarms(); blk.append(el('h3', { class: 'sec' }, t('active')), list.length ? el('table', null, el('tbody', null, list.map((a, i) => el('tr', null, el('td', null, L.fmtNum(a.height)), el('td', null, a.label || ''), el('td', null, t('nBlocks', { n: L.fmtNum(a.height - st.tip) })), el('td', null, el('button', { onclick: () => { const x = alarms(); x.splice(i, 1); store('alarms', x); hooks.renderView(); } }, t('remove'))))))) : el('p', { class: 'dim' }, t('noneYet')));
   root.append(pricePanel(), feePanel());
   preview(); return root;
 }
@@ -43,9 +43,9 @@ function feePanel() {
     const a = feeAlerts(); a.push({ level: lvl.value, max: m, sound: snd.value }); store('feeAlerts', a); play(snd.value); askNotify(); hooks.renderView();
   };
   const list = feeAlerts(); queueMicrotask(paintFeeNow); // once the panel is on the page
-  return el('section', { class: 'feealert' }, el('h2', { class: 'dim mono', style: 'margin-top:28px' }, t('feeAlert')), el('p', { class: 'dim' }, t('feeIntro')),
+  return el('section', { class: 'panel feealert' }, el('h2', null, t('feeAlert')), el('p', { class: 'dim' }, t('feeIntro')),
     el('div', { class: 'row' }, lvl, max, snd, el('button', { class: 'btn-go', id: 'fa-go', onclick: add }, t('setFee')), el('button', { onclick: () => play(snd.value) }, '▶ ' + t('test'))), now,
-    el('h2', { class: 'dim mono' }, t('activeFee')), list.length ? el('table', { id: 'fa-list' }, el('tbody', null, list.map((a, i) => el('tr', null, el('td', null, t(FEE_LVL_KEYS[a.level] || 'lvlNext')), el('td', null, '≤ ' + L.fmtFee(a.max) + ' sat/vB'),
+    el('h3', { class: 'sec' }, t('activeFee')), list.length ? el('table', { id: 'fa-list' }, el('tbody', null, list.map((a, i) => el('tr', null, el('td', null, t(FEE_LVL_KEYS[a.level] || 'lvlNext')), el('td', null, '≤ ' + L.fmtFee(a.max) + ' sat/vB'),
       el('td', null, el('button', { onclick: () => { const x = feeAlerts(); x.splice(i, 1); store('feeAlerts', x); hooks.renderView(); } }, t('remove'))))))) : el('p', { class: 'dim' }, t('noneYet')));
 }
 // Price alert: a sound and a message when BTC reaches a price (up or down from now). Also set from the trading chart.
@@ -70,19 +70,19 @@ function pricePanel() {
   cur.addEventListener('change', paintNow); queueMicrotask(paintNow);
   const add = () => { const p = L.parsePriceInput(inP.value); if (!Number.isFinite(p)) return toast(t('priceBad')); if (addPriceAlert(cur.value, p, snd.value)) play(snd.value); };
   const list = priceAlerts();
-  return el('section', { class: 'pricealert' }, el('h2', { class: 'dim mono', style: 'margin-top:28px' }, t('priceAlert')), el('p', { class: 'dim' }, t('priceAlertIntro')),
+  return el('section', { class: 'panel pricealert' }, el('h2', null, t('priceAlert')), el('p', { class: 'dim' }, t('priceAlertIntro')),
     el('div', { class: 'row' }, inP, cur, snd, el('button', { class: 'btn-go', id: 'pa-go', onclick: add }, t('setPrice')), el('button', { onclick: () => play(snd.value) }, '▶ ' + t('test'))), now,
-    el('h2', { class: 'dim mono' }, t('activePrice')), list.length ? el('table', { id: 'pa-list' }, el('tbody', null, list.map((a) => el('tr', null, el('td', null, (a.dir === 'up' ? '≥ ' : '≤ ') + fmtPrice(a.price, a.cur)),
+    el('h3', { class: 'sec' }, t('activePrice')), list.length ? el('table', { id: 'pa-list' }, el('tbody', null, list.map((a) => el('tr', null, el('td', null, (a.dir === 'up' ? '≥ ' : '≤ ') + fmtPrice(a.price, a.cur)),
       el('td', null, el('button', { onclick: () => removePriceAlert(a.id) }, t('remove'))))))) : el('p', { class: 'dim' }, t('noneYet')));
 }
 export function viewCalc() {
-  const root = el('div'); root.append(el('h1', null, t('calc').toUpperCase()));
+  const root = el('div', { class: 'calc' }); root.append(el('h1', null, t('calc').toUpperCase()));
   const p = price(), res = (id) => el('div', { id, class: 'big', style: 'margin:6px 0' });
   const a = el('div', { class: 'panel' }, el('h2', null, 'Sats ⇄ ' + S.cur));
   const sats = el('input', { id: 'c-sats', inputmode: 'decimal', placeholder: 'sats', 'aria-label': 'Sats' }), fiat = el('input', { id: 'c-fiat', inputmode: 'decimal', placeholder: S.cur, 'aria-label': S.cur });
   sats.addEventListener('input', () => { const v = parseFloat(sats.value); fiat.value = Number.isFinite(v) && p ? (v / 1e8 * p).toFixed(2) : ''; });
   fiat.addEventListener('input', () => { const v = parseFloat(fiat.value); sats.value = Number.isFinite(v) && p ? Math.round(v / p * 1e8) : ''; });
-  a.append(el('div', { class: 'row' }, sats, el('span', null, '⇄'), fiat), el('div', { class: 'dim' }, p ? `1 BTC = ${L.fmtNum(p)} ${S.cur}` : t('priceMissing')));
+  a.append(el('div', { class: 'row' }, sats, el('span', { 'aria-hidden': 'true', class: 'dim' }, '⇄'), fiat), el('div', { class: 'dim' }, p ? `1 BTC = ${L.fmtNum(p)} ${S.cur}` : t('priceMissing')));
   const b = el('div', { class: 'panel' }, el('h2', null, t('heightDate')));
   const bh = el('input', { id: 'c-h', inputmode: 'numeric', placeholder: t('height'), 'aria-label': t('height') }), out = res('c-out');
   bh.addEventListener('input', () => { const n = L.parseHeightInput(bh.value); if (!Number.isFinite(n)) { out.textContent = ''; return; } const f = L.futureEstimate(n, st.tip); const sp = L.supplyAt(n);
@@ -101,7 +101,7 @@ export function payPanel(p) {
     if (!f) { table.replaceChildren(el('tbody', null, el('tr', null, el('td', null, t('feesMissing'))))); return; }
     table.replaceChildren(el('tbody', null, [[t('feeNext'), t('eta10'), f.fastestFee], [t('fee30'), t('eta30'), f.halfHourFee], [t('fee1h'), t('eta60'), f.hourFee], [t('feeSlow'), t('etaLater'), f.economyFee]].map(([l, e, r]) => {
       const s = Math.ceil(r * vb);
-      return el('tr', null, el('td', null, `${l} (${e})`), el('td', { class: 'num rate' }, L.fmtFee(r) + ' sat/vB'), el('td', { class: 'num' }, L.fmtNum(s) + ' sats'), el('td', { class: 'num' }, Number.isFinite(p) ? L.fmtNum(s / 1e8 * p, 2) + ' ' + S.cur : '–'));
+      return el('tr', null, el('td', null, l, el('small', null, `${e} · ${L.fmtFee(r)} sat/vB`)), el('td', { class: 'num' }, L.fmtNum(s) + ' sats'), el('td', { class: 'num' }, Number.isFinite(p) ? L.fmtNum(s / 1e8 * p, 2) + ' ' + S.cur : '–'));
     })));
   };
   for (const x of [ins, outs, type]) { x.addEventListener('input', upd); x.addEventListener('change', upd); }

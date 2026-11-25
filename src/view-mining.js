@@ -37,10 +37,17 @@ function followBox(id) {
   return el('form', { class: 'follow', onsubmit: go }, el('label', { for: 'mf-tx', class: 'eyebrow' }, t('mineTrack')),
     el('div', { class: 'frow' }, input, el('button', { class: 'btn-go', type: 'submit' }, t('mineWatch'))), status);
 }
+// A bell drawn as SVG (emoji differ per system); the slash shows while the sound is off (styled from aria-pressed).
+function bellIcon() {
+  const ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg');
+  for (const [k, v] of Object.entries({ viewBox: '0 0 24 24', width: 16, height: 16, 'aria-hidden': 'true', fill: 'none', stroke: 'currentColor', 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', class: 'ico' })) svg.setAttribute(k, v);
+  for (const [d, c] of [['M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z', ''], ['M10 21h4', ''], ['M4 4l16 16', 'slash']]) { const p = document.createElementNS(ns, 'path'); p.setAttribute('d', d); if (c) p.setAttribute('class', c); svg.append(p); }
+  return svg;
+}
 function soundButton() {
   return el('button', { class: 'soundbtn', type: 'button', 'aria-pressed': S.sound ? 'true' : 'false', title: t('soundNew'),
-    onclick: (e) => { S.sound = !S.sound; save(); e.currentTarget.setAttribute('aria-pressed', String(S.sound)); e.currentTarget.firstChild.textContent = S.sound ? '🔔' : '🔕'; if (S.sound) play(S.bsound); } },
-  el('span', { 'aria-hidden': 'true' }, S.sound ? '🔔' : '🔕'), ' ' + t('soundNew'));
+    onclick: (e) => { S.sound = !S.sound; save(); e.currentTarget.setAttribute('aria-pressed', String(S.sound)); if (S.sound) play(S.bsound); } },
+  bellIcon(), t('soundNew'));
 }
 
 let pools = null, poolsAt = 0;
@@ -91,7 +98,7 @@ export function viewMining(arg = '') {
         target ? el('p', { class: 'dim note' }, t('targetNote', { n: L.leadingZeros(target) })) : null),
       el('p', { class: 'dim note' }, t('mineIntro')))));
 
-  const grid = el('div', { class: 'grid' }); root.append(grid);
+  const grid = el('div', { class: 'grid mgrid' }); root.append(grid);
   grid.append(el('section', { class: 'panel' }, el('h2', null, t('inBlock')), pb ? [
     kv([[t('txs'), L.fmtNum(pb.nTx)], [t('size'), t('full', { p: Math.min(100, Math.round((pb.blockVSize || 0) / 1e4)) })], [t('medianFee'), L.fmtFee(pb.medianFee) + ' sat/vB'],
       [t('feeRange'), fr ? `${L.fmtFee(fr[0])} – ${L.fmtFee(fr[fr.length - 1])} sat/vB` : '–'],
