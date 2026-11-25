@@ -97,19 +97,22 @@ export function trackBlock(on) {
 // without a live feed is not hammered); a successful connection resets the delay.
 export function live(onMsg, onState) {
   let ws, timer, stopped = false, delay = 3000;
-  reopen = () => { delay = 3000; try { if (ws) ws.close(); } catch { /* */ } }; // its close handler opens the next one 3 s later
+  // an open socket is closed (its close handler opens the next one 3 s later); a closed one waiting in backoff is opened now
+  reopen = () => { delay = 3000; if (ws && ws.readyState <= 1) { try { ws.close(); } catch { /* */ } } else open(); };
   const open = () => {
     clearTimeout(timer);
     if (stopped || document.hidden || navigator.onLine === false || (ws && ws.readyState <= 1)) return;
     let s; try { s = ws = sock = new WebSocket(wsUrl()); } catch { onState('poll'); return; }
     s.onopen = () => { if (s !== ws) return s.close(); delay = 3000; onState('on'); s.send(JSON.stringify({ action: 'init' })); s.send(JSON.stringify({ action: 'want', data: ['blocks', 'stats', 'mempool-blocks'] })); if (tracking) s.send(JSON.stringify({ 'track-mempool-block': 0 })); };
     s.onmessage = (e) => { if (s !== ws) return; try { onMsg(JSON.parse(e.data)); } catch { /* ignore bad frame */ } };
-    s.onclose = () => { if (s !== ws) return; onState('poll'); if (!stopped) { timer = setTimeout(open, delay); delay = Math.min(delay * 2, 30000); } };
+    s.onclose = () => { if (s !== ws) return; onState(navigator.onLine === false ? 'off' : 'poll'); if (!stopped) { timer = setTimeout(open, delay); delay = Math.min(delay * 2, 30000); } };
     s.onerror = () => { try { s.close(); } catch { /* */ } };
   };
   document.addEventListener('visibilitychange', () => { if (!document.hidden) open(); });
   addEventListener('online', open);
-  addEventListener('offline', () => onState('off'));
+  // offline: close the socket too, so coming back online opens a fresh one (and reports 'on' again) instead of
+  // keeping one that may have survived the blip while the dot and the Mining picture were reset
+  addEventListener('offline', () => { onState('off'); try { if (ws) ws.close(); } catch { /* */ } });
   open();
   return () => { stopped = true; clearTimeout(timer); try { ws && ws.close(); } catch { /* */ } };
 }

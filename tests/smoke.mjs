@@ -512,6 +512,15 @@ await ok('live feeds: going offline and back online several times keeps one conn
   for (let i = 0; i < 3; i++) await p.evaluate(() => { dispatchEvent(new Event('online')); dispatchEvent(new Event('online')); });
   await new Promise((r) => setTimeout(r, 1500));
   assert.deepEqual(opened, { mempool: 1, kraken: 1 }, JSON.stringify(opened)); assert.deepEqual(perr, []); await c.close(); });
+await ok('connection dot: red while offline, live again once back online (the live connection is reopened)', async () => {
+  const c = await b.newContext(); let opened = 0;
+  await c.routeWebSocket(/mempool\.space/, (ws) => { opened++; ws.onMessage(() => {}); }); await c.routeWebSocket(/kraken/, (ws) => ws.onMessage(() => {}));
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
+  await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+  const p = await c.newPage(); await p.goto(base); await until(p, () => document.querySelector('#conn')?.className === 'conn on');
+  await c.setOffline(true); await until(p, () => document.querySelector('#conn').className === 'conn ', null, { timeout: 5000 });
+  await c.setOffline(false); await until(p, () => document.querySelector('#conn').className === 'conn on', null, { timeout: 8000 });
+  assert.equal(opened, 2); await c.close(); });
 await ok('keyboard: Tab stays inside an open dialog, Escape closes it and focus goes back', async () => {
   await page.goto(base); await page.focus('#btn-settings'); await page.keyboard.press('Enter'); await page.waitForSelector('#st-theme');
   for (let i = 0; i < 25; i++) { await page.keyboard.press('Tab'); assert.ok(await page.evaluate(() => document.querySelector('#modal').contains(document.activeElement)), 'focus left the dialog at Tab ' + (i + 1)); }

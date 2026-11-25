@@ -5,7 +5,7 @@ import { mountScene, dropLive } from './block-scene.js';
 import { livePrice } from './price.js';
 import { t, getLang } from './i18n.js';
 import { VERSION, $, S, st, el, toast, applyLook, NAVS, PHONE_TABS, NAV_ICONS, hooks } from './state.js';
-import { refreshAll, onLive, onPriceTick, checkAlarms, checkFeeAlerts } from './data.js';
+import { refreshAll, newGeneration, onLive, onPriceTick, checkAlarms, checkFeeAlerts } from './data.js';
 import { sinceText, srcHost } from './ui.js';
 import { viewDash, viewClock } from './view-dash.js';
 import { viewBlock, viewTx } from './view-chain.js';
@@ -126,7 +126,7 @@ function tickClock() { const s = $('#since'); if (s && st.blocks[0]) s.textConte
 export async function boot() {
   hooks.render = render; hooks.renderView = renderView;
   // Settings changed the data server: forget the old server's saved values and start over at the new one.
-  hooks.server = () => { setServer(S.server); for (const k of ['tip', 'blocks', 'diff', 'fees', 'mempool', 'projected', 'hashrate', 'ln', 'pools', 'rewards']) store(k, null);
+  hooks.server = () => { newGeneration(); setServer(S.server); for (const k of ['tip', 'blocks', 'diff', 'fees', 'mempool', 'projected', 'hashrate', 'ln', 'pools', 'rewards']) store(k, null);
     Object.assign(st, { tip: NaN, blocks: [], diff: null, fees: null, mem: null, proj: null, hr: null, ln: null, pools: null, rewards: null }); reconnect(); refreshAll(); renderView(); };
   hooks.alerts = () => { if (route === '/alarm') renderView(); document.dispatchEvent(new Event('bh-alerts')); }; // price alerts changed or fired
   applyLook(); $('#ver').textContent = 'BLOCKHORIZON ' + VERSION;
