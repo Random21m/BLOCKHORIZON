@@ -54,6 +54,12 @@ export function addPriceAlert(cur, p, sound) {
   const a = priceAlerts(); a.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), cur, price: p, dir: L.alertDir(p, now), sound: sound || S.asound });
   store('priceAlerts', a); askNotify(); toast(t('priceAlertSet', { p: fmtPrice(p, cur) })); hooks.alerts(); return true;
 }
+// Move an alert to a new price (dragged on the chart): its direction is worked out again from the price now.
+export function movePriceAlert(id, p) {
+  const list = priceAlerts(), a = list.find((x) => x.id === id); if (!a || !(p > 0)) return;
+  const now = st.prices && st.prices[a.cur]; a.price = p; if (Number.isFinite(now)) a.dir = L.alertDir(p, now);
+  store('priceAlerts', list); toast(t('priceAlertSet', { p: fmtPrice(p, a.cur) })); hooks.alerts();
+}
 export function removePriceAlert(id) { store('priceAlerts', priceAlerts().filter((a) => a.id !== id)); hooks.alerts(); }
 function pricePanel() {
   const inP = el('input', { id: 'pa-p', type: 'text', inputmode: 'decimal', placeholder: t('priceL'), 'aria-label': t('priceL'), size: 12 });

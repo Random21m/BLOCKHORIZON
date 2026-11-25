@@ -9,7 +9,7 @@ import { krakenCandles, store } from './api.js';
 import { liveMarket, CURRENCIES } from './price.js';
 import { t } from './i18n.js';
 import { S, save, fmtD, el, hooks, priceAlerts, fmtPrice } from './state.js';
-import { addPriceAlert, removePriceAlert } from './view-tools.js';
+import { addPriceAlert, removePriceAlert, movePriceAlert } from './view-tools.js';
 import { sidePanel } from './trade-side.js';
 
 // [key, label, colour token]; overlays first, then volume, then the panes.
@@ -55,7 +55,7 @@ export function tradeChart() {
   // ---- plot ----
   const cv = el('canvas', { 'aria-hidden': 'true' });
   const box = el('div', { class: 'tplot', tabindex: 0, role: 'group', 'aria-roledescription': 'chart' }, cv, legend, said);
-  const side = sidePanel(cur, (p) => { if (tool === 'alert') placeAlert(p); else if (tool === 'hline') placeH(p); });
+  const side = sidePanel(cur, (p) => { if (tool === 'alert') placeAlert(p); else if (tool === 'hline') placeH(p); toolButtons[0].focus(); }); // focus would be lost with the price buttons switched off
   const grid = el('div', { class: 'tgrid' + (S.tradeSide === false ? ' noside' : '') }, el('div', { class: 'tmain' }, box, alertList, toolHint), side.el);
   const panel = el('section', { class: 'panel tpanel', id: 'ch-trade' },
     el('div', { class: 'thead' }, el('h2', null, 'BTC/' + cur), lastEl, chgEl, state),
@@ -117,19 +117,29 @@ export function tradeChart() {
   });
 
   // ---- tools, drawings and alerts ----
-  const myAlerts = () => priceAlerts().filter((a) => a.cur === cur);
+  let moving = null; // an alert being dragged: { id, price } (saved when let go)
+  const myAlerts = () => priceAlerts().filter((a) => a.cur === cur).map((a) => (moving && moving.id === a.id ? Object.assign({}, a, { price: moving.price }) : a));
   function alertsList() {
     alertList.replaceChildren(...myAlerts().map((a) => el('span', { class: 'talert', role: 'listitem' }, '⏰ ' + (a.dir === 'up' ? '≥ ' : '≤ ') + fmtPrice(a.price, cur),
       el('button', { 'aria-label': t('removeAlert', { p: fmtPrice(a.price, cur) }), onclick: () => removePriceAlert(a.id) }, '✕'))));
   }
   function setTool(k) {
-    tool = k; pending = null; toolButtons.forEach((b) => pressed(b, b.dataset.tool === k));
+    tool = k; pending = null; toolButtons.forEach((b) => pressed(b, b.dataset.tool === k)); side.setMode(k);
     box.classList.toggle('drawing', k !== 'cursor');
     toolHint.textContent = k === 'cursor' ? '' : t({ hline: 'hintHline', trend: 'hintTrend1', alert: 'hintAlert' }[k]); paint();
   }
   const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-  function placeH(p) { const v = roundP(p); drawings.push({ id: newId(), type: 'h', p: v }); saveDrawings(); setTool('cursor'); toolHint.textContent = t('placedH', { p: pf(v) }); }
-  function placeAlert(p) { if (addPriceAlert(cur, roundP(p))) setTool('cursor'); }
+  // A new line or alert is selected, so the arrow keys move it straight away.
+  function placeH(p) { const v = roundP(p), id = newId(); drawings.push({ id, type: 'h', p: v }); saveDrawings(); setTool('cursor'); sel = { kind: 'draw', id }; syncSel(); toolHint.textContent = t('placedH', { p: pf(v) }); }
+  function placeAlert(p) { if (addPriceAlert(cur, roundP(p))) { setTool('cursor'); const a = myAlerts().at(-1); if (a) { sel = { kind: 'alert', id: a.id }; syncSel(); } } }
+  // L: select the next line or alert, and say which.
+  function cycleSel() {
+    const all = drawings.map((d) => ({ kind: 'draw', id: d.id, d })).concat(myAlerts().map((a) => ({ kind: 'alert', id: a.id, a })));
+    if (!all.length) { said.textContent = t('noLines'); return; }
+    const i = sel ? all.findIndex((x) => x.kind === sel.kind && x.id === sel.id) : -1, n = all[(i + 1) % all.length];
+    sel = { kind: n.kind, id: n.id }; syncSel(); paint();
+    said.textContent = n.a ? t('selAlert', { p: pf(n.a.price) }) : n.d.type === 'h' ? t('selLine', { p: pf(n.d.p) }) : t('selTrend', { a: pf(n.d.p1), b: pf(n.d.p2) });
+  }
   function syncSel() { delBtn.disabled = !sel; }
   function deleteSel() {
     if (!sel) return;
@@ -310,6 +320,41 @@ export function tradeChart() {
     sel = pick(px, py); syncSel(); paint();
   }
 
+  // ---- moving lines: drag a line (or a trend line's end) with the cursor tool; or select it and press up / down ----
+  // A grab remembers the line as it was, so the move is relative to where the pointer went down; nothing is saved
+  // until the pointer is let go (a cancelled pointer puts it back).
+  function grabAt(px, py) {
+    const s = pick(px, py); if (!s) return null;
+    sel = s; syncSel();
+    if (s.kind === 'alert') { const a = myAlerts().find((x) => x.id === s.id); return a && { kind: 'alert', id: a.id, p0: a.price, y0: py }; }
+    const d = drawings.find((x) => x.id === s.id); if (!d) return null; const orig = Object.assign({}, d), { x } = geo();
+    let end = 0; // trend line: 1 or 2 moves that end only, 0 moves the whole line
+    if (d.type === 'trend') { if (Math.hypot(x(idxOf(d.t1)) - px, Ymain(d.p1) - py) <= HIT * 1.5) end = 1; else if (Math.hypot(x(idxOf(d.t2)) - px, Ymain(d.p2) - py) <= HIT * 1.5) end = 2; }
+    return { kind: 'draw', id: d.id, orig, end, x0: px, y0: py };
+  }
+  function dragTo(gr, px, py) {
+    const dp = Pmain(py) - Pmain(gr.y0);
+    if (gr.kind === 'alert') { moving = { id: gr.id, price: roundP(gr.p0 + dp) }; return; }
+    const d = drawings.find((x) => x.id === gr.id); if (!d) return; const o = gr.orig;
+    if (d.type === 'h') { d.p = roundP(o.p + dp); return; }
+    const dt = (geo().fi(px) - geo().fi(gr.x0)) * tfMs();
+    if (gr.end !== 2) { d.t1 = o.t1 + dt; d.p1 = roundP(o.p1 + dp); }
+    if (gr.end !== 1) { d.t2 = o.t2 + dt; d.p2 = roundP(o.p2 + dp); }
+  }
+  function endDrag(gr, keep) {
+    if (gr.kind === 'alert') { const m = moving; moving = null; if (keep && m) movePriceAlert(m.id, m.price); paint(); return; }
+    if (keep) { saveDrawings(); toolHint.textContent = t('movedLine'); }
+    else { const i = drawings.findIndex((x) => x.id === gr.id); if (i >= 0) drawings[i] = gr.orig; }
+    paint();
+  }
+  function nudge(s, steps) { // one step: a tenth of the gap between price labels, rounded to the price tick
+    const sp = Ymain ? Math.abs(Pmain(0) - Pmain(70)) / 10 : 0, step = Math.max(tick, roundP(sp) || tick) * steps;
+    if (s.kind === 'alert') { const a = myAlerts().find((x) => x.id === s.id); if (a) movePriceAlert(a.id, roundP(a.price + step)); return; }
+    const d = drawings.find((x) => x.id === s.id); if (!d) return;
+    if (d.type === 'h') d.p = roundP(d.p + step); else { d.p1 = roundP(d.p1 + step); d.p2 = roundP(d.p2 + step); }
+    saveDrawings(); paint(); said.textContent = t('movedTo', { p: pf(d.type === 'h' ? d.p : d.p1) });
+  }
+
   // ---- interaction ----
   const local = (e) => { const r = box.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
   const zoom = (f, px) => { // keep the candle under px where it is
@@ -320,19 +365,21 @@ export function tradeChart() {
   box.addEventListener('wheel', (e) => { if (!candles.length) return; e.preventDefault(); zoom(Math.pow(1.0015, e.deltaY), Math.min(local(e)[0], width())); }, { passive: false });
   box.addEventListener('pointerdown', (e) => {
     if (!candles.length) return; box.setPointerCapture(e.pointerId); const pt = local(e); ptrs.set(e.pointerId, pt);
-    if (ptrs.size === 1) drag = { x: pt[0], y: pt[1], off, moved: false };
+    if (ptrs.size === 1) drag = { x: pt[0], y: pt[1], off, moved: false, grab: tool === 'cursor' ? grabAt(pt[0], pt[1]) : null };
     if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch = { d: Math.abs(a[0] - b[0]) || 1, count, mid: (a[0] + b[0]) / 2 }; drag = null; }
   });
   box.addEventListener('pointermove', (e) => {
     if (!candles.length) return; const [px, py] = local(e);
     if (ptrs.has(e.pointerId)) ptrs.set(e.pointerId, [px, py]);
     if (pinch && ptrs.size === 2) { const [a, b] = [...ptrs.values()], d = Math.abs(a[0] - b[0]) || 1; zoom(pinch.count * pinch.d / d / count, Math.min(pinch.mid, width())); return; }
-    if (drag) { const dx = px - drag.x; if (Math.abs(dx) > 4 || Math.abs(py - drag.y) > 4) drag.moved = true; if (drag.moved) { off = drag.off + dx / geo().cw; clamp(); } }
+    if (drag) { const dx = px - drag.x; if (Math.abs(dx) > 4 || Math.abs(py - drag.y) > 4) drag.moved = true;
+      if (drag.moved && drag.grab) dragTo(drag.grab, px, py); else if (drag.moved) { off = drag.off + dx / geo().cw; clamp(); } }
     hover = px < width() ? geo().at(px) : -1; hoverY = py; hoverPx = px;
-    box.classList.toggle('pick', tool === 'cursor' && !drag && !!pick(px, py)); paint();
+    box.classList.toggle('pick', tool === 'cursor' && (drag ? !!drag.grab : !!pick(px, py))); paint();
   });
   const up = (e) => {
     const click = e.type === 'pointerup' && drag && ptrs.size === 1 && !drag.moved ? local(e) : null;
+    if (drag && drag.grab && drag.moved) endDrag(drag.grab, e.type === 'pointerup');
     ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null; if (!ptrs.size) drag = null;
     if (click) clickAt(click[0], click[1]);
   };
@@ -344,7 +391,9 @@ export function tradeChart() {
   box.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && (tool !== 'cursor' || sel)) { e.preventDefault(); e.stopPropagation(); sel = null; syncSel(); setTool('cursor'); return; }
     if ((e.key === 'Delete' || e.key === 'Backspace') && sel) { e.preventDefault(); deleteSel(); return; }
+    if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && sel) { e.preventDefault(); nudge(sel, (e.key === 'ArrowUp' ? 1 : -1) * (e.shiftKey ? 10 : 1)); return; }
     if (!candles.length || e.ctrlKey || e.metaKey || e.altKey) return; const n = candles.length, at = hover < 0 ? n - 1 : hover;
+    if (e.key === 'l') { e.preventDefault(); cycleSel(); return; }
     if (e.key === 'h' || e.key === 'a') { e.preventDefault(); if (e.key === 'h') placeH(candles[at].c); else placeAlert(candles[at].c); return; }
     const move = { ArrowLeft: -1, ArrowRight: 1, PageUp: -10, PageDown: 10 }[e.key];
     if (move && e.shiftKey) { e.preventDefault(); off -= move * Math.max(1, Math.round(count / 10)); clamp(); paint(); return; }

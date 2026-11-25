@@ -256,6 +256,71 @@ await ok('trading chart: order book (checksum checked), trades, drawings, price 
   await p.fill('#pa-p', '50,000'); await p.click('#pa-go'); await until(p, () => document.querySelector('#pa-list')?.textContent.includes('≤ 50,000.0 USD'));
   await p.click('#pa-list button'); await until(p, () => !document.querySelector('#pa-list'));
   assert.deepEqual(perr, []); await c.close(); });
+await ok('trading chart: order-book prices by keyboard, dragging lines and alerts, and moving them with the arrow keys', async () => {
+  const c = await b.newContext({ viewport: { width: 1280, height: 900 } }); let tick = null;
+  await c.routeWebSocket(/mempool\.space/, (ws) => ws.close());
+  await c.routeWebSocket(/ws\.kraken\.com/, (ws) => { ws.onMessage((m) => { const q = JSON.parse(m); if (q.method !== 'subscribe') return;
+    if (q.params.channel === 'ticker') { tick = ws; ws.send(JSON.stringify({ channel: 'ticker', type: 'snapshot', data: [{ symbol: 'BTC/USD', last: 59067.3, change_pct: 0.1 }] })); }
+    if (q.params.channel === 'ohlc') ws.send(fx('kraken-ohlc-snapshot.json'));
+    if (q.params.channel === 'book') ws.send(fx('kraken-book-snapshot.json')); }); });
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') || r.request().url().includes('api.kraken.com') ? r.fallback() : r.abort());
+  await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+  await c.route(/api\.kraken\.com/, (route) => route.fulfill({ contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: fx('kraken-ohlc-rest.json') }));
+  const p = await c.newPage(); const perr = []; p.on('pageerror', (e) => perr.push(e.message));
+  await p.goto(base + '#/charts'); await until(p, () => /Spread/.test(document.querySelector('.bspread')?.textContent || '') && /USD/.test(document.querySelector('.tprice').textContent), null, { timeout: 10000 });
+  const drawn = () => p.evaluate(() => (JSON.parse(localStorage.getItem('bh.drawings') || '{}').USD || []));
+  const alerts = () => p.evaluate(() => JSON.parse(localStorage.getItem('bh.priceAlerts') || '[]'));
+  // order book: prices are buttons only while a tool is chosen; Enter on one sets the alert there, focus lands on the toolbar
+  assert.equal(await p.locator('.book .bp:not([disabled])').count(), 0, 'out of the Tab order with the cursor tool');
+  await p.click('[data-tool=alert]'); await until(p, () => document.querySelectorAll('.book .bp:not([disabled])').length === 20);
+  const best = JSON.parse(fx('kraken-book-snapshot.json')).data[0].bids[0].price;
+  const btn = p.locator('.brow.bid .bp').first(); assert.equal(await btn.getAttribute('aria-label'), 'Set a price alert at ' + best.toLocaleString('en-US', { minimumFractionDigits: 1 }) + ' USD');
+  await btn.focus(); await p.keyboard.press('Enter');
+  await until(p, () => document.querySelectorAll('.talert').length === 1); assert.equal((await alerts())[0].price, best);
+  assert.equal(await p.evaluate(() => document.activeElement.dataset.tool), 'cursor'); assert.equal(await p.locator('.book .bp:not([disabled])').count(), 0);
+  await p.click('[data-tool=hline]'); await p.locator('.brow.ask .bp').first().focus(); await p.keyboard.press('Enter');
+  await until(p, async () => true); assert.equal((await drawn()).length, 1);
+  await p.click('#t-clear'); await p.click('.talert button'); await until(p, () => !document.querySelector('.talert'));
+  // drag a horizontal line down: it moves, and it is saved when let go
+  // focusing a book price scrolled the page: back to the top at once (the page scrolls smoothly), then measure the plot
+  await p.evaluate(() => scrollTo({ top: 0, behavior: 'instant' })); await until(p, () => scrollY === 0);
+  const box = await p.locator('.tplot').boundingBox(), X = (f) => box.x + box.width * f, Y = (f) => box.y + box.height * f;
+  await p.click('[data-tool=hline]'); await p.mouse.click(X(0.5), Y(0.3)); const h0 = (await drawn())[0]?.p; assert.ok(h0 > 0, 'a line was placed where the plot was measured');
+  await p.mouse.move(X(0.4), Y(0.3)); await p.mouse.down(); await p.mouse.move(X(0.4), Y(0.4), { steps: 5 }); await p.mouse.move(X(0.4), Y(0.45), { steps: 5 }); await p.mouse.up();
+  const h1 = (await drawn())[0].p; assert.ok(h1 < h0, `moved down: ${h0} -> ${h1}`); assert.equal((await drawn()).length, 1);
+  // a trend line: dragging its end moves only that end; dragging the middle moves both ends
+  await p.click('#t-clear'); await p.click('[data-tool=trend]'); await p.mouse.click(X(0.2), Y(0.55)); await p.mouse.click(X(0.6), Y(0.35));
+  const t0 = (await drawn())[0];
+  await p.mouse.move(X(0.6), Y(0.35)); await p.mouse.down(); await p.mouse.move(X(0.65), Y(0.25), { steps: 6 }); await p.mouse.up();
+  const t1 = (await drawn())[0]; assert.equal(t1.p1, t0.p1); assert.equal(t1.t1, t0.t1); assert.ok(t1.p2 > t0.p2 && t1.t2 > t0.t2, 'the end moved');
+  // an alert line: dragging it changes its price (and the change is kept)
+  await p.click('#t-clear'); await p.click('[data-tool=alert]'); await p.mouse.click(X(0.5), Y(0.25)); await until(p, () => document.querySelectorAll('.talert').length === 1);
+  const a0 = (await alerts())[0].price;
+  await p.mouse.move(X(0.3), Y(0.25)); await p.mouse.down(); await p.mouse.move(X(0.3), Y(0.35), { steps: 6 }); await p.mouse.up();
+  await until(p, async () => true); const a1 = (await alerts())[0]; assert.ok(a1.price < a0, `alert moved: ${a0} -> ${a1.price}`);
+  // keyboard: H draws a line (selected), the up arrow moves it, L cycles through lines and alerts and says which
+  await p.focus('.tplot'); await p.keyboard.press('h'); const k0 = (await drawn()).at(-1).p;
+  await p.keyboard.press('ArrowUp'); const k1 = (await drawn()).at(-1).p; assert.ok(k1 > k0, `nudged up: ${k0} -> ${k1}`);
+  await p.keyboard.press('Shift+ArrowDown'); assert.ok((await drawn()).at(-1).p < k1);
+  await p.keyboard.press('l'); assert.ok(/(Line|Alert) at [\d,.]+ selected/.test(await p.locator('.tplot [aria-live]').innerText()));
+  await p.keyboard.press('Escape'); assert.equal(await p.isDisabled('#t-del'), true, 'Esc clears the selection');
+  assert.deepEqual(perr, []); await c.close(); });
+await ok('trading chart: full screen fills the screen on a computer and a phone', async () => {
+  for (const vp of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
+    const c = await b.newContext({ viewport: vp }); await c.routeWebSocket(/mempool\.space/, (ws) => ws.close());
+    await c.routeWebSocket(/ws\.kraken\.com/, (ws) => { ws.onMessage((m) => { const q = JSON.parse(m); if (q.method === 'subscribe' && q.params.channel === 'ohlc') ws.send(fx('kraken-ohlc-snapshot.json')); }); });
+    await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') || r.request().url().includes('api.kraken.com') ? r.fallback() : r.abort());
+    await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+    await c.route(/api\.kraken\.com/, (route) => route.fulfill({ contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: fx('kraken-ohlc-rest.json') }));
+    const p = await c.newPage(); await p.goto(base + '#/charts'); await until(p, () => /USD/.test(document.querySelector('.tprice')?.textContent || ''), null, { timeout: 10000 });
+    await p.click('#ch-trade .tbtn:has-text("Full screen")'); await until(p, () => document.fullscreenElement?.id === 'ch-trade');
+    await p.waitForTimeout(300);
+    const r = await p.evaluate(() => { const f = document.fullscreenElement, pl = document.querySelector('.tplot').getBoundingClientRect(); return { gap: innerHeight - pl.bottom, h: pl.height, scroll: f.scrollHeight - f.clientHeight }; });
+    assert.ok(r.gap >= 0 && r.gap < 40 && r.scroll === 0, `${vp.width}px: the chart reaches the bottom of the screen ${JSON.stringify(r)}`);
+    await p.click('#ch-trade .tbtn:has-text("Full screen")'); await until(p, () => !document.fullscreenElement);
+    await c.close();
+  }
+});
 await ok('price alerts ignore the saved prices an offline start falls back to, and fire on a fresh refresh', async () => {
   const c = await b.newContext(); await c.routeWebSocket(/./, (ws) => ws.close());
   await c.addInitScript(() => { if (sessionStorage.getItem('seeded')) return; sessionStorage.setItem('seeded', '1');
