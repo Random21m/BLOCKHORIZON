@@ -30,7 +30,7 @@ There is nothing to build: the site is plain static files, so any static host wo
 
 ## Features (v0.9.1)
 - Everything on one screen, no scrolling: a tile grid that fills desktop, laptop and phone
-- Live block height clock with an optional sound and the time since the last block
+- Live block height clock with an optional sound and the time since the last block; when a block is mined the strip glides one slot and the height rolls over (calm, no flashing, off with reduce motion)
 - Next halving (arc, blocks to go, estimated date, reward) and supply issued
 - Difficulty adjustment (progress, expected change, previous change)
 - Hashrate with 7/14/30/90-day averages, block production vs the 10-minute target, last block details with mining pool
@@ -60,7 +60,7 @@ python3 -m http.server 8080        # then open http://localhost:8080
 ```
 No build step, no dependencies. The accessibility check in the smoke test runs when `axe-core` is installed (`npm install --no-save axe-core`), as it is in CI.
 
-Code layout (`src/`): `app.js` routing, live repaint and start-up · `state.js` settings and shared state · `data.js` data feeds, block alarms and fee alerts · `ui.js` tiles, charts and other building blocks · `view-dash.js` dashboard and clock · `view-chain.js` block and transaction pages · `view-tools.js` alarm and calculator · `view-info.js` replay, calendar, glossary, watch, about · `view-charts.js` history charts · `modals.js` search and settings · `lib.js` pure helpers (unit-tested) · `api.js`, `price.js` network · `i18n.js`, `strings.js`, `content.js`, `content-i18n.js` texts. Data comes from the public mempool.space API and Kraken's public price feed; nothing else is contacted and nothing is tracked.
+Code layout (`src/`): `app.js` routing, live repaint and start-up · `state.js` settings and shared state · `data.js` data feeds, block alarms and fee alerts · `ui.js` tiles, charts and other building blocks · `view-dash.js` dashboard and clock · `view-chain.js` block and transaction pages · `view-tools.js` alarm and calculator · `view-info.js` replay, calendar, glossary, watch, about · `view-charts.js` history charts · `arrival.js` the block arrival animation · `modals.js` search and settings · `lib.js` pure helpers (unit-tested) · `api.js`, `price.js` network · `i18n.js`, `strings.js`, `content.js`, `content-i18n.js` texts. Data comes from the public mempool.space API and Kraken's public price feed; nothing else is contacted and nothing is tracked.
 
 ## Support
 If BLOCKHORIZON is useful to you, you can send a tip over Lightning:
