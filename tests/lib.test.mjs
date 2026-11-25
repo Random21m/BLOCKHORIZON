@@ -105,9 +105,9 @@ test('alarms: reached at or below the tip, waiting above it, nothing before the 
   assert.deepEqual(L.splitAlarms(null, 5), { hit: [], rest: [] });
 });
 
-test('version number matches in the app, the offline cache name and the README', () => {
+test('version number matches in the app (state.js), the offline cache name and the README', () => {
   const read = (f) => fs.readFileSync(new URL('../' + f, import.meta.url), 'utf8');
-  const v = read('src/app.js').match(/VERSION = '([\d.]+)'/)[1];
+  const v = read('src/state.js').match(/VERSION = '([\d.]+)'/)[1];
   assert.ok(read('sw.js').includes(`'blockhorizon-v${v}'`), 'sw.js cache name');
   assert.ok(read('README.md').includes(`## Features (v${v})`), 'README');
 });
@@ -133,9 +133,14 @@ test('payment size: common address types, at least one input and output', () => 
 test('translations: same {placeholders} as English, and every key the app uses exists', () => {
   const ph = (s) => (s.match(/\{\w+\}/g) || []).sort().join();
   for (const [l, tab] of Object.entries(TABLES)) for (const [k, v] of Object.entries(tab)) assert.equal(ph(v), ph(TABLES.en[k]), `${l}.${k}`);
-  const app = fs.readFileSync(new URL('../src/app.js', import.meta.url), 'utf8');
+  const app = fs.readdirSync(new URL('../src/', import.meta.url)).filter((f) => f.endsWith('.js') && !['i18n.js', 'strings.js'].includes(f)).map((f) => fs.readFileSync(new URL('../src/' + f, import.meta.url), 'utf8')).join('\n');
   const used = new Set([...app.matchAll(/\bt\('(\w+)'/g)].map((m) => m[1]));
   for (const m of app.matchAll(/\['\/[\w/]*', '(\w+)'\]/g)) used.add(m[1]); // menu entries
   for (const k of ['minedAbout', 'estimated', 'tab_display', 'tab_format', 'tab_sounds']) used.add(k); // picked at run time
   for (const k of used) if (!k.endsWith('_')) assert.ok(TABLES.en[k], 'missing key ' + k);
+});
+
+test('offline cache lists every source file', () => {
+  const sw = fs.readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
+  for (const f of fs.readdirSync(new URL('../src/', import.meta.url)).filter((x) => x.endsWith('.js'))) assert.ok(sw.includes(`'src/${f}'`), 'sw.js is missing src/' + f);
 });
