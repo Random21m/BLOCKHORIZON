@@ -70,8 +70,9 @@ label.chk{display:flex;gap:10px;align-items:center;margin:8px 0}
   nav a.xtra{display:none}nav .tab,nav .navmore{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:56px;padding:6px 2px;border:0;border-radius:0;background:none;color:var(--dim);font-size:11px;line-height:1.2;text-decoration:none;white-space:nowrap;overflow:hidden}
   nav .tab span{max-width:100%;overflow:hidden;text-overflow:ellipsis}nav .nico{display:block;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   nav a[aria-current=page],nav .navmore.cur{color:var(--accent);background:none}nav .navmore:hover{border:0}
-  /* The block strip goes right under the height card: as the last row it fell below the fold, behind this bar, on phones with browser toolbars */
-  .dashgrid .tile.hero{order:-2}.dashgrid .strip2{order:-1}
+  /* The dashboard scrolls like every other page: locked to the screen height (100dvh) with an inner scroll, browsers without
+     dvh support (older iPhones) could not scroll it at all and the last row, the block strips, stayed behind this bar */
+  body.fit{height:auto;overflow:visible;display:block}body.fit main{overflow:visible}body.fit .dashgrid{min-height:0}
   body:not(.clockmode){padding-bottom:calc(57px + env(safe-area-inset-bottom))}.tools{margin-left:auto}.toast{bottom:calc(72px + env(safe-area-inset-bottom))}}
 @media (max-width:480px){main{padding:16px 14px 6px}.hero{padding:22px 14px 16px}.fees{grid-template-columns:repeat(2,1fr)}}
 :fullscreen body{overflow:auto}
