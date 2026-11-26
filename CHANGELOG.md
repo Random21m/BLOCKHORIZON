@@ -2,6 +2,12 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
+## Unreleased
+
+- **Four more languages: 简体中文, 한국어, Русский and Português (Brasil).** 13 languages in all, glossary and
+  calendar included. Brazilian Portuguese is its own choice next to Portugal's; a browser set to Brazilian Portuguese
+  gets it on its own, and one set to Chinese (any variant) gets Simplified Chinese.
+
 ## 0.18.0
 
 - **A block clock for a spare screen.** `#/clock?kiosk` turns Clock mode into a display for a screen that stays on (no
