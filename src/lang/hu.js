@@ -591,4 +591,6 @@ export default {
   blkFeesChart: 'Díjak blokkonként',
   feeShareChart: 'Díjak a bányászbevételben',
   blkSizeChart: 'Blokkméret',
+  lnAsOf: 'Adatok: {d}',
+  lnAsOfShort: 'Állapot: {d}',
 };

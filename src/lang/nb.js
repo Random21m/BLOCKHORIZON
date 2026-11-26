@@ -589,4 +589,6 @@ export default {
   blkFeesChart: 'Gebyrer per blokk',
   feeShareChart: 'Gebyrer i utvinnerinntekt',
   blkSizeChart: 'Blokkstørrelse',
+  lnAsOf: 'Tall fra {d}',
+  lnAsOfShort: 'Per {d}',
 };

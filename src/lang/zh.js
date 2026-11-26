@@ -559,4 +559,6 @@ export default {
   blkFeesChart: '每区块手续费',
   feeShareChart: '手续费占矿工收入',
   blkSizeChart: '区块大小',
+  lnAsOf: '数据截至 {d}',
+  lnAsOfShort: '截至 {d}',
 };

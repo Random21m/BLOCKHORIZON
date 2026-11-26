@@ -7,6 +7,9 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
 - **What miners earn per block, and how full blocks are.** Three more history charts on the Charts page, with the same
   1 month, 1 year and all time buttons: the fees per block (in BTC), the fees' share of what miners earn (block reward
   plus fees, in %) and the average block size (in MB).
+- The Lightning tile showed mempool.space's figures as if they were current, but they can be months old: they stopped
+  updating at the end of August 2026, and some answers even carry figures from 2024. Figures older than a week now show
+  their date ("32,518 channels · Figures from 08/30/2026"; "As of 08/30/2026" on a phone).
 
 ## 0.21.0
 

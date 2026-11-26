@@ -211,13 +211,23 @@ export function viewDash() {
         ])
       ),
     ln: () => {
+      const lnDate = (x) => fmtD(L.lnTakenAt(x), { dateOnly: true });
       if (!st.ln || !st.ln.channel_count) return null;
       const l = st.ln;
       return tile(
         't-ln',
         [t('lightning'), t('lnShort')],
         L.fmtNum(l.total_capacity / 1e8, 0) + ' BTC',
-        [[t('channels', { n: L.fmtNum(l.channel_count) }), more(t('nodes', { n: L.fmtNum(l.node_count) }))]],
+        [
+          // the data server's Lightning figures can stop updating: when they are old, their date takes the place of
+          // the node count (the dashboard shows one line under each figure), rather than pass them as today's
+          L.lnStale(l)
+            ? [
+                more(t('channels', { n: L.fmtNum(l.channel_count) }) + ' · ' + t('lnAsOf', { d: lnDate(l) })),
+                less(t('lnAsOfShort', { d: lnDate(l) })), // a phone's tile has room for the date only
+              ]
+            : [t('channels', { n: L.fmtNum(l.channel_count) }), more(t('nodes', { n: L.fmtNum(l.node_count) }))],
+        ],
         l.tor_nodes != null
           ? [
               stack([

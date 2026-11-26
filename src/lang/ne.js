@@ -583,4 +583,6 @@ export default {
   blkFeesChart: 'प्रति ब्लक शुल्क',
   feeShareChart: 'माइनर आम्दानीमा शुल्क',
   blkSizeChart: 'ब्लकको आकार',
+  lnAsOf: '{d} को तथ्याङ्क',
+  lnAsOfShort: '{d} सम्म',
 };

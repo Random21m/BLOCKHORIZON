@@ -3088,6 +3088,43 @@ await ok(
     assert.equal(backupOpened, 0, 'the backup price feed was opened while Kraken was working');
   }
 );
+await ok(
+  'dashboard: Lightning figures older than a week carry their date (the data server can stop updating them)',
+  async () => {
+    let added = '2024-06-01T00:00:00.000Z';
+    const c = await b.newContext({ viewport: { width: 1440, height: 900 } });
+    await c.routeWebSocket(/./, (ws) => ws.close());
+    await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
+      r.request().url().includes('mempool.space') ? r.fallback() : r.abort()
+    );
+    await c.route(/mempool\.space/, (route) => {
+      const u = new URL(route.request().url()).pathname;
+      if (u === '/api/v1/lightning/statistics/latest') {
+        const j = JSON.parse(fx('lightning.json'));
+        j.latest.added = added;
+        return route.fulfill({ contentType: 'application/json', body: JSON.stringify(j) });
+      }
+      const m = MOCK[u];
+      if (!m) return route.fulfill({ status: 404, body: '' });
+      route.fulfill({ contentType: m[0], body: fx(m[1]) });
+    });
+    await c.addInitScript(() => localStorage.setItem('bh.settings', JSON.stringify({ cur: 'USD', lang: 'en', _v: 2 })));
+    const p = await c.newPage();
+    await p.goto(base);
+    await until(p, () => document.querySelector('.t-ln .ts.s0'));
+    assert.equal(await p.locator('.t-ln .ts.s0').innerText(), '51,021 channels · Figures from 06/01/2024');
+    await p.setViewportSize({ width: 360, height: 800 });
+    assert.equal(await p.locator('.t-ln .ts.s0').innerText(), 'As of 06/01/2024', 'a phone shows the date only');
+    // fresh figures: as before, channels and nodes
+    added = new Date(Date.now() - 864e5).toISOString();
+    await p.setViewportSize({ width: 1440, height: 900 });
+    await p.evaluate(() => localStorage.removeItem('bh.ln'));
+    await p.reload();
+    await until(p, () => /nodes/.test(document.querySelector('.t-ln .ts.s0')?.textContent || ''));
+    assert.equal(await p.locator('.t-ln .ts.s0').innerText(), '51,021 channels · 12,878 nodes');
+    await c.close();
+  }
+);
 await ok('no script errors', async () => {
   assert.deepEqual(errs, []);
 });

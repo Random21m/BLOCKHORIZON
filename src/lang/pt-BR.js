@@ -592,4 +592,6 @@ export default {
   blkFeesChart: 'Taxas por bloco',
   feeShareChart: 'Taxas na receita de mineração',
   blkSizeChart: 'Tamanho do bloco',
+  lnAsOf: 'Dados de {d}',
+  lnAsOfShort: 'Em {d}',
 };

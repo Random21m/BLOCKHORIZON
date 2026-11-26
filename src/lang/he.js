@@ -572,4 +572,6 @@ export default {
   blkFeesChart: 'עמלות לבלוק',
   feeShareChart: 'עמלות בהכנסת הכורים',
   blkSizeChart: 'גודל בלוק',
+  lnAsOf: 'נתונים מ-{d}',
+  lnAsOfShort: 'נכון ל-{d}',
 };

@@ -576,4 +576,6 @@ export default {
   blkFeesChart: '블록당 수수료',
   feeShareChart: '채굴 수입 중 수수료',
   blkSizeChart: '블록 크기',
+  lnAsOf: '{d} 기준 수치',
+  lnAsOfShort: '{d} 기준',
 };

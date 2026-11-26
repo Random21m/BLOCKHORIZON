@@ -598,4 +598,6 @@ export default {
   blkFeesChart: 'Frais par bloc',
   feeShareChart: 'Frais dans le revenu minier',
   blkSizeChart: 'Taille des blocs',
+  lnAsOf: 'Chiffres du {d}',
+  lnAsOfShort: 'Au {d}',
 };

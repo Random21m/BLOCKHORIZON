@@ -590,4 +590,6 @@ export default {
   blkFeesChart: 'Kosten per blok',
   feeShareChart: 'Kosten in miner-inkomsten',
   blkSizeChart: 'Blokgrootte',
+  lnAsOf: 'Cijfers van {d}',
+  lnAsOfShort: 'Stand {d}',
 };

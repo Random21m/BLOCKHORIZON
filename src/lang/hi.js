@@ -583,4 +583,6 @@ export default {
   blkFeesChart: 'प्रति ब्लॉक फ़ीस',
   feeShareChart: 'माइनर आय में फ़ीस',
   blkSizeChart: 'ब्लॉक साइज़',
+  lnAsOf: '{d} के आंकड़े',
+  lnAsOfShort: '{d} तक',
 };

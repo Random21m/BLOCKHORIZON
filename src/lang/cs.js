@@ -582,4 +582,6 @@ export default {
   blkFeesChart: 'Poplatky za blok',
   feeShareChart: 'Poplatky v příjmu těžařů',
   blkSizeChart: 'Velikost bloku',
+  lnAsOf: 'Údaje k {d}',
+  lnAsOfShort: 'K {d}',
 };

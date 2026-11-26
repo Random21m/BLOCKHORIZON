@@ -586,4 +586,6 @@ export default {
   blkFeesChart: 'Avgifter per block',
   feeShareChart: 'Avgifter i minerintäkter',
   blkSizeChart: 'Blockstorlek',
+  lnAsOf: 'Siffror från {d}',
+  lnAsOfShort: 'Per {d}',
 };

@@ -591,4 +591,6 @@ export default {
   blkFeesChart: 'Comisioane pe bloc',
   feeShareChart: 'Comisioane în venitul minerilor',
   blkSizeChart: 'Dimensiunea blocului',
+  lnAsOf: 'Date din {d}',
+  lnAsOfShort: 'La {d}',
 };

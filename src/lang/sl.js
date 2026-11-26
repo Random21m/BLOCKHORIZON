@@ -588,4 +588,6 @@ export default {
   blkFeesChart: 'Provizije na blok',
   feeShareChart: 'Provizije v prihodku rudarjev',
   blkSizeChart: 'Velikost bloka',
+  lnAsOf: 'Podatki z dne {d}',
+  lnAsOfShort: 'Stanje {d}',
 };

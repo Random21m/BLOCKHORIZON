@@ -583,4 +583,6 @@ export default {
   blkFeesChart: 'کارمزد هر بلاک',
   feeShareChart: 'سهم کارمزد از درآمد ماینر',
   blkSizeChart: 'اندازه بلاک',
+  lnAsOf: 'داده‌های {d}',
+  lnAsOfShort: 'تا {d}',
 };

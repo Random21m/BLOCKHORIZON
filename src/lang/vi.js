@@ -582,4 +582,6 @@ export default {
   blkFeesChart: 'Phí mỗi khối',
   feeShareChart: 'Phí trong thu nhập thợ đào',
   blkSizeChart: 'Kích thước khối',
+  lnAsOf: 'Số liệu ngày {d}',
+  lnAsOfShort: 'Tính đến {d}',
 };

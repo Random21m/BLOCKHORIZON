@@ -590,4 +590,6 @@ export default {
   blkFeesChart: 'საკომისიო ბლოკზე',
   feeShareChart: 'საკომისიო მაინერების შემოსავალში',
   blkSizeChart: 'ბლოკის ზომა',
+  lnAsOf: 'მონაცემები: {d}',
+  lnAsOfShort: '{d}-ის მდგომარეობით',
 };

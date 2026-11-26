@@ -583,4 +583,6 @@ export default {
   blkFeesChart: 'প্রতি ব্লকে ফি',
   feeShareChart: 'মাইনার আয়ে ফি',
   blkSizeChart: 'ব্লকের আকার',
+  lnAsOf: '{d} তারিখের তথ্য',
+  lnAsOfShort: '{d} পর্যন্ত',
 };

@@ -588,4 +588,6 @@ export default {
   blkFeesChart: 'Gebyrer pr. blok',
   feeShareChart: 'Gebyrer i minerindtægt',
   blkSizeChart: 'Blokstørrelse',
+  lnAsOf: 'Tal fra {d}',
+  lnAsOfShort: 'Pr. {d}',
 };

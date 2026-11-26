@@ -589,4 +589,6 @@ export default {
   blkFeesChart: 'Провизии по блок',
   feeShareChart: 'Провизии во приходот на рударите',
   blkSizeChart: 'Големина на блок',
+  lnAsOf: 'Податоци од {d}',
+  lnAsOfShort: 'На {d}',
 };

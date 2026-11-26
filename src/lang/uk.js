@@ -587,4 +587,6 @@ export default {
   blkFeesChart: 'Комісії за блок',
   feeShareChart: 'Комісії в доході майнерів',
   blkSizeChart: 'Розмір блоку',
+  lnAsOf: 'Дані на {d}',
+  lnAsOfShort: 'Станом на {d}',
 };

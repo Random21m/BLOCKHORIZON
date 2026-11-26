@@ -589,4 +589,6 @@ export default {
   blkFeesChart: 'Maksut lohkoa kohden',
   feeShareChart: 'Maksut louhijoiden tulosta',
   blkSizeChart: 'Lohkon koko',
+  lnAsOf: 'Luvut ajalta {d}',
+  lnAsOfShort: 'Tilanne {d}',
 };

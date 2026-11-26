@@ -586,4 +586,6 @@ export default {
   blkFeesChart: 'Blok başına ücretler',
   feeShareChart: 'Madenci gelirinde ücretler',
   blkSizeChart: 'Blok boyutu',
+  lnAsOf: 'Veriler: {d}',
+  lnAsOfShort: '{d} itibarıyla',
 };
