@@ -26,6 +26,7 @@ const FILES = [
   'src/trade-side.js',
   'src/view-my.js',
   'src/view-mining.js',
+  'src/view-send.js',
   'src/block-scene.js',
   'src/arrival.js',
   'src/embed.js',
