@@ -578,4 +578,14 @@ export default {
   diffRibbonNote:
     'When the averages bunch together, difficulty has stopped rising and miners are under pressure. Now they are {p}% apart.',
   last2y: 'Last 2 years',
+  blkHealth: 'Block health',
+  blkMatch: 'Match with the expected block',
+  blkFeesL: 'Fees',
+  blkFeesVs: '{a} of the {b} BTC expected ({c})',
+  blkMissing: 'Expected but left out',
+  blkAdded: 'In it but not expected',
+  blkAddedFresh: '{n} ({f} of them seen only moments before)',
+  blkHealthNote:
+    'mempool.space works out from its own mempool which transactions it expected this block to hold. Less than 100% means the miner left some of them out.',
+  blkHealthNone: 'Not available for this block: only mempool.space compares blocks, and only recent ones.',
 };

@@ -58,12 +58,57 @@ export function viewBlock(hStr) {
         ),
         shareRow('/block/' + n, 'BLOCKHORIZON · ' + t('blockH') + ' ' + L.fmtNum(n))
       );
-      root.append(blockPicture(hash, tok), blockList(hash, b.txs, tok));
+      root.append(blockHealthBox(raw, hash, tok), blockPicture(hash, tok), blockList(hash, b.txs, tok));
     } catch {
       if (tok === blockToken) body.textContent = t('notFound');
     }
   })();
   return root;
+}
+// How closely the block matched the one mempool.space expected from its own mempool: the match, the fees against the
+// expected fees, and (from the audit) how many expected transactions were left out and how many unexpected ones are in
+// it. Only mempool.space compares blocks; on the backup server or for older blocks the panel says it is not available.
+function blockHealthBox(raw, hash, tok) {
+  const body = el('div', null, el('p', { class: 'dim' }, t('loading'))),
+    box = el('section', { class: 'panel', id: 'blk-health' }, el('h2', { class: 'sec' }, t('blkHealth')), body);
+  const show = (audit) => {
+    if (tok !== blockToken) return;
+    const h = L.blockHealth(raw, audit);
+    if (!h) return body.replaceChildren(el('p', { class: 'dim' }, t('blkHealthNone')));
+    const btc = (v) => L.trimZeros(L.satsToBtc(v, 8)),
+      diff = h.expected > 0 && Number.isFinite(h.fees) ? (h.fees / h.expected - 1) * 100 : NaN;
+    body.replaceChildren(
+      kv(
+        [
+          [t('blkMatch'), el('b', null, L.fmtNum(h.match, h.match % 1 ? 2 : 0) + '%')],
+          Number.isFinite(h.expected) && Number.isFinite(h.fees)
+            ? [
+                t('blkFeesL'),
+                t('blkFeesVs', {
+                  a: btc(h.fees),
+                  b: btc(h.expected),
+                  c: Number.isFinite(diff)
+                    ? (diff >= 0 ? '+' : '−') + L.fmtNum(Math.abs(diff), Math.abs(diff) < 1 ? 2 : 1) + '%'
+                    : '–',
+                }),
+              ]
+            : null,
+          Number.isFinite(h.missing) ? [t('blkMissing'), L.fmtNum(h.missing)] : null,
+          Number.isFinite(h.added)
+            ? [
+                t('blkAdded'),
+                h.fresh > 0
+                  ? t('blkAddedFresh', { n: L.fmtNum(h.added), f: L.fmtNum(Math.min(h.fresh, h.added)) })
+                  : L.fmtNum(h.added),
+              ]
+            : null,
+        ].filter(Boolean)
+      ),
+      el('p', { class: 'dim note' }, t('blkHealthNote'))
+    );
+  };
+  api.blockAudit(hash).then(show, () => show(null));
+  return box;
 }
 // What was in a past block: every transaction as a slice of the block's space, coloured by fee rate (highest at the
 // bottom). Tapping a square opens its transaction. The picture needs mempool.space's block summary (the backup server

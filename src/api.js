@@ -133,6 +133,7 @@ export const api = {
   // a past block's transactions: every one in short (txid, fee, vsize, rate; mempool.space only), for its picture, and
   // 25 at a time in full from `start` (the backup server has these too), for its list
   blockSummary: (hash) => getJSON('/v1/block/' + hash + '/summary'),
+  blockAudit: (hash) => getJSON('/v1/block/' + hash + '/audit-summary'), // the expected block against the mined one
   blockTxs: (hash, start) => getJSON('/block/' + hash + '/txs/' + start),
   // an address: never asked of the backup server (esploraFor has no /address); the address page says where it went
   address: (a) => getJSON('/address/' + a),

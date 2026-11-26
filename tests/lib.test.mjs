@@ -1139,3 +1139,23 @@ test('more long-term charts: Puell Multiple, hash ribbons and the difficulty rib
   assert.equal(two.length, 731);
   assert.deepEqual(L.lastDays([], 5), []);
 });
+
+test('block health: the match with the expected block, fees against the expected, transactions left out or added', () => {
+  const block = JSON.parse(fs.readFileSync(new URL('./fixtures/blocks.json', import.meta.url), 'utf8'))[0],
+    audit = JSON.parse(fs.readFileSync(new URL('./fixtures/audit-summary.json', import.meta.url), 'utf8'));
+  assert.deepEqual(L.blockHealth(block, audit), {
+    match: 100,
+    fees: 668659,
+    expected: audit.expectedFees,
+    missing: 0,
+    added: 263,
+    fresh: 133,
+  });
+  // without the audit (or on the backup server's shape), the block's own figures
+  const h = L.blockHealth(block, null);
+  assert.deepEqual([h.match, h.fees, h.expected], [100, 668659, 785553]);
+  assert.ok(Number.isNaN(h.missing) && Number.isNaN(h.added));
+  assert.equal(L.blockHealth({ extras: {} }, null), null, 'not compared');
+  assert.equal(L.blockHealth({}, null), null);
+  assert.equal(L.blockHealth(block, 'oops').match, 100);
+});
