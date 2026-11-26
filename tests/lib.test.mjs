@@ -1174,6 +1174,7 @@ test('block history: fees per block, fees as a share of miner income, block size
     [{ t: 2000, v: 25 }]
   );
   assert.deepEqual(L.feeShareSeries(fees, []), []);
+});
 test('Lightning figures carry their date once they are more than a week old', () => {
   const now = Date.parse('2026-11-26T10:00:00Z');
   assert.equal(L.lnTakenAt({ added: '2026-08-30T00:00:00.000Z' }), Date.parse('2026-08-30'));
