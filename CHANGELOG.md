@@ -15,6 +15,7 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
 - **Alarms on your phone, on your node.** On Umbrel, StartOS or the container with your own mempool, the Alarm page
   can send your block, fee and price alarms to your phone through [ntfy](https://ntfy.sh), even when no browser has
   BLOCKHORIZON open: your node watches them and sends each once, in your language.
+- **日本語.** The app is now also in Japanese (9 languages in all), including the glossary and calendar.
 - On narrow phones the Settings tabs wrap onto a second row instead of being cut off.
 
 Earlier versions: see the [commit history](https://github.com/Random21m/BLOCKHORIZON/commits/main).
