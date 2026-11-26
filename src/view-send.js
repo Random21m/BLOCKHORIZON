@@ -24,7 +24,7 @@ export function viewSend() {
       autocomplete: 'off',
       'aria-describedby': 'snd-intro',
     }),
-    out = el('div', { id: 'snd-out', 'aria-live': 'polite' });
+    out = el('div', { id: 'snd-out' });
   box.value = draft;
   box.addEventListener('input', () => {
     draft = box.value;
@@ -82,22 +82,27 @@ async function check(hex, out) {
     )
   );
   // already on the network? and the coins it spends (for the fee and the inputs' addresses)
-  const ids = [...new Set(tx.vin.map((i) => i.txid))];
+  // Only the data server is asked (never the backup server), a few at a time; a coin counts as missing only when the
+  // server says it does not know its transaction (404), not when it is busy or unreachable.
+  const ids = [...new Set(tx.vin.map((i) => i.txid))],
+    notFound = (e) => e && e.status === 404;
+  let unchecked = false;
   const [known, prevs] = await Promise.all([
-    api.tx(tx.txid).catch(() => null),
+    api.txHere(tx.txid).catch(() => null),
     ids.length <= PREV_MAX
-      ? Promise.all(
-          ids.map((id) =>
-            Promise.all([api.tx(id), api.outspends(id).catch(() => null)]).then(
-              ([x, sp]) => [id, Object.assign({}, x, { spends: sp })],
-              () => [id, null]
-            )
+      ? L.mapLimit(ids, 5, (id) =>
+          Promise.all([api.txHere(id), api.outspends(id).catch(() => null)]).then(
+            ([x, sp]) => [id, Object.assign({}, x, { spends: sp })],
+            (e) => {
+              if (!notFound(e)) unchecked = true;
+              return [id, notFound(e) ? 'missing' : null];
+            }
           )
         )
       : Promise.resolve([]),
   ]);
   if (tok !== checkToken) return;
-  const prevTx = new Map(prevs.filter(([, x]) => x));
+  const prevTx = new Map(prevs.filter(([, x]) => x && x !== 'missing'));
   const prevVal = new Map();
   for (const i of tx.vin) {
     const o = prevTx.get(i.txid)?.vout?.[i.vout];
@@ -115,7 +120,8 @@ async function check(hex, out) {
       ? '–'
       : t('sendFeeUnknown');
   const notes = [];
-  if (!known && ids.length <= PREV_MAX && prevVal.size < tx.vin.length) notes.push(['warn', t('sendMissing')]);
+  if (!known && prevs.some(([, x]) => x === 'missing')) notes.push(['warn', t('sendMissing')]);
+  if (!known && unchecked) notes.push(['dim', t('sendUnchecked')]);
   // coins another transaction has spent already: in a block, it would be refused; while that one waits, this one only
   // goes through if it replaces it (a higher fee)
   const spentBy = tx.vin
@@ -131,6 +137,10 @@ async function check(hex, out) {
     else if (f.hourFee > 0 && rate < f.hourFee) notes.push(['dim', t('sendSlow', { r: L.fmtFee(f.hourFee) })]);
   }
   const noteEls = notes.map(([c, m]) => el('p', { class: c === 'warn' ? 'warnline' : 'dim' }, m));
+  // read out once, when the check is done: the fee and any warnings (not the whole page)
+  out.prepend(
+    el('p', { class: 'sr-only', role: 'status' }, [feeCell.textContent, ...notes.map(([, m]) => m)].join('. '))
+  );
   if (known) {
     status.replaceChildren(
       el('p', null, t('sendKnown'), ' ', el('a', { href: '#/tx/' + tx.txid, id: 'snd-open' }, t('sendOpen')))

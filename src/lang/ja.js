@@ -28,10 +28,6 @@ export default {
   close: '閉じる',
   go: '移動',
   blocksToGo: 'ブロック残り',
-  priority: '優先',
-  soon: '早め',
-  anytime: 'いつでも',
-  economy: '節約',
   byHeight: 'ブロック高で',
   byDate: '日付で',
   notFound: '見つかりませんでした',
@@ -389,7 +385,6 @@ export default {
   evDiff: 'ブロック {h} で難易度調整（{c}% の見込み）',
   evBlock: 'ブロック {n}',
   anniversaries: '記念日',
-  noConf: 'カンファレンス一覧はまだありません（信頼できるデータソースが必要です）。',
   watchIntro: 'YouTube のビットコインチャンネルといくつかのサイト（A〜Z順）。リンクは新しいタブで開きます。',
   sites: 'サイト',
   about1:
@@ -603,7 +598,7 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: '使うコインが見つかるまで不明',
   sendRbf: 'あとで、より高い手数料で置き換えられます。',
-  sendFinal: 'あとで、より高い手数料で置き換えることはできません。',
+  sendFinal: '置き換え可能とは示されていませんが、多くのノードはより高い手数料での置き換えを受け入れます。',
   sendMissing:
     '使うコインの一部が見つかりません。すでに使われたか、別のネットワークのものかもしれません。拒否される可能性が高いです。',
   sendSpent: '使うコインは、ブロック内の別のトランザクションですでに使われているため、拒否されます。',
@@ -646,4 +641,7 @@ export default {
   addrQrAria: 'アドレス {a} のQRコード',
   addrQrNote:
     'ウォレットで読み取ると、このアドレスに支払えます。この端末で生成しています。ウォレットに表示されるアドレスを確認してください。',
+  sendUnchecked:
+    '使うコインの一部を今は確認できなかったため、手数料が不明な場合があります。少し待ってからもう一度「確認」を押してください。',
+  txInUnknown: '未照会',
 };

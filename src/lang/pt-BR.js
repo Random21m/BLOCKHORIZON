@@ -27,10 +27,6 @@ export default {
   close: 'Fechar',
   go: 'Ir',
   blocksToGo: 'blocos restantes',
-  priority: 'Prioridade',
-  soon: 'Em breve',
-  anytime: 'Sem pressa',
-  economy: 'Econômica',
   byHeight: 'Por altura do bloco',
   byDate: 'Por data',
   notFound: 'Nada encontrado',
@@ -390,7 +386,6 @@ export default {
   evDiff: 'Ajuste de dificuldade no bloco {h} ({c}% previsto)',
   evBlock: 'Bloco {n}',
   anniversaries: 'Aniversários',
-  noConf: 'As conferências ainda não estão listadas (falta uma fonte de dados confiável).',
   watchIntro: 'Canais de Bitcoin no YouTube e alguns sites, de A a Z. Os links abrem em uma nova aba.',
   sites: 'Sites',
   about1:
@@ -608,7 +603,7 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'desconhecida até encontrar as moedas que ela gasta',
   sendRbf: 'Ela pode ser substituída depois com uma taxa maior.',
-  sendFinal: 'Ela não pode ser substituída depois com uma taxa maior.',
+  sendFinal: 'Ela não indica que pode ser substituída; muitos nós ainda aceitam uma substituição com uma taxa maior.',
   sendMissing:
     'Algumas das moedas que ela gasta não foram encontradas: talvez já tenham sido gastas ou sejam de outra rede. Provavelmente seria recusada.',
   sendSpent: 'As moedas que ela gasta já foram gastas por outra transação em um bloco, então seria recusada.',
@@ -650,4 +645,7 @@ export default {
   addrQrAria: 'QR code do endereço {a}',
   addrQrNote:
     'Escaneie com uma carteira para pagar para este endereço. Gerado neste dispositivo; confira o endereço que sua carteira mostra.',
+  sendUnchecked:
+    'Algumas das moedas que ela gasta não puderam ser verificadas agora, então a taxa pode ser desconhecida. Toque em Verificar de novo daqui a pouco.',
+  txInUnknown: 'não consultado',
 };

@@ -28,10 +28,6 @@ export default {
   close: 'Uždaryti',
   go: 'Eiti',
   blocksToGo: 'blokų liko',
-  priority: 'Pirmenybė',
-  soon: 'Greitai',
-  anytime: 'Bet kada',
-  economy: 'Taupiai',
   byHeight: 'Pagal bloko aukštį',
   byDate: 'Pagal datą',
   notFound: 'Nieko nerasta',
@@ -391,7 +387,6 @@ export default {
   evDiff: 'Sudėtingumo korekcija ties bloku {h} (numatoma {c}%)',
   evBlock: 'Blokas {n}',
   anniversaries: 'Sukaktys',
-  noConf: 'Konferencijų sąrašo dar nėra (reikia patikimo duomenų šaltinio).',
   watchIntro: 'Bitcoin kanalai YouTube ir kelios svetainės, nuo A iki Z. Nuorodos atsidaro naujame skirtuke.',
   sites: 'Svetainės',
   about1:
@@ -603,7 +598,7 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'nežinomas, kol nerandamos monetos, kurias ji išleidžia',
   sendRbf: 'Vėliau ją galima pakeisti didesniu mokesčiu.',
-  sendFinal: 'Vėliau jos negalima pakeisti didesniu mokesčiu.',
+  sendFinal: 'Joje nenurodyta, kad ją galima pakeisti; vis dėlto daug mazgų priima pakeitimą didesniu mokesčiu.',
   sendMissing:
     'Kai kurios monetos, kurias ji išleidžia, nerastos: jos gal jau išleistos arba priklauso kitam tinklui. Ji greičiausiai būtų atmesta.',
   sendSpent: 'Monetas, kurias ji išleidžia, jau išleido kita transakcija bloke, todėl ji būtų atmesta.',
@@ -645,4 +640,7 @@ export default {
   addrQrAria: 'Adreso {a} QR kodas',
   addrQrNote:
     'Nuskaitykite jį pinigine, kad sumokėtumėte šiuo adresu. Sukurtas šiame įrenginyje; patikrinkite adresą, kurį rodo jūsų piniginė.',
+  sendUnchecked:
+    'Kai kurių monetų, kurias ji išleidžia, dabar nepavyko patikrinti, todėl mokestis gali būti nežinomas. Po akimirkos dar kartą paspauskite Tikrinti.',
+  txInUnknown: 'nepatikrinta',
 };

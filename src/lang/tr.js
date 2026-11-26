@@ -28,10 +28,6 @@ export default {
   close: 'Kapat',
   go: 'Git',
   blocksToGo: 'blok kaldı',
-  priority: 'Öncelik',
-  soon: 'Yakında',
-  anytime: 'Her an',
-  economy: 'Ekonomik',
   byHeight: 'Yüksekliğe göre',
   byDate: 'Tarihe göre',
   notFound: 'Bulunamadı',
@@ -388,7 +384,6 @@ export default {
   evDiff: 'Blok {h} zorluk ayarı (beklenen %{c})',
   evBlock: 'Blok {n}',
   anniversaries: 'Yıldönümleri',
-  noConf: 'Konferans listesi henüz yok (güvenilir bir veri kaynağı gerekiyor).',
   watchIntro: "YouTube'daki Bitcoin kanalları ve birkaç site, A'dan Z'ye. Bağlantılar yeni sekmede açılır.",
   sites: 'Siteler',
   about1:
@@ -602,7 +597,7 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'harcadığı coinler bulunana kadar bilinmiyor',
   sendRbf: 'Daha sonra daha yüksek bir ücretle değiştirilebilir.',
-  sendFinal: 'Daha sonra daha yüksek bir ücretle değiştirilemez.',
+  sendFinal: 'Değiştirilebilir olduğunu belirtmiyor; yine de birçok düğüm daha yüksek ücretli bir yenisini kabul eder.',
   sendMissing:
     'Harcadığı coinlerin bazıları bulunamadı: zaten harcanmış ya da başka bir ağa ait olabilirler. Büyük olasılıkla reddedilir.',
   sendSpent: 'Harcadığı coinler bir bloktaki başka bir işlem tarafından zaten harcanmış, bu yüzden reddedilir.',
@@ -646,4 +641,7 @@ export default {
   addrQrAria: '{a} adresinin QR kodu',
   addrQrNote:
     'Bu adrese ödeme yapmak için bir cüzdanla tarayın. Bu cihazda oluşturuldu; cüzdanınızın gösterdiği adresi kontrol edin.',
+  sendUnchecked:
+    "Harcadığı coinlerin bazıları şu anda kontrol edilemedi, bu yüzden ücret bilinmiyor olabilir. Birazdan tekrar Kontrol et'e bas.",
+  txInUnknown: 'sorgulanmadı',
 };

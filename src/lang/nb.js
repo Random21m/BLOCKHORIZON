@@ -28,10 +28,6 @@ export default {
   close: 'Lukk',
   go: 'Gå',
   blocksToGo: 'blokker igjen',
-  priority: 'Prioritet',
-  soon: 'Snart',
-  anytime: 'Når som helst',
-  economy: 'Økonomi',
   byHeight: 'Etter blokkhøyde',
   byDate: 'Etter dato',
   notFound: 'Fant ingenting',
@@ -391,7 +387,6 @@ export default {
   evDiff: 'Justering av vanskelighetsgrad ved blokk {h} ({c} % ventet)',
   evBlock: 'Blokk {n}',
   anniversaries: 'Merkedager',
-  noConf: 'Konferanseoversikten er ikke laget ennå (trenger en pålitelig datakilde).',
   watchIntro: 'Bitcoin-kanaler på YouTube og noen få nettsteder, fra A til Å. Lenkene åpnes i en ny fane.',
   sites: 'Nettsteder',
   about1:
@@ -605,7 +600,7 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'ukjent til myntene den bruker er funnet',
   sendRbf: 'Den kan erstattes senere med høyere gebyr.',
-  sendFinal: 'Den kan ikke erstattes senere med høyere gebyr.',
+  sendFinal: 'Den oppgir ikke at den kan erstattes; mange noder godtar likevel en erstatning med høyere gebyr.',
   sendMissing:
     'Noen av myntene den bruker ble ikke funnet: de kan allerede være brukt, eller høre til et annet nettverk. Den ville trolig blitt avvist.',
   sendSpent: 'Mynter den bruker er allerede brukt av en annen transaksjon i en blokk, så den ville blitt avvist.',
@@ -646,4 +641,7 @@ export default {
   addrQrAria: 'QR-kode for adressen {a}',
   addrQrNote:
     'Skann den med en lommebok for å betale til denne adressen. Laget på denne enheten; sjekk adressen lommeboken din viser.',
+  sendUnchecked:
+    'Noen av myntene den bruker kunne ikke sjekkes akkurat nå, så gebyret kan være ukjent. Trykk på Sjekk igjen om litt.',
+  txInUnknown: 'ikke slått opp',
 };

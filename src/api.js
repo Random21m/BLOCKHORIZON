@@ -85,7 +85,7 @@ export function esploraFees(e) {
   return { fastestFee: g(1), halfHourFee: g(3), hourFee: g(6), economyFee: g(144), minimumFee: 1 };
 }
 
-export async function getJSON(path, { cacheKey, text } = {}) {
+export async function getJSON(path, { cacheKey, text, noFallback } = {}) {
   try {
     let v;
     try {
@@ -93,7 +93,7 @@ export async function getJSON(path, { cacheKey, text } = {}) {
       source = server;
     } catch (e) {
       // a 4xx is an answer (not found, bad request); only an unreachable server or a 5xx falls back
-      const f = e.status && e.status < 500 ? null : esploraFor(path);
+      const f = noFallback || (e.status && e.status < 500) ? null : esploraFor(path);
       if (!f) throw e;
       v = await fetchFrom(FALLBACK, f.path, text);
       if (f.map) v = f.map(v);
@@ -130,6 +130,9 @@ export const api = {
   adjustments: () => getJSON('/v1/mining/difficulty-adjustments', { cacheKey: 'adjust' }), // every past adjustment, newest first
   rewards: () => getJSON('/v1/mining/reward-stats/144', { cacheKey: 'rewards' }), // miner revenue and fees over the last 144 blocks (a day)
   tx: (id) => getJSON('/tx/' + id),
+  // the Send page's lookups: never the backup server (a transaction not yet sent, and the coins it spends, stay with
+  // the data server the page names)
+  txHere: (id) => getJSON('/tx/' + id, { noFallback: true }),
   outspends: (id) => getJSON('/tx/' + id + '/outspends'), // which transaction spent each output (the Send page's check)
   // a past block's transactions: every one in short (txid, fee, vsize, rate; mempool.space only), for its picture, and
   // 25 at a time in full from `start` (the backup server has these too), for its list

@@ -28,10 +28,6 @@ export default {
   close: 'Bezárás',
   go: 'Mehet',
   blocksToGo: 'blokk van hátra',
-  priority: 'Elsőbbségi',
-  soon: 'Hamarosan',
-  anytime: 'Bármikor',
-  economy: 'Takarékos',
   byHeight: 'Blokkmagasság szerint',
   byDate: 'Dátum szerint',
   notFound: 'Nincs találat',
@@ -390,7 +386,6 @@ export default {
   evDiff: 'Nehézségállítás a(z) {h}. blokknál (várhatóan {c}%)',
   evBlock: '{n}. blokk',
   anniversaries: 'Évfordulók',
-  noConf: 'A konferencialista még nem készült el (megbízható adatforrás kell hozzá).',
   watchIntro: 'Bitcoin-csatornák a YouTube-on és néhány oldal, A-tól Z-ig. A linkek új lapon nyílnak meg.',
   sites: 'Oldalak',
   about1:
@@ -607,7 +602,7 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'ismeretlen, amíg meg nem találjuk az elköltött coinokat',
   sendRbf: 'Később lecserélhető magasabb díjjal.',
-  sendFinal: 'Később nem cserélhető le magasabb díjjal.',
+  sendFinal: 'Nem jelzi, hogy lecserélhető; sok csomópont mégis elfogad helyette egy magasabb díjú tranzakciót.',
   sendMissing:
     'Az általa elköltött coinok egy része nem található: lehet, hogy már elköltötték őket, vagy egy másik hálózathoz tartoznak. Valószínűleg elutasítanák.',
   sendSpent: 'Az általa elköltött coinokat már elköltötte egy másik tranzakció egy blokkban, így elutasítanák.',
@@ -649,4 +644,7 @@ export default {
   addrQrAria: 'A(z) {a} cím QR-kódja',
   addrQrNote:
     'Olvasd be egy tárcával, hogy erre a címre fizess. Ezen az eszközön készült; ellenőrizd a címet, amit a tárcád mutat.',
+  sendUnchecked:
+    'Az általa elköltött coinok egy részét most nem sikerült ellenőrizni, így a díj ismeretlen lehet. Kicsit később nyomd meg újra az Ellenőrzés gombot.',
+  txInUnknown: 'nincs lekérve',
 };

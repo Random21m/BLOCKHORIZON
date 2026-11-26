@@ -28,10 +28,6 @@ export default {
   close: 'Đóng',
   go: 'Đi',
   blocksToGo: 'khối nữa',
-  priority: 'Ưu tiên',
-  soon: 'Sớm',
-  anytime: 'Lúc nào cũng được',
-  economy: 'Tiết kiệm',
   byHeight: 'Theo chiều cao khối',
   byDate: 'Theo ngày',
   notFound: 'Không tìm thấy gì',
@@ -389,7 +385,6 @@ export default {
   evDiff: 'Điều chỉnh độ khó tại khối {h} (dự kiến {c}%)',
   evBlock: 'Khối {n}',
   anniversaries: 'Ngày kỷ niệm',
-  noConf: 'Danh sách hội nghị chưa được làm (cần nguồn dữ liệu đáng tin cậy).',
   watchIntro: 'Các kênh Bitcoin trên YouTube và vài trang web, từ A đến Z. Liên kết mở trong tab mới.',
   sites: 'Trang web',
   about1:
@@ -597,7 +592,7 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'chưa rõ cho đến khi tìm thấy các coin mà nó chi tiêu',
   sendRbf: 'Sau này nó có thể được thay thế bằng phí cao hơn.',
-  sendFinal: 'Sau này nó không thể được thay thế bằng phí cao hơn.',
+  sendFinal: 'Nó không cho biết là có thể thay thế; dù vậy nhiều nút vẫn chấp nhận giao dịch thay thế với phí cao hơn.',
   sendMissing:
     'Không tìm thấy một số coin mà nó chi tiêu: có thể chúng đã được chi, hoặc thuộc về mạng khác. Nhiều khả năng nó sẽ bị từ chối.',
   sendSpent: 'Các coin mà nó chi tiêu đã được một giao dịch khác trong một khối chi rồi, nên nó sẽ bị từ chối.',
@@ -638,4 +633,7 @@ export default {
   addrQrAria: 'Mã QR của địa chỉ {a}',
   addrQrNote:
     'Quét bằng ví để thanh toán tới địa chỉ này. Mã được tạo trên thiết bị này; hãy kiểm tra địa chỉ mà ví của bạn hiển thị.',
+  sendUnchecked:
+    'Hiện chưa kiểm tra được một số coin mà nó chi tiêu, nên có thể chưa biết phí. Lát nữa hãy bấm Kiểm tra lại.',
+  txInUnknown: 'chưa tra cứu',
 };

@@ -28,10 +28,6 @@ export default {
   close: 'Zapri',
   go: 'Pojdi',
   blocksToGo: 'blokov do cilja',
-  priority: 'Prednostno',
-  soon: 'Kmalu',
-  anytime: 'Kadarkoli',
-  economy: 'Varčno',
   byHeight: 'Po višini bloka',
   byDate: 'Po datumu',
   notFound: 'Ni zadetkov',
@@ -391,7 +387,6 @@ export default {
   evDiff: 'Prilagoditev težavnosti pri bloku {h} (pričakovano {c} %)',
   evBlock: 'Blok {n}',
   anniversaries: 'Obletnice',
-  noConf: 'Seznam konferenc še ni pripravljen (potreben je zanesljiv vir podatkov).',
   watchIntro: 'Bitcoin kanali na YouTubu in nekaj spletnih strani, od A do Ž. Povezave se odprejo v novem zavihku.',
   sites: 'Spletne strani',
   about1:
@@ -604,7 +599,7 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'neznana, dokler se ne najdejo kovanci, ki jih porabi',
   sendRbf: 'Pozneje jo je mogoče zamenjati z višjo provizijo.',
-  sendFinal: 'Pozneje je ni mogoče zamenjati z višjo provizijo.',
+  sendFinal: 'Ne navaja, da jo je mogoče zamenjati; veliko vozlišč vseeno sprejme zamenjavo z višjo provizijo.',
   sendMissing:
     'Nekaterih kovancev, ki jih porabi, ni bilo mogoče najti: morda so že porabljeni ali pripadajo drugemu omrežju. Verjetno bi bila zavrnjena.',
   sendSpent: 'Kovance, ki jih porabi, je že porabila druga transakcija v bloku, zato bi bila zavrnjena.',
@@ -647,4 +642,7 @@ export default {
   addrQrAria: 'Koda QR naslova {a}',
   addrQrNote:
     'Skenirajte jo z denarnico, da plačate na ta naslov. Ustvarjena na tej napravi; preverite naslov, ki ga pokaže denarnica.',
+  sendUnchecked:
+    'Nekaterih kovancev, ki jih porabi, zdaj ni bilo mogoče preveriti, zato provizija morda ni znana. Čez trenutek znova pritisnite Preveri.',
+  txInUnknown: 'ni preverjeno',
 };

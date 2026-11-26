@@ -28,10 +28,6 @@ export default {
   close: 'Fermer',
   go: 'Aller',
   blocksToGo: 'blocs restants',
-  priority: 'Priorité',
-  soon: 'Bientôt',
-  anytime: 'Quand vous voulez',
-  economy: 'Économique',
   byHeight: 'Par hauteur',
   byDate: 'Par date',
   notFound: 'Rien trouvé',
@@ -392,7 +388,6 @@ export default {
   evDiff: 'Ajustement de difficulté au bloc {h} ({c} % prévu)',
   evBlock: 'Bloc {n}',
   anniversaries: 'Anniversaires',
-  noConf: 'Les conférences ne sont pas encore listées (il manque une source fiable).',
   watchIntro: 'Chaînes Bitcoin sur YouTube et quelques sites, de A à Z. Les liens s’ouvrent dans un nouvel onglet.',
   sites: 'Sites',
   about1:
@@ -614,7 +609,8 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'inconnus tant que les pièces qu’elle dépense ne sont pas trouvées',
   sendRbf: 'Elle peut être remplacée plus tard avec des frais plus élevés.',
-  sendFinal: 'Elle ne peut pas être remplacée plus tard avec des frais plus élevés.',
+  sendFinal:
+    'Elle n’indique pas qu’elle peut être remplacée ; beaucoup de nœuds acceptent quand même un remplacement avec des frais plus élevés.',
   sendMissing:
     'Certaines des pièces qu’elle dépense sont introuvables : elles sont peut-être déjà dépensées, ou appartiennent à un autre réseau. Elle serait sans doute refusée.',
   sendSpent:
@@ -658,4 +654,7 @@ export default {
   addrQrAria: 'QR code de l’adresse {a}',
   addrQrNote:
     'Scannez-le avec un portefeuille pour payer à cette adresse. Généré sur cet appareil ; vérifiez l’adresse affichée par votre portefeuille.',
+  sendUnchecked:
+    'Certaines des pièces qu’elle dépense n’ont pas pu être vérifiées pour l’instant, les frais sont donc peut-être inconnus. Appuyez à nouveau sur Vérifier dans un instant.',
+  txInUnknown: 'non consulté',
 };

@@ -28,10 +28,6 @@ export default {
   close: 'Zatvori',
   go: 'Idi',
   blocksToGo: 'blokova do kraja',
-  priority: 'Prioritet',
-  soon: 'Uskoro',
-  anytime: 'Bilo kad',
-  economy: 'Ekonomično',
   byHeight: 'Po visini bloka',
   byDate: 'Po datumu',
   notFound: 'Ništa nije pronađeno',
@@ -391,7 +387,6 @@ export default {
   evDiff: 'Promjena težine kod bloka {h} (očekuje se {c}%)',
   evBlock: 'Blok {n}',
   anniversaries: 'Obljetnice',
-  noConf: 'Popis konferencija još ne postoji (potreban je pouzdan izvor podataka).',
   watchIntro: 'Bitcoin kanali na YouTubeu i nekoliko stranica, od A do Ž. Poveznice se otvaraju u novoj kartici.',
   sites: 'Stranice',
   about1:
@@ -602,7 +597,7 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'nepoznata dok se ne pronađu novčići koje troši',
   sendRbf: 'Kasnije se može zamijeniti višom naknadom.',
-  sendFinal: 'Kasnije se ne može zamijeniti višom naknadom.',
+  sendFinal: 'Ne navodi da se može zamijeniti; mnogi čvorovi ipak prihvaćaju zamjenu s višom naknadom.',
   sendMissing:
     'Neki novčići koje troši nisu pronađeni: možda su već potrošeni ili pripadaju drugoj mreži. Vjerojatno bi bila odbijena.',
   sendSpent: 'Novčiće koje troši već je potrošila druga transakcija u bloku, pa bi bila odbijena.',
@@ -644,4 +639,7 @@ export default {
   addrQrAria: 'QR kod adrese {a}',
   addrQrNote:
     'Skenirajte ga novčanikom za plaćanje na ovu adresu. Izrađen na ovom uređaju; provjerite adresu koju prikazuje novčanik.',
+  sendUnchecked:
+    'Neki novčići koje troši trenutačno se nisu mogli provjeriti, pa naknada možda nije poznata. Za trenutak ponovno pritisnite Provjeri.',
+  txInUnknown: 'nije provjereno',
 };

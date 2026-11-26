@@ -28,10 +28,6 @@ export default {
   close: 'Sluiten',
   go: 'Ga',
   blocksToGo: 'blokken te gaan',
-  priority: 'Prioriteit',
-  soon: 'Binnenkort',
-  anytime: 'Op elk moment',
-  economy: 'Zuinig',
   byHeight: 'Op hoogte',
   byDate: 'Op datum',
   notFound: 'Niets gevonden',
@@ -391,7 +387,6 @@ export default {
   evDiff: 'Moeilijkheidsaanpassing bij blok {h} ({c}% verwacht)',
   evBlock: 'Blok {n}',
   anniversaries: 'Jubilea',
-  noConf: 'Conferenties staan er nog niet in (er is nog geen betrouwbare bron).',
   watchIntro: 'Bitcoin-kanalen op YouTube en een paar websites, van A tot Z. Links openen in een nieuw tabblad.',
   sites: 'Websites',
   about1:
@@ -606,7 +601,8 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'onbekend tot de munten die ze uitgeeft zijn gevonden',
   sendRbf: 'Ze kan later worden vervangen met hogere kosten.',
-  sendFinal: 'Ze kan later niet worden vervangen met hogere kosten.',
+  sendFinal:
+    'Ze geeft niet aan dat ze vervangen kan worden; veel nodes accepteren toch een vervanging met hogere kosten.',
   sendMissing:
     'Sommige munten die ze uitgeeft zijn niet gevonden: ze zijn misschien al uitgegeven, of horen bij een ander netwerk. Ze zou waarschijnlijk worden geweigerd.',
   sendSpent:
@@ -650,4 +646,7 @@ export default {
   addrQrAria: 'QR-code van het adres {a}',
   addrQrNote:
     'Scan hem met een wallet om naar dit adres te betalen. Gemaakt op dit apparaat; controleer het adres dat je wallet toont.',
+  sendUnchecked:
+    'Sommige munten die ze uitgeeft konden nu niet worden gecontroleerd, dus de kosten zijn misschien onbekend. Druk zo dadelijk nog eens op Controleren.',
+  txInUnknown: 'niet opgezocht',
 };

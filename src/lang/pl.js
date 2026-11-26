@@ -28,10 +28,6 @@ export default {
   close: 'Zamknij',
   go: 'Idź',
   blocksToGo: 'bloków do końca',
-  priority: 'Priorytet',
-  soon: 'Wkrótce',
-  anytime: 'Bez pośpiechu',
-  economy: 'Ekonomiczna',
   byHeight: 'Według wysokości bloku',
   byDate: 'Według daty',
   notFound: 'Nic nie znaleziono',
@@ -391,7 +387,6 @@ export default {
   evDiff: 'Zmiana trudności przy bloku {h} (spodziewane {c}%)',
   evBlock: 'Blok {n}',
   anniversaries: 'Rocznice',
-  noConf: 'Lista konferencji jeszcze nie powstała (potrzebne jest zaufane źródło danych).',
   watchIntro: 'Kanały o Bitcoinie na YouTube i kilka stron, od A do Z. Linki otwierają się w nowej karcie.',
   sites: 'Strony',
   about1:
@@ -599,7 +594,7 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'nieznana, dopóki nie zostaną znalezione monety, które wydaje',
   sendRbf: 'Można ją później zastąpić transakcją z wyższą opłatą.',
-  sendFinal: 'Nie można jej później zastąpić transakcją z wyższą opłatą.',
+  sendFinal: 'Nie zaznacza, że można ją zastąpić; wiele węzłów i tak przyjmie zastępczą transakcję z wyższą opłatą.',
   sendMissing:
     'Części monet, które wydaje, nie znaleziono: mogą być już wydane albo należeć do innej sieci. Prawdopodobnie zostałaby odrzucona.',
   sendSpent: 'Monety, które wydaje, zostały już wydane przez inną transakcję w bloku, więc zostałaby odrzucona.',
@@ -641,4 +636,7 @@ export default {
   addrQrAria: 'Kod QR adresu {a}',
   addrQrNote:
     'Zeskanuj go portfelem, aby zapłacić na ten adres. Wygenerowany na tym urządzeniu; sprawdź adres, który pokazuje portfel.',
+  sendUnchecked:
+    'Części monet, które wydaje, nie udało się teraz sprawdzić, więc opłata może być nieznana. Za chwilę naciśnij Sprawdź jeszcze raz.',
+  txInUnknown: 'nie sprawdzono',
 };

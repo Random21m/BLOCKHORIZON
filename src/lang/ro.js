@@ -28,10 +28,6 @@ export default {
   close: 'Închide',
   go: 'Du-te',
   blocksToGo: 'blocuri rămase',
-  priority: 'Prioritar',
-  soon: 'Curând',
-  anytime: 'Oricând',
-  economy: 'Economic',
   byHeight: 'După înălțimea blocului',
   byDate: 'După dată',
   notFound: 'Nu s-a găsit nimic',
@@ -391,7 +387,6 @@ export default {
   evDiff: 'Ajustarea dificultății la blocul {h} ({c}% estimat)',
   evBlock: 'Blocul {n}',
   anniversaries: 'Aniversări',
-  noConf: 'Lista conferințelor nu este gata încă (are nevoie de o sursă de date de încredere).',
   watchIntro: 'Canale Bitcoin pe YouTube și câteva site-uri, de la A la Z. Linkurile se deschid într-o filă nouă.',
   sites: 'Site-uri',
   about1:
@@ -607,7 +602,7 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'necunoscut până sunt găsite monedele pe care le cheltuiește',
   sendRbf: 'Poate fi înlocuită mai târziu cu un comision mai mare.',
-  sendFinal: 'Nu poate fi înlocuită mai târziu cu un comision mai mare.',
+  sendFinal: 'Nu indică faptul că poate fi înlocuită; multe noduri acceptă totuși o înlocuire cu un comision mai mare.',
   sendMissing:
     'Unele dintre monedele pe care le cheltuiește nu au fost găsite: poate sunt deja cheltuite sau aparțin altei rețele. Probabil ar fi refuzată.',
   sendSpent:
@@ -650,4 +645,7 @@ export default {
   addrQrAria: 'Codul QR al adresei {a}',
   addrQrNote:
     'Scanează-l cu un portofel ca să plătești la această adresă. Generat pe acest dispozitiv; verifică adresa afișată de portofel.',
+  sendUnchecked:
+    'Unele dintre monedele pe care le cheltuiește nu au putut fi verificate acum, așa că este posibil ca comisionul să fie necunoscut. Apasă din nou Verifică peste câteva momente.',
+  txInUnknown: 'neverificat',
 };

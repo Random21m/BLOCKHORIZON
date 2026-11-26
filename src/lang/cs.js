@@ -28,10 +28,6 @@ export default {
   close: 'Zavřít',
   go: 'Přejít',
   blocksToGo: 'bloků zbývá',
-  priority: 'Přednostně',
-  soon: 'Brzy',
-  anytime: 'Kdykoli',
-  economy: 'Úsporně',
   byHeight: 'Podle výšky bloku',
   byDate: 'Podle data',
   notFound: 'Nic nenalezeno',
@@ -390,7 +386,6 @@ export default {
   evDiff: 'Změna obtížnosti v bloku {h} (očekáváno {c} %)',
   evBlock: 'Blok {n}',
   anniversaries: 'Výročí',
-  noConf: 'Přehled konferencí zatím není hotový (chybí důvěryhodný zdroj dat).',
   watchIntro: 'Bitcoinové kanály na YouTube a několik webů, od A do Z. Odkazy se otevírají v nové kartě.',
   sites: 'Weby',
   about1:
@@ -598,7 +593,7 @@ export default {
   sendFeeVal: '{s} satů · {r} sat/vB',
   sendFeeUnknown: 'neznámý, dokud se nenajdou mince, které utrácí',
   sendRbf: 'Později ji lze nahradit transakcí s vyšším poplatkem.',
-  sendFinal: 'Později ji nelze nahradit transakcí s vyšším poplatkem.',
+  sendFinal: 'Neuvádí, že ji lze nahradit; mnoho uzlů přesto přijme náhradu s vyšším poplatkem.',
   sendMissing:
     'Některé mince, které utrácí, se nenašly: možná už jsou utracené, nebo patří do jiné sítě. Nejspíš by byla odmítnuta.',
   sendSpent: 'Mince, které utrácí, už utratila jiná transakce v bloku, takže by byla odmítnuta.',
@@ -639,4 +634,7 @@ export default {
   addrQrAria: 'QR kód adresy {a}',
   addrQrNote:
     'Naskenujte ho peněženkou a zaplaťte na tuto adresu. Vytvořeno v tomto zařízení; zkontrolujte adresu, kterou ukazuje peněženka.',
+  sendUnchecked:
+    'Některé mince, které utrácí, teď nešlo zkontrolovat, takže poplatek může být neznámý. Za chvíli znovu stiskněte Zkontrolovat.',
+  txInUnknown: 'nezjištěno',
 };

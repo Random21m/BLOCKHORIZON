@@ -28,10 +28,6 @@ export default {
   close: 'Chiudi',
   go: 'Vai',
   blocksToGo: 'blocchi rimanenti',
-  priority: 'Priorità',
-  soon: 'Presto',
-  anytime: 'In qualsiasi momento',
-  economy: 'Economica',
   byHeight: 'Per altezza',
   byDate: 'Per data',
   notFound: 'Nessun risultato',
@@ -391,7 +387,6 @@ export default {
   evDiff: 'Adeguamento della difficoltà al blocco {h} ({c}% previsto)',
   evBlock: 'Blocco {n}',
   anniversaries: 'Anniversari',
-  noConf: 'Le conferenze non sono ancora elencate (manca una fonte di dati affidabile).',
   watchIntro: 'Canali Bitcoin su YouTube e alcuni siti, dalla A alla Z. I link si aprono in una nuova scheda.',
   sites: 'Siti',
   about1:
@@ -608,7 +603,8 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'sconosciuta finché non si trovano le monete che spende',
   sendRbf: 'Può essere sostituita più tardi con una commissione più alta.',
-  sendFinal: 'Non può essere sostituita più tardi con una commissione più alta.',
+  sendFinal:
+    'Non indica di poter essere sostituita; molti nodi accettano comunque una sostituzione con una commissione più alta.',
   sendMissing:
     'Alcune delle monete che spende non sono state trovate: forse sono già spese, o appartengono a un’altra rete. Probabilmente verrebbe rifiutata.',
   sendSpent:
@@ -652,4 +648,7 @@ export default {
   addrQrAria: 'Codice QR dell’indirizzo {a}',
   addrQrNote:
     'Scansionalo con un wallet per pagare a questo indirizzo. Generato su questo dispositivo; controlla l’indirizzo mostrato dal tuo wallet.',
+  sendUnchecked:
+    'Alcune delle monete che spende non si sono potute controllare ora, quindi la commissione potrebbe essere sconosciuta. Premi di nuovo Controlla tra un momento.',
+  txInUnknown: 'non consultato',
 };
