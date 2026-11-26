@@ -395,7 +395,7 @@ export default {
   about1:
     'BLOCKHORIZON shows the Bitcoin chain as a clock: block height counts up, and everything else (halving, difficulty, fees) counts down to the next block.',
   about2:
-    "It is a static page. No account, no ads, no analytics, no cookies. Settings and the last values live only in this browser. Live data comes straight from the public mempool.space API and Kraken's public price feed. You can use your own node instead (Settings, Data).",
+    "It is a static page. No account, no ads, no analytics, no cookies. Settings and the last values live only in this browser. Live data comes straight from the public mempool.space API and Kraken's public price feed (Coinbase's while Kraken is not answering). You can use your own node instead (Settings, Data).",
   version: 'Version {v}',
   source: 'Source on GitHub',
   privacy: 'Privacy',

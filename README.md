@@ -23,7 +23,7 @@ When a block is mined, you see it happen: the blocks glide one slot along and th
 BLOCKHORIZON is built around one idea: in Bitcoin, time is measured in blocks. The block height counts up; everything else counts down to the next block.
 
 **The dashboard** (everything on one screen, no scrolling)
-- Live block height, time since the last block, and the price streamed from Kraken, with the 24 h change
+- Live block height, time since the last block, and the price streamed from Kraken (from Coinbase while Kraken is down), with the 24 h change
 - Next halving (blocks to go, estimated date, reward) and supply issued
 - Difficulty adjustment (progress, expected and previous change), hashrate with 7/14/30/90-day averages, block production against the 10-minute target
 - Last block with its mining pool, fees, mempool (count, depth, inflow), and the projected and recent blocks, coloured like mempool.space
@@ -97,7 +97,7 @@ Options: `show=height|halving|price|mining` (`mining` draws a small picture of t
 
 ## Privacy
 
-Your browser asks the public mempool.space API (or the server you chose in Settings) for block, fee and mempool data, blockstream.info only while that server is not answering, and Kraken's public feed for the price (plus Kraken's public API for past candles on the trading chart). Nothing else is contacted, there are no cookies or analytics, and nothing about you is stored anywhere but your own browser. Details: [privacy.html](https://random21m.github.io/BLOCKHORIZON/privacy.html).
+Your browser asks the public mempool.space API (or the server you chose in Settings) for block, fee and mempool data, blockstream.info only while that server is not answering, and Kraken's public feed for the price (plus Kraken's public API for past candles on the trading chart). Only while Kraken sends no price for 15 seconds, the price comes from Coinbase's public feed instead (US dollars, euros and pounds; the other currencies from mempool.space), until Kraken is back. Nothing else is contacted, there are no cookies or analytics, and nothing about you is stored anywhere but your own browser. Details: [privacy.html](https://random21m.github.io/BLOCKHORIZON/privacy.html).
 
 ## Run your own copy
 
@@ -123,7 +123,7 @@ npx prettier@3.3.3 --write .       # format the code (CI checks it)
 
 No build step and no dependencies. The accessibility check in the browser tests runs when `axe-core` is installed (`npm install --no-save axe-core`), as it is in CI.
 
-Code layout (`src/`): `app.js` routing, live repaint and start-up · `state.js` settings and shared state · `data.js` data feeds, block alarms and fee alerts · `ui.js` tiles, charts and other building blocks · `view-dash.js` dashboard and clock · `view-chain.js` block and transaction pages · `view-tools.js` alarm and calculator · `view-info.js` replay, calendar, glossary, watch, about · `view-charts.js` history charts · `trade-chart.js`, `trade-side.js` the live trading chart, order book and trades · `view-my.js` Your block · `view-mining.js`, `block-scene.js` the Mining page and its live block picture · `arrival.js` the block arrival animation · `embed.js` the embeddable widget · `modals.js` search and settings · `lib.js` pure helpers (unit-tested) · `api.js`, `price.js` network (data server, backup source, Kraken) · `nostr.js` sharing to Nostr · `i18n.js` and `lang/` (one file per language; only the chosen one is downloaded), `content.js`, `content-i18n.js` texts.
+Code layout (`src/`): `app.js` routing, live repaint and start-up · `state.js` settings and shared state · `data.js` data feeds, block alarms and fee alerts · `ui.js` tiles, charts and other building blocks · `view-dash.js` dashboard and clock · `view-chain.js` block and transaction pages · `view-tools.js` alarm and calculator · `view-info.js` replay, calendar, glossary, watch, about · `view-charts.js` history charts · `trade-chart.js`, `trade-side.js` the live trading chart, order book and trades · `view-my.js` Your block · `view-mining.js`, `block-scene.js` the Mining page and its live block picture · `arrival.js` the block arrival animation · `embed.js` the embeddable widget · `modals.js` search and settings · `lib.js` pure helpers (unit-tested) · `api.js`, `price.js` network (data server, backup source, Kraken and the backup price feed) · `nostr.js` sharing to Nostr · `i18n.js` and `lang/` (one file per language; only the chosen one is downloaded), `content.js`, `content-i18n.js` texts.
 
 Version 0.18.0. What changed in each version: [CHANGELOG.md](CHANGELOG.md). Not built yet: an art gallery, conference listings and chain-state totals (addresses, UTXOs, disk size), for lack of a free, trustworthy public source.
 

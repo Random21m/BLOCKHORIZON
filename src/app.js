@@ -455,11 +455,9 @@ export async function boot() {
   });
   renderView();
   paintFoot();
-  livePrice(onPriceTick, (on) => {
-    if (st.priceLive !== on) {
-      st.priceLive = on;
-      render();
-    }
+  livePrice(onPriceTick, (src) => {
+    st.priceLive = src;
+    render();
   }); // the price does not depend on the data server
   initPush(await loadConfig(S.server));
   refreshAll();

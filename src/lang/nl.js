@@ -397,7 +397,7 @@ export default {
   about1:
     'BLOCKHORIZON toont de Bitcoin-keten als een klok: de blokhoogte telt op en al het andere (halving, moeilijkheid, kosten) telt af naar het volgende blok.',
   about2:
-    'Het is een statische pagina. Geen account, geen advertenties, geen analytics, geen cookies. Instellingen en de laatste waarden blijven alleen in deze browser. Live gegevens komen rechtstreeks van de openbare mempool.space-API en de openbare prijsfeed van Kraken. Je kunt in plaats daarvan je eigen node gebruiken (Instellingen, Gegevens).',
+    'Het is een statische pagina. Geen account, geen advertenties, geen analytics, geen cookies. Instellingen en de laatste waarden blijven alleen in deze browser. Live gegevens komen rechtstreeks van de openbare mempool.space-API en de openbare prijsfeed van Kraken (die van Coinbase zolang Kraken niet antwoordt). Je kunt in plaats daarvan je eigen node gebruiken (Instellingen, Gegevens).',
   version: 'Versie {v}',
   source: 'Broncode op GitHub',
   privacy: 'Privacy',

@@ -2,6 +2,13 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
+## Unreleased
+
+- **The live price keeps going when Kraken is down.** If Kraken's price feed goes quiet for 15 seconds, the price in
+  US dollars, euros and pounds streams from Coinbase's public feed instead, and switches back as soon as Kraken
+  answers again. The label under the price says which one you are seeing. Other currencies update from mempool.space
+  every minute meanwhile, as before.
+
 ## 0.18.0
 
 - **A block clock for a spare screen.** `#/clock?kiosk` turns Clock mode into a display for a screen that stays on (no

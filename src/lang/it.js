@@ -397,7 +397,7 @@ export default {
   about1:
     'BLOCKHORIZON mostra la catena di Bitcoin come un orologio: l’altezza del blocco sale e tutto il resto (halving, difficoltà, commissioni) conta fino al prossimo blocco.',
   about2:
-    'È una pagina statica. Nessun account, niente pubblicità, niente analisi, niente cookie. Impostazioni e ultimi valori restano solo in questo browser. I dati dal vivo arrivano direttamente dall’API pubblica di mempool.space e dal feed pubblico dei prezzi di Kraken. Puoi usare invece il tuo nodo (Impostazioni, Dati).',
+    'È una pagina statica. Nessun account, niente pubblicità, niente analisi, niente cookie. Impostazioni e ultimi valori restano solo in questo browser. I dati dal vivo arrivano direttamente dall’API pubblica di mempool.space e dal feed pubblico dei prezzi di Kraken (quello di Coinbase finché Kraken non risponde). Puoi usare invece il tuo nodo (Impostazioni, Dati).',
   version: 'Versione {v}',
   source: 'Codice su GitHub',
   privacy: 'Privacy',
