@@ -588,4 +588,38 @@ export default {
   blkSizeChart: 'Blok boyutu',
   lnAsOf: 'Veriler: {d}',
   lnAsOfShort: '{d} itibarıyla',
+  sendTitle: 'İşlem gönder',
+  sendLink: 'İmzalı bir işlem gönder',
+  sendIntro:
+    "İmzalı bir işlem yapıştırın: cüzdanınızın dışa aktardığı ham hex. Önce burada, cihazınızda okunur; Gönder'e basana kadar hiçbir şey gönderilmez.",
+  sendPaste: 'İmzalı işlem (hex)',
+  sendCheck: 'Kontrol et',
+  sendBadHex:
+    "Bu ham bir işlem değil. Cüzdanınızın imzalarken dışa aktardığı uzun hex'i yapıştırın (işlem kimliği yetmez).",
+  sendBadTx: 'Bu hex eksiksiz bir işlem değil. Tamamen kopyalandığını kontrol edin.',
+  sendWhat: 'Ne yapıyor',
+  sendSize: '{v} vB ({w} ağırlık birimi)',
+  sendFeeVal: '{s} sats · {r} sat/vB',
+  sendFeeUnknown: 'harcadığı coinler bulunana kadar bilinmiyor',
+  sendRbf: 'Daha sonra daha yüksek bir ücretle değiştirilebilir.',
+  sendFinal: 'Daha sonra daha yüksek bir ücretle değiştirilemez.',
+  sendMissing:
+    'Harcadığı coinlerin bazıları bulunamadı: zaten harcanmış ya da başka bir ağa ait olabilirler. Büyük olasılıkla reddedilir.',
+  sendSpent: 'Harcadığı coinler bir bloktaki başka bir işlem tarafından zaten harcanmış, bu yüzden reddedilir.',
+  sendReplaces:
+    'Harcadığı coinler hâlâ bekleyen bir işlemde zaten kullanılıyor. Bu işlem ancak onu daha yüksek bir ücretle değiştirirse geçer.',
+  sendNegative: 'Harcadığından fazlasını ödüyor, bu yüzden reddedilir.',
+  sendHigh:
+    'Bu ücret alışılmadık derecede yüksek: sonraki blok yaklaşık {r} sat/vB istiyor. Göndermeden önce kontrol edin.',
+  sendLow: "Bu ücret, düğümlerin şu an kabul ettiği {m} sat/vB'nin altında, bu yüzden reddedilir.",
+  sendSlow:
+    'Bu ücret, sonraki bir saatin bloklarının istediğinin ({r} sat/vB) altında, bu yüzden bir süre bekleyebilir.',
+  sendKnown: 'Bu işlem zaten gönderilmiş.',
+  sendOpen: 'Sayfasını aç',
+  sendTo: '{h} sunucusuna gönder',
+  sendNote:
+    'Gönderildikten sonra geri alınamaz. {h} onu ağa iletir ve her cüzdan sunucusu gibi bağlantınızdan geldiğini görür.',
+  sending: 'Gönderiliyor…',
+  sendDone: 'Gönderildi: ağ onu aldı.',
+  sendFail: 'Kabul edilmedi: {m}',
 };

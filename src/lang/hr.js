@@ -588,4 +588,37 @@ export default {
   blkSizeChart: 'Veličina bloka',
   lnAsOf: 'Podaci od {d}',
   lnAsOfShort: 'Stanje {d}',
+  sendTitle: 'Pošalji transakciju',
+  sendLink: 'Pošalji potpisanu transakciju',
+  sendIntro:
+    'Zalijepite potpisanu transakciju: sirovi hex koji vaš novčanik izvozi. Najprije se čita ovdje, na vašem uređaju; ništa se ne šalje dok ne pritisnete Pošalji.',
+  sendPaste: 'Potpisana transakcija (hex)',
+  sendCheck: 'Provjeri',
+  sendBadHex:
+    'Ovo nije sirova transakcija. Zalijepite dugi hex koji novčanik izvozi pri potpisivanju (ID transakcije nije dovoljan).',
+  sendBadTx: 'Ovaj hex nije potpuna transakcija. Provjerite je li kopiran u cijelosti.',
+  sendWhat: 'Što radi',
+  sendSize: '{v} vB ({w} jedinica težine)',
+  sendFeeVal: '{s} sats · {r} sat/vB',
+  sendFeeUnknown: 'nepoznata dok se ne pronađu novčići koje troši',
+  sendRbf: 'Kasnije se može zamijeniti višom naknadom.',
+  sendFinal: 'Kasnije se ne može zamijeniti višom naknadom.',
+  sendMissing:
+    'Neki novčići koje troši nisu pronađeni: možda su već potrošeni ili pripadaju drugoj mreži. Vjerojatno bi bila odbijena.',
+  sendSpent: 'Novčiće koje troši već je potrošila druga transakcija u bloku, pa bi bila odbijena.',
+  sendReplaces:
+    'Novčiće koje troši već koristi transakcija koja još čeka. Ova prolazi samo ako zamijeni onu višom naknadom.',
+  sendNegative: 'Isplaćuje više nego što troši, pa bi bila odbijena.',
+  sendHigh: 'Ova naknada je neobično visoka: sljedeći blok traži oko {r} sat/vB. Provjerite je prije slanja.',
+  sendLow: 'Ova naknada je niža od {m} sat/vB koje čvorovi sada prihvaćaju, pa bi bila odbijena.',
+  sendSlow:
+    'Ova naknada je niža od onoga što traže blokovi u sljedećih sat vremena ({r} sat/vB), pa može neko vrijeme čekati.',
+  sendKnown: 'Ova transakcija je već poslana.',
+  sendOpen: 'Otvori njezinu stranicu',
+  sendTo: 'Pošalji na {h}',
+  sendNote:
+    'Kad se pošalje, ne može se povući. {h} je prosljeđuje mreži i vidi da dolazi s vaše veze, kao poslužitelj bilo kojeg novčanika.',
+  sending: 'Slanje…',
+  sendDone: 'Poslano: mreža je ima.',
+  sendFail: 'Nije prihvaćeno: {m}',
 };

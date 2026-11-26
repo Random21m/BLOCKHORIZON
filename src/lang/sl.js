@@ -590,4 +590,38 @@ export default {
   blkSizeChart: 'Velikost bloka',
   lnAsOf: 'Podatki z dne {d}',
   lnAsOfShort: 'Stanje {d}',
+  sendTitle: 'Pošlji transakcijo',
+  sendLink: 'Pošlji podpisano transakcijo',
+  sendIntro:
+    'Prilepite podpisano transakcijo: surovi hex, ki ga izvozi vaša denarnica. Najprej se prebere tukaj, na vaši napravi; nič se ne pošlje, dokler ne pritisnete Pošlji.',
+  sendPaste: 'Podpisana transakcija (hex)',
+  sendCheck: 'Preveri',
+  sendBadHex:
+    'To ni surova transakcija. Prilepite dolgi hex, ki ga denarnica izvozi ob podpisu (ID transakcije ni dovolj).',
+  sendBadTx: 'Ta hex ni celotna transakcija. Preverite, ali je bil kopiran v celoti.',
+  sendWhat: 'Kaj naredi',
+  sendSize: '{v} vB ({w} enot teže)',
+  sendFeeVal: '{s} sats · {r} sat/vB',
+  sendFeeUnknown: 'neznana, dokler se ne najdejo kovanci, ki jih porabi',
+  sendRbf: 'Pozneje jo je mogoče zamenjati z višjo provizijo.',
+  sendFinal: 'Pozneje je ni mogoče zamenjati z višjo provizijo.',
+  sendMissing:
+    'Nekaterih kovancev, ki jih porabi, ni bilo mogoče najti: morda so že porabljeni ali pripadajo drugemu omrežju. Verjetno bi bila zavrnjena.',
+  sendSpent: 'Kovance, ki jih porabi, je že porabila druga transakcija v bloku, zato bi bila zavrnjena.',
+  sendReplaces:
+    'Kovance, ki jih porabi, že uporablja transakcija, ki še čaka. Ta gre skozi le, če jo zamenja z višjo provizijo.',
+  sendNegative: 'Izplača več, kot porabi, zato bi bila zavrnjena.',
+  sendHigh:
+    'Ta provizija je nenavadno visoka: naslednji blok potrebuje približno {r} sat/vB. Preverite jo pred pošiljanjem.',
+  sendLow: 'Ta provizija je nižja od {m} sat/vB, ki jih vozlišča zdaj sprejemajo, zato bi bila zavrnjena.',
+  sendSlow:
+    'Ta provizija je nižja od tega, kar potrebujejo bloki v naslednji uri ({r} sat/vB), zato lahko nekaj časa čaka.',
+  sendKnown: 'Ta transakcija je že bila poslana.',
+  sendOpen: 'Odpri njeno stran',
+  sendTo: 'Pošlji na {h}',
+  sendNote:
+    'Ko je poslana, je ni mogoče prekiniti. {h} jo posreduje omrežju in vidi, da prihaja iz vaše povezave, kot strežnik katere koli denarnice.',
+  sending: 'Pošiljanje…',
+  sendDone: 'Poslano: omrežje jo ima.',
+  sendFail: 'Ni sprejeto: {m}',
 };

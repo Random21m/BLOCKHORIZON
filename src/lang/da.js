@@ -590,4 +590,37 @@ export default {
   blkSizeChart: 'Blokstørrelse',
   lnAsOf: 'Tal fra {d}',
   lnAsOfShort: 'Pr. {d}',
+  sendTitle: 'Send en transaktion',
+  sendLink: 'Send en signeret transaktion',
+  sendIntro:
+    'Indsæt en signeret transaktion: den rå hex, din wallet eksporterer. Den læses først her på din enhed; intet sendes, før du trykker Send.',
+  sendPaste: 'Signeret transaktion (hex)',
+  sendCheck: 'Tjek',
+  sendBadHex:
+    'Det her er ikke en rå transaktion. Indsæt den lange hex, din wallet eksporterer, når den signerer (et transaktions-ID er ikke nok).',
+  sendBadTx: 'Denne hex er ikke en komplet transaktion. Tjek, at den er kopieret helt.',
+  sendWhat: 'Hvad den gør',
+  sendSize: '{v} vB ({w} vægtenheder)',
+  sendFeeVal: '{s} sats · {r} sat/vB',
+  sendFeeUnknown: 'ukendt, indtil de mønter, den bruger, er fundet',
+  sendRbf: 'Den kan erstattes senere med et højere gebyr.',
+  sendFinal: 'Den kan ikke erstattes senere med et højere gebyr.',
+  sendMissing:
+    'Nogle af de mønter, den bruger, blev ikke fundet: de er måske allerede brugt eller hører til et andet netværk. Den ville sandsynligvis blive afvist.',
+  sendSpent: 'Mønter, den bruger, er allerede brugt af en anden transaktion i en blok, så den ville blive afvist.',
+  sendReplaces:
+    'Mønter, den bruger, er allerede brugt af en transaktion, der stadig venter. Denne går kun igennem, hvis den erstatter den anden med et højere gebyr.',
+  sendNegative: 'Den udbetaler mere, end den bruger, så den ville blive afvist.',
+  sendHigh: 'Gebyret er usædvanligt højt: næste blok kræver cirka {r} sat/vB. Tjek det, før du sender.',
+  sendLow: 'Gebyret er under de {m} sat/vB, noder accepterer lige nu, så den ville blive afvist.',
+  sendSlow:
+    'Gebyret er under det, blokkene i den næste time kræver ({r} sat/vB), så den kan komme til at vente et stykke tid.',
+  sendKnown: 'Denne transaktion er allerede sendt.',
+  sendOpen: 'Åbn dens side',
+  sendTo: 'Send til {h}',
+  sendNote:
+    'Når den er sendt, kan den ikke kaldes tilbage. {h} sender den videre til netværket og ser, at den kommer fra din forbindelse, som enhver wallets server gør.',
+  sending: 'Sender…',
+  sendDone: 'Sendt: netværket har den.',
+  sendFail: 'Ikke accepteret: {m}',
 };

@@ -583,4 +583,36 @@ export default {
   blkSizeChart: 'Block size',
   lnAsOf: 'Figures from {d}',
   lnAsOfShort: 'As of {d}',
+  sendTitle: 'Send a transaction',
+  sendLink: 'Send a signed transaction',
+  sendIntro:
+    'Paste a signed transaction: the raw hex your wallet exports. It is read here on your device first; nothing is sent until you press Send.',
+  sendPaste: 'Signed transaction (hex)',
+  sendCheck: 'Check',
+  sendBadHex:
+    'This is not a raw transaction. Paste the long hex your wallet exports when it signs (a transaction ID is not enough).',
+  sendBadTx: 'This hex is not a complete transaction. Check that it was copied in full.',
+  sendWhat: 'What it does',
+  sendSize: '{v} vB ({w} weight units)',
+  sendFeeVal: '{s} sats · {r} sat/vB',
+  sendFeeUnknown: 'unknown until the coins it spends are found',
+  sendRbf: 'It can be replaced later with a higher fee.',
+  sendFinal: 'It cannot be replaced with a higher fee later.',
+  sendMissing:
+    'Some of the coins it spends were not found: they may be spent already, or belong to another network. It would likely be refused.',
+  sendSpent: 'Coins it spends were already spent by another transaction in a block, so it would be refused.',
+  sendReplaces:
+    'Coins it spends are already used by a transaction that is still waiting. This one goes through only if it replaces that one with a higher fee.',
+  sendNegative: 'It pays out more than it spends, so it would be refused.',
+  sendHigh: 'This fee is unusually high: the next block needs about {r} sat/vB. Check it before sending.',
+  sendLow: 'This fee is below the {m} sat/vB nodes accept right now, so it would be refused.',
+  sendSlow: 'This fee is below what the next hour of blocks needs ({r} sat/vB), so it may wait a while.',
+  sendKnown: 'This transaction has already been sent.',
+  sendOpen: 'Open its page',
+  sendTo: 'Send to {h}',
+  sendNote:
+    'Once sent, it cannot be called back. {h} passes it to the network and sees it come from your connection, as any wallet’s server does.',
+  sending: 'Sending…',
+  sendDone: 'Sent: the network has it.',
+  sendFail: 'Not accepted: {m}',
 };

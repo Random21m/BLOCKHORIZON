@@ -10,6 +10,11 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
 - The Lightning tile showed mempool.space's figures as if they were current, but they can be months old: they stopped
   updating at the end of August 2026, and some answers even carry figures from 2024. Figures older than a week now show
   their date ("32,518 channels · Figures from 08/30/2026"; "As of 08/30/2026" on a phone).
+- **Send a signed transaction.** Paste the raw hex your wallet exports (in Search, or on the new Send page linked from
+  Search and the Calculator) and see what it does before anything leaves your device: its ID, size, fee and fee rate,
+  every input and output with its address, and the privacy hints of the transaction page. It warns when the fee is
+  unusually high or too low, when coins it spends are already spent or missing, and when the network already has it.
+  Only when you press "Send to mempool.space" (or your own node) is it sent; never to the backup server.
 
 ## 0.21.0
 

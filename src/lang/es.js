@@ -595,4 +595,37 @@ export default {
   blkSizeChart: 'Tamaño de bloque',
   lnAsOf: 'Datos del {d}',
   lnAsOfShort: 'Al {d}',
+  sendTitle: 'Enviar una transacción',
+  sendLink: 'Enviar una transacción firmada',
+  sendIntro:
+    'Pega una transacción firmada: el hex en bruto que exporta tu cartera. Primero se lee aquí, en tu dispositivo; no se envía nada hasta que pulses Enviar.',
+  sendPaste: 'Transacción firmada (hex)',
+  sendCheck: 'Comprobar',
+  sendBadHex:
+    'Esto no es una transacción en bruto. Pega el hex largo que exporta tu cartera al firmar (un ID de transacción no basta).',
+  sendBadTx: 'Este hex no es una transacción completa. Comprueba que se copió entero.',
+  sendWhat: 'Qué hace',
+  sendSize: '{v} vB ({w} unidades de peso)',
+  sendFeeVal: '{s} sats · {r} sat/vB',
+  sendFeeUnknown: 'desconocida hasta encontrar las monedas que gasta',
+  sendRbf: 'Se puede reemplazar más tarde con una comisión más alta.',
+  sendFinal: 'No se puede reemplazar más tarde con una comisión más alta.',
+  sendMissing:
+    'Algunas de las monedas que gasta no se encontraron: puede que ya estén gastadas o que sean de otra red. Probablemente se rechazaría.',
+  sendSpent: 'Las monedas que gasta ya las gastó otra transacción en un bloque, así que se rechazaría.',
+  sendReplaces:
+    'Las monedas que gasta ya las usa una transacción que sigue esperando. Esta solo pasa si reemplaza a aquella con una comisión más alta.',
+  sendNegative: 'Paga más de lo que gasta, así que se rechazaría.',
+  sendHigh: 'Esta comisión es inusualmente alta: el próximo bloque pide unos {r} sat/vB. Revísala antes de enviar.',
+  sendLow: 'Esta comisión está por debajo de los {m} sat/vB que aceptan ahora los nodos, así que se rechazaría.',
+  sendSlow:
+    'Esta comisión está por debajo de lo que piden los bloques de la próxima hora ({r} sat/vB), así que puede tardar un rato.',
+  sendKnown: 'Esta transacción ya se envió.',
+  sendOpen: 'Abrir su página',
+  sendTo: 'Enviar a {h}',
+  sendNote:
+    'Una vez enviada, no se puede retirar. {h} la pasa a la red y ve que llega desde tu conexión, como hace el servidor de cualquier cartera.',
+  sending: 'Enviando…',
+  sendDone: 'Enviada: la red ya la tiene.',
+  sendFail: 'No aceptada: {m}',
 };

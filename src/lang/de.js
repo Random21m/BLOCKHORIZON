@@ -597,4 +597,38 @@ export default {
   blkSizeChart: 'Blockgröße',
   lnAsOf: 'Zahlen vom {d}',
   lnAsOfShort: 'Stand {d}',
+  sendTitle: 'Transaktion senden',
+  sendLink: 'Signierte Transaktion senden',
+  sendIntro:
+    'Füge eine signierte Transaktion ein: das Roh-Hex, das deine Wallet exportiert. Es wird zuerst hier auf deinem Gerät gelesen; nichts wird gesendet, bis du auf Senden drückst.',
+  sendPaste: 'Signierte Transaktion (hex)',
+  sendCheck: 'Prüfen',
+  sendBadHex:
+    'Das ist keine Rohtransaktion. Füge das lange Hex ein, das deine Wallet beim Signieren exportiert (eine Transaktions-ID reicht nicht).',
+  sendBadTx: 'Dieses Hex ist keine vollständige Transaktion. Prüfe, ob es ganz kopiert wurde.',
+  sendWhat: 'Was sie bewirkt',
+  sendSize: '{v} vB ({w} Gewichtseinheiten)',
+  sendFeeVal: '{s} Sats · {r} sat/vB',
+  sendFeeUnknown: 'unbekannt, bis die Coins gefunden sind, die sie ausgibt',
+  sendRbf: 'Sie kann später durch eine mit höherer Gebühr ersetzt werden.',
+  sendFinal: 'Sie kann später nicht durch eine mit höherer Gebühr ersetzt werden.',
+  sendMissing:
+    'Einige der Coins, die sie ausgibt, wurden nicht gefunden: Sie sind vielleicht schon ausgegeben oder gehören zu einem anderen Netzwerk. Sie würde wahrscheinlich abgelehnt.',
+  sendSpent:
+    'Coins, die sie ausgibt, wurden schon von einer anderen Transaktion in einem Block ausgegeben, daher würde sie abgelehnt.',
+  sendReplaces:
+    'Coins, die sie ausgibt, werden schon von einer Transaktion verwendet, die noch wartet. Diese geht nur durch, wenn sie jene mit höherer Gebühr ersetzt.',
+  sendNegative: 'Sie zahlt mehr aus, als sie ausgibt, daher würde sie abgelehnt.',
+  sendHigh: 'Diese Gebühr ist ungewöhnlich hoch: Der nächste Block braucht etwa {r} sat/vB. Prüfe sie vor dem Senden.',
+  sendLow: 'Diese Gebühr liegt unter den {m} sat/vB, die Nodes gerade annehmen, daher würde sie abgelehnt.',
+  sendSlow:
+    'Diese Gebühr liegt unter dem, was die Blöcke der nächsten Stunde brauchen ({r} sat/vB), daher kann sie eine Weile warten.',
+  sendKnown: 'Diese Transaktion wurde schon gesendet.',
+  sendOpen: 'Ihre Seite öffnen',
+  sendTo: 'An {h} senden',
+  sendNote:
+    'Einmal gesendet, lässt sie sich nicht zurückholen. {h} gibt sie ans Netzwerk weiter und sieht, dass sie von deiner Verbindung kommt, wie der Server jeder Wallet.',
+  sending: 'Wird gesendet…',
+  sendDone: 'Gesendet: Das Netzwerk hat sie.',
+  sendFail: 'Nicht angenommen: {m}',
 };

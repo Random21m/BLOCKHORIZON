@@ -594,4 +594,37 @@ export default {
   blkSizeChart: 'Tamanho do bloco',
   lnAsOf: 'Dados de {d}',
   lnAsOfShort: 'Em {d}',
+  sendTitle: 'Enviar uma transação',
+  sendLink: 'Enviar uma transação assinada',
+  sendIntro:
+    'Cole uma transação assinada: o hex bruto que sua carteira exporta. Ela é lida primeiro aqui, no seu dispositivo; nada é enviado até você tocar em Enviar.',
+  sendPaste: 'Transação assinada (hex)',
+  sendCheck: 'Verificar',
+  sendBadHex:
+    'Isto não é uma transação bruta. Cole o hex longo que sua carteira exporta ao assinar (um ID de transação não basta).',
+  sendBadTx: 'Este hex não é uma transação completa. Verifique se foi copiado inteiro.',
+  sendWhat: 'O que ela faz',
+  sendSize: '{v} vB ({w} unidades de peso)',
+  sendFeeVal: '{s} sats · {r} sat/vB',
+  sendFeeUnknown: 'desconhecida até encontrar as moedas que ela gasta',
+  sendRbf: 'Ela pode ser substituída depois com uma taxa maior.',
+  sendFinal: 'Ela não pode ser substituída depois com uma taxa maior.',
+  sendMissing:
+    'Algumas das moedas que ela gasta não foram encontradas: talvez já tenham sido gastas ou sejam de outra rede. Provavelmente seria recusada.',
+  sendSpent: 'As moedas que ela gasta já foram gastas por outra transação em um bloco, então seria recusada.',
+  sendReplaces:
+    'As moedas que ela gasta já estão sendo usadas por uma transação que ainda aguarda. Esta só passa se substituir aquela com uma taxa maior.',
+  sendNegative: 'Ela paga mais do que gasta, então seria recusada.',
+  sendHigh: 'Esta taxa está muito alta: o próximo bloco pede cerca de {r} sat/vB. Confira antes de enviar.',
+  sendLow: 'Esta taxa está abaixo dos {m} sat/vB que os nós aceitam agora, então seria recusada.',
+  sendSlow:
+    'Esta taxa está abaixo do que os blocos da próxima hora pedem ({r} sat/vB), então ela pode esperar um tempo.',
+  sendKnown: 'Esta transação já foi enviada.',
+  sendOpen: 'Abrir a página dela',
+  sendTo: 'Enviar para {h}',
+  sendNote:
+    'Depois de enviada, não dá para desfazer. {h} a repassa para a rede e vê que ela vem da sua conexão, como o servidor de qualquer carteira.',
+  sending: 'Enviando…',
+  sendDone: 'Enviada: a rede já a recebeu.',
+  sendFail: 'Não aceita: {m}',
 };

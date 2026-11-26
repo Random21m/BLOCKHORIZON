@@ -130,6 +130,7 @@ export const api = {
   adjustments: () => getJSON('/v1/mining/difficulty-adjustments', { cacheKey: 'adjust' }), // every past adjustment, newest first
   rewards: () => getJSON('/v1/mining/reward-stats/144', { cacheKey: 'rewards' }), // miner revenue and fees over the last 144 blocks (a day)
   tx: (id) => getJSON('/tx/' + id),
+  outspends: (id) => getJSON('/tx/' + id + '/outspends'), // which transaction spent each output (the Send page's check)
   // a past block's transactions: every one in short (txid, fee, vsize, rate; mempool.space only), for its picture, and
   // 25 at a time in full from `start` (the backup server has these too), for its list
   blockSummary: (hash) => getJSON('/v1/block/' + hash + '/summary'),
@@ -149,6 +150,20 @@ export const api = {
   mempoolStats: (r) => getJSON('/v1/statistics/' + r), // the mempool by fee rate over time (no backup: esploraFor has none)
   byTime: (ts) => getJSON('/v1/mining/blocks/timestamp/' + ts),
 };
+
+// Send a signed transaction (raw hex) to the data server, which passes it to the network: its ID back, or an Error with
+// the server's reason (such as 'bad-txns-inputs-missingorspent'). Never sent to the backup server: the person chose
+// where it goes when they pressed Send, and the page names the data server.
+export async function broadcast(hex) {
+  const r = await fetch(server + '/api/tx', { method: 'POST', body: hex, cache: 'no-store' });
+  const text = (await r.text()).trim();
+  if (!r.ok) {
+    const e = new Error(text.slice(0, 300) || 'HTTP ' + r.status);
+    e.status = r.status;
+    throw e;
+  }
+  return text;
+}
 
 // Trading chart history: Kraken's last 720 candles of one timeframe (Kraken's public REST API, no key). Not cached.
 export const KRAKEN_REST = 'https://api.kraken.com/0/public/OHLC';

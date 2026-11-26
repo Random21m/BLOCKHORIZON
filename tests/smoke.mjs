@@ -3051,6 +3051,7 @@ await ok('accessibility: no axe-core violations on the main pages and dialogs, d
       '#/mining',
       '#/mining?tx=' + TXM,
       '#/tx/' + TXC,
+      '#/send',
       'embed.html?show=mining',
       'search',
       'settings',
@@ -3125,6 +3126,126 @@ await ok(
     await c.close();
   }
 );
+await ok('send a signed transaction: read on the device, checked against the chain, sent only when asked', async () => {
+  const raw = JSON.parse(fx('raw-txs.json'))[3],
+    PREV = '2db05cc5d7c31936db0dbece27b761306707f3eb5441c63b641fbef5a584b498';
+  const fresh = raw.hex.slice(0, -8) + '01000000', // another lock time: an ID the network has not seen
+    FRESH = '4efedffb191135b4dadd3bdeb65d9f93b5bf4606de1f8a9bafdc3016af781b7c';
+  const posted = [],
+    backup = [];
+  let answer = { status: 200, body: FRESH },
+    spentIn = null; // which block spent the coin it uses (null: unspent)
+  const c = await b.newContext({ viewport: { width: 1280, height: 900 } });
+  await c.routeWebSocket(/./, (ws) => ws.close());
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
+    /mempool\.space|blockstream\.info/.test(r.request().url()) ? r.fallback() : r.abort()
+  );
+  await c.route(/blockstream\.info/, (route) => {
+    backup.push(route.request().method() + ' ' + new URL(route.request().url()).pathname);
+    route.fulfill({ status: 500, body: '' });
+  });
+  await c.route(/mempool\.space/, (route) => {
+    const q = route.request(),
+      u = new URL(q.url()).pathname;
+    if (u === '/api/tx' && q.method() === 'POST') {
+      posted.push(q.postData());
+      return route.fulfill({ status: answer.status, contentType: 'text/plain', body: answer.body });
+    }
+    if (u === '/api/tx/' + raw.txid)
+      return route.fulfill({
+        contentType: 'application/json',
+        body: JSON.stringify({ txid: raw.txid, status: { confirmed: true } }),
+      });
+    if (u === '/api/tx/' + PREV) return route.fulfill({ contentType: 'application/json', body: fx('send-prev.json') });
+    if (u === '/api/tx/' + PREV + '/outspends') {
+      const sp = Array.from({ length: 19 }, () => ({ spent: false }));
+      if (spentIn) sp[4] = { spent: true, txid: raw.txid, status: { confirmed: true, block_height: spentIn } };
+      return route.fulfill({ contentType: 'application/json', body: JSON.stringify(sp) });
+    }
+    if (u.startsWith('/api/tx/')) return route.fulfill({ status: 404, body: 'Transaction not found' });
+    const m = MOCK[u];
+    if (!m) return route.fulfill({ status: 404, body: '' });
+    route.fulfill({ contentType: m[0], body: fx(m[1]) });
+  });
+  await c.addInitScript(() => localStorage.setItem('bh.settings', JSON.stringify({ cur: 'USD', lang: 'en', _v: 2 })));
+  const p = await c.newPage();
+  const perr = [];
+  p.on('pageerror', (e) => perr.push(e.message));
+  await p.goto(base);
+  await until(p, () => document.querySelectorAll('.tile').length >= 10);
+  // pasted into Search, a whole transaction opens the Send page, read and checked but not sent
+  await p.click('#btn-search');
+  await p.fill('#s-t', fresh.replace(/(.{80})/g, '$1\n'));
+  await p.press('#s-t', 'Enter');
+  await until(p, () => location.hash === '#/send' && document.querySelector('#snd-go'));
+  assert.equal(await p.locator('#snd-txid').innerText(), FRESH);
+  const what = await p.locator('#snd-out').innerText();
+  for (const w of [
+    '251 vB (1,004 weight units)',
+    '10,437 sats · 42 sat/vB',
+    'cannot be replaced',
+    'INPUTS (1)',
+    '13S7yrqgrT…t5kJC3',
+    '0.02 BTC',
+    'OUTPUTS (3)',
+    'bc1qw6hgqk…r5gu4f',
+    '0.01591649 BTC',
+    'No common privacy leaks found',
+    'Send to mempool.space',
+  ])
+    assert.ok(what.includes(w), w + ' in: ' + what);
+  assert.deepEqual(posted, [], 'nothing is sent before Send is pressed');
+  // sent when asked: the clean hex goes to the data server, and the page links to the transaction
+  await p.click('#snd-go');
+  await until(p, () => /Sent: the network has it/.test(document.querySelector('#snd-result')?.textContent || ''));
+  assert.deepEqual(posted, [fresh]);
+  assert.equal(await p.getAttribute('#snd-result a', 'href'), '#/tx/' + FRESH);
+  assert.equal(await p.locator('#snd-go').count(), 0);
+  // refused: the server's reason is shown and Send can be pressed again
+  answer = {
+    status: 400,
+    body: 'sendrawtransaction RPC error: {"code":-25,"message":"bad-txns-inputs-missingorspent"}',
+  };
+  spentIn = 840100;
+  await p.goto(base + '#/calc');
+  await p.click('#p-send');
+  await until(p, () => location.hash === '#/send');
+  await p.fill('#snd-hex', fresh);
+  await p.click('.sendform button');
+  await until(p, () => document.querySelector('#snd-go'));
+  assert.match(await p.locator('#snd-out').innerText(), /already spent by another transaction in a block/);
+  await p.click('#snd-go');
+  await until(p, () =>
+    /Not accepted: .*bad-txns-inputs-missingorspent/.test(document.querySelector('#snd-result')?.textContent || '')
+  );
+  assert.equal(await p.locator('#snd-go').isEnabled(), true);
+  // one the chain has already: no Send button
+  await p.fill('#snd-hex', raw.hex);
+  await p.click('.sendform button');
+  await until(p, () => /already been sent/.test(document.querySelector('#snd-out')?.textContent || ''));
+  assert.equal(await p.locator('#snd-go').count(), 0);
+  assert.equal(await p.getAttribute('#snd-open', 'href'), '#/tx/' + raw.txid);
+  // not a transaction: said plainly
+  await p.fill('#snd-hex', raw.txid);
+  await p.click('.sendform button');
+  assert.match(await p.locator('#snd-out').innerText(), /not a raw transaction/);
+  await p.fill('#snd-hex', raw.hex.slice(0, -10));
+  await p.click('.sendform button');
+  assert.match(await p.locator('#snd-out').innerText(), /not a complete transaction/);
+  assert.equal(posted.length, 2);
+  assert.deepEqual(
+    backup.filter((x) => x.startsWith('POST')),
+    [],
+    'never sent to the backup server'
+  );
+  await p.setViewportSize({ width: 360, height: 800 });
+  assert.ok(
+    await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+    'no sideways scroll on a phone'
+  );
+  assert.deepEqual(perr, []);
+  await c.close();
+});
 await ok('no script errors', async () => {
   assert.deepEqual(errs, []);
 });

@@ -468,7 +468,8 @@ export function payPanel(p) {
     ),
     size,
     table,
-    el('p', { class: 'dim' }, t('payNote'))
+    el('p', { class: 'dim' }, t('payNote')),
+    el('p', null, el('a', { href: '#/send', id: 'p-send' }, t('sendLink') + ' →'))
   );
 }
 // On a node: the alarms above also go to the phone through ntfy, sent by the node even with no browser open.
