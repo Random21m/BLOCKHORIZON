@@ -2,7 +2,7 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
-## Unreleased
+## 0.19.0
 
 - **Four more languages: 简体中文, 한국어, Русский and Português (Brasil).** 13 languages in all, glossary and
   calendar included. Brazilian Portuguese is its own choice next to Portugal's; a browser set to Brazilian Portuguese

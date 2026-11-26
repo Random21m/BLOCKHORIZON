@@ -1,6 +1,6 @@
 // Offline shell. App files are fetched network-first (so a new version shows up on the next open) and kept in the cache
 // for offline use; live API calls always go to the network (the app keeps its own last-value cache).
-const CACHE = 'blockhorizon-v0.18.0';
+const CACHE = 'blockhorizon-v0.19.0';
 const FILES = [
   './',
   'index.html',
