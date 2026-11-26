@@ -21,7 +21,10 @@ export const LANGS = {
   ja: '日本語',
   ko: '한국어',
   zh: '简体中文',
+  ar: 'العربية',
 };
+// Languages written right to left: the page is mirrored for them (charts, block strips and numbers keep left to right).
+export const isRtl = (l) => l === 'ar';
 const T = { en: EN }; // the languages loaded so far
 const loading = {};
 // Fetch a language's texts (once). Resolves when they are ready; if they cannot be fetched (offline and never saved)
