@@ -2411,7 +2411,8 @@ await ok(
       tip = 977411;
     const asked = [],
       synced = [];
-    const c = await b.newContext({ viewport: { width: 1280, height: 900 } });
+    // no service worker: after the reload below it would fetch config.json itself, which older Playwright does not route
+    const c = await b.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: 'block' });
     await c.routeWebSocket(/./, (ws) => ws.close());
     await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => {
       asked.push(r.request().url());
@@ -2434,6 +2435,7 @@ await ok(
       route.fulfill({ contentType: m[0], body: fx(m[1]) });
     });
     const p = await c.newPage();
+    await p.clock.install();
     const toastText = () => p.evaluate(() => document.querySelector('#toast')?.textContent || '');
     await p.goto(base + '#/alarm');
     await p.waitForSelector('#ad-a');
@@ -2451,13 +2453,13 @@ await ok(
     // a new payment arrives, then a block: checked again at the new height
     txs = [tx('2', 1234500), ...txs];
     tip = 977412;
-    await p.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+    await p.clock.runFor(61000); // the app's minute refresh
     await until(p, () =>
       /bc1qar0s…wf5mdq \(Savings\) is receiving 0\.012345 BTC/.test(document.querySelector('#toast')?.textContent || '')
     );
     txs[0] = tx('2', 1234500, 977413);
     tip = 977413;
-    await p.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+    await p.clock.runFor(61000);
     await until(p, () =>
       /received 0\.012345 BTC, confirmed in block 977,413/.test(document.querySelector('#toast')?.textContent || '')
     );
