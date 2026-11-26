@@ -520,4 +520,18 @@ export default {
   stuckAccLink: 'Pospeši na mempool.space',
   stuckWait:
     'Ali počakajte: šla bo skozi, ko provizije padejo. Če ne bo nikoli izkopana, jo vozlišča po približno dveh tednih pozabijo in sredstva so spet v denarnici.',
+  txIns: 'Vhodi ({n})',
+  txOuts: 'Izhodi ({n})',
+  txMore: 'in še {n}',
+  txNewCoins: 'Novi kovanci (nagrada za blok in provizije)',
+  txData: 'Podatki (OP_RETURN)',
+  txNoAddr: 'Brez naslova ({t})',
+  privTitle: 'Zasebnost',
+  privIntro: 'Kaj lahko razbere vsak, ki pogleda to transakcijo. Izračunano na tej napravi; nič se ne pošlje nikamor.',
+  privReuse:
+    'Ponovna uporaba naslova: kovanci se vračajo na naslov, ki tu tudi porablja, zato je njegova plačila lahko povezati.',
+  privMerge: 'Združeni vhodi: kovanci z {n} naslovov se porabijo skupaj, kar kaže, da pripadajo eni denarnici.',
+  privRound: 'Okrogel znesek: en izhod je okroglo število, zato je drugi verjetno vračilo.',
+  privTypes: 'Vrste naslovov: le en izhod ima enako vrsto naslova kot vhodi, kar nakazuje, da je to vračilo.',
+  privNone: 'Ni najdenih običajnih uhajanj zasebnosti.',
 };

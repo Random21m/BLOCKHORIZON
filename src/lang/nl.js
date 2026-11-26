@@ -520,4 +520,20 @@ export default {
   stuckAccLink: 'Versnellen op mempool.space',
   stuckWait:
     'Of wacht: ze gaat door als de kosten dalen. Wordt ze nooit gemined, dan vergeten nodes haar na ongeveer twee weken en staan de munten weer in de wallet.',
+  txIns: 'Inputs ({n})',
+  txOuts: 'Outputs ({n})',
+  txMore: 'en nog {n}',
+  txNewCoins: 'Nieuwe munten (blokbeloning en kosten)',
+  txData: 'Data (OP_RETURN)',
+  txNoAddr: 'Geen adres ({t})',
+  privTitle: 'Privacy',
+  privIntro: 'Wat iedereen die deze transactie bekijkt kan zien. Berekend op dit apparaat; er wordt niets verstuurd.',
+  privReuse:
+    'Adreshergebruik: munten gaan terug naar een adres dat hier ook uitgeeft, dus de betalingen ervan zijn makkelijk te koppelen.',
+  privMerge:
+    'Inputs samengevoegd: munten van {n} adressen worden samen uitgegeven, wat erop wijst dat ze bij één wallet horen.',
+  privRound: 'Rond bedrag: één output is een rond getal, dus de andere is waarschijnlijk het wisselgeld dat terugkomt.',
+  privTypes:
+    'Adrestypes: maar één output heeft hetzelfde soort adres als de inputs, wat erop wijst dat het het wisselgeld is.',
+  privNone: 'Geen gangbare privacylekken gevonden.',
 };

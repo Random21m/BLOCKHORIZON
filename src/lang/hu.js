@@ -521,4 +521,19 @@ export default {
   stuckAccLink: 'Gyorsítás a mempool.space-en',
   stuckWait:
     'Vagy várj: átmegy, amikor a díjak csökkennek. Ha soha nem bányásszák ki, a node-ok kb. két hét után elfelejtik, és a coinok visszakerülnek a tárcába.',
+  txIns: 'Bemenetek ({n})',
+  txOuts: 'Kimenetek ({n})',
+  txMore: 'és még {n}',
+  txNewCoins: 'Új coinok (blokkjutalom és díjak)',
+  txData: 'Adat (OP_RETURN)',
+  txNoAddr: 'Nincs cím ({t})',
+  privTitle: 'Adatvédelem',
+  privIntro: 'Amit bárki megtudhat, aki ezt a tranzakciót nézi. Ezen az eszközön számolva; semmi nem kerül elküldésre.',
+  privReuse:
+    'Címújrahasználat: coinok mennek vissza egy olyan címre, amely itt költ is, így a kifizetései könnyen összekapcsolhatók.',
+  privMerge: 'Összevont bemenetek: {n} cím coinjait költik együtt, ami arra utal, hogy egyetlen tárcához tartoznak.',
+  privRound: 'Kerek összeg: az egyik kimenet kerek szám, így a másik valószínűleg a visszajáró.',
+  privTypes:
+    'Címtípusok: csak egy kimenetnek van a bemenetekkel azonos típusú címe, ami arra utal, hogy az a visszajáró.',
+  privNone: 'Nem található szokásos adatszivárgás.',
 };

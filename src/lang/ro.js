@@ -520,4 +520,20 @@ export default {
   stuckAccLink: 'Accelerează pe mempool.space',
   stuckWait:
     'Sau așteaptă: trece când scad comisioanele. Dacă nu este minată niciodată, nodurile o uită după aproximativ două săptămâni, iar monedele revin în portofel.',
+  txIns: 'Intrări ({n})',
+  txOuts: 'Ieșiri ({n})',
+  txMore: 'și încă {n}',
+  txNewCoins: 'Monede noi (recompensa pe bloc și comisioane)',
+  txData: 'Date (OP_RETURN)',
+  txNoAddr: 'Fără adresă ({t})',
+  privTitle: 'Confidențialitate',
+  privIntro:
+    'Ce poate afla oricine se uită la această tranzacție. Calculat pe acest dispozitiv; nu se trimite nimic nicăieri.',
+  privReuse: 'Adresă refolosită: monedele se întorc la o adresă care cheltuie și aici, deci plățile ei se leagă ușor.',
+  privMerge:
+    'Intrări unite: se cheltuie împreună monede de la mai multe adrese ({n}), ceea ce sugerează că țin de un singur portofel.',
+  privRound: 'Sumă rotundă: o ieșire este un număr rotund, deci cealaltă este probabil restul care se întoarce.',
+  privTypes:
+    'Tipuri de adresă: doar o ieșire are același tip de adresă ca intrările, ceea ce sugerează că este restul.',
+  privNone: 'Nu s-au găsit scurgeri obișnuite de confidențialitate.',
 };

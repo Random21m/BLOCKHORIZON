@@ -524,4 +524,21 @@ export default {
   stuckAccLink: 'Accélérer sur mempool.space',
   stuckWait:
     'Ou attendre : elle passe quand les frais baissent. Si elle n’est jamais minée, les nœuds l’oublient au bout d’environ deux semaines et les pièces reviennent dans le portefeuille.',
+  txIns: 'Entrées ({n})',
+  txOuts: 'Sorties ({n})',
+  txMore: 'et {n} de plus',
+  txNewCoins: 'Nouvelles pièces (récompense de bloc et frais)',
+  txData: 'Données (OP_RETURN)',
+  txNoAddr: 'Pas d’adresse ({t})',
+  privTitle: 'Confidentialité',
+  privIntro:
+    'Ce que toute personne qui regarde cette transaction peut savoir. Calculé sur cet appareil ; rien n’est envoyé nulle part.',
+  privReuse:
+    'Réutilisation d’adresse : des pièces reviennent à une adresse qui dépense aussi ici, ses paiements sont donc faciles à relier.',
+  privMerge:
+    'Entrées regroupées : des pièces de {n} adresses sont dépensées ensemble, ce qui laisse penser qu’elles appartiennent à un seul portefeuille.',
+  privRound: 'Montant rond : une sortie est un nombre rond, l’autre est donc sans doute la monnaie qui revient.',
+  privTypes:
+    'Types d’adresse : une seule sortie a le même type d’adresse que les entrées, ce qui suggère que c’est la monnaie.',
+  privNone: 'Aucune fuite de confidentialité courante trouvée.',
 };

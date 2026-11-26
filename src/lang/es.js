@@ -522,4 +522,21 @@ export default {
   stuckAccLink: 'Acelerar en mempool.space',
   stuckWait:
     'O espera: pasará cuando bajen las comisiones. Si nunca se mina, los nodos la olvidan tras unas dos semanas y las monedas vuelven a la cartera.',
+  txIns: 'Entradas ({n})',
+  txOuts: 'Salidas ({n})',
+  txMore: 'y {n} más',
+  txNewCoins: 'Monedas nuevas (recompensa por bloque y comisiones)',
+  txData: 'Datos (OP_RETURN)',
+  txNoAddr: 'Sin dirección ({t})',
+  privTitle: 'Privacidad',
+  privIntro:
+    'Lo que cualquiera que mire esta transacción puede saber. Calculado en este dispositivo; no se envía nada a ningún sitio.',
+  privReuse:
+    'Reutilización de dirección: las monedas vuelven a una dirección que también gasta aquí, así que sus pagos son fáciles de vincular.',
+  privMerge:
+    'Entradas combinadas: se gastan juntas monedas de {n} direcciones, lo que sugiere que son de una misma cartera.',
+  privRound: 'Importe redondo: una salida es un número redondo, así que la otra probablemente es el cambio que vuelve.',
+  privTypes:
+    'Tipos de dirección: solo una salida tiene el mismo tipo de dirección que las entradas, lo que indica que es el cambio.',
+  privNone: 'No se han encontrado fugas de privacidad habituales.',
 };

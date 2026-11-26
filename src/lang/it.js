@@ -521,4 +521,21 @@ export default {
   stuckAccLink: 'Accelera su mempool.space',
   stuckWait:
     'Oppure aspetta: passa quando le commissioni scendono. Se non viene mai minata, i nodi la dimenticano dopo circa due settimane e le monete tornano nel wallet.',
+  txIns: 'Input ({n})',
+  txOuts: 'Output ({n})',
+  txMore: 'e altri {n}',
+  txNewCoins: 'Monete nuove (ricompensa per blocco e commissioni)',
+  txData: 'Dati (OP_RETURN)',
+  txNoAddr: 'Nessun indirizzo ({t})',
+  privTitle: 'Privacy',
+  privIntro:
+    'Ciò che chiunque guardi questa transazione può capire. Calcolato su questo dispositivo; non viene inviato nulla.',
+  privReuse:
+    'Riuso dell’indirizzo: le monete tornano a un indirizzo che spende anche qui, quindi i suoi pagamenti sono facili da collegare.',
+  privMerge:
+    'Input uniti: monete di {n} indirizzi vengono spese insieme, il che fa pensare che appartengano a un solo wallet.',
+  privRound: 'Importo tondo: un output è una cifra tonda, quindi l’altro è probabilmente il resto che torna indietro.',
+  privTypes:
+    'Tipi di indirizzo: solo un output ha lo stesso tipo di indirizzo degli input, il che fa pensare che sia il resto.',
+  privNone: 'Nessuna fuga di privacy comune trovata.',
 };
