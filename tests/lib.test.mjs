@@ -356,6 +356,12 @@ test('browser language: an exact region first, then the language alone, else Eng
   assert.equal(detectLang('el-GR'), 'el');
   assert.equal(detectLang('bn-BD'), 'bn');
   assert.equal(detectLang('ms-MY'), 'ms');
+  assert.equal(detectLang('hr-HR'), 'hr');
+  assert.equal(detectLang('ne-NP'), 'ne');
+  assert.equal(detectLang('ka-GE'), 'ka');
+  assert.equal(detectLang('lt-LT'), 'lt');
+  assert.equal(detectLang('mk-MK'), 'mk');
+  assert.equal(detectLang('sl-SI'), 'sl');
   assert.equal(detectLang('de_AT'), 'de');
   assert.equal(detectLang('xx-YY'), 'en');
 });

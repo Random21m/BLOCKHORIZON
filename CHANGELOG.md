@@ -13,6 +13,8 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
   24 languages in all, glossary and calendar included; machine translations for now, corrections welcome.
 - **Eight more languages: Ελληνικά, Română, Magyar, Dansk, Norsk bokmål, Suomi, বাংলা and Bahasa Melayu.** 32
   languages in all, glossary and calendar included; machine translations for now, corrections welcome.
+- **Six more languages: Hrvatski, नेपाली, ქართული, Lietuvių, Македонски and Slovenščina.** 38 languages in all,
+  every language mempool.space offers and a few more.
 
 ## 0.20.0
 
