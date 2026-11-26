@@ -588,4 +588,6 @@ export default {
   diffRibbonNote:
     'Când mediile se strâng laolaltă, dificultatea a încetat să crească și minerii sunt sub presiune. Acum sunt la {p}% distanță.',
   last2y: 'Ultimii 2 ani',
+  lnAsOf: 'Date din {d}',
+  lnAsOfShort: 'La {d}',
 };

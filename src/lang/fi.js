@@ -586,4 +586,6 @@ export default {
   diffRibbonNote:
     'Kun keskiarvot painuvat yhteen, vaikeus on lakannut nousemasta ja louhijat ovat paineessa. Nyt niiden ero on {p} %.',
   last2y: 'Viimeiset 2 vuotta',
+  lnAsOf: 'Luvut ajalta {d}',
+  lnAsOfShort: 'Tilanne {d}',
 };

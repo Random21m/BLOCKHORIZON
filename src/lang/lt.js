@@ -584,4 +584,6 @@ export default {
   ribbonAvgs: 'Vidurkiai per 9–200 dienų',
   diffRibbonNote: 'Kai vidurkiai susiglaudžia, sudėtingumas nebeauga ir kasėjams sunku. Dabar jie skiriasi {p} %.',
   last2y: 'Paskutiniai 2 metai',
+  lnAsOf: 'Duomenys: {d}',
+  lnAsOfShort: 'Būklė: {d}',
 };

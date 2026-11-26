@@ -580,4 +580,6 @@ export default {
   ribbonAvgs: 'Średnie od 9 do 200 dni',
   diffRibbonNote: 'Gdy średnie się zbiegają, trudność przestała rosnąć, a górnicy są pod presją. Teraz dzieli je {p}%.',
   last2y: 'Ostatnie 2 lata',
+  lnAsOf: 'Dane z {d}',
+  lnAsOfShort: 'Stan na {d}',
 };

@@ -585,4 +585,6 @@ export default {
   diffRibbonNote:
     'Ko se povprečja zbližajo, težavnost ne raste več in rudarji so pod pritiskom. Zdaj so {p} % narazen.',
   last2y: 'Zadnji 2 leti',
+  lnAsOf: 'Podatki z dne {d}',
+  lnAsOfShort: 'Stanje {d}',
 };

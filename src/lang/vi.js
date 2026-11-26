@@ -579,4 +579,6 @@ export default {
   diffRibbonNote:
     'Khi các đường trung bình dồn sát nhau, độ khó đã ngừng tăng và thợ đào đang chịu áp lực. Hiện chúng cách nhau {p}%.',
   last2y: '2 năm qua',
+  lnAsOf: 'Số liệu ngày {d}',
+  lnAsOfShort: 'Tính đến {d}',
 };

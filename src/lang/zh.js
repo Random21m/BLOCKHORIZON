@@ -556,4 +556,6 @@ export default {
   ribbonAvgs: '9 至 200 天平均',
   diffRibbonNote: '当各条平均线聚拢时，难度已停止上升，矿工承受压力。目前相差 {p}%。',
   last2y: '最近 2 年',
+  lnAsOf: '数据截至 {d}',
+  lnAsOfShort: '截至 {d}',
 };

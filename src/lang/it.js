@@ -589,4 +589,6 @@ export default {
   diffRibbonNote:
     'Quando le medie si stringono, la difficoltà ha smesso di salire e i miner sono sotto pressione. Ora distano il {p}%.',
   last2y: 'Ultimi 2 anni',
+  lnAsOf: 'Dati del {d}',
+  lnAsOfShort: 'Al {d}',
 };

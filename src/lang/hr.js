@@ -583,4 +583,6 @@ export default {
   ribbonAvgs: 'Prosjeci od 9 do 200 dana',
   diffRibbonNote: 'Kad se prosjeci zbiju, težina je prestala rasti i rudari su pod pritiskom. Sada su {p} % udaljeni.',
   last2y: 'Zadnje 2 godine',
+  lnAsOf: 'Podaci od {d}',
+  lnAsOfShort: 'Stanje {d}',
 };

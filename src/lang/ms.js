@@ -589,4 +589,6 @@ export default {
   diffRibbonNote:
     'Apabila purata-purata berhimpit, kesukaran telah berhenti meningkat dan pelombong berada di bawah tekanan. Kini jaraknya {p}%.',
   last2y: '2 tahun lalu',
+  lnAsOf: 'Data pada {d}',
+  lnAsOfShort: 'Setakat {d}',
 };

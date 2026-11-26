@@ -579,4 +579,6 @@ export default {
   ribbonAvgs: 'Průměry za 9 až 200 dní',
   diffRibbonNote: 'Když se průměry sbíhají, obtížnost přestala růst a těžaři jsou pod tlakem. Teď je dělí {p} %.',
   last2y: 'Poslední 2 roky',
+  lnAsOf: 'Údaje k {d}',
+  lnAsOfShort: 'K {d}',
 };

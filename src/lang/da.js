@@ -585,4 +585,6 @@ export default {
   diffRibbonNote:
     'Når gennemsnittene samler sig, er sværhedsgraden holdt op med at stige, og minerne er pressede. Nu er de {p} % fra hinanden.',
   last2y: 'Seneste 2 år',
+  lnAsOf: 'Tal fra {d}',
+  lnAsOfShort: 'Pr. {d}',
 };

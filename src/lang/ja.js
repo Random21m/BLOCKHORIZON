@@ -584,4 +584,6 @@ export default {
   ribbonAvgs: '9〜200日の平均',
   diffRibbonNote: '平均線が寄り集まると、難易度の上昇が止まり、マイナーは苦しい状況にあります。現在の開きは{p}%です。',
   last2y: '過去2年',
+  lnAsOf: '{d} 時点の数値',
+  lnAsOfShort: '{d} 時点',
 };

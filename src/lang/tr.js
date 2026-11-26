@@ -583,4 +583,6 @@ export default {
   diffRibbonNote:
     'Ortalamalar birbirine yaklaştığında zorluk artmayı bırakmıştır ve madenciler baskı altındadır. Şu an aralarında %{p} fark var.',
   last2y: 'Son 2 yıl',
+  lnAsOf: 'Veriler: {d}',
+  lnAsOfShort: '{d} itibarıyla',
 };

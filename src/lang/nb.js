@@ -586,4 +586,6 @@ export default {
   diffRibbonNote:
     'Når snittene samler seg, har vanskelighetsgraden sluttet å stige og utvinnerne er presset. Nå er de {p} % fra hverandre.',
   last2y: 'Siste 2 år',
+  lnAsOf: 'Tall fra {d}',
+  lnAsOfShort: 'Per {d}',
 };

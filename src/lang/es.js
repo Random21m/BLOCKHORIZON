@@ -590,4 +590,6 @@ export default {
   diffRibbonNote:
     'Cuando las medias se juntan, la dificultad ha dejado de subir y los mineros están bajo presión. Ahora están a un {p} % de distancia.',
   last2y: 'Últimos 2 años',
+  lnAsOf: 'Datos del {d}',
+  lnAsOfShort: 'Al {d}',
 };

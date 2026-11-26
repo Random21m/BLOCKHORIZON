@@ -595,4 +595,6 @@ export default {
   diffRibbonNote:
     'Quand les moyennes se resserrent, la difficulté a cessé de monter et les mineurs sont sous pression. Elles sont aujourd’hui à {p} % d’écart.',
   last2y: '2 dernières années',
+  lnAsOf: 'Chiffres du {d}',
+  lnAsOfShort: 'Au {d}',
 };

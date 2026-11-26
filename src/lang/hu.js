@@ -588,4 +588,6 @@ export default {
   diffRibbonNote:
     'Ha az átlagok összetömörülnek, a nehézség már nem nő, és a bányászok nyomás alatt vannak. Most {p}% a különbség köztük.',
   last2y: 'Utolsó 2 év',
+  lnAsOf: 'Adatok: {d}',
+  lnAsOfShort: 'Állapot: {d}',
 };

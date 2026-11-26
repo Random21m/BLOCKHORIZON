@@ -573,4 +573,6 @@ export default {
   diffRibbonNote:
     '평균들이 한데 모이면 난이도 상승이 멈추고 채굴자들이 압박을 받고 있다는 뜻이에요. 지금은 {p}% 벌어져 있어요.',
   last2y: '최근 2년',
+  lnAsOf: '{d} 기준 수치',
+  lnAsOfShort: '{d} 기준',
 };
