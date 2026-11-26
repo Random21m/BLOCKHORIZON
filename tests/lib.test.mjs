@@ -1174,6 +1174,7 @@ test('block history: fees per block, fees as a share of miner income, block size
     [{ t: 2000, v: 25 }]
   );
   assert.deepEqual(L.feeShareSeries(fees, []), []);
+});
 test('block health: the match with the expected block, fees against the expected, transactions left out or added', () => {
   const block = JSON.parse(fs.readFileSync(new URL('./fixtures/blocks.json', import.meta.url), 'utf8'))[0],
     audit = JSON.parse(fs.readFileSync(new URL('./fixtures/audit-summary.json', import.meta.url), 'utf8'));
