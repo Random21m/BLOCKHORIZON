@@ -2,6 +2,12 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
+## Unreleased
+
+- The Lightning tile showed mempool.space's figures as if they were current, but they can be months old: they stopped
+  updating at the end of August 2026, and some answers even carry figures from 2024. Figures older than a week now show
+  their date ("32,518 channels · Figures from 08/30/2026"; "As of 08/30/2026" on a phone).
+
 ## 0.21.0
 
 - **Three more long-term charts.** The **Puell Multiple** (the value of the bitcoins mined each day against its

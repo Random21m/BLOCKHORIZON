@@ -1325,3 +1325,13 @@ export function adjustSummary(rows, from) {
     maxDown: Math.min(...ch),
   };
 }
+
+// When the Lightning statistics were taken (mempool.space /v1/lightning/statistics/latest has `added`, an ISO date or
+// unix seconds): ms, or NaN. They are shown with their date once they are more than LN_STALE_DAYS old.
+export const LN_STALE_DAYS = 7;
+export function lnTakenAt(l) {
+  const a = l && l.added;
+  const ms = typeof a === 'number' ? a * 1000 : Date.parse(a);
+  return Number.isFinite(ms) ? ms : NaN;
+}
+export const lnStale = (l, now = Date.now()) => now - lnTakenAt(l) > LN_STALE_DAYS * 864e5;

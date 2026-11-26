@@ -578,4 +578,6 @@ export default {
   diffRibbonNote:
     'When the averages bunch together, difficulty has stopped rising and miners are under pressure. Now they are {p}% apart.',
   last2y: 'Last 2 years',
+  lnAsOf: 'Figures from {d}',
+  lnAsOfShort: 'As of {d}',
 };
