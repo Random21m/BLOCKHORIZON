@@ -1616,3 +1616,23 @@ export function inflationAt(h) {
   const s = supplyAt(h);
   return s > 0 ? ((supplyAt(h + BLOCKS_YEAR) - s) / s) * 100 : NaN;
 }
+
+// ---- Block health: how closely a mined block matched the block mempool.space expected from its own mempool ----
+// From the block (extras.matchRate, expectedFees) and, when there is one, its audit summary (lists of txids):
+// { match (%), fees, expected (sats), missing (expected but left out), added (in it but not expected), fresh (of
+// those, seen only moments before) } or null when the block was not compared (older blocks, the backup server).
+export function blockHealth(block, audit) {
+  const x = (block && block.extras) || {},
+    a = audit && typeof audit === 'object' ? audit : null,
+    n = (k) => (a && Array.isArray(a[k]) ? a[k].length : NaN),
+    match = a && Number.isFinite(a.matchRate) ? a.matchRate : x.matchRate;
+  if (!Number.isFinite(match)) return null;
+  return {
+    match,
+    fees: x.totalFees,
+    expected: a && Number.isFinite(a.expectedFees) ? a.expectedFees : x.expectedFees,
+    missing: n('missingTxs'),
+    added: n('addedTxs'),
+    fresh: n('freshTxs'),
+  };
+}

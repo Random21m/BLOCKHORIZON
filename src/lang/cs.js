@@ -625,4 +625,14 @@ export default {
   inflNext: 'Po halvingu v bloku {h}',
   factsNote:
     'Maximum je nejvyšší denní cena v historii (nebo aktuální cena, je-li vyšší). Inflace jsou mince, které přidá další rok bloků, jako podíl dosud vydaných.',
+  blkHealth: 'Zdraví bloku',
+  blkMatch: 'Shoda s očekávaným blokem',
+  blkFeesL: 'Poplatky',
+  blkFeesVs: '{a} z očekávaných {b} BTC ({c})',
+  blkMissing: 'Očekávané, ale vynechané',
+  blkAdded: 'Obsažené, ale neočekávané',
+  blkAddedFresh: '{n} (z toho {f} viděných teprve chvíli předtím)',
+  blkHealthNote:
+    'mempool.space ze svého vlastního mempoolu odvozuje, které transakce v tomto bloku očekával. Méně než 100 % znamená, že těžař některé z nich vynechal.',
+  blkHealthNone: 'Pro tento blok není k dispozici: bloky porovnává jen mempool.space, a jen ty nedávné.',
 };

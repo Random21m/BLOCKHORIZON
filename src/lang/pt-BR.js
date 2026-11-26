@@ -636,4 +636,14 @@ export default {
   inflNext: 'Após o halving no bloco {h}',
   factsNote:
     'A máxima é o maior preço diário da história (ou o preço ao vivo, se for maior). A inflação são as moedas que o próximo ano de blocos adiciona, em proporção às emitidas até agora.',
+  blkHealth: 'Saúde do bloco',
+  blkMatch: 'Correspondência com o bloco previsto',
+  blkFeesL: 'Taxas',
+  blkFeesVs: '{a} dos {b} BTC previstos ({c})',
+  blkMissing: 'Previstas, mas deixadas de fora',
+  blkAdded: 'Incluídas sem estarem previstas',
+  blkAddedFresh: '{n} ({f} delas vistas só momentos antes)',
+  blkHealthNote:
+    'O mempool.space calcula, a partir do seu próprio mempool, quais transações esperava que este bloco tivesse. Menos de 100% significa que o minerador deixou algumas de fora.',
+  blkHealthNone: 'Não disponível para este bloco: só o mempool.space compara blocos, e apenas os recentes.',
 };

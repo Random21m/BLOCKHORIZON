@@ -1826,9 +1826,19 @@ html {
   margin: 8px auto 10px;
   border-radius: 6px;
 }
+#blk-health,
 #blk-pic,
 #blk-txs {
   margin-top: 14px;
+}
+/* a phone: a block's rows with huge fee rates or amounts (3,600,000 sat/vB, 40.75 BTC) may wrap rather than widen the page */
+@media (max-width: 480px) {
+  #blk-txs .addrtxs {
+    font-size: 12px;
+  }
+  #blk-txs .addrtxs .num {
+    white-space: normal;
+  }
 }
 /* a transaction's inputs and outputs, and what they tell about its privacy */
 .txflow,

@@ -631,4 +631,15 @@ export default {
   inflNext: '{h}. bloktaki halving sonrası',
   factsNote:
     'Zirve, tarihteki en yüksek günlük fiyattır (ya da daha yüksekse anlık fiyat). Enflasyon, gelecek bir yıllık blokların eklediği coinlerin şimdiye kadar basılanlara oranıdır.',
+  blkHealth: 'Blok sağlığı',
+  blkMatch: 'Beklenen blokla uyum',
+  blkFeesL: 'Ücretler',
+  blkFeesVs: 'Beklenen {b} BTC yerine {a} ({c})',
+  blkMissing: 'Beklenip dışarıda bırakılan',
+  blkAdded: 'Beklenmeden eklenen',
+  blkAddedFresh: '{n} ({f} tanesi ancak hemen önce görüldü)',
+  blkHealthNote:
+    "mempool.space, kendi mempool'una bakarak bu bloğun hangi işlemleri içermesini beklediğini hesaplar. %100'ün altı, madencinin bunların bir kısmını dışarıda bıraktığı anlamına gelir.",
+  blkHealthNone:
+    'Bu blok için mevcut değil: blokları yalnızca mempool.space karşılaştırır, o da yalnızca yeni olanları.',
 };

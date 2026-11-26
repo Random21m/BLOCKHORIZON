@@ -618,4 +618,14 @@ export default {
   inflNext: '블록 {h} 반감기 이후',
   factsNote:
     '최고가는 역대 가장 높은 일일 가격입니다(실시간 가격이 더 높으면 그 가격). 인플레이션은 앞으로 1년간의 블록이 더하는 코인을 지금까지 발행된 양에 대한 비율로 나타낸 것입니다.',
+  blkHealth: '블록 상태',
+  blkMatch: '예상 블록과의 일치율',
+  blkFeesL: '수수료',
+  blkFeesVs: '예상 {b} BTC 중 {a} ({c})',
+  blkMissing: '예상됐지만 빠진 거래',
+  blkAdded: '예상 밖으로 들어간 거래',
+  blkAddedFresh: '{n} (그중 {f}개는 직전에야 보였어요)',
+  blkHealthNote:
+    'mempool.space는 자체 멤풀을 바탕으로 이 블록에 들어갈 거라 예상한 거래를 계산해요. 100% 미만이면 채굴자가 그중 일부를 넣지 않았다는 뜻이에요.',
+  blkHealthNone: '이 블록에는 제공되지 않아요. 블록을 비교하는 곳은 mempool.space뿐이고, 그것도 최근 블록만 비교해요.',
 };

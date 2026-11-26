@@ -644,4 +644,14 @@ export default {
   inflNext: 'Après le halving au bloc {h}',
   factsNote:
     'Le plus haut est le prix journalier le plus élevé de l’histoire (ou le prix en direct, s’il est supérieur). L’inflation correspond aux pièces ajoutées par la prochaine année de blocs, en part de celles émises jusqu’ici.',
+  blkHealth: 'Santé du bloc',
+  blkMatch: 'Correspondance avec le bloc prévu',
+  blkFeesL: 'Frais',
+  blkFeesVs: '{a} sur les {b} BTC prévus ({c})',
+  blkMissing: 'Prévues mais omises',
+  blkAdded: 'Incluses sans être prévues',
+  blkAddedFresh: '{n} (dont {f} vues juste avant)',
+  blkHealthNote:
+    'mempool.space déduit de sa propre mempool les transactions qu’il s’attendait à voir dans ce bloc. Moins de 100 % signifie que le mineur en a laissé de côté.',
+  blkHealthNone: 'Indisponible pour ce bloc : seul mempool.space compare les blocs, et seulement les récents.',
 };

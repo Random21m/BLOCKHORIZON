@@ -624,4 +624,14 @@ export default {
   inflNext: 'Sau halving ở khối {h}',
   factsNote:
     'Đỉnh là giá ngày cao nhất trong lịch sử (hoặc giá trực tiếp, nếu cao hơn). Lạm phát là số coin mà các khối trong năm tới thêm vào, tính theo tỷ lệ so với lượng đã phát hành.',
+  blkHealth: 'Sức khỏe khối',
+  blkMatch: 'Mức khớp với khối dự kiến',
+  blkFeesL: 'Phí',
+  blkFeesVs: '{a} trên {b} BTC dự kiến ({c})',
+  blkMissing: 'Dự kiến nhưng bị bỏ ra',
+  blkAdded: 'Có trong khối nhưng không dự kiến',
+  blkAddedFresh: '{n} ({f} trong số đó chỉ mới thấy ngay trước đó)',
+  blkHealthNote:
+    'mempool.space dựa vào mempool của chính mình để tính những giao dịch mà nó dự kiến khối này chứa. Dưới 100% nghĩa là thợ đào đã bỏ ra một số giao dịch trong đó.',
+  blkHealthNone: 'Không có cho khối này: chỉ mempool.space so sánh các khối, và chỉ các khối gần đây.',
 };

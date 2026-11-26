@@ -636,4 +636,14 @@ export default {
   inflNext: 'Selepas halving di blok {h}',
   factsNote:
     'Puncak ialah harga harian tertinggi dalam sejarah (atau harga langsung, jika lebih tinggi). Inflasi ialah syiling yang ditambah oleh blok setahun akan datang, sebagai bahagian daripada yang dikeluarkan setakat ini.',
+  blkHealth: 'Kesihatan blok',
+  blkMatch: 'Padanan dengan blok yang dijangka',
+  blkFeesL: 'Yuran',
+  blkFeesVs: '{a} daripada {b} BTC yang dijangka ({c})',
+  blkMissing: 'Dijangka tetapi ditinggalkan',
+  blkAdded: 'Ada tetapi tidak dijangka',
+  blkAddedFresh: '{n} ({f} daripadanya dilihat hanya sejurus sebelum itu)',
+  blkHealthNote:
+    'mempool.space mengira daripada mempoolnya sendiri transaksi mana yang dijangka ada dalam blok ini. Kurang daripada 100% bermakna pelombong meninggalkan sebahagian daripadanya.',
+  blkHealthNone: 'Tidak tersedia untuk blok ini: hanya mempool.space yang membandingkan blok, dan hanya blok terkini.',
 };

@@ -638,4 +638,14 @@ export default {
   inflNext: 'Dopo l’halving al blocco {h}',
   factsNote:
     'Il massimo è il prezzo giornaliero più alto della storia (o il prezzo in tempo reale, se superiore). L’inflazione sono le monete che il prossimo anno di blocchi aggiunge, in proporzione a quelle emesse finora.',
+  blkHealth: 'Salute del blocco',
+  blkMatch: 'Corrispondenza con il blocco previsto',
+  blkFeesL: 'Commissioni',
+  blkFeesVs: '{a} dei {b} BTC previsti ({c})',
+  blkMissing: 'Previste ma escluse',
+  blkAdded: 'Incluse ma non previste',
+  blkAddedFresh: '{n} ({f} viste solo pochi istanti prima)',
+  blkHealthNote:
+    'mempool.space ricava dalla propria mempool quali transazioni si aspettava in questo blocco. Meno del 100% significa che il miner ne ha lasciate fuori alcune.',
+  blkHealthNone: 'Non disponibile per questo blocco: solo mempool.space confronta i blocchi, e solo quelli recenti.',
 };

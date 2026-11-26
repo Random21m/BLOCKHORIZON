@@ -94,6 +94,8 @@ await ctx.route(/mempool\.space/, (route) => {
   // a past block: its summary (the picture), its transactions 25 at a time (the list), and its header
   if (/^\/api\/v1\/block\/\w+\/summary$/.test(u.pathname))
     return route.fulfill({ contentType: 'application/json', body: fx('block-summary.json') });
+  if (/^\/api\/v1\/block\/\w+\/audit-summary$/.test(u.pathname))
+    return route.fulfill({ contentType: 'application/json', body: fx('audit-summary.json') });
   if (/^\/api\/block\/\w+\/txs\/\d+$/.test(u.pathname))
     return route.fulfill({ contentType: 'application/json', body: fx('block-txs.json') });
   if (u.pathname.startsWith('/api/v1/block/'))
@@ -339,6 +341,14 @@ await ok('block page: details, a picture of what was in it, and its transactions
   await page.goto(base + '#/block/840000');
   await page.waitForSelector('.panel dl', { timeout: 6000 });
   assert.ok((await page.locator('main').innerText()).includes('Transactions'));
+  // health: the match with the expected block, the fees against the expected, and what was left out or added
+  await until(page, () =>
+    /Match with the expected block/.test(document.querySelector('#blk-health')?.textContent || '')
+  );
+  assert.match(
+    await page.locator('#blk-health').innerText(),
+    /Match with the expected block\s+100%\s+Fees\s+0\.00668659 of the 0\.00784969 BTC expected \(−14\.8%\)\s+Expected but left out\s+0\s+In it but not expected\s+263 \(133 of them seen only moments before\)/
+  );
   // the picture: drawn, described for screen readers, and a square opens its transaction
   await page.waitForSelector('#blk-pic canvas.blkpic', { timeout: 6000 });
   assert.match(

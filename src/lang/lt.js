@@ -631,4 +631,14 @@ export default {
   inflNext: 'Po halvingo ties bloku {h}',
   factsNote:
     'Rekordas – aukščiausia dienos kaina istorijoje (arba dabartinė kaina, jei ji aukštesnė). Infliacija – monetos, kurias prideda kitų metų blokai, kaip dalis iki šiol išleistųjų.',
+  blkHealth: 'Bloko sveikata',
+  blkMatch: 'Atitiktis numatytam blokui',
+  blkFeesL: 'Mokesčiai',
+  blkFeesVs: '{a} iš numatytų {b} BTC ({c})',
+  blkMissing: 'Numatytos, bet praleistos',
+  blkAdded: 'Įtrauktos, bet nenumatytos',
+  blkAddedFresh: '{n} (iš jų {f} pastebėtos tik akimirką prieš)',
+  blkHealthNote:
+    'mempool.space pagal savo mempool apskaičiuoja, kokių transakcijų tikėjosi šiame bloke. Mažiau nei 100 % reiškia, kad kasėjas kai kurias iš jų praleido.',
+  blkHealthNone: 'Šiam blokui nepasiekiama: blokus lygina tik mempool.space, ir tik naujausius.',
 };

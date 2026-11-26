@@ -624,4 +624,14 @@ export default {
   inflNext: 'After the halving at block {h}',
   factsNote:
     'The high is the highest daily price in the history (or the live price, if higher). Inflation is the coins the next year of blocks adds, as a share of those issued so far.',
+  blkHealth: 'Block health',
+  blkMatch: 'Match with the expected block',
+  blkFeesL: 'Fees',
+  blkFeesVs: '{a} of the {b} BTC expected ({c})',
+  blkMissing: 'Expected but left out',
+  blkAdded: 'In it but not expected',
+  blkAddedFresh: '{n} ({f} of them seen only moments before)',
+  blkHealthNote:
+    'mempool.space works out from its own mempool which transactions it expected this block to hold. Less than 100% means the miner left some of them out.',
+  blkHealthNone: 'Not available for this block: only mempool.space compares blocks, and only recent ones.',
 };

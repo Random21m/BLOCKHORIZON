@@ -630,4 +630,14 @@ export default {
   inflNext: 'Nakon halvinga na bloku {h}',
   factsNote:
     'Rekord je najviša dnevna cijena u povijesti (ili trenutna cijena, ako je viša). Inflacija su kovanice koje dodaje sljedeća godina blokova, kao udio dosad izdanih.',
+  blkHealth: 'Zdravlje bloka',
+  blkMatch: 'Podudaranje s očekivanim blokom',
+  blkFeesL: 'Naknade',
+  blkFeesVs: '{a} od očekivanih {b} BTC ({c})',
+  blkMissing: 'Očekivane, ali izostavljene',
+  blkAdded: 'Uključene, a neočekivane',
+  blkAddedFresh: '{n} (od toga {f} viđenih tek trenutak prije)',
+  blkHealthNote:
+    'mempool.space iz vlastitog mempoola izračunava koje je transakcije očekivao u ovom bloku. Manje od 100 % znači da je rudar neke od njih izostavio.',
+  blkHealthNone: 'Nije dostupno za ovaj blok: blokove uspoređuje samo mempool.space, i to samo nedavne.',
 };

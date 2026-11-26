@@ -640,4 +640,14 @@ export default {
   inflNext: 'Nach dem Halving bei Block {h}',
   factsNote:
     'Das Hoch ist der höchste Tagespreis der Geschichte (oder der Live-Preis, falls höher). Inflation sind die Coins, die das nächste Jahr an Blöcken hinzufügt, als Anteil der bisher ausgegebenen.',
+  blkHealth: 'Blockgesundheit',
+  blkMatch: 'Übereinstimmung mit dem erwarteten Block',
+  blkFeesL: 'Gebühren',
+  blkFeesVs: '{a} der erwarteten {b} BTC ({c})',
+  blkMissing: 'Erwartet, aber weggelassen',
+  blkAdded: 'Enthalten, aber nicht erwartet',
+  blkAddedFresh: '{n} ({f} davon erst kurz vorher gesehen)',
+  blkHealthNote:
+    'mempool.space ermittelt aus seinem eigenen Mempool, welche Transaktionen es in diesem Block erwartet hat. Weniger als 100 % heißt, dass der Miner einige davon weggelassen hat.',
+  blkHealthNone: 'Für diesen Block nicht verfügbar: Nur mempool.space vergleicht Blöcke, und nur neuere.',
 };

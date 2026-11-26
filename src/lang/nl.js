@@ -636,4 +636,14 @@ export default {
   inflNext: 'Na de halving bij blok {h}',
   factsNote:
     'De top is de hoogste dagprijs ooit (of de live prijs, als die hoger is). Inflatie zijn de munten die het volgende jaar aan blokken toevoegt, als deel van wat tot nu toe is uitgegeven.',
+  blkHealth: 'Blokgezondheid',
+  blkMatch: 'Overeenkomst met het verwachte blok',
+  blkFeesL: 'Kosten',
+  blkFeesVs: '{a} van de verwachte {b} BTC ({c})',
+  blkMissing: 'Verwacht maar weggelaten',
+  blkAdded: 'Erin maar niet verwacht',
+  blkAddedFresh: '{n} ({f} daarvan pas vlak ervoor gezien)',
+  blkHealthNote:
+    'mempool.space bepaalt uit zijn eigen mempool welke transacties het in dit blok verwachtte. Minder dan 100% betekent dat de miner er een aantal heeft weggelaten.',
+  blkHealthNone: 'Niet beschikbaar voor dit blok: alleen mempool.space vergelijkt blokken, en alleen recente.',
 };

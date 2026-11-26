@@ -597,4 +597,14 @@ export default {
   inflNext: '区块 {h} 减半后',
   factsNote:
     '最高价是历史上最高的日价格(若实时价格更高则取实时价格)。通胀率是未来一年的区块新增的币,占迄今已发行量的比例。',
+  blkHealth: '区块健康度',
+  blkMatch: '与预期区块的吻合度',
+  blkFeesL: '手续费',
+  blkFeesVs: '预期 {b} BTC 中的 {a}（{c}）',
+  blkMissing: '预期中但被遗漏',
+  blkAdded: '包含但不在预期中',
+  blkAddedFresh: '{n}（其中 {f} 笔刚出现不久）',
+  blkHealthNote:
+    'mempool.space 根据自己的内存池推算出它预期这个区块会包含哪些交易。低于 100% 表示矿工遗漏了其中一部分。',
+  blkHealthNone: '此区块无法提供：只有 mempool.space 会比较区块，而且只比较最近的区块。',
 };

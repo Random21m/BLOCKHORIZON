@@ -636,4 +636,14 @@ export default {
   inflNext: 'După halvingul de la blocul {h}',
   factsNote:
     'Maximul este cel mai mare preț zilnic din istorie (sau prețul live, dacă e mai mare). Inflația sunt monedele adăugate de următorul an de blocuri, ca parte din cele emise până acum.',
+  blkHealth: 'Sănătatea blocului',
+  blkMatch: 'Potrivire cu blocul așteptat',
+  blkFeesL: 'Comisioane',
+  blkFeesVs: '{a} din cei {b} BTC așteptați ({c})',
+  blkMissing: 'Așteptate, dar omise',
+  blkAdded: 'Incluse, dar neașteptate',
+  blkAddedFresh: '{n} (dintre care {f} văzute doar cu puțin înainte)',
+  blkHealthNote:
+    'mempool.space deduce din propriul mempool ce tranzacții se aștepta să conțină acest bloc. Sub 100% înseamnă că minerul a omis unele dintre ele.',
+  blkHealthNone: 'Indisponibil pentru acest bloc: doar mempool.space compară blocurile, și doar pe cele recente.',
 };

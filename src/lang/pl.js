@@ -627,4 +627,14 @@ export default {
   inflNext: 'Po halvingu w bloku {h}',
   factsNote:
     'Rekord to najwyższa cena dzienna w historii (lub cena bieżąca, jeśli wyższa). Inflacja to monety, które doda kolejny rok bloków, jako odsetek dotąd wydanych.',
+  blkHealth: 'Kondycja bloku',
+  blkMatch: 'Zgodność z oczekiwanym blokiem',
+  blkFeesL: 'Opłaty',
+  blkFeesVs: '{a} z oczekiwanych {b} BTC ({c})',
+  blkMissing: 'Oczekiwane, ale pominięte',
+  blkAdded: 'Dodane, choć nieoczekiwane',
+  blkAddedFresh: '{n} (w tym {f} widziane dopiero chwilę wcześniej)',
+  blkHealthNote:
+    'mempool.space na podstawie własnego mempoola ustala, jakich transakcji oczekiwał w tym bloku. Mniej niż 100% oznacza, że górnik część z nich pominął.',
+  blkHealthNone: 'Niedostępne dla tego bloku: bloki porównuje tylko mempool.space, i tylko te najnowsze.',
 };

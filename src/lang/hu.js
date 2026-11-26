@@ -635,4 +635,14 @@ export default {
   inflNext: 'Halving után ({h}. blokk)',
   factsNote:
     'A csúcs a történelem legmagasabb napi ára (vagy az élő ár, ha az magasabb). Az infláció a következő év blokkjai által hozzáadott érmék aránya az eddig kibocsátottakhoz képest.',
+  blkHealth: 'Blokk állapota',
+  blkMatch: 'Egyezés a várt blokkal',
+  blkFeesL: 'Díjak',
+  blkFeesVs: '{a} a várt {b} BTC-ből ({c})',
+  blkMissing: 'Várt, de kihagyott',
+  blkAdded: 'Benne van, de nem várt',
+  blkAddedFresh: '{n} (ebből {f} csak pillanatokkal előtte látott)',
+  blkHealthNote:
+    'A mempool.space a saját mempooljából számolja ki, mely tranzakciókat várta ebben a blokkban. A 100% alatti érték azt jelenti, hogy a bányász néhányat kihagyott közülük.',
+  blkHealthNone: 'Ehhez a blokkhoz nem érhető el: csak a mempool.space hasonlít össze blokkokat, és csak a frisseket.',
 };

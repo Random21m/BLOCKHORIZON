@@ -629,4 +629,14 @@ export default {
   inflNext: 'Efter halveringen vid block {h}',
   factsNote:
     'Toppen är det högsta dagspriset någonsin (eller livepriset, om det är högre). Inflation är de mynt som nästa års block lägger till, som andel av dem som getts ut hittills.',
+  blkHealth: 'Blockhälsa',
+  blkMatch: 'Överensstämmelse med väntat block',
+  blkFeesL: 'Avgifter',
+  blkFeesVs: '{a} av väntade {b} BTC ({c})',
+  blkMissing: 'Väntade men utelämnade',
+  blkAdded: 'Med men inte väntade',
+  blkAddedFresh: '{n} (varav {f} sågs bara strax innan)',
+  blkHealthNote:
+    'mempool.space räknar utifrån sin egen mempool ut vilka transaktioner det väntade sig i det här blocket. Under 100 % betyder att minern utelämnade några av dem.',
+  blkHealthNone: 'Inte tillgängligt för det här blocket: bara mempool.space jämför block, och bara de senaste.',
 };
