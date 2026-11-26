@@ -369,6 +369,28 @@ export function txFlow(x) {
   }));
   return { ins, outs };
 }
+// A past block as a picture: a cols x rows grid where each cell is an equal slice of the block's space (in vB, of at
+// least a full block's 1,000,000 vB), filled in order of fee rate from the bottom row up (highest fees at the bottom,
+// as on the Mining page). Each cell holds the index (into `list`, the transactions by fee rate) of the transaction
+// that covers the middle of its slice, or -1 when the block was not that full. The coinbase is left out: it pays no fee.
+export function blockCells(summary, cols, rows) {
+  const list = (Array.isArray(summary) ? summary : [])
+      .filter((x, i) => !(i === 0 && !x.fee))
+      .sort((a, b) => b.rate - a.rate),
+    total = list.reduce((a, x) => a + (x.vsize || 0), 0),
+    n = cols * rows,
+    unit = Math.max(total, 1e6) / n,
+    cells = new Array(n).fill(-1);
+  let j = 0,
+    end = list.length ? list[0].vsize || 0 : 0;
+  for (let k = 0; k < n; k++) {
+    const mid = (k + 0.5) * unit;
+    if (mid > total) break;
+    while (j < list.length - 1 && mid > end) end += list[++j].vsize || 0;
+    cells[(rows - 1 - Math.floor(k / cols)) * cols + (k % cols)] = j; // bottom row first
+  }
+  return { list, cells, unit };
+}
 // A round amount, in steps of 0.001 BTC: what people usually pay, unlike the odd change that comes back.
 export const isRoundSats = (v) => v > 0 && v % 100000 === 0;
 // Privacy hints anyone looking at a transaction can read from it, worked out here in the browser (nothing is sent):

@@ -1815,6 +1815,19 @@ html {
   text-align: right;
   white-space: nowrap;
 }
+/* a past block: its transactions as squares coloured by fee rate */
+.blkpic {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  aspect-ratio: 1;
+  margin: 8px auto 10px;
+  border-radius: 6px;
+}
+#blk-pic,
+#blk-txs {
+  margin-top: 14px;
+}
 /* a transaction's inputs and outputs, and what they tell about its privacy */
 .txflow,
 .txpriv {

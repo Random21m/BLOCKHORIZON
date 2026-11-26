@@ -531,6 +531,14 @@ export default {
   privRound: 'Okrągła kwota: jedno wyjście to okrągła liczba, więc drugie to zapewne reszta, która wraca.',
   privTypes: 'Typy adresów: tylko jedno wyjście ma ten sam typ adresu co wejścia, co wskazuje, że to reszta.',
   privNone: 'Nie znaleziono typowych wycieków prywatności.',
+  blkPicture: 'Co w nim było',
+  blkPicNote:
+    'Każdy kwadrat to fragment bloku, pokolorowany według stawki opłaty, najwyższe opłaty na dole. Dotknij jednego, aby otworzyć jego transakcję.',
+  blkPicAria: 'Obraz bloku: transakcje: {n}, stawki opłat od {lo} do {hi} sat/vB',
+  blkPicNone: 'Obraz pochodzi z mempool.space, który teraz nie odpowiada.',
+  blkTxRange: 'Transakcje {a}–{b} z {n}',
+  blkPrev: 'Poprzednie {n}',
+  blkNext: 'Następne {n}',
   mpHist: 'Mempool według stawki opłat',
   mpNote:
     'Ile czekało na wykopanie, w podziale na stawkę opłaty: zielony to niskie opłaty, czerwony wysokie. Linia przerywana to jeden blok.',

@@ -70,7 +70,8 @@ export function esploraFor(path) {
     path === '/blocks/tip/height' ||
     path === '/mempool' ||
     /^\/block-height\/\d+$/.test(path) ||
-    /^\/tx\/[0-9a-f]{64}$/.test(path)
+    /^\/tx\/[0-9a-f]{64}$/.test(path) ||
+    /^\/block\/[0-9a-f]{64}\/txs\/\d+$/.test(path)
   )
     return { path };
   let m = path.match(/^\/v1\/blocks(?:\/(\d+))?$/);
@@ -129,6 +130,10 @@ export const api = {
   adjustments: () => getJSON('/v1/mining/difficulty-adjustments', { cacheKey: 'adjust' }), // every past adjustment, newest first
   rewards: () => getJSON('/v1/mining/reward-stats/144', { cacheKey: 'rewards' }), // miner revenue and fees over the last 144 blocks (a day)
   tx: (id) => getJSON('/tx/' + id),
+  // a past block's transactions: every one in short (txid, fee, vsize, rate; mempool.space only), for its picture, and
+  // 25 at a time in full from `start` (the backup server has these too), for its list
+  blockSummary: (hash) => getJSON('/v1/block/' + hash + '/summary'),
+  blockTxs: (hash, start) => getJSON('/block/' + hash + '/txs/' + start),
   // an address: never asked of the backup server (esploraFor has no /address); the address page says where it went
   address: (a) => getJSON('/address/' + a),
   addrTxs: (a) => getJSON('/address/' + a + '/txs'), // watched addresses ask only your own node (push.js ownNode)

@@ -534,6 +534,14 @@ export default {
   privRound: 'Okrogel znesek: en izhod je okroglo število, zato je drugi verjetno vračilo.',
   privTypes: 'Vrste naslovov: le en izhod ima enako vrsto naslova kot vhodi, kar nakazuje, da je to vračilo.',
   privNone: 'Ni najdenih običajnih uhajanj zasebnosti.',
+  blkPicture: 'Kaj je bilo v njem',
+  blkPicNote:
+    'Vsak kvadratek je del bloka, obarvan po stopnji provizije, z najvišjimi provizijami spodaj. Tapnite enega, da odprete njegovo transakcijo.',
+  blkPicAria: 'Slika bloka: transakcije: {n}, stopnje provizije od {lo} do {hi} sat/vB',
+  blkPicNone: 'Slika prihaja z mempool.space, ki trenutno ne odgovarja.',
+  blkTxRange: 'Transakcije {a}–{b} od {n}',
+  blkPrev: 'Prejšnjih {n}',
+  blkNext: 'Naslednjih {n}',
   mpHist: 'Mempool po stopnji provizije',
   mpNote:
     'Koliko je čakalo na rudarjenje, razdeljeno po stopnji provizije: zeleno za nizke provizije, rdeče za visoke. Črtkana črta je en blok.',
