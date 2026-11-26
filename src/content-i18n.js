@@ -757,6 +757,101 @@ export const GLOSSARY_TR = {
     ],
     ['Coinbase', 'Transaksi pertama dalam blok, tempat penambang mengambil subsidi dan biaya.'],
   ],
+  uk: [
+    [
+      'Таймчейн',
+      'Упорядкований ланцюг блоків Bitcoin. Кожен блок посилається на попередній, тож порядок подій не можна тихо переписати.',
+    ],
+    [
+      'Блок',
+      'Пакет транзакцій, щодо якого домовилися майнери і який додано до ланцюга, приблизно раз на десять хвилин.',
+    ],
+    [
+      'Висота блоку',
+      'Скільки блоків стоїть перед цим. Перший блок (генезис) має висоту 0, тож висота працює як годинник, що йде лише вперед.',
+    ],
+    ['Епоха', 'Відрізок у 210 000 блоків (близько чотирьох років), протягом якого винагорода за блок не змінюється.'],
+    ['Халвінг', 'Подія наприкінці епохи, коли винагорода новими монетами за блок зменшується вдвічі.'],
+    ['Субсидія', 'Нові біткоїни, які майнер може отримати в кожному блоці, не рахуючи комісій.'],
+    ['Емісія', 'Усі біткоїни, створені досі. Їх ніколи не стане більше за 21 мільйон.'],
+    [
+      'Складність',
+      'Наскільки важка задача, яку розвʼязують майнери. Вона перераховується кожні 2016 блоків, щоб блоки виходили приблизно раз на десять хвилин.',
+    ],
+    [
+      'Зміна складності',
+      'Сам перерахунок: якщо останні 2016 блоків ішли швидше, ніж раз на десять хвилин, складність зростає; якщо повільніше — знижується.',
+    ],
+    [
+      'Хешрейт',
+      'Скільки спроб на секунду роблять усі майнери разом. Що вищий хешрейт, то більше енергії захищає ланцюг.',
+    ],
+    ['Доказ роботи', 'Свідчення того, що на створення блоку витрачено реальні обчислення, через що шахрайство дороге.'],
+    ['Мемпул', 'Зала очікування для дійсних транзакцій, які ще не потрапили в блок.'],
+    ['Глибина мемпулу', 'Приблизна кількість повних блоків, потрібних, щоб розчистити транзакції, що очікують.'],
+    [
+      'Ставка комісії',
+      'Скільки транзакція платить за одиницю розміру (sat/vB). Майнери зазвичай спершу беруть найвищі ставки.',
+    ],
+    ['vByte (vB)', 'Одиниця розміру транзакції з урахуванням знижки SegWit. Блок вміщує близько мільйона vB.'],
+    ['Сат', 'Одна стомільйонна біткоїна, найменша одиниця.'],
+    ['Московський час', 'Жартівливий показ годинника: скільки sats можна купити за одиницю валюти, записано як час.'],
+    ['Вузол', 'Компʼютер, який сам перевіряє кожне правило і передає блоки та транзакції.'],
+    ['Мережа Lightning', 'Рівень над Bitcoin для швидких дрібних платежів через канали, поповнені в ланцюгу.'],
+    ['Coinbase', 'Перша транзакція в блоці, де майнер отримує субсидію і комісії.'],
+  ],
+  pl: [
+    [
+      'Timechain',
+      'Uporządkowany łańcuch bloków Bitcoina. Każdy blok wskazuje na poprzedni, więc kolejności zdarzeń nie da się po cichu zmienić.',
+    ],
+    [
+      'Blok',
+      'Paczka transakcji, na którą zgadzają się górnicy i dodają ją do łańcucha, mniej więcej co dziesięć minut.',
+    ],
+    [
+      'Wysokość bloku',
+      'Ile bloków jest przed tym blokiem. Pierwszy blok (genesis) ma wysokość 0, więc wysokość działa jak zegar, który liczy tylko w górę.',
+    ],
+    ['Epoka', 'Odcinek 210 000 bloków (około czterech lat), w którym nagroda za blok pozostaje taka sama.'],
+    ['Halving', 'Zdarzenie na końcu epoki, w którym nagroda w nowych monetach za blok spada o połowę.'],
+    ['Subsydium', 'Nowo utworzone bitcoiny, które górnik może zabrać w każdym bloku, nie licząc opłat.'],
+    ['Podaż', 'Wszystkie bitcoiny utworzone do tej pory. Nigdy nie przekroczy 21 milionów.'],
+    [
+      'Trudność',
+      'Jak trudna jest zagadka, którą rozwiązują górnicy. Jest korygowana co 2016 bloków, aby bloki pojawiały się mniej więcej co dziesięć minut.',
+    ],
+    [
+      'Zmiana trudności',
+      'Sama korekta: jeśli ostatnie 2016 bloków pojawiało się szybciej niż co dziesięć minut, trudność rośnie; jeśli wolniej, spada.',
+    ],
+    [
+      'Hashrate',
+      'Ile prób na sekundę wykonują łącznie wszyscy górnicy. Wyższy hashrate oznacza więcej energii chroniącej łańcuch.',
+    ],
+    [
+      'Proof of work',
+      'Dowód, że na utworzenie bloku zużyto prawdziwą pracę obliczeniową, przez co oszustwo jest drogie.',
+    ],
+    ['Mempool', 'Poczekalnia ważnych transakcji, które jeszcze nie trafiły do bloku.'],
+    [
+      'Głębokość mempoolu',
+      'Przybliżona liczba pełnych bloków potrzebnych, aby zmieściły się wszystkie czekające transakcje.',
+    ],
+    [
+      'Stawka opłaty',
+      'Ile transakcja płaci za jednostkę rozmiaru (sat/vB). Górnicy zwykle wybierają najpierw najwyższe stawki.',
+    ],
+    ['vByte (vB)', 'Jednostka rozmiaru transakcji uwzględniająca zniżkę SegWit. Blok mieści około miliona vB.'],
+    ['Sat', 'Jedna stumilionowa bitcoina, najmniejsza jednostka.'],
+    [
+      'Czas moskiewski',
+      'Zabawny odczyt w formie zegara: ile satsów można kupić za jedną jednostkę waluty, pokazane jak godzina.',
+    ],
+    ['Węzeł', 'Komputer, który sam sprawdza każdą regułę i przekazuje dalej bloki i transakcje.'],
+    ['Sieć Lightning', 'Warstwa nad Bitcoinem do szybkich, drobnych płatności przez kanały zasilone w łańcuchu.'],
+    ['Coinbase', 'Pierwsza transakcja w bloku, w której górnik odbiera subsydium i opłaty.'],
+  ],
 };
 export const ANNIV_TR = {
   de: [
@@ -908,5 +1003,25 @@ export const ANNIV_TR = {
     'Halving kedua (blok 420.000)',
     'Halving ketiga (blok 630.000)',
     'Halving keempat (blok 840.000)',
+  ],
+  uk: [
+    'Видобуто генезис-блок',
+    'Перша транзакція Bitcoin (блок 170)',
+    'День біткоїн-піци: перша відома покупка за біткоїни',
+    'Опубліковано whitepaper',
+    'Перший халвінг (блок 210 000)',
+    'Другий халвінг (блок 420 000)',
+    'Третій халвінг (блок 630 000)',
+    'Четвертий халвінг (блок 840 000)',
+  ],
+  pl: [
+    'Wykopano blok genesis',
+    'Pierwsza transakcja bitcoinowa (blok 170)',
+    'Bitcoin Pizza Day: pierwszy znany zakup za bitcoiny',
+    'Publikacja whitepaper',
+    'Pierwszy halving (blok 210 000)',
+    'Drugi halving (blok 420 000)',
+    'Trzeci halving (blok 630 000)',
+    'Czwarty halving (blok 840 000)',
   ],
 };

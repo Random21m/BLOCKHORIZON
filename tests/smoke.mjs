@@ -1691,6 +1691,8 @@ await ok('tile titles stay on one line on phones and tablets (short titles), in 
     [360, 'id'],
     [360, 'vi'],
     [360, 'hi'],
+    [360, 'pl'],
+    [360, 'uk'],
     [700, 'it'],
     [700, 'ru'],
     [1280, 'fr'],
@@ -2327,7 +2329,7 @@ await ok('French: glossary and anniversaries are translated', async () => {
   await page.keyboard.press('Escape');
 });
 await ok(
-  'Japanese, Chinese, Korean, Russian, Hindi, Indonesian and Vietnamese: menu, dashboard and glossary are translated',
+  'Japanese, Chinese, Korean, Russian, Ukrainian, Hindi, Indonesian, Vietnamese and Polish: menu, dashboard and glossary are translated',
   async () => {
     // one script per language, or (for languages in Latin letters) a few words only the translation has, for the menu
     // and for the glossary
@@ -2339,6 +2341,8 @@ await ok(
       ['hi', /[\u0900-\u097f]/],
       ['id', /Kalkulator|Glosarium/, /Tinggi blok|Kesulitan/],
       ['vi', /Báo thức|Thuật ngữ/, /khối/],
+      ['uk', /[іїєґ]/],
+      ['pl', /Słowniczek|Kalendarz/, /Wysokość bloku|Trudność/],
     ]) {
       const c = await b.newContext({ viewport: { width: 1280, height: 800 } });
       await c.routeWebSocket(/./, (ws) => ws.close());

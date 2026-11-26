@@ -4,8 +4,8 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
 
 ## Unreleased
 
-- **Three more languages: Bahasa Indonesia, Tiếng Việt and हिन्दी.** 16 languages in all, glossary and calendar
-  included. A browser set to Indonesian, Vietnamese or Hindi gets its language on its own. These are machine
+- **Five more languages: Bahasa Indonesia, Tiếng Việt, हिन्दी, Polski and Українська.** 18 languages in all,
+  glossary and calendar included. A browser set to one of them gets its language on its own. These are machine
   translations for now; corrections from native speakers are welcome.
 
 ## 0.20.0
