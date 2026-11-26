@@ -1174,6 +1174,7 @@ test('block history: fees per block, fees as a share of miner income, block size
     [{ t: 2000, v: 25 }]
   );
   assert.deepEqual(L.feeShareSeries(fees, []), []);
+});
 test('a signed transaction is read on the device: ID, size, inputs, outputs and their addresses, fee', () => {
   const enc = (s) => new TextEncoder().encode(s);
   assert.equal(L.toHex(L.sha256(enc(''))), 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855');
