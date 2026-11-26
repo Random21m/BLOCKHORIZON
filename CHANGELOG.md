@@ -2,7 +2,7 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
-## Unreleased
+## 0.21.0
 
 - **Three more long-term charts.** The **Puell Multiple** (the value of the bitcoins mined each day against its
   average over the past year), **hash ribbons** (the hashrate's 30- and 60-day averages, saying since when miners have
