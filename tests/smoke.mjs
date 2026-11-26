@@ -1640,7 +1640,12 @@ await ok('tile titles stay on one line on phones and tablets (short titles), in 
     [360, 'es'],
     [360, 'en'],
     [360, 'ja'],
+    [360, 'zh'],
+    [360, 'ko'],
+    [360, 'ru'],
+    [360, 'pt-BR'],
     [700, 'it'],
+    [700, 'ru'],
     [1280, 'fr'],
   ]) {
     const c = await b.newContext({ viewport: { width: w, height: 800 } });
@@ -2274,28 +2279,51 @@ await ok('French: glossary and anniversaries are translated', async () => {
   await page.selectOption('#st-lang', 'en');
   await page.keyboard.press('Escape');
 });
-await ok('Japanese: menu, dashboard and glossary are translated', async () => {
-  const c = await b.newContext({ viewport: { width: 1280, height: 800 } });
-  await c.routeWebSocket(/./, (ws) => ws.close());
-  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
-    r.request().url().includes('mempool.space') ? r.fallback() : r.abort()
-  );
-  await c.route(/mempool\.space/, (route) => {
-    const m = MOCK[new URL(route.request().url()).pathname];
-    if (!m) return route.fulfill({ status: 404, body: '' });
-    route.fulfill({ contentType: m[0], body: fx(m[1]) });
-  });
-  await c.addInitScript(() => localStorage.setItem('bh.settings', JSON.stringify({ lang: 'ja', _v: 2 })));
-  const p = await c.newPage();
-  await p.goto(base);
-  await until(p, () => document.querySelectorAll('.tile').length >= 10 && document.documentElement.lang === 'ja');
-  const d = await p.locator('main').innerText();
-  for (const w of ['blocks deep', 'channels', 'Since last', 'of epoch'])
-    assert.ok(!d.includes(w), 'English left: ' + w);
-  assert.ok(/[\u3040-\u30ff\u4e00-\u9fff]/.test(await p.locator('#nav').innerText()), 'menu in Japanese');
-  await p.goto(base + '#/glossary');
-  assert.ok(/[\u3040-\u30ff]/.test(await p.locator('main').innerText()));
-  await c.close();
+await ok('Japanese, Chinese, Korean and Russian: menu, dashboard and glossary are translated', async () => {
+  for (const [lang, script] of [
+    ['ja', /[\u3040-\u30ff]/],
+    ['zh', /[\u4e00-\u9fff]/],
+    ['ko', /[\uac00-\ud7af]/],
+    ['ru', /[\u0400-\u04ff]/],
+  ]) {
+    const c = await b.newContext({ viewport: { width: 1280, height: 800 } });
+    await c.routeWebSocket(/./, (ws) => ws.close());
+    await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
+      r.request().url().includes('mempool.space') ? r.fallback() : r.abort()
+    );
+    await c.route(/mempool\.space/, (route) => {
+      const m = MOCK[new URL(route.request().url()).pathname];
+      if (!m) return route.fulfill({ status: 404, body: '' });
+      route.fulfill({ contentType: m[0], body: fx(m[1]) });
+    });
+    await c.addInitScript((l) => localStorage.setItem('bh.settings', JSON.stringify({ lang: l, _v: 2 })), lang);
+    const p = await c.newPage();
+    await p.goto(base);
+    await until(p, (l) => document.querySelectorAll('.tile').length >= 10 && document.documentElement.lang === l, lang);
+    const d = await p.locator('main').innerText();
+    for (const w of ['blocks deep', 'channels', 'Since last', 'of epoch'])
+      assert.ok(!d.includes(w), lang + ': English left: ' + w);
+    assert.ok(script.test(await p.locator('#nav').innerText()), 'menu in ' + lang);
+    await p.goto(base + '#/glossary');
+    assert.ok(script.test(await p.locator('main').innerText()), 'glossary in ' + lang);
+    await c.close();
+  }
+});
+await ok('Brazilian Portuguese is chosen for a pt-BR browser, European Portuguese for pt-PT', async () => {
+  for (const [locale, want, word] of [
+    ['pt-BR', 'pt-BR', 'celular'],
+    ['pt-PT', 'pt', 'telemóvel'],
+  ]) {
+    const c = await b.newContext({ viewport: { width: 1280, height: 800 }, locale });
+    await c.routeWebSocket(/./, (ws) => ws.close());
+    await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.abort());
+    const p = await c.newPage();
+    await p.goto(base);
+    await until(p, (l) => document.documentElement.lang === l, want);
+    const lang = await p.evaluate(() => import('./src/i18n.js').then((m) => m.t('pushTitle')));
+    assert.ok(lang.includes(word), locale + ': ' + lang);
+    await c.close();
+  }
 });
 await ok('price: Coinbase takes over while Kraken is silent, and closes once Kraken is back', async () => {
   let krakenUp = false,

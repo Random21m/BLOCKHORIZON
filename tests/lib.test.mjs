@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import * as L from '../src/lib.js';
 import { parseTicker, parseBackupTicker, BACKUP_CURRENCIES, CURRENCIES } from '../src/price.js';
 import { normServer, esploraFor, esploraFees } from '../src/api.js';
-import { LANGS, loadLang, setLang, t, getLang } from '../src/i18n.js';
+import { LANGS, loadLang, setLang, t, getLang, detectLang } from '../src/i18n.js';
 // every language's texts, as the app would load them one at a time
 const TABLES = Object.fromEntries(
   await Promise.all(Object.keys(LANGS).map(async (l) => [l, (await import(`../src/lang/${l}.js`)).default]))
@@ -187,7 +187,20 @@ test('every language has every label and no empty strings', () => {
     assert.deepEqual(Object.keys(tab).sort(), en, l);
     for (const v of Object.values(tab)) assert.ok(typeof v === 'string' && v.trim().length > 0, l);
   }
-  assert.ok(Object.keys(TABLES).length >= 8);
+  assert.ok(Object.keys(TABLES).length >= 13);
+});
+
+test('browser language: an exact region first, then the language alone, else English', () => {
+  assert.equal(detectLang('pt-BR'), 'pt-BR');
+  assert.equal(detectLang('pt-br'), 'pt-BR');
+  assert.equal(detectLang('pt-PT'), 'pt');
+  assert.equal(detectLang('pt'), 'pt');
+  assert.equal(detectLang('zh-CN'), 'zh');
+  assert.equal(detectLang('zh-TW'), 'zh');
+  assert.equal(detectLang('ko-KR'), 'ko');
+  assert.equal(detectLang('ru'), 'ru');
+  assert.equal(detectLang('de_AT'), 'de');
+  assert.equal(detectLang('xx-YY'), 'en');
 });
 
 test('languages load one at a time: English until another is fetched, unknown ones stay English', async () => {
