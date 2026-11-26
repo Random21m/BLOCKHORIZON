@@ -108,7 +108,7 @@ label.chk{display:flex;gap:10px;align-items:center;margin:8px 0}
 @media (max-width:899px){.strip2{align-self:end}}
 @media (min-width:900px){
   .fit main{overflow:hidden}
-  .dashgrid{grid-template-columns:repeat(4,1fr);grid-template-rows:1.25fr 1fr 1fr auto;gap:10px;height:100%}
+  .dashgrid{grid-template-columns:repeat(4,1fr);grid-template-rows:1.25fr repeat(var(--rows,2),1fr) auto;gap:10px;height:100%}
   .tile.hero{grid-column:span 2;grid-row:1}
   .tile{padding:10px 14px}
   .tile .arc{display:block}
@@ -369,3 +369,7 @@ input,select,textarea,progress{accent-color:var(--accent)}
 :root[data-theme=light] .btc .chg.up{color:#196A45} /* 5.1:1 on the light page background, where --up is just under 4.5:1 */
 @media (max-width:480px){.tile.t-fees .fees{grid-template-columns:repeat(2,1fr);gap:4px}.tile.t-fees .fees div{padding:2px 4px}.tile.t-fees .fees b{font-size:15px}} /* phones: 2x2, so "Nächster" or "Sonraki" fits */
 main:focus{outline:none} /* focus lands here after following a link inside the page; the page itself needs no ring */
+/* Settings, Dashboard: the tile list, each with its switch and buttons to move it up or down */
+.tilelist{list-style:none;margin:8px 0 12px;padding:0}.tilelist li{display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--line)}
+.tilelist .chk{flex:1 1 0;min-width:0;hyphens:auto;overflow-wrap:break-word;margin:4px 0;min-height:40px}.tilelist .mv{flex:none}.tilelist .mv{min-width:40px;min-height:40px;padding:0}.tilelist .mv:disabled{opacity:.35;cursor:default}
+#modal .tabs[role=tablist]{flex-wrap:wrap} /* five settings tabs: a second row on narrow phones rather than cut off */

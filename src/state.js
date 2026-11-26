@@ -7,10 +7,12 @@ export const VERSION = '0.16.1';
 export const TIP_ADDR = 'npub1vj8zjhnmkhekv93e2xmrz7kfwuxq25vrzw53u4dqhwd2lp5smvks3mwu2n@npub.cash';
 export const $ = (s, r = document) => r.querySelector(s);
 export const US = /^en-US/i.test((typeof navigator !== 'undefined' && navigator.language) || '');
-export const DEF = { theme: 'dark', lang: detectLang(), cur: 'USD', h12: US, dateFmt: US ? 'mdy' : 'iso', utc: false, showFees: true, feesRtl: false, showPool: true, showMoscow: true, showCap: true,
-  hr: 'd14', ripple: true, pulse: true, reduced: false, sound: false, bsound: 'drop', asound: 'clock', satsSym: 'sats', server: '' };
+export const DEF = { theme: 'dark', lang: detectLang(), cur: 'USD', h12: US, dateFmt: US ? 'mdy' : 'iso', utc: false, feesRtl: false, showPool: true, showMoscow: true, showCap: true,
+  hr: 'd14', ripple: true, pulse: true, reduced: false, sound: false, bsound: 'drop', asound: 'clock', satsSym: 'sats', server: '', tileOrder: null, tileOff: null };
 export const saved = store('settings') || {};
 if (saved._v !== 2) { delete saved.h12; delete saved.dateFmt; saved._v = 2; } // older versions saved the then-default formats
+if (saved.showFees === false && !saved.tileOff) saved.tileOff = ['fees', 'mem', 'proj']; // the old 'Show fees and mempool' switch, now part of the tile list
+delete saved.showFees;
 export const S = Object.assign({}, DEF, saved);
 export const save = () => store('settings', S);
 export const st = { shown: NaN, shownCur: '', dir: 0, raf: 0, pct: {}, priceLive: false, priceAt: 0, tip: NaN, blocks: [], diff: null, fees: null, mem: null, proj: null, prices: null, hr: null, ln: null, last: 0, conn: 'off' };
@@ -36,6 +38,18 @@ export function applyLook() {
   document.body.classList.toggle('reduced', S.reduced); document.body.classList.toggle('nopulse', !S.pulse);
   const m = $('meta[name=theme-color]'); if (m) m.content = dark ? '#0E0D0C' : '#EAE3D2';
 }
+// The dashboard tiles people can hide and reorder (Settings, Dashboard), with the key of each one's name. The block height
+// is always shown first; the block strips stay along the bottom (they can be hidden, not moved).
+export const TILES = [['halving', 'halving'], ['diff', 'difficulty'], ['hash', 'hashrate'], ['supply', 'supply'], ['last', 'last'], ['prod', 'production'],
+  ['fees', 'fees'], ['mem', 'mempool'], ['price', 'price'], ['ln', 'lightning']];
+export const STRIPS = [['proj', 'projected'], ['rec', 'recent']];
+// The tiles in the chosen order (any tile added in a later version goes at the end), each with whether it is shown.
+export function dashTiles() {
+  const ids = TILES.map((x) => x[0]), order = (S.tileOrder || []).filter((id) => ids.includes(id));
+  const off = S.tileOff || [];
+  return [...order, ...ids.filter((id) => !order.includes(id))].map((id) => ({ id, on: !off.includes(id) }));
+}
+export const tileOn = (id) => !(S.tileOff || []).includes(id);
 export const price = () => (st.prices && st.prices[S.cur]) || NaN;
 export const NAVS = [['/', 'dash'], ['/clock', 'clock'], ['/mining', 'mining'], ['/alarm', 'alarm'], ['/calc', 'calc'], ['/charts', 'charts'], ['/my', 'myBlock'], ['/replay', 'replay'], ['/events', 'events'], ['/glossary', 'glossary'], ['/watch', 'watch'], ['/about', 'about']];
 // On phones the menu becomes a bar along the bottom: these pages get a tab, the rest are behind 'More'.

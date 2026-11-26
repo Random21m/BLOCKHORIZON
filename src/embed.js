@@ -3,7 +3,7 @@
 // show=mining draws a small picture of the block being mined: its fee mix from the projected block (no per-transaction feed).
 import * as L from './lib.js';
 import { api, loadConfig } from './api.js';
-import { t, setLang, detectLang, LANGS } from './i18n.js';
+import { t, setLang, detectLang, LANGS, loadLang } from './i18n.js';
 import { CURRENCIES } from './price.js';
 
 const q = new URLSearchParams(location.search), $ = (id) => document.getElementById(id);
@@ -11,7 +11,7 @@ const show = ['height', 'halving', 'price', 'mining'].includes(q.get('show')) ? 
 const cur = CURRENCIES.includes(q.get('cur')) ? q.get('cur') : 'USD';
 const lang = LANGS[q.get('lang')] ? q.get('lang') : detectLang();
 const theme = q.get('theme') === 'light' || q.get('theme') === 'dark' ? q.get('theme') : (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-document.documentElement.dataset.theme = theme; document.documentElement.lang = lang; setLang(lang);
+document.documentElement.dataset.theme = theme; document.documentElement.lang = lang; await loadLang(lang); setLang(lang);
 $('w').href = new URL('./', location.href).href + (show === 'halving' ? '#/events' : show === 'price' ? '#/charts' : show === 'mining' ? '#/mining' : '#/');
 let cv = null, pb = null, drawn = '';
 if (show === 'mining') { // picture on the left, the words beside it

@@ -3,7 +3,7 @@ import * as L from './lib.js';
 import { live, trackBlock, loadConfig, setServer, reconnect, store, source, FALLBACK } from './api.js';
 import { mountScene, dropLive } from './block-scene.js';
 import { livePrice } from './price.js';
-import { t, getLang } from './i18n.js';
+import { t, getLang, loadLang } from './i18n.js';
 import { VERSION, $, S, st, el, toast, applyLook, NAVS, PHONE_TABS, NAV_ICONS, hooks } from './state.js';
 import { refreshAll, newGeneration, onLive, onPriceTick, checkAlarms, checkFeeAlerts, resetAlarmTip } from './data.js';
 import { sinceText, srcHost } from './ui.js';
@@ -146,7 +146,7 @@ export async function boot() {
   hooks.server = () => { newGeneration(); resetAlarmTip(); setServer(S.server); for (const k of ['tip', 'blocks', 'diff', 'fees', 'mempool', 'projected', 'hashrate', 'ln', 'pools', 'rewards']) store(k, null);
     Object.assign(st, { tip: NaN, blocks: [], diff: null, fees: null, mem: null, proj: null, hr: null, ln: null, pools: null, rewards: null }); reconnect(); refreshAll(); renderView(); };
   hooks.alerts = () => { if (route === '/alarm') renderView(); document.dispatchEvent(new Event('bh-alerts')); }; // price alerts changed or fired
-  applyLook(); $('#ver').textContent = 'BLOCKHORIZON ' + VERSION;
+  await loadLang(S.lang); applyLook(); $('#ver').textContent = 'BLOCKHORIZON ' + VERSION;
   $('#btn-search').onclick = searchModal; $('#btn-settings').onclick = settingsModal; $('#modal-x').onclick = closeModal;
   $('#modal').addEventListener('click', (e) => { if (e.target.id === 'modal') closeModal(); });
   addEventListener('keydown', trapFocus);

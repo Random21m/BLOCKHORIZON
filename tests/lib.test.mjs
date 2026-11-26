@@ -4,7 +4,9 @@ import fs from 'node:fs';
 import * as L from '../src/lib.js';
 import { parseTicker } from '../src/price.js';
 import { normServer, esploraFor, esploraFees } from '../src/api.js';
-import { TABLES, LANGS } from '../src/i18n.js';
+import { LANGS, loadLang, setLang, t, getLang } from '../src/i18n.js';
+// every language's texts, as the app would load them one at a time
+const TABLES = Object.fromEntries(await Promise.all(Object.keys(LANGS).map(async (l) => [l, (await import(`../src/lang/${l}.js`)).default])));
 import { GLOSSARY, ANNIVERSARIES } from '../src/content.js';
 import { GLOSSARY_TR, ANNIV_TR } from '../src/content-i18n.js';
 
@@ -113,6 +115,13 @@ test('every language has every label and no empty strings', () => {
   assert.ok(Object.keys(TABLES).length >= 8);
 });
 
+test('languages load one at a time: English until another is fetched, unknown ones stay English', async () => {
+  setLang('de'); assert.equal(getLang(), 'en'); assert.equal(t('calc'), TABLES.en.calc); // not loaded yet
+  await loadLang('de'); setLang('de'); assert.equal(getLang(), 'de'); assert.equal(t('calc'), TABLES.de.calc);
+  await loadLang('xx'); setLang('xx'); assert.equal(getLang(), 'en');
+  setLang('en');
+});
+
 test('alarms: reached at or below the tip, waiting above it, nothing before the tip is known', () => {
   const list = [{ height: 100 }, { height: 101 }, { height: 102, label: 'x' }];
   const r = L.splitAlarms(list, 101);
@@ -149,7 +158,7 @@ test('payment size: common address types, at least one input and output', () => 
 test('translations: same {placeholders} as English, and every key the app uses exists', () => {
   const ph = (s) => (s.match(/\{\w+\}/g) || []).sort().join();
   for (const [l, tab] of Object.entries(TABLES)) for (const [k, v] of Object.entries(tab)) assert.equal(ph(v), ph(TABLES.en[k]), `${l}.${k}`);
-  const app = fs.readdirSync(new URL('../src/', import.meta.url)).filter((f) => f.endsWith('.js') && !['i18n.js', 'strings.js'].includes(f)).map((f) => fs.readFileSync(new URL('../src/' + f, import.meta.url), 'utf8')).join('\n');
+  const app = fs.readdirSync(new URL('../src/', import.meta.url)).filter((f) => f.endsWith('.js') && f !== 'i18n.js').map((f) => fs.readFileSync(new URL('../src/' + f, import.meta.url), 'utf8')).join('\n');
   const used = new Set([...app.matchAll(/\bt\('(\w+)'/g)].map((m) => m[1]));
   for (const m of app.matchAll(/\['\/[\w/]*', '(\w+)'\]/g)) used.add(m[1]); // menu entries
   for (const k of ['minedAbout', 'estimated', 'tab_display', 'tab_format', 'tab_sounds']) used.add(k); // picked at run time
@@ -159,6 +168,8 @@ test('translations: same {placeholders} as English, and every key the app uses e
 test('offline cache lists every source file', () => {
   const sw = fs.readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
   for (const f of fs.readdirSync(new URL('../src/', import.meta.url)).filter((x) => x.endsWith('.js'))) assert.ok(sw.includes(`'src/${f}'`), 'sw.js is missing src/' + f);
+  // English is always needed; the other languages are saved when first used, not downloaded up front
+  assert.ok(sw.includes("'src/lang/en.js'")); assert.ok(!sw.includes("'src/lang/de.js'"));
 });
 
 test('fee alerts: reached at or below the limit for the chosen speed; nothing without fee data', () => {
