@@ -340,6 +340,8 @@ test('browser language: an exact region first, then the language alone, else Eng
   assert.equal(detectLang('id-ID'), 'id');
   assert.equal(detectLang('vi-VN'), 'vi');
   assert.equal(detectLang('hi-IN'), 'hi');
+  assert.equal(detectLang('pl-PL'), 'pl');
+  assert.equal(detectLang('uk-UA'), 'uk');
   assert.equal(detectLang('de_AT'), 'de');
   assert.equal(detectLang('xx-YY'), 'en');
 });
