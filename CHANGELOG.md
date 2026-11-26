@@ -2,7 +2,7 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
-## Unreleased
+## 0.23.0
 
 - **Send page privacy:** checking a transaction looked up the coins it spends on the backup server (blockstream.info)
   when the data server did not answer, even on your own node. It now asks only the data server the page names, a few
