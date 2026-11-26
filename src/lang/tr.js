@@ -622,4 +622,13 @@ export default {
   sending: 'Gönderiliyor…',
   sendDone: 'Gönderildi: ağ onu aldı.',
   sendFail: 'Kabul edilmedi: {m}',
+  factsTitle: 'Fiyat ve arz bilgileri',
+  athL: 'Tüm zamanların zirvesi',
+  belowAth: 'Zirvenin altında',
+  atAthNow: 'Şu an tüm zamanların zirvesinde',
+  daysSinceAth: 'Zirveden beri gün',
+  inflNow: 'Şu anki yıllık enflasyon',
+  inflNext: '{h}. bloktaki halving sonrası',
+  factsNote:
+    'Zirve, tarihteki en yüksek günlük fiyattır (ya da daha yüksekse anlık fiyat). Enflasyon, gelecek bir yıllık blokların eklediği coinlerin şimdiye kadar basılanlara oranıdır.',
 };

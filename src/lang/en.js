@@ -615,4 +615,13 @@ export default {
   sending: 'Sending…',
   sendDone: 'Sent: the network has it.',
   sendFail: 'Not accepted: {m}',
+  factsTitle: 'Price and supply facts',
+  athL: 'All-time high',
+  belowAth: 'Below the high',
+  atAthNow: 'At its all-time high now',
+  daysSinceAth: 'Days since the high',
+  inflNow: 'Yearly inflation now',
+  inflNext: 'After the halving at block {h}',
+  factsNote:
+    'The high is the highest daily price in the history (or the live price, if higher). Inflation is the coins the next year of blocks adds, as a share of those issued so far.',
 };

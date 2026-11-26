@@ -615,4 +615,13 @@ export default {
   sending: 'Đang gửi…',
   sendDone: 'Đã gửi: mạng đã nhận được.',
   sendFail: 'Không được chấp nhận: {m}',
+  factsTitle: 'Dữ kiện về giá và nguồn cung',
+  athL: 'Đỉnh mọi thời đại',
+  belowAth: 'Dưới đỉnh',
+  atAthNow: 'Đang ở đỉnh mọi thời đại',
+  daysSinceAth: 'Số ngày từ đỉnh',
+  inflNow: 'Lạm phát năm hiện tại',
+  inflNext: 'Sau halving ở khối {h}',
+  factsNote:
+    'Đỉnh là giá ngày cao nhất trong lịch sử (hoặc giá trực tiếp, nếu cao hơn). Lạm phát là số coin mà các khối trong năm tới thêm vào, tính theo tỷ lệ so với lượng đã phát hành.',
 };

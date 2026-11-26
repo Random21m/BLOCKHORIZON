@@ -15,6 +15,9 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
   every input and output with its address, and the privacy hints of the transaction page. It warns when the fee is
   unusually high or too low, when coins it spends are already spent or missing, and when the network already has it.
   Only when you press "Send to mempool.space" (or your own node) is it sent; never to the backup server.
+- **Price and supply facts.** The "Long term" section of the Charts page opens with the all-time high (in your
+  currency, with its date), how far below it the price is and for how many days, and the supply's yearly inflation now
+  and after the next halving.
 
 ## 0.21.0
 

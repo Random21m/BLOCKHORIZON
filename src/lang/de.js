@@ -631,4 +631,13 @@ export default {
   sending: 'Wird gesendet…',
   sendDone: 'Gesendet: Das Netzwerk hat sie.',
   sendFail: 'Nicht angenommen: {m}',
+  factsTitle: 'Fakten zu Preis und Angebot',
+  athL: 'Allzeithoch',
+  belowAth: 'Unter dem Hoch',
+  atAthNow: 'Gerade auf dem Allzeithoch',
+  daysSinceAth: 'Tage seit dem Hoch',
+  inflNow: 'Jährliche Inflation jetzt',
+  inflNext: 'Nach dem Halving bei Block {h}',
+  factsNote:
+    'Das Hoch ist der höchste Tagespreis der Geschichte (oder der Live-Preis, falls höher). Inflation sind die Coins, die das nächste Jahr an Blöcken hinzufügt, als Anteil der bisher ausgegebenen.',
 };

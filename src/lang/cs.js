@@ -616,4 +616,13 @@ export default {
   sending: 'Odesílání…',
   sendDone: 'Odesláno: síť ji má.',
   sendFail: 'Nepřijato: {m}',
+  factsTitle: 'Fakta o ceně a nabídce',
+  athL: 'Historické maximum',
+  belowAth: 'Pod maximem',
+  atAthNow: 'Právě na historickém maximu',
+  daysSinceAth: 'Dní od maxima',
+  inflNow: 'Roční inflace nyní',
+  inflNext: 'Po halvingu v bloku {h}',
+  factsNote:
+    'Maximum je nejvyšší denní cena v historii (nebo aktuální cena, je-li vyšší). Inflace jsou mince, které přidá další rok bloků, jako podíl dosud vydaných.',
 };

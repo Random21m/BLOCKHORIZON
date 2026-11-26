@@ -588,4 +588,13 @@ export default {
   sending: '发送中…',
   sendDone: '已发送：网络已收到。',
   sendFail: '未被接受：{m}',
+  factsTitle: '价格与供应概况',
+  athL: '历史最高价',
+  belowAth: '低于最高价',
+  atAthNow: '当前处于历史最高价',
+  daysSinceAth: '距最高价天数',
+  inflNow: '当前年通胀率',
+  inflNext: '区块 {h} 减半后',
+  factsNote:
+    '最高价是历史上最高的日价格(若实时价格更高则取实时价格)。通胀率是未来一年的区块新增的币,占迄今已发行量的比例。',
 };

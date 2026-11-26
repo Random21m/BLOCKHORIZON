@@ -635,4 +635,13 @@ export default {
   sending: 'Envoi…',
   sendDone: 'Envoyée : le réseau l’a reçue.',
   sendFail: 'Non acceptée : {m}',
+  factsTitle: 'Repères sur le prix et l’offre',
+  athL: 'Plus haut historique',
+  belowAth: 'Sous le plus haut',
+  atAthNow: 'À son plus haut historique',
+  daysSinceAth: 'Jours depuis le plus haut',
+  inflNow: 'Inflation annuelle actuelle',
+  inflNext: 'Après le halving au bloc {h}',
+  factsNote:
+    'Le plus haut est le prix journalier le plus élevé de l’histoire (ou le prix en direct, s’il est supérieur). L’inflation correspond aux pièces ajoutées par la prochaine année de blocs, en part de celles émises jusqu’ici.',
 };

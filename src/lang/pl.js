@@ -618,4 +618,13 @@ export default {
   sending: 'Wysyłanie…',
   sendDone: 'Wysłano: sieć ją ma.',
   sendFail: 'Nie przyjęto: {m}',
+  factsTitle: 'Fakty o cenie i podaży',
+  athL: 'Rekord wszech czasów',
+  belowAth: 'Poniżej rekordu',
+  atAthNow: 'Teraz na rekordzie wszech czasów',
+  daysSinceAth: 'Dni od rekordu',
+  inflNow: 'Roczna inflacja teraz',
+  inflNext: 'Po halvingu w bloku {h}',
+  factsNote:
+    'Rekord to najwyższa cena dzienna w historii (lub cena bieżąca, jeśli wyższa). Inflacja to monety, które doda kolejny rok bloków, jako odsetek dotąd wydanych.',
 };

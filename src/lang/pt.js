@@ -627,4 +627,13 @@ export default {
   sending: 'A enviar…',
   sendDone: 'Enviada: a rede já a tem.',
   sendFail: 'Não aceite: {m}',
+  factsTitle: 'Factos sobre preço e oferta',
+  athL: 'Máximo histórico',
+  belowAth: 'Abaixo do máximo',
+  atAthNow: 'No máximo histórico agora',
+  daysSinceAth: 'Dias desde o máximo',
+  inflNow: 'Inflação anual atual',
+  inflNext: 'Após o halving no bloco {h}',
+  factsNote:
+    'O máximo é o preço diário mais alto da história (ou o preço em tempo real, se for maior). A inflação são as moedas que o próximo ano de blocos acrescenta, em proporção às emitidas até agora.',
 };

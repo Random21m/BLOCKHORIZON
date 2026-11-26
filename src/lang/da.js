@@ -623,4 +623,13 @@ export default {
   sending: 'Sender…',
   sendDone: 'Sendt: netværket har den.',
   sendFail: 'Ikke accepteret: {m}',
+  factsTitle: 'Fakta om pris og udbud',
+  athL: 'Rekordhøjde',
+  belowAth: 'Under toppen',
+  atAthNow: 'I rekordhøjde nu',
+  daysSinceAth: 'Dage siden toppen',
+  inflNow: 'Årlig inflation nu',
+  inflNext: 'Efter halveringen ved blok {h}',
+  factsNote:
+    'Toppen er den højeste dagspris nogensinde (eller liveprisen, hvis den er højere). Inflation er de mønter, det næste års blokke tilføjer, som andel af dem, der er udstedt indtil nu.',
 };

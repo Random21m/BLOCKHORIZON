@@ -625,4 +625,13 @@ export default {
   sending: 'Mengirim…',
   sendDone: 'Terkirim: jaringan sudah menerimanya.',
   sendFail: 'Tidak diterima: {m}',
+  factsTitle: 'Fakta harga dan pasokan',
+  athL: 'Tertinggi sepanjang masa',
+  belowAth: 'Di bawah puncak',
+  atAthNow: 'Di titik tertinggi sepanjang masa',
+  daysSinceAth: 'Hari sejak puncak',
+  inflNow: 'Inflasi tahunan kini',
+  inflNext: 'Setelah halving di blok {h}',
+  factsNote:
+    'Puncak adalah harga harian tertinggi dalam sejarah (atau harga langsung, jika lebih tinggi). Inflasi adalah koin yang ditambahkan blok setahun ke depan, sebagai bagian dari yang sudah diterbitkan.',
 };

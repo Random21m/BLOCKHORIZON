@@ -624,4 +624,13 @@ export default {
   sending: 'Pošiljanje…',
   sendDone: 'Poslano: omrežje jo ima.',
   sendFail: 'Ni sprejeto: {m}',
+  factsTitle: 'Dejstva o ceni in ponudbi',
+  athL: 'Rekordna cena',
+  belowAth: 'Pod rekordom',
+  atAthNow: 'Zdaj na rekordni ceni',
+  daysSinceAth: 'Dni od rekorda',
+  inflNow: 'Letna inflacija zdaj',
+  inflNext: 'Po halvingu pri bloku {h}',
+  factsNote:
+    'Rekord je najvišja dnevna cena v zgodovini (ali trenutna cena, če je višja). Inflacija so kovanci, ki jih doda naslednje leto blokov, kot delež doslej izdanih.',
 };

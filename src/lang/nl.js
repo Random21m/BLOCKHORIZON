@@ -627,4 +627,13 @@ export default {
   sending: 'Versturen…',
   sendDone: 'Verstuurd: het netwerk heeft haar.',
   sendFail: 'Niet geaccepteerd: {m}',
+  factsTitle: 'Feiten over prijs en aanbod',
+  athL: 'Recordhoogte',
+  belowAth: 'Onder de top',
+  atAthNow: 'Nu op recordhoogte',
+  daysSinceAth: 'Dagen sinds de top',
+  inflNow: 'Jaarlijkse inflatie nu',
+  inflNext: 'Na de halving bij blok {h}',
+  factsNote:
+    'De top is de hoogste dagprijs ooit (of de live prijs, als die hoger is). Inflatie zijn de munten die het volgende jaar aan blokken toevoegt, als deel van wat tot nu toe is uitgegeven.',
 };

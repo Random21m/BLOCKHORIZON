@@ -625,4 +625,13 @@ export default {
   sending: 'Lähetetään…',
   sendDone: 'Lähetetty: verkko on vastaanottanut sen.',
   sendFail: 'Ei hyväksytty: {m}',
+  factsTitle: 'Faktoja hinnasta ja tarjonnasta',
+  athL: 'Kaikkien aikojen huippu',
+  belowAth: 'Alle huipun',
+  atAthNow: 'Nyt kaikkien aikojen huipussa',
+  daysSinceAth: 'Päiviä huipusta',
+  inflNow: 'Vuosi-inflaatio nyt',
+  inflNext: 'Halvingin jälkeen lohkossa {h}',
+  factsNote:
+    'Huippu on historian korkein päivähinta (tai reaaliaikainen hinta, jos se on korkeampi). Inflaatio on kolikot, jotka seuraavan vuoden lohkot lisäävät, osuutena tähän mennessä liikkeelle lasketuista.',
 };

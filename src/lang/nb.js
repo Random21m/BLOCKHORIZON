@@ -623,4 +623,13 @@ export default {
   sending: 'Sender…',
   sendDone: 'Sendt: nettverket har den.',
   sendFail: 'Ikke godtatt: {m}',
+  factsTitle: 'Fakta om pris og mengde',
+  athL: 'Rekordhøy',
+  belowAth: 'Under toppen',
+  atAthNow: 'På rekordhøy nå',
+  daysSinceAth: 'Dager siden toppen',
+  inflNow: 'Årlig inflasjon nå',
+  inflNext: 'Etter halveringen ved blokk {h}',
+  factsNote:
+    'Toppen er den høyeste dagsprisen noensinne (eller sanntidsprisen, hvis den er høyere). Inflasjon er myntene neste års blokker legger til, som andel av dem som er utstedt så langt.',
 };

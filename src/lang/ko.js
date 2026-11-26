@@ -609,4 +609,13 @@ export default {
   sending: '보내는 중…',
   sendDone: '전송됨: 네트워크가 받았어요.',
   sendFail: '받아들여지지 않음: {m}',
+  factsTitle: '가격과 공급 정보',
+  athL: '역대 최고가',
+  belowAth: '최고가 대비',
+  atAthNow: '지금 역대 최고가',
+  daysSinceAth: '최고가 이후 일수',
+  inflNow: '현재 연간 인플레이션',
+  inflNext: '블록 {h} 반감기 이후',
+  factsNote:
+    '최고가는 역대 가장 높은 일일 가격입니다(실시간 가격이 더 높으면 그 가격). 인플레이션은 앞으로 1년간의 블록이 더하는 코인을 지금까지 발행된 양에 대한 비율로 나타낸 것입니다.',
 };

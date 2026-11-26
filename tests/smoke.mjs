@@ -2915,6 +2915,14 @@ await ok(
     assert.match(await head('mayer'), /×\d\.\d\d/);
     assert.match(await head('cycles'), /since the 2024 halving/);
     assert.match(await head('supply'), /20,\d{3},\d{3} BTC[\s\S]*% of the 21 million/);
+    // price and supply facts: the high from the history (or the live price), and inflation from the height
+    await until(p, () => /inflation now/.test(document.querySelector('#ch-facts')?.textContent || ''));
+    const facts = await p.locator('#ch-facts').innerText();
+    assert.match(
+      facts,
+      /All-time high\s+[\d,]+ USD \d\d\/\d\d\/\d{4}\s+Below the high\s+(−\d+\.?\d*%|At its all-time high now)\s+Days since the high\s+\d+/
+    );
+    assert.match(facts, /Yearly inflation now\s+0\.8\d%\s+After the halving at block 1,050,000\s+0\.4\d%/);
     assert.equal(await p.locator('#ch-cycles .ln').count(), 4, 'one line per halving');
     assert.equal(await p.locator('#ch-ma200w .ln').count(), 2, 'price and its average');
     // the crosshair names every cycle at that day
