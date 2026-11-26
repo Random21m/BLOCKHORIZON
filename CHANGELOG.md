@@ -2,6 +2,12 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
+## Unreleased
+
+- **Three more languages: Bahasa Indonesia, Tiếng Việt and हिन्दी.** 16 languages in all, glossary and calendar
+  included. A browser set to Indonesian, Vietnamese or Hindi gets its language on its own. These are machine
+  translations for now; corrections from native speakers are welcome.
+
 ## 0.20.0
 
 - **Four long-term charts.** Below the history charts, a "Long term" section shows the price with its 200-week
