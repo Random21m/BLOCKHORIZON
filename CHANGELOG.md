@@ -2,6 +2,14 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
+## Unreleased
+
+- **Block health.** A block's page shows how closely it matched the block mempool.space expected from its own
+  mempool: the match in %, the fees it paid against the fees expected, how many expected transactions were left out,
+  and how many it held that were not expected (and how many of those had been seen only moments before).
+- On a phone, a block's transaction list could be wider than the screen when a row had a huge fee rate or amount
+  (block 840,000 has both); those rows now wrap.
+
 ## 0.21.0
 
 - **Three more long-term charts.** The **Puell Multiple** (the value of the bitcoins mined each day against its
