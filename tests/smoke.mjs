@@ -586,7 +586,8 @@ await ok(
       route.fulfill({ contentType: m[0], body: fx(m[1]) });
     });
     const p = await c.newPage();
-    await p.clock.install();
+    // start just after a whole minute, so the 5 s below cannot cross into the next one
+    await p.clock.install({ time: Math.floor(Date.now() / 60000) * 60000 + 1000 });
     await p.goto(base + '#/clock?kiosk&eink');
     await until(p, () => /\d+ min/.test(document.querySelector('#since')?.textContent || ''));
     assert.equal(await p.$('.clock-x'), null, 'no close button in kiosk mode');
