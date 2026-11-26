@@ -587,6 +587,9 @@ export default {
   diffRibbonNote:
     'Saat rata-rata saling merapat, kesulitan berhenti naik dan penambang sedang tertekan. Saat ini selisihnya {p}%.',
   last2y: '2 tahun terakhir',
+  blkFeesChart: 'Biaya per blok',
+  feeShareChart: 'Biaya di pendapatan penambang',
+  blkSizeChart: 'Ukuran blok',
   lnAsOf: 'Data per {d}',
   lnAsOfShort: 'Per {d}',
 };

@@ -589,6 +589,9 @@ export default {
   diffRibbonNote:
     'Quando as médias se juntam, a dificuldade deixou de subir e os mineradores estão sob pressão. Agora estão a {p}% de distância.',
   last2y: 'Últimos 2 anos',
+  blkFeesChart: 'Taxas por bloco',
+  feeShareChart: 'Taxas na receita de mineração',
+  blkSizeChart: 'Tamanho do bloco',
   lnAsOf: 'Dados de {d}',
   lnAsOfShort: 'Em {d}',
 };

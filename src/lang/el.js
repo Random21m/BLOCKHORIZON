@@ -591,6 +591,9 @@ export default {
   diffRibbonNote:
     'Όταν οι μέσοι όροι μαζεύονται, η δυσκολία έχει σταματήσει να ανεβαίνει και οι miners πιέζονται. Τώρα απέχουν {p}%.',
   last2y: 'Τελευταία 2 χρόνια',
+  blkFeesChart: 'Προμήθειες ανά μπλοκ',
+  feeShareChart: 'Προμήθειες στα έσοδα των miners',
+  blkSizeChart: 'Μέγεθος μπλοκ',
   lnAsOf: 'Στοιχεία της {d}',
   lnAsOfShort: 'Στις {d}',
 };

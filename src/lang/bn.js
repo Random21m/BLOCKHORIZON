@@ -580,6 +580,9 @@ export default {
   ribbonAvgs: '9 থেকে 200 দিনের গড়',
   diffRibbonNote: 'গড়গুলো কাছাকাছি চলে এলে ডিফিকাল্টি বাড়া থেমে গেছে এবং মাইনাররা চাপে আছেন। এখন এদের ব্যবধান {p}%।',
   last2y: 'গত 2 বছর',
+  blkFeesChart: 'প্রতি ব্লকে ফি',
+  feeShareChart: 'মাইনার আয়ে ফি',
+  blkSizeChart: 'ব্লকের আকার',
   lnAsOf: '{d} তারিখের তথ্য',
   lnAsOfShort: '{d} পর্যন্ত',
 };

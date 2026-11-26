@@ -572,6 +572,9 @@ export default {
   diffRibbonNote:
     'عندما تتقارب المتوسطات، تكون الصعوبة قد توقفت عن الارتفاع والمعدّنون تحت الضغط. الفارق بينها الآن {p}%.',
   last2y: 'آخر سنتين',
+  blkFeesChart: 'الرسوم لكل كتلة',
+  feeShareChart: 'الرسوم من دخل المعدّنين',
+  blkSizeChart: 'حجم الكتلة',
   lnAsOf: 'أرقام بتاريخ {d}',
   lnAsOfShort: 'حتى {d}',
 };

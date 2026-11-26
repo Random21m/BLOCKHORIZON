@@ -589,6 +589,9 @@ export default {
   diffRibbonNote:
     'Apabila purata-purata berhimpit, kesukaran telah berhenti meningkat dan pelombong berada di bawah tekanan. Kini jaraknya {p}%.',
   last2y: '2 tahun lalu',
+  blkFeesChart: 'Yuran setiap blok',
+  feeShareChart: 'Yuran dalam pendapatan pelombong',
+  blkSizeChart: 'Saiz blok',
   lnAsOf: 'Data pada {d}',
   lnAsOfShort: 'Setakat {d}',
 };

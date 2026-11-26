@@ -589,6 +589,9 @@ export default {
   diffRibbonNote:
     'Quando le medie si stringono, la difficoltà ha smesso di salire e i miner sono sotto pressione. Ora distano il {p}%.',
   last2y: 'Ultimi 2 anni',
+  blkFeesChart: 'Commissioni per blocco',
+  feeShareChart: 'Commissioni nei ricavi dei miner',
+  blkSizeChart: 'Dimensione dei blocchi',
   lnAsOf: 'Dati del {d}',
   lnAsOfShort: 'Al {d}',
 };
