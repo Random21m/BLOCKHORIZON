@@ -103,6 +103,7 @@ main {
   border: 0;
 }
 .w.mining {
+  container-type: size;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
@@ -117,9 +118,9 @@ main {
 }
 .w.mining canvas {
   flex: 0 0 auto;
-  height: 100%;
-  max-height: 100%;
-  aspect-ratio: 1;
+  /* square, as tall as the widget allows but never more than 45% of its width, so the words beside it fit */
+  height: min(100cqh, 45cqw);
+  width: min(100cqh, 45cqw);
   border: 1px dashed var(--line);
   border-radius: 3px;
   background: transparent;
@@ -133,4 +134,10 @@ main {
   unicode-bidi: plaintext;
   text-align: -webkit-match-parent;
   text-align: match-parent;
+}
+/* too narrow for the picture and the words side by side: the words only */
+@media (max-width: 299px) {
+  .w.mining canvas {
+    display: none;
+  }
 }

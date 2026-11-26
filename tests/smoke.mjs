@@ -3286,6 +3286,41 @@ await ok('send a signed transaction: read on the device, checked against the cha
   assert.deepEqual(perr, []);
   await c.close();
 });
+await ok('small screens: the clock fits a phone on its side, the mining widget fits 200 to 480 px wide', async () => {
+  const c = await b.newContext({ viewport: { width: 480, height: 320 } });
+  await c.routeWebSocket(/./, (ws) => ws.close());
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
+    r.request().url().includes('mempool.space') ? r.fallback() : r.abort()
+  );
+  await c.route(/mempool\.space/, (route) => {
+    const m = MOCK[new URL(route.request().url()).pathname];
+    if (!m) return route.fulfill({ status: 404, body: '' });
+    route.fulfill({ contentType: m[0], body: fx(m[1]) });
+  });
+  const p = await c.newPage();
+  await p.goto(base + '#/clock');
+  await until(p, () => /\d/.test(document.querySelector('.clock-h')?.textContent || ''));
+  const fit = () =>
+    p.evaluate(() => [
+      document.documentElement.scrollWidth - innerWidth,
+      document.documentElement.scrollHeight - innerHeight,
+    ]);
+  assert.deepEqual(await fit(), [0, 0], 'the clock fits 480 x 320');
+  assert.ok(await p.locator('.final-t').isVisible(), 'the final block countdown is still there');
+  for (const w of [200, 260, 300, 480]) {
+    await p.setViewportSize({ width: w, height: Math.round(w * 0.6) });
+    await p.goto(base + 'embed.html?show=mining&theme=dark');
+    await until(p, () => /#/.test(document.querySelector('.num')?.textContent || ''));
+    const r = await p.evaluate(() => ({
+      sw: document.documentElement.scrollWidth - innerWidth,
+      cut: [...document.querySelectorAll('.txt *')].filter((e) => e.scrollWidth > e.clientWidth + 1).length,
+      pic: getComputedStyle(document.querySelector('canvas')).display !== 'none',
+    }));
+    assert.deepEqual([r.sw, r.cut], [0, 0], 'mining widget at ' + w + ' px');
+    assert.equal(r.pic, w >= 300, 'the picture only where it fits beside the words');
+  }
+  await c.close();
+});
 await ok('no script errors', async () => {
   assert.deepEqual(errs, []);
 });

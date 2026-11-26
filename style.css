@@ -1785,6 +1785,20 @@ html {
   font-size: clamp(12px, 1.6vw, 16px);
   text-wrap: balance;
 }
+/* a short landscape screen (a phone on its side): tighter, and the final block's countdown without its sentence */
+@media (max-height: 420px) {
+  .clockview {
+    gap: 0.8vh;
+    padding: 10px 16px;
+  }
+  .clockview .final {
+    margin-top: 1vh;
+    padding-top: 1vh;
+  }
+  .clockview .final p {
+    display: none;
+  }
+}
 .clock-x {
   position: absolute;
   top: calc(12px + env(safe-area-inset-top));
