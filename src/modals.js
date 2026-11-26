@@ -1,6 +1,6 @@
 // Search and settings dialogs.
 import * as L from './lib.js';
-import { api, normServer, DEFAULT_SERVER, FALLBACK, getServer } from './api.js';
+import { api, normServer, DEFAULT_SERVER, FALLBACK, getServer, lookupHost } from './api.js';
 import { CURRENCIES } from './price.js';
 import { t, LANGS, loadLang } from './i18n.js';
 import { play, BLOCK_SOUNDS } from './sound.js';
@@ -59,8 +59,8 @@ export function searchModal() {
     msg = el('div', { class: 'dim', id: 's-msg' });
   const ti = el('input', {
     id: 's-t',
-    placeholder: t('txid'),
-    'aria-label': t('byTx'),
+    placeholder: t('txOrAddr'),
+    'aria-label': t('byTxAddr'),
     autocomplete: 'off',
     spellcheck: 'false',
   });
@@ -71,6 +71,7 @@ export function searchModal() {
   const goH = (e) => {
     e.preventDefault();
     if (L.isTxid(hi.value)) return goTx(hi.value);
+    if (L.normAddress(hi.value)) return goAddr(L.normAddress(hi.value));
     const n = L.parseHeightInput(hi.value);
     if (!Number.isFinite(n) || (Number.isFinite(st.tip) && n > st.tip)) {
       msg.textContent = t('notFound');
@@ -96,13 +97,17 @@ export function searchModal() {
       msg.textContent = t('notFound');
     }
   };
+  // an address: its own page (looked up on the data server, which the note under the field names)
+  const goAddr = (a) => {
+    closeModal();
+    location.hash = '#/address/' + a;
+  };
   const goT = (e) => {
     e.preventDefault();
-    if (!L.isTxid(ti.value)) {
-      msg.textContent = t('notTxid');
-      return;
-    }
-    goTx(ti.value);
+    if (L.isTxid(ti.value)) return goTx(ti.value);
+    const a = L.normAddress(ti.value);
+    if (a) return goAddr(a);
+    msg.textContent = t('notTxOrAddr');
   };
   openModal(
     el(
@@ -126,10 +131,11 @@ export function searchModal() {
       el(
         'form',
         { class: 'row', onsubmit: goT },
-        el('label', null, t('byTx') + ' '),
+        el('label', null, t('byTxAddr') + ' '),
         ti,
         el('button', { class: 'btn-go', type: 'submit' }, t('go'))
       ),
+      el('p', { class: 'dim', id: 's-addr-note' }, t('addrSentTo', { s: lookupHost() })),
       msg
     )
   );

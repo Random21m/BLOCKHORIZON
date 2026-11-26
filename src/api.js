@@ -26,6 +26,14 @@ export function setServer(s) {
   server = normServer(s) || DEFAULT_SERVER;
 }
 export const getServer = () => server;
+// The data server's host: where an address is looked up (never the backup server, see api.address).
+export const lookupHost = () => {
+  try {
+    return new URL(server).host;
+  } catch {
+    return 'mempool.space';
+  }
+};
 export const isDefaultServer = () => server === DEFAULT_SERVER;
 export const wsUrl = () => server.replace(/^http/, 'ws') + '/api/v1/ws';
 // Which host answered last ('' until something did): shown beside the connection dot, so a fallback is never silent.
@@ -119,7 +127,9 @@ export const api = {
   pools: () => getJSON('/v1/mining/pools/1w', { cacheKey: 'pools' }), // each pool's blocks in the past week (the Mining page)
   rewards: () => getJSON('/v1/mining/reward-stats/144', { cacheKey: 'rewards' }), // miner revenue and fees over the last 144 blocks (a day)
   tx: (id) => getJSON('/tx/' + id),
-  addrTxs: (a) => getJSON('/address/' + a + '/txs'), // only ever asked of your own node (push.js ownNode)
+  // an address: never asked of the backup server (esploraFor has no /address); the address page says where it went
+  address: (a) => getJSON('/address/' + a),
+  addrTxs: (a) => getJSON('/address/' + a + '/txs'), // watched addresses ask only your own node (push.js ownNode)
   // history for the Charts page (not saved in localStorage: the price history is over a megabyte)
   priceHistory: (cur) => getJSON('/v1/historical-price?currency=' + encodeURIComponent(cur)),
   hashrateHistory: (r) => getJSON('/v1/mining/hashrate/' + r),

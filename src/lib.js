@@ -1020,6 +1020,19 @@ export function addrEvents(seen, txs, addr) {
   }
   return { seen: next, events };
 }
+// mempool.space /api/address/:a -> the address page's summary, in sats: balance (confirmed), what is waiting to confirm
+// (in minus out, can be negative), everything ever received, and the number of transactions.
+export function parseAddress(x) {
+  const c = (x && x.chain_stats) || {},
+    m = (x && x.mempool_stats) || {},
+    n = (v) => (Number.isFinite(v) ? v : 0);
+  return {
+    balance: n(c.funded_txo_sum) - n(c.spent_txo_sum),
+    pending: n(m.funded_txo_sum) - n(m.spent_txo_sum),
+    received: n(c.funded_txo_sum),
+    txs: n(c.tx_count) + n(m.tx_count),
+  };
+}
 // Satoshis -> a BTC amount without trailing zeros (12345000 -> "0.12345").
 export function fmtBtc(sats, loc) {
   const d = (Math.abs(sats) / 1e8).toFixed(8).replace(/0+$/, '').split('.')[1] || '';

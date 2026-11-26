@@ -19,7 +19,7 @@ import {
 import { sinceText, srcHost } from './ui.js';
 import { initPush, ownNode } from './push.js';
 import { viewDash, viewClock, finalText, clockOpts, clockSince, staleText } from './view-dash.js';
-import { viewBlock, viewTx } from './view-chain.js';
+import { viewBlock, viewTx, viewAddress } from './view-chain.js';
 import { viewAlarm, viewCalc, paintFeeNow } from './view-tools.js';
 import { viewCharts } from './view-charts.js';
 import { viewMy, paintMySince } from './view-my.js';
@@ -50,6 +50,8 @@ function parseRoute() {
   if (m) return { path: '/block', arg: m[1] };
   m = h.match(/^\/tx\/([0-9a-fA-F]{64})$/);
   if (m) return { path: '/tx', arg: m[1].toLowerCase() };
+  m = h.match(/^\/address\/([A-Za-z0-9]{14,90})$/);
+  if (m && L.normAddress(m[1])) return { path: '/address', arg: L.normAddress(m[1]) };
   m = h.match(/^\/my(?:\?(.*))?$/);
   if (m) return { path: '/my', arg: m[1] || '' };
   m = h.match(/^\/clock\?(.*)$/);
@@ -250,9 +252,11 @@ function renderView() {
       ? viewBlock(r.arg)
       : r.path === '/tx'
         ? viewTx(r.arg)
-        : r.path === '/my'
-          ? viewMy(r.arg)
-          : VIEWS[r.path](routeArg);
+        : r.path === '/address'
+          ? viewAddress(r.arg)
+          : r.path === '/my'
+            ? viewMy(r.arg)
+            : VIEWS[r.path](routeArg);
   m.replaceChildren(v);
   if (hadFocus) m.focus({ preventScroll: true });
   if (r.path === '/') stripScroll([]);

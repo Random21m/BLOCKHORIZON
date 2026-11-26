@@ -411,8 +411,6 @@ export default {
   copied: 'Endereço copiado',
   selectCopy: 'Selecione e copie o endereço',
   eg: 'ex.: {x}',
-  txid: 'ID da transação',
-  byTx: 'Por ID da transação',
   notTxid: 'Um ID de transação tem 64 caracteres (0–9, a–f)',
   tab_display: 'Exibição',
   tab_format: 'Formato',
@@ -483,4 +481,18 @@ export default {
   addrActive: 'Endereços vigiados',
   addrIncoming: '{a} está a receber {amt} BTC (ainda não confirmado)',
   addrConfirmed: '{a} recebeu {amt} BTC, confirmado no bloco {h}',
+  byTxAddr: 'Por ID da transação ou endereço',
+  txOrAddr: 'ID da transação ou endereço',
+  notTxOrAddr:
+    'Isto não é um ID de transação (64 caracteres, 0–9, a–f) nem um endereço Bitcoin. Verifique se há erros de escrita.',
+  addrSentTo: 'O endereço que pesquisar é enviado para {s}, que o pode associar ao seu endereço IP.',
+  addrPage: 'Endereço',
+  addrBalance: 'Saldo',
+  addrPending: 'A aguardar confirmação',
+  addrReceivedAll: 'Recebido no total',
+  addrTxCount: 'Transações',
+  addrRecent: 'Transações recentes',
+  addrNoTx: 'Ainda sem transações.',
+  addrLookedUp:
+    'Pesquisado em {s}, que pode associar este endereço ao seu endereço IP. No seu próprio nó, fica no seu nó.',
 };

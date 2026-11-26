@@ -408,8 +408,6 @@ export default {
   copied: 'Adres kopyalandı',
   selectCopy: 'Adresi seçip kopyalayın',
   eg: 'örn. {x}',
-  txid: 'İşlem kimliği',
-  byTx: 'İşlem kimliğine göre',
   notTxid: 'İşlem kimliği 64 karakterdir (0–9, a–f)',
   tab_display: 'Görünüm',
   tab_format: 'Biçim',
@@ -479,4 +477,18 @@ export default {
   addrActive: 'İzlenen adresler',
   addrIncoming: '{a} {amt} BTC alıyor (henüz onaylanmadı)',
   addrConfirmed: '{a} {amt} BTC aldı, blok {h} içinde onaylandı',
+  byTxAddr: 'İşlem kimliğine veya adrese göre',
+  txOrAddr: 'İşlem kimliği veya adres',
+  notTxOrAddr:
+    'Bu ne bir işlem kimliği (64 karakter, 0–9, a–f) ne de bir Bitcoin adresi. Yazım hatası olup olmadığını kontrol edin.',
+  addrSentTo: 'Aradığınız adres {s} sunucusuna gönderilir; bu sunucu adresi IP adresinizle ilişkilendirebilir.',
+  addrPage: 'Adres',
+  addrBalance: 'Bakiye',
+  addrPending: 'Onay bekliyor',
+  addrReceivedAll: 'Toplam alınan',
+  addrTxCount: 'İşlemler',
+  addrRecent: 'Son işlemler',
+  addrNoTx: 'Henüz işlem yok.',
+  addrLookedUp:
+    '{s} üzerinde arandı; bu sunucu bu adresi IP adresinizle ilişkilendirebilir. Kendi düğümünüzde adres düğümünüzde kalır.',
 };

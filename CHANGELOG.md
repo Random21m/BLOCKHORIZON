@@ -2,6 +2,13 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
+## Unreleased
+
+- **Look up an address.** Search now also takes a Bitcoin address and opens its page: balance, what is waiting to
+  confirm, everything received, and the recent payments in and out. The search box and the page both say that the
+  address is sent to the data server (mempool.space, unless you use your own node); it is never sent to the backup
+  server.
+
 ## 0.19.0
 
 - **Four more languages: 简体中文, 한국어, Русский and Português (Brasil).** 13 languages in all, glossary and

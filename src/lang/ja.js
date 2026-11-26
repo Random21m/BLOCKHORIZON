@@ -409,8 +409,6 @@ export default {
   copied: 'アドレスをコピーしました',
   selectCopy: 'アドレスを選択してコピー',
   eg: '例：{x}',
-  txid: 'トランザクションID',
-  byTx: 'トランザクションIDで',
   notTxid: 'トランザクションIDは64文字です（0–9、a–f）',
   tab_display: '表示',
   tab_format: '形式',
@@ -481,4 +479,18 @@ export default {
   addrActive: '見守っているアドレス',
   addrIncoming: '{a} が {amt} BTC を受け取り中（まだ承認されていません）',
   addrConfirmed: '{a} が {amt} BTC を受け取りました。ブロック {h} で承認済み',
+  byTxAddr: 'トランザクションIDかアドレスで',
+  txOrAddr: 'トランザクションIDまたはアドレス',
+  notTxOrAddr:
+    'トランザクションID（64文字、0–9、a–f）でもビットコインアドレスでもありません。入力ミスがないか確認してください。',
+  addrSentTo: '調べたアドレスは {s} に送信され、IPアドレスと結び付けられる可能性があります。',
+  addrPage: 'アドレス',
+  addrBalance: '残高',
+  addrPending: '承認待ち',
+  addrReceivedAll: '受け取った合計',
+  addrTxCount: 'トランザクション',
+  addrRecent: '最近のトランザクション',
+  addrNoTx: 'まだトランザクションはありません。',
+  addrLookedUp:
+    '{s} で調べました。このアドレスがIPアドレスと結び付けられる可能性があります。自分のノードなら、ノードの外には出ません。',
 };

@@ -1,6 +1,6 @@
-// Block and transaction pages.
+// Block, transaction and address pages.
 import * as L from './lib.js';
-import { api, store } from './api.js';
+import { api, store, lookupHost } from './api.js';
 import { t } from './i18n.js';
 import { S, st, fmtD, el, price, txAlerts } from './state.js';
 import { askNotify } from './data.js';
@@ -141,4 +141,56 @@ function txAlertRow(id) {
   };
   paint();
   return el('p', { class: 'row' }, btn, msg);
+}
+// An address: its balance and recent transactions, from the data server. The page says where it was looked up.
+export let addrToken = 0;
+export function viewAddress(a) {
+  const root = el('div'),
+    tok = ++addrToken;
+  root.append(
+    el('a', { class: 'back', href: '#/' }, '← ' + t('dash')),
+    el('h1', null, t('addrPage')),
+    el('p', { class: 'dim mono txid' }, a)
+  );
+  const body = el('div', { class: 'panel' }, t('loading'));
+  root.append(body, el('p', { class: 'dim', id: 'addr-where' }, t('addrLookedUp', { s: lookupHost() })));
+  (async () => {
+    try {
+      const [info, txs] = await Promise.all([api.address(a), api.addrTxs(a).catch(() => [])]);
+      if (tok !== addrToken) return;
+      const x = L.parseAddress(info),
+        p = price(),
+        btc = (sats) =>
+          L.fmtBtc(sats) + ' BTC' + (Number.isFinite(p) ? ` (${L.fmtNum((sats / 1e8) * p, 2)} ${S.cur})` : '');
+      const rows = [[t('addrBalance'), btc(x.balance)]];
+      if (x.pending) rows.push([t('addrPending'), (x.pending > 0 ? '+' : '−') + btc(Math.abs(x.pending))]);
+      rows.push([t('addrReceivedAll'), btc(x.received)], [t('addrTxCount'), L.fmtNum(x.txs)]);
+      const list = (Array.isArray(txs) ? txs : []).slice(0, 25).map((tx) => {
+        const n = L.addrReceived(tx, a),
+          s = tx.status || {};
+        return el(
+          'tr',
+          null,
+          el(
+            'td',
+            { class: 'mono' },
+            el('a', { href: '#/tx/' + tx.txid }, tx.txid.slice(0, 8) + '…' + tx.txid.slice(-6))
+          ),
+          el('td', null, s.confirmed ? fmtD(s.block_time * 1000) : t('waiting')),
+          el('td', { class: 'num ' + (n >= 0 ? 'up' : 'down') }, (n >= 0 ? '+' : '−') + L.fmtBtc(Math.abs(n)) + ' BTC')
+        );
+      });
+      body.replaceChildren(
+        kv(rows),
+        el('h3', { class: 'sec' }, t('addrRecent')),
+        list.length
+          ? el('table', { id: 'addr-txs', class: 'addrtxs' }, el('tbody', null, list))
+          : el('p', { class: 'dim' }, t('addrNoTx')),
+        shareRow('/address/' + a, 'BLOCKHORIZON · ' + t('addrPage'))
+      );
+    } catch {
+      if (tok === addrToken) body.textContent = t('notFound');
+    }
+  })();
+  return root;
 }

@@ -231,6 +231,23 @@ test('watched addresses: shapes and bech32 checksums; payments net of spends; on
   assert.equal(L.fmtBtc(1), '0.00000001');
 });
 
+test('address page: balance, waiting in or out, everything received, transaction count', () => {
+  assert.deepEqual(L.parseAddress(fx('address.json')), {
+    balance: 100000000,
+    pending: 1234500,
+    received: 150000000,
+    txs: 4,
+  });
+  assert.deepEqual(
+    L.parseAddress({
+      chain_stats: { funded_txo_sum: 300, spent_txo_sum: 100, tx_count: 3 },
+      mempool_stats: { funded_txo_sum: 0, spent_txo_sum: 50, tx_count: 1 },
+    }),
+    { balance: 200, pending: -50, received: 300, txs: 4 }
+  );
+  assert.deepEqual(L.parseAddress(null), { balance: 0, pending: 0, received: 0, txs: 0 });
+});
+
 test('block colours follow the mempool.space fee ramp', () => {
   assert.equal(L.FEE_BREAKS.length, L.FEE_COLORS.length);
   assert.equal(L.feeColor(0), '#007d3d');
