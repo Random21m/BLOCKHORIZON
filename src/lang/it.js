@@ -592,6 +592,43 @@ export default {
   blkFeesChart: 'Commissioni per blocco',
   feeShareChart: 'Commissioni nei ricavi dei miner',
   blkSizeChart: 'Dimensione dei blocchi',
+  lnAsOf: 'Dati del {d}',
+  lnAsOfShort: 'Al {d}',
+  sendTitle: 'Invia una transazione',
+  sendLink: 'Invia una transazione firmata',
+  sendIntro:
+    'Incolla una transazione firmata: l’hex grezzo che esporta il tuo wallet. Viene prima letta qui, sul tuo dispositivo; non viene inviato nulla finché non premi Invia.',
+  sendPaste: 'Transazione firmata (hex)',
+  sendCheck: 'Controlla',
+  sendBadHex:
+    'Questa non è una transazione grezza. Incolla il lungo hex che il tuo wallet esporta quando firma (un ID transazione non basta).',
+  sendBadTx: 'Questo hex non è una transazione completa. Controlla di averlo copiato per intero.',
+  sendWhat: 'Cosa fa',
+  sendSize: '{v} vB ({w} unità di peso)',
+  sendFeeVal: '{s} sats · {r} sat/vB',
+  sendFeeUnknown: 'sconosciuta finché non si trovano le monete che spende',
+  sendRbf: 'Può essere sostituita più tardi con una commissione più alta.',
+  sendFinal: 'Non può essere sostituita più tardi con una commissione più alta.',
+  sendMissing:
+    'Alcune delle monete che spende non sono state trovate: forse sono già spese, o appartengono a un’altra rete. Probabilmente verrebbe rifiutata.',
+  sendSpent:
+    'Le monete che spende sono già state spese da un’altra transazione in un blocco, quindi verrebbe rifiutata.',
+  sendReplaces:
+    'Le monete che spende sono già usate da una transazione ancora in attesa. Questa passa solo se sostituisce quella con una commissione più alta.',
+  sendNegative: 'Paga più di quanto spende, quindi verrebbe rifiutata.',
+  sendHigh:
+    'Questa commissione è insolitamente alta: il prossimo blocco richiede circa {r} sat/vB. Controllala prima di inviare.',
+  sendLow: 'Questa commissione è sotto i {m} sat/vB che i nodi accettano ora, quindi verrebbe rifiutata.',
+  sendSlow:
+    'Questa commissione è sotto quanto richiedono i blocchi della prossima ora ({r} sat/vB), quindi potrebbe attendere un po’.',
+  sendKnown: 'Questa transazione è già stata inviata.',
+  sendOpen: 'Apri la sua pagina',
+  sendTo: 'Invia a {h}',
+  sendNote:
+    'Una volta inviata, non si può richiamare. {h} la passa alla rete e vede che arriva dalla tua connessione, come fa il server di qualsiasi wallet.',
+  sending: 'Invio…',
+  sendDone: 'Inviata: la rete l’ha ricevuta.',
+  sendFail: 'Non accettata: {m}',
   factsTitle: 'Dati su prezzo e offerta',
   athL: 'Massimo storico',
   belowAth: 'Sotto il massimo',

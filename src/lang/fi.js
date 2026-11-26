@@ -589,6 +589,42 @@ export default {
   blkFeesChart: 'Maksut lohkoa kohden',
   feeShareChart: 'Maksut louhijoiden tulosta',
   blkSizeChart: 'Lohkon koko',
+  lnAsOf: 'Luvut ajalta {d}',
+  lnAsOfShort: 'Tilanne {d}',
+  sendTitle: 'Lähetä siirto',
+  sendLink: 'Lähetä allekirjoitettu siirto',
+  sendIntro:
+    'Liitä allekirjoitettu siirto: raaka hex, jonka lompakkosi vie. Se luetaan ensin täällä laitteellasi; mitään ei lähetetä ennen kuin painat Lähetä.',
+  sendPaste: 'Allekirjoitettu siirto (hex)',
+  sendCheck: 'Tarkista',
+  sendBadHex:
+    'Tämä ei ole raaka siirto. Liitä pitkä hex, jonka lompakko vie allekirjoittaessaan (siirron tunniste ei riitä).',
+  sendBadTx: 'Tämä hex ei ole kokonainen siirto. Tarkista, että se kopioitiin kokonaan.',
+  sendWhat: 'Mitä se tekee',
+  sendSize: '{v} vB ({w} painoyksikköä)',
+  sendFeeVal: '{s} sats · {r} sat/vB',
+  sendFeeUnknown: 'tuntematon, kunnes sen käyttämät kolikot löytyvät',
+  sendRbf: 'Sen voi korvata myöhemmin korkeammalla maksulla.',
+  sendFinal: 'Sitä ei voi korvata myöhemmin korkeammalla maksulla.',
+  sendMissing:
+    'Osaa sen käyttämistä kolikoista ei löytynyt: ne voivat olla jo käytetty tai kuulua toiseen verkkoon. Se todennäköisesti hylättäisiin.',
+  sendSpent: 'Toinen lohkossa oleva siirto on jo käyttänyt sen kolikot, joten se hylättäisiin.',
+  sendReplaces:
+    'Sen kolikot ovat jo käytössä siirrossa, joka odottaa yhä. Tämä menee läpi vain, jos se korvaa sen korkeammalla maksulla.',
+  sendNegative: 'Se maksaa ulos enemmän kuin käyttää, joten se hylättäisiin.',
+  sendHigh:
+    'Tämä maksu on epätavallisen korkea: seuraava lohko vaatii noin {r} sat/vB. Tarkista se ennen lähettämistä.',
+  sendLow: 'Tämä maksu on alle {m} sat/vB, jonka solmut nyt hyväksyvät, joten se hylättäisiin.',
+  sendSlow:
+    'Tämä maksu on alle sen, mitä seuraavan tunnin lohkot vaativat ({r} sat/vB), joten se voi odottaa jonkin aikaa.',
+  sendKnown: 'Tämä siirto on jo lähetetty.',
+  sendOpen: 'Avaa sen sivu',
+  sendTo: 'Lähetä palvelimelle {h}',
+  sendNote:
+    'Lähetettyä ei voi perua. {h} välittää sen verkkoon ja näkee sen tulevan yhteydestäsi, kuten minkä tahansa lompakon palvelin.',
+  sending: 'Lähetetään…',
+  sendDone: 'Lähetetty: verkko on vastaanottanut sen.',
+  sendFail: 'Ei hyväksytty: {m}',
   factsTitle: 'Faktoja hinnasta ja tarjonnasta',
   athL: 'Kaikkien aikojen huippu',
   belowAth: 'Alle huipun',

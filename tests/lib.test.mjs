@@ -1175,6 +1175,76 @@ test('block history: fees per block, fees as a share of miner income, block size
   );
   assert.deepEqual(L.feeShareSeries(fees, []), []);
 });
+test('Lightning figures carry their date once they are more than a week old', () => {
+  const now = Date.parse('2026-11-26T10:00:00Z');
+  assert.equal(L.lnTakenAt({ added: '2026-08-30T00:00:00.000Z' }), Date.parse('2026-08-30'));
+  assert.equal(L.lnTakenAt({ added: 1788048000 }), 1788048000000);
+  assert.ok(Number.isNaN(L.lnTakenAt({})));
+  assert.equal(L.lnStale({ added: '2026-08-30T00:00:00.000Z' }, now), true);
+  assert.equal(L.lnStale({ added: '2026-11-20T00:00:00.000Z' }, now), false);
+  assert.equal(L.lnStale({}, now), false, 'no date: shown as before');
+});
+test('a signed transaction is read on the device: ID, size, inputs, outputs and their addresses, fee', () => {
+  const enc = (s) => new TextEncoder().encode(s);
+  assert.equal(L.toHex(L.sha256(enc(''))), 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855');
+  assert.equal(L.toHex(L.sha256(enc('abc'))), 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad');
+  assert.equal(
+    L.toHex(L.sha256(enc('a'.repeat(1000)))),
+    '41edece42d63e8d9bf515a9ba6932e1c20cbc9f5a5d134645adb5db1b9737ea3'
+  );
+  // real transactions from block 840,000: legacy, P2SH, SegWit v0 and Taproot with OP_RETURN
+  const raw = JSON.parse(fs.readFileSync(new URL('./fixtures/raw-txs.json', import.meta.url), 'utf8'));
+  for (const x of raw) {
+    const tx = L.parseRawTx(x.hex);
+    assert.equal(tx.txid, x.txid);
+    assert.equal(tx.size, x.size);
+    assert.equal(tx.weight, x.weight);
+    assert.equal(tx.locktime, x.locktime);
+    assert.equal(tx.version, x.version);
+    assert.deepEqual(
+      tx.vin.map((v) => [v.txid, v.vout, v.sequence]),
+      x.vin.map((v) => [v.txid, v.vout, v.sequence])
+    );
+    assert.deepEqual(
+      tx.vout.map((o) => [o.value, o.type, o.address]),
+      x.vout.map((o) => [o.value, o.type, o.address || ''])
+    );
+    const prev = new Map(x.vin.map((v) => [v.txid + ':' + v.vout, v.value]));
+    assert.equal(L.txFee(tx, prev), x.vin.reduce((a, v) => a + v.value, 0) - x.vout.reduce((a, o) => a + o.value, 0));
+    assert.ok(Number.isNaN(L.txFee(tx, new Map())));
+    // in the server's shape, the transaction page's lists and privacy hints read it like the server's own answer
+    const prevTx = new Map(
+      x.vin.map((v) => [v.txid, { vout: Object.assign([], { [v.vout]: { value: v.value, scriptpubkey_type: 'x' } }) }])
+    );
+    const f = L.txFlow(L.asServerTx(tx, prevTx));
+    assert.deepEqual(
+      f.outs.map((o) => [o.addr, o.value]),
+      x.vout.map((o) => [o.address || null, o.value])
+    );
+    assert.deepEqual(
+      f.ins.map((i) => i.value),
+      x.vin.map((v) => v.value)
+    );
+    assert.deepEqual(
+      L.txFlow(L.asServerTx(tx)).ins.map((i) => i.value),
+      x.vin.map(() => null),
+      'unknown until fetched'
+    );
+  }
+  assert.equal(L.parseRawTx(raw[1].hex).segwit, false);
+  assert.equal(L.parseRawTx(raw[0].hex).segwit, true);
+  // BIP 173's P2WSH example
+  assert.equal(
+    L.scriptInfo(L.fromHex('00201863143c14c5166804bd19203356da136c985678cd4d27a1b8c6329604903262')).address,
+    'bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3'
+  );
+  // spaces and line breaks from a copy are fine; anything else is refused, never half read
+  assert.equal(L.parseRawTx(raw[2].hex.replace(/(.{64})/g, '$1\n ')).txid, raw[2].txid);
+  assert.deepEqual(L.parseRawTx('zz'), { error: 'hex' });
+  assert.deepEqual(L.parseRawTx(raw[2].txid), { error: 'hex' }, 'a transaction ID is not a transaction');
+  assert.deepEqual(L.parseRawTx(raw[2].hex.slice(0, -2)), { error: 'parse' });
+  assert.deepEqual(L.parseRawTx(raw[2].hex + '00'), { error: 'parse' });
+});
 test('price and supply facts: all-time high, how far below and since when, yearly inflation', () => {
   const day = 864e5,
     pts = [

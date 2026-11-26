@@ -5,6 +5,7 @@ import { CURRENCIES } from './price.js';
 import { t, LANGS, loadLang } from './i18n.js';
 import { play, BLOCK_SOUNDS } from './sound.js';
 import { syncPush } from './push.js';
+import { setDraft } from './view-send.js';
 import { hooks, $, S, save, st, el, applyLook, dashTiles, tileOn, TILES, STRIPS } from './state.js';
 
 // ---------- modals ----------
@@ -107,6 +108,13 @@ export function searchModal() {
     if (L.isTxid(ti.value)) return goTx(ti.value);
     const a = L.normAddress(ti.value);
     if (a) return goAddr(a);
+    // a whole signed transaction pasted here: the Send page reads it (nothing is sent until asked)
+    if (!L.parseRawTx(ti.value).error) {
+      setDraft(ti.value.trim());
+      closeModal();
+      location.hash = '#/send';
+      return;
+    }
     msg.textContent = t('notTxOrAddr');
   };
   openModal(
@@ -136,7 +144,8 @@ export function searchModal() {
         el('button', { class: 'btn-go', type: 'submit' }, t('go'))
       ),
       el('p', { class: 'dim', id: 's-addr-note' }, t('addrSentTo', { s: lookupHost() })),
-      msg
+      msg,
+      el('p', null, el('a', { href: '#/send', id: 's-send', onclick: () => closeModal() }, t('sendLink') + ' →'))
     )
   );
 }

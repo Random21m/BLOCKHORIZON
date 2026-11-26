@@ -591,6 +591,42 @@ export default {
   blkFeesChart: 'Comisioane pe bloc',
   feeShareChart: 'Comisioane în venitul minerilor',
   blkSizeChart: 'Dimensiunea blocului',
+  lnAsOf: 'Date din {d}',
+  lnAsOfShort: 'La {d}',
+  sendTitle: 'Trimite o tranzacție',
+  sendLink: 'Trimite o tranzacție semnată',
+  sendIntro:
+    'Lipește o tranzacție semnată: hex-ul brut pe care îl exportă portofelul tău. Este citită mai întâi aici, pe dispozitivul tău; nu se trimite nimic până nu apeși Trimite.',
+  sendPaste: 'Tranzacție semnată (hex)',
+  sendCheck: 'Verifică',
+  sendBadHex:
+    'Aceasta nu este o tranzacție brută. Lipește hex-ul lung pe care îl exportă portofelul când semnează (un ID de tranzacție nu ajunge).',
+  sendBadTx: 'Acest hex nu este o tranzacție completă. Verifică dacă a fost copiat în întregime.',
+  sendWhat: 'Ce face',
+  sendSize: '{v} vB ({w} unități de greutate)',
+  sendFeeVal: '{s} sats · {r} sat/vB',
+  sendFeeUnknown: 'necunoscut până sunt găsite monedele pe care le cheltuiește',
+  sendRbf: 'Poate fi înlocuită mai târziu cu un comision mai mare.',
+  sendFinal: 'Nu poate fi înlocuită mai târziu cu un comision mai mare.',
+  sendMissing:
+    'Unele dintre monedele pe care le cheltuiește nu au fost găsite: poate sunt deja cheltuite sau aparțin altei rețele. Probabil ar fi refuzată.',
+  sendSpent:
+    'Monedele pe care le cheltuiește au fost deja cheltuite de altă tranzacție într-un bloc, deci ar fi refuzată.',
+  sendReplaces:
+    'Monedele pe care le cheltuiește sunt deja folosite de o tranzacție care încă așteaptă. Aceasta trece doar dacă o înlocuiește pe aceea cu un comision mai mare.',
+  sendNegative: 'Plătește mai mult decât cheltuiește, deci ar fi refuzată.',
+  sendHigh:
+    'Acest comision este neobișnuit de mare: următorul bloc cere aproximativ {r} sat/vB. Verifică-l înainte de trimitere.',
+  sendLow: 'Acest comision este sub cei {m} sat/vB pe care nodurile îi acceptă acum, deci ar fi refuzată.',
+  sendSlow: 'Acest comision este sub ce cer blocurile din ora următoare ({r} sat/vB), deci poate aștepta o vreme.',
+  sendKnown: 'Această tranzacție a fost deja trimisă.',
+  sendOpen: 'Deschide pagina ei',
+  sendTo: 'Trimite la {h}',
+  sendNote:
+    'Odată trimisă, nu mai poate fi retrasă. {h} o transmite rețelei și vede că vine de la conexiunea ta, la fel ca serverul oricărui portofel.',
+  sending: 'Se trimite…',
+  sendDone: 'Trimisă: rețeaua o are.',
+  sendFail: 'Neacceptată: {m}',
   factsTitle: 'Date despre preț și ofertă',
   athL: 'Maxim istoric',
   belowAth: 'Sub maxim',

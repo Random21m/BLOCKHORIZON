@@ -598,6 +598,43 @@ export default {
   blkFeesChart: 'Frais par bloc',
   feeShareChart: 'Frais dans le revenu minier',
   blkSizeChart: 'Taille des blocs',
+  lnAsOf: 'Chiffres du {d}',
+  lnAsOfShort: 'Au {d}',
+  sendTitle: 'Envoyer une transaction',
+  sendLink: 'Envoyer une transaction signée',
+  sendIntro:
+    'Collez une transaction signée : le hex brut qu’exporte votre portefeuille. Elle est d’abord lue ici, sur votre appareil ; rien n’est envoyé avant que vous appuyiez sur Envoyer.',
+  sendPaste: 'Transaction signée (hex)',
+  sendCheck: 'Vérifier',
+  sendBadHex:
+    'Ce n’est pas une transaction brute. Collez le long hex qu’exporte votre portefeuille quand il signe (un ID de transaction ne suffit pas).',
+  sendBadTx: 'Ce hex n’est pas une transaction complète. Vérifiez qu’il a été copié en entier.',
+  sendWhat: 'Ce qu’elle fait',
+  sendSize: '{v} vB ({w} unités de poids)',
+  sendFeeVal: '{s} sats · {r} sat/vB',
+  sendFeeUnknown: 'inconnus tant que les pièces qu’elle dépense ne sont pas trouvées',
+  sendRbf: 'Elle peut être remplacée plus tard avec des frais plus élevés.',
+  sendFinal: 'Elle ne peut pas être remplacée plus tard avec des frais plus élevés.',
+  sendMissing:
+    'Certaines des pièces qu’elle dépense sont introuvables : elles sont peut-être déjà dépensées, ou appartiennent à un autre réseau. Elle serait sans doute refusée.',
+  sendSpent:
+    'Des pièces qu’elle dépense ont déjà été dépensées par une autre transaction dans un bloc, elle serait donc refusée.',
+  sendReplaces:
+    'Des pièces qu’elle dépense sont déjà utilisées par une transaction encore en attente. Celle-ci ne passe que si elle remplace l’autre avec des frais plus élevés.',
+  sendNegative: 'Elle verse plus qu’elle ne dépense, elle serait donc refusée.',
+  sendHigh:
+    'Ces frais sont inhabituellement élevés : le prochain bloc demande environ {r} sat/vB. Vérifiez-les avant d’envoyer.',
+  sendLow: 'Ces frais sont inférieurs aux {m} sat/vB que les nœuds acceptent en ce moment, elle serait donc refusée.',
+  sendSlow:
+    'Ces frais sont inférieurs à ce que demandent les blocs de la prochaine heure ({r} sat/vB), elle peut donc attendre un moment.',
+  sendKnown: 'Cette transaction a déjà été envoyée.',
+  sendOpen: 'Ouvrir sa page',
+  sendTo: 'Envoyer à {h}',
+  sendNote:
+    'Une fois envoyée, elle ne peut pas être annulée. {h} la transmet au réseau et voit qu’elle vient de votre connexion, comme le serveur de tout portefeuille.',
+  sending: 'Envoi…',
+  sendDone: 'Envoyée : le réseau l’a reçue.',
+  sendFail: 'Non acceptée : {m}',
   factsTitle: 'Repères sur le prix et l’offre',
   athL: 'Plus haut historique',
   belowAth: 'Sous le plus haut',
