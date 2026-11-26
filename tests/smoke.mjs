@@ -2326,12 +2326,17 @@ await ok('French: glossary and anniversaries are translated', async () => {
   await page.selectOption('#st-lang', 'en');
   await page.keyboard.press('Escape');
 });
-await ok('Japanese, Chinese, Korean and Russian: menu, dashboard and glossary are translated', async () => {
-  for (const [lang, script] of [
+await ok('Japanese, Chinese, Korean, Russian, Hindi, Indonesian and Vietnamese: menu, dashboard and glossary are translated', async () => {
+  // one script per language, or (for languages in Latin letters) a few words only the translation has, for the menu
+  // and for the glossary
+  for (const [lang, script, gloss = script] of [
     ['ja', /[\u3040-\u30ff]/],
     ['zh', /[\u4e00-\u9fff]/],
     ['ko', /[\uac00-\ud7af]/],
     ['ru', /[\u0400-\u04ff]/],
+    ['hi', /[\u0900-\u097f]/],
+    ['id', /IDMENU/, /IDGLOSS/],
+    ['vi', /Báo thức|Thuật ngữ/, /khối/],
   ]) {
     const c = await b.newContext({ viewport: { width: 1280, height: 800 } });
     await c.routeWebSocket(/./, (ws) => ws.close());
@@ -2352,7 +2357,7 @@ await ok('Japanese, Chinese, Korean and Russian: menu, dashboard and glossary ar
       assert.ok(!d.includes(w), lang + ': English left: ' + w);
     assert.ok(script.test(await p.locator('#nav').innerText()), 'menu in ' + lang);
     await p.goto(base + '#/glossary');
-    assert.ok(script.test(await p.locator('main').innerText()), 'glossary in ' + lang);
+    assert.ok(gloss.test(await p.locator('main').innerText()), 'glossary in ' + lang);
     await c.close();
   }
 });
