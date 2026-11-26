@@ -1153,7 +1153,10 @@ test('block history: fees per block, fees as a share of miner income, block size
   assert.deepEqual(L.SERIES.blockFees(null), []);
   const bs = L.SERIES.blockSizes(sizes);
   assert.equal(bs.length, sizes.sizes.length);
-  assert.ok(bs.every((p) => p.v > 0.5 && p.v < 4.1), 'blocks weigh at most 4 MWU, so stay under 4 MB');
+  assert.ok(
+    bs.every((p) => p.v > 0.5 && p.v < 4.1),
+    'blocks weigh at most 4 MWU, so stay under 4 MB'
+  );
   assert.deepEqual(L.SERIES.blockSizes({}), []);
   // the share: fees / (subsidy + fees), matched by height
   const sh = L.feeShareSeries(fees, rewards);
@@ -1162,7 +1165,10 @@ test('block history: fees per block, fees as a share of miner income, block size
     Math.abs(q.avgHeight - fees[0].avgHeight) < Math.abs(a.avgHeight - fees[0].avgHeight) ? q : a
   );
   assert.ok(Math.abs(sh[0].v - (fees[0].avgFees / r0.avgRewards) * 100) < 1e-9);
-  assert.ok(sh.every((p) => p.v >= 0 && p.v < 5), 'fees are a few % of 3.125 BTC blocks now');
+  assert.ok(
+    sh.every((p) => p.v >= 0 && p.v < 5),
+    'fees are a few % of 3.125 BTC blocks now'
+  );
   assert.deepEqual(
     L.feeShareSeries([{ avgHeight: 10, timestamp: 2, avgFees: 50 }], [{ avgHeight: 11, avgRewards: 200 }]),
     [{ t: 2000, v: 25 }]
