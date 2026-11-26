@@ -231,6 +231,23 @@ test('watched addresses: shapes and bech32 checksums; payments net of spends; on
   assert.equal(L.fmtBtc(1), '0.00000001');
 });
 
+test('address page: balance, waiting in or out, everything received, transaction count', () => {
+  assert.deepEqual(L.parseAddress(fx('address.json')), {
+    balance: 100000000,
+    pending: 1234500,
+    received: 150000000,
+    txs: 4,
+  });
+  assert.deepEqual(
+    L.parseAddress({
+      chain_stats: { funded_txo_sum: 300, spent_txo_sum: 100, tx_count: 3 },
+      mempool_stats: { funded_txo_sum: 0, spent_txo_sum: 50, tx_count: 1 },
+    }),
+    { balance: 200, pending: -50, received: 300, txs: 4 }
+  );
+  assert.deepEqual(L.parseAddress(null), { balance: 0, pending: 0, received: 0, txs: 0 });
+});
+
 test('speeding up a stuck transaction: replace at the new rate (at least 1 sat/vB more), or a follow-up pays for both', () => {
   const tx = { fee: 1128, vsize: 189 };
   assert.deepEqual(L.speedUp(tx, 20), { stuck: true, rbf: 3780, cpfp: 20 * (189 + L.CHILD_VB) - 1128 });

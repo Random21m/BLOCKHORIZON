@@ -2524,6 +2524,66 @@ await ok(
     await c.close();
   }
 );
+await ok(
+  'address lookup: from search to its page, with balance and payments; it says where the address was sent, and never to the backup server',
+  async () => {
+    const A = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq';
+    let down = false;
+    const asked = [];
+    const c = await b.newContext({ viewport: { width: 1280, height: 900 } });
+    await c.routeWebSocket(/./, (ws) => ws.close());
+    await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => {
+      asked.push(r.request().url());
+      return /mempool\.space|blockstream\.info/.test(r.request().url()) ? r.fallback() : r.abort();
+    });
+    await c.route(/blockstream\.info/, (route) => route.fulfill({ status: 500, body: '' }));
+    await c.route(/mempool\.space/, (route) => {
+      const u = new URL(route.request().url()).pathname;
+      if (u.startsWith('/api/address/')) {
+        if (down) return route.fulfill({ status: 503, body: '' });
+        return route.fulfill({
+          contentType: 'application/json',
+          body: fx(u.endsWith('/txs') ? 'address-txs.json' : 'address.json'),
+        });
+      }
+      const m = MOCK[u];
+      if (!m) return route.fulfill({ status: 404, body: '' });
+      route.fulfill({ contentType: m[0], body: fx(m[1]) });
+    });
+    const p = await c.newPage();
+    await p.goto(base);
+    await until(p, () => document.querySelectorAll('.tile').length >= 10);
+    await p.click('#btn-search');
+    assert.match(await p.locator('#s-addr-note').innerText(), /sent to mempool\.space/);
+    await p.fill('#s-t', 'bc1qnotanaddress');
+    await p.press('#s-t', 'Enter');
+    assert.match(await p.locator('#s-msg').innerText(), /neither a transaction ID/);
+    await p.fill('#s-t', ' ' + A.toUpperCase() + ' ');
+    await p.press('#s-t', 'Enter');
+    await until(p, (a) => location.hash === '#/address/' + a, A);
+    await p.waitForSelector('#addr-txs', { timeout: 8000 });
+    const t = await p.locator('main').innerText();
+    for (const w of [
+      '1 BTC',
+      '+0.012345 BTC',
+      '1.5 BTC',
+      'Waiting in the mempool',
+      '−0.5 BTC',
+      '+0.5 BTC',
+      'Looked up on mempool.space',
+    ])
+      assert.ok(t.includes(w), w + ' in: ' + t);
+    assert.equal(await p.locator('#addr-txs tr').count(), 4);
+    assert.equal(await p.locator('#addr-txs a').first().getAttribute('href'), '#/tx/' + 'd'.repeat(64));
+    // the data server is down: the address is not sent to the backup server
+    down = true;
+    await p.goto(base + '#/address/' + A + '?x');
+    await p.goto(base + '#/address/' + A);
+    await until(p, () => /Nothing found/.test(document.querySelector('main .panel')?.textContent || ''));
+    assert.ok(!asked.some((u) => /blockstream\.info.*address/.test(u)), 'an address went to the backup server');
+    await c.close();
+  }
+);
 await ok('accessibility: no axe-core violations on the main pages and dialogs, dark and light', async () => {
   let AXE;
   try {
