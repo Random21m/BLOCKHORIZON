@@ -2,7 +2,7 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
-## Unreleased
+## 0.22.0
 
 - **A QR code on every address page,** to pay to it from a phone wallet. It is drawn on your device (as a `bitcoin:`
   link), black on white in both themes.

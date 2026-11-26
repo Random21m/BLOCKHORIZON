@@ -3,7 +3,7 @@ import * as L from './lib.js';
 import { store } from './api.js';
 import { setLang, detectLang, isRtl } from './i18n.js';
 
-export const VERSION = '0.21.0';
+export const VERSION = '0.22.0';
 export const TIP_ADDR = 'npub1vj8zjhnmkhekv93e2xmrz7kfwuxq25vrzw53u4dqhwd2lp5smvks3mwu2n@npub.cash';
 export const $ = (s, r = document) => r.querySelector(s);
 export const US = /^en-US/i.test((typeof navigator !== 'undefined' && navigator.language) || '');
