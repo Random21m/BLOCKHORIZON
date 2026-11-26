@@ -587,6 +587,9 @@ export default {
   diffRibbonNote:
     'Als de gemiddelden samenkomen, stijgt de moeilijkheid niet meer en staan miners onder druk. Nu liggen ze {p}% uit elkaar.',
   last2y: 'Laatste 2 jaar',
+  blkFeesChart: 'Kosten per blok',
+  feeShareChart: 'Kosten in miner-inkomsten',
+  blkSizeChart: 'Blokgrootte',
   sendTitle: 'Een transactie versturen',
   sendLink: 'Een ondertekende transactie versturen',
   sendIntro:

@@ -573,6 +573,9 @@ export default {
   diffRibbonNote:
     '평균들이 한데 모이면 난이도 상승이 멈추고 채굴자들이 압박을 받고 있다는 뜻이에요. 지금은 {p}% 벌어져 있어요.',
   last2y: '최근 2년',
+  blkFeesChart: '블록당 수수료',
+  feeShareChart: '채굴 수입 중 수수료',
+  blkSizeChart: '블록 크기',
   sendTitle: '거래 보내기',
   sendLink: '서명된 거래 보내기',
   sendIntro:

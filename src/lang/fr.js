@@ -595,6 +595,9 @@ export default {
   diffRibbonNote:
     'Quand les moyennes se resserrent, la difficulté a cessé de monter et les mineurs sont sous pression. Elles sont aujourd’hui à {p} % d’écart.',
   last2y: '2 dernières années',
+  blkFeesChart: 'Frais par bloc',
+  feeShareChart: 'Frais dans le revenu minier',
+  blkSizeChart: 'Taille des blocs',
   sendTitle: 'Envoyer une transaction',
   sendLink: 'Envoyer une transaction signée',
   sendIntro:

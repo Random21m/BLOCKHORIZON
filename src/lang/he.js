@@ -569,6 +569,9 @@ export default {
   ribbonAvgs: 'ממוצעים של 9 עד 200 ימים',
   diffRibbonNote: 'כשהממוצעים מתקבצים, הקושי הפסיק לעלות והכורים תחת לחץ. כרגע הפער ביניהם {p}%.',
   last2y: 'השנתיים האחרונות',
+  blkFeesChart: 'עמלות לבלוק',
+  feeShareChart: 'עמלות בהכנסת הכורים',
+  blkSizeChart: 'גודל בלוק',
   sendTitle: 'שליחת עסקה',
   sendLink: 'שליחת עסקה חתומה',
   sendIntro:

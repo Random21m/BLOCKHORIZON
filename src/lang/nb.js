@@ -586,6 +586,9 @@ export default {
   diffRibbonNote:
     'Når snittene samler seg, har vanskelighetsgraden sluttet å stige og utvinnerne er presset. Nå er de {p} % fra hverandre.',
   last2y: 'Siste 2 år',
+  blkFeesChart: 'Gebyrer per blokk',
+  feeShareChart: 'Gebyrer i utvinnerinntekt',
+  blkSizeChart: 'Blokkstørrelse',
   sendTitle: 'Send en transaksjon',
   sendLink: 'Send en signert transaksjon',
   sendIntro:

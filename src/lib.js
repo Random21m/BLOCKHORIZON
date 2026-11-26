@@ -479,7 +479,33 @@ export const SERIES = {
       .map((p) => ({ t: p.timestamp * 1000, v: p.avgFee_50 }))
       .filter((p) => Number.isFinite(p.t) && Number.isFinite(p.v) && p.v >= 0)
       .sort((a, b) => a.t - b.t),
+  // Average fees per block (sats -> BTC), from /v1/mining/blocks/fees. Zero in the early years: kept, like the fee rate.
+  blockFees: (r) => zeroOk(r, (p) => p.avgFees / 1e8),
+  // Average block size (bytes -> MB), from /v1/mining/blocks/sizes-weights.
+  blockSizes: (r) => zeroOk(r && r.sizes, (p) => p.avgSize / 1e6),
 };
+const zeroOk = (r, f) =>
+  (Array.isArray(r) ? r : [])
+    .map((p) => ({ t: p.timestamp * 1000, v: f(p) }))
+    .filter((p) => Number.isFinite(p.t) && Number.isFinite(p.v) && p.v >= 0)
+    .sort((a, b) => a.t - b.t);
+// Fees as a share (%) of what miners earned (subsidy + fees), from /v1/mining/blocks/fees and /rewards: each fee point
+// matched with the reward point nearest in height (the two lists are grouped the same way, but can differ by one).
+export function feeShareSeries(fees, rewards) {
+  const rw = (Array.isArray(rewards) ? rewards : [])
+    .filter((p) => p && p.avgRewards > 0 && Number.isFinite(p.avgHeight))
+    .map((p) => ({ t: p.avgHeight, v: p.avgRewards }))
+    .sort((a, b) => a.t - b.t);
+  if (!rw.length) return [];
+  return (Array.isArray(fees) ? fees : [])
+    .filter((p) => p && Number.isFinite(p.avgFees) && Number.isFinite(p.avgHeight))
+    .map((p) => {
+      const q = rw[nearest(rw, p.avgHeight)];
+      return { t: p.timestamp * 1000, v: Math.min(100, (p.avgFees / q.v) * 100) };
+    })
+    .filter((p) => Number.isFinite(p.t) && Number.isFinite(p.v))
+    .sort((a, b) => a.t - b.t);
+}
 export const RANGES = { '1m': 30 * 864e5, '1y': 365 * 864e5, all: Infinity };
 export function inRange(pts, range, now = Date.now()) {
   const span = RANGES[range] || Infinity;

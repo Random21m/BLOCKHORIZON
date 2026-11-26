@@ -579,6 +579,9 @@ export default {
   diffRibbonNote:
     'Khi các đường trung bình dồn sát nhau, độ khó đã ngừng tăng và thợ đào đang chịu áp lực. Hiện chúng cách nhau {p}%.',
   last2y: '2 năm qua',
+  blkFeesChart: 'Phí mỗi khối',
+  feeShareChart: 'Phí trong thu nhập thợ đào',
+  blkSizeChart: 'Kích thước khối',
   sendTitle: 'Gửi giao dịch',
   sendLink: 'Gửi một giao dịch đã ký',
   sendIntro:
