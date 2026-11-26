@@ -2291,10 +2291,7 @@ await ok('Japanese, Chinese, Korean and Russian: menu, dashboard and glossary ar
     await c.addInitScript((l) => localStorage.setItem('bh.settings', JSON.stringify({ lang: l, _v: 2 })), lang);
     const p = await c.newPage();
     await p.goto(base);
-    await p.waitForFunction(
-      (l) => document.querySelectorAll('.tile').length >= 10 && document.documentElement.lang === l,
-      lang
-    );
+    await until(p, (l) => document.querySelectorAll('.tile').length >= 10 && document.documentElement.lang === l, lang);
     const d = await p.locator('main').innerText();
     for (const w of ['blocks deep', 'channels', 'Since last', 'of epoch'])
       assert.ok(!d.includes(w), lang + ': English left: ' + w);
@@ -2314,7 +2311,7 @@ await ok('Brazilian Portuguese is chosen for a pt-BR browser, European Portugues
     await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.abort());
     const p = await c.newPage();
     await p.goto(base);
-    await p.waitForFunction((l) => document.documentElement.lang === l, want);
+    await until(p, (l) => document.documentElement.lang === l, want);
     const lang = await p.evaluate(() => import('./src/i18n.js').then((m) => m.t('pushTitle')));
     assert.ok(lang.includes(word), locale + ': ' + lang);
     await c.close();

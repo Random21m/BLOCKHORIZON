@@ -11,7 +11,7 @@ export default {
   search: 'Поиск',
   height: 'Высота блока',
   since: 'С последнего блока',
-  halving: 'Следующий халвинг',
+  halving: 'Халвинг',
   difficulty: 'Корректировка сложности',
   hashrate: 'Хешрейт',
   production: 'Выпуск блоков',
