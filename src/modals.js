@@ -2,7 +2,7 @@
 import * as L from './lib.js';
 import { api, normServer, DEFAULT_SERVER, FALLBACK, getServer } from './api.js';
 import { CURRENCIES } from './price.js';
-import { t, LANGS } from './i18n.js';
+import { t, LANGS, loadLang } from './i18n.js';
 import { play, BLOCK_SOUNDS } from './sound.js';
 import { hooks, $, S, save, st, el, applyLook } from './state.js';
 
@@ -37,7 +37,9 @@ export function searchModal() {
     el('form', { class: 'row', onsubmit: goT }, el('label', null, t('byTx') + ' '), ti, el('button', { class: 'btn-go', type: 'submit' }, t('go'))), msg));
 }
 export function settingsModal() {
-  const sel = (key, opts, onchg) => el('select', { id: 'st-' + key, onchange: (e) => { S[key] = e.target.value === 'true' ? true : e.target.value === 'false' ? false : e.target.value; save(); applyLook(); if (onchg) onchg(); hooks.renderView(); } },
+  const sel = (key, opts, onchg) => el('select', { id: 'st-' + key, onchange: async (e) => { const v = e.target.value === 'true' ? true : e.target.value === 'false' ? false : e.target.value;
+    S[key] = v; save(); if (key === 'lang') await loadLang(v); // a language is downloaded the first time it is chosen
+    applyLook(); if (onchg) onchg(); hooks.renderView(); } },
     opts.map(([v, l]) => el('option', { value: String(v), selected: String(S[key]) === String(v) }, l)));
   const chk = (key, label) => el('label', { class: 'chk' }, el('input', { type: 'checkbox', id: 'st-' + key, checked: !!S[key], onchange: (e) => { S[key] = e.target.checked; save(); applyLook(); hooks.renderView(); } }), label);
   const row = (l, c) => el('div', { class: 'row' }, el('label', { for: c.id, style: 'min-width:130px' }, l), c);
@@ -46,7 +48,7 @@ export function settingsModal() {
       row(t('satsSym'), sel('satsSym', [['sats', 'sats'], ['SATS', 'SATS'], ['sat', 'sat']])), row(t('hrAvg'), sel('hr', [['d7', days(7)], ['d14', days(14)], ['d30', days(30)], ['d90', days(90)]])),
       chk('showFees', t('showFees')), chk('feesRtl', t('feesRtl')), chk('showPool', t('showPool')), chk('showMoscow', t('showMoscow')), chk('showCap', t('showCap')),
       el('button', { onclick: () => { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen && document.documentElement.requestFullscreen().catch(() => {}); } }, t('fullscreen'))),
-    format: () => el('div', null, row(t('language'), sel('lang', Object.entries(LANGS), () => { settingsModal.tab = 'format'; settingsModal(); })), row(t('timeL'), sel('h12', [[false, t('h24f')], [true, t('h12f')]])), row(t('dateL'), sel('dateFmt', [['iso', '2026-11-24'], ['dmy', '24.11.2026'], ['mdy', '11/24/2026']])), row(t('zone'), sel('utc', [[false, t('local')], [true, 'UTC']]))),
+    format: () => el('div', null, row(t('language'), sel('lang', Object.entries(LANGS), () => { if ($('#modal').hidden) return; settingsModal.tab = 'format'; settingsModal(); })), row(t('timeL'), sel('h12', [[false, t('h24f')], [true, t('h12f')]])), row(t('dateL'), sel('dateFmt', [['iso', '2026-11-24'], ['dmy', '24.11.2026'], ['mdy', '11/24/2026']])), row(t('zone'), sel('utc', [[false, t('local')], [true, 'UTC']]))),
     sounds: () => el('div', null, chk('sound', t('soundNew')), row(t('blockSound'), sel('bsound', Object.entries(BLOCK_SOUNDS).map(([k, v]) => [k, t(v)]))), el('button', { onclick: () => play(S.bsound) }, '▶ ' + t('test')),
       chk('reduced', t('reduce'))),
     // Data server: mempool.space, or any mempool-compatible server such as your own node. Checked before it is used.

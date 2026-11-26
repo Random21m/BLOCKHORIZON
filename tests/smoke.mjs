@@ -96,7 +96,7 @@ await ok('watch page lists the YouTube channels A to Z', async () => { await pag
 await ok('about page shows the support address and QR', async () => { await page.goto(base + '#/about'); await page.waitForSelector('#support'); assert.ok((await page.locator('#tip-addr').innerText()).endsWith('@npub.cash'));
   await until(page, () => { const i = document.querySelector('.tip-qr'); return i && i.complete && i.naturalWidth > 0; }); assert.equal(await page.getAttribute('#support a[href^="lightning:"]', 'href'), 'lightning:npub1vj8zjhnmkhekv93e2xmrz7kfwuxq25vrzw53u4dqhwd2lp5smvks3mwu2n@npub.cash'); });
 await ok('settings: light theme and language persist', async () => { await page.goto(base); await page.click('#btn-settings'); await page.selectOption('#st-theme', 'light'); assert.equal(await page.getAttribute('html', 'data-theme'), 'light'); await page.reload(); assert.equal(await page.getAttribute('html', 'data-theme'), 'light'); });
-await ok('language switch to French changes the menu', async () => { await page.goto(base); await page.click('#btn-settings'); await page.click('[data-k=format]'); await page.selectOption('#st-lang', 'fr'); assert.ok((await page.locator('#nav').innerText()).includes('Alarme')); await page.selectOption('#st-lang', 'en'); });
+await ok('language switch to French changes the menu', async () => { await page.goto(base); await page.click('#btn-settings'); await page.click('[data-k=format]'); await page.selectOption('#st-lang', 'fr'); await until(page, () => document.querySelector('#nav').innerText.includes('Alarme'), null, { timeout: 5000 }); await page.selectOption('#st-lang', 'en'); });
 await ok('privacy page opens', async () => { await page.goto(base + 'privacy.html'); assert.ok((await page.locator('h1').innerText()).includes('PRIVACY')); });
 await ok('PWA: manifest valid and service worker registers', async () => { await page.goto(base); const m = await (await page.request.get(base + 'manifest.webmanifest')).json(); assert.ok(m.name && m.icons.length >= 3 && m.display === 'standalone');
   await until(page, () => navigator.serviceWorker.ready.then(() => true), null, { timeout: 8000 }); });
@@ -169,7 +169,7 @@ await ok('block and transaction pages: copy link', async () => {
   assert.equal(await p.evaluate(() => navigator.clipboard.readText()), base + '#/block/840000'); await c.close(); });
 await ok('German: dashboard, block page and settings have no English left', async () => {
   await page.goto(base); await page.click('#btn-settings'); await page.click('[data-k=format]'); await page.selectOption('#st-lang', 'de');
-  assert.equal(await page.locator('[data-k=display]').innerText(), 'Anzeige'); await page.keyboard.press('Escape');
+  await until(page, () => document.querySelector('[data-k=display]')?.innerText === 'Anzeige', null, { timeout: 5000 }); // the language is downloaded when first chosen await page.keyboard.press('Escape');
   await until(page, () => /977/.test(document.querySelector('#h')?.textContent || '') && document.querySelectorAll('.blk').length > 0); const d = await page.locator('main').textContent();
   for (const w of ['Blöcke übrig', 'Blöcke tief', 'Kanäle', 'Moskau', 'vor ', 'nach Gebühr']) assert.ok(d.includes(w), w);
   for (const w of [' ago', 'blocks deep', 'channels', 'of epoch', 'issued', 'Since last']) assert.ok(!d.includes(w), 'English left: ' + w);
@@ -555,7 +555,7 @@ await ok('keyboard: Tab stays inside an open dialog, Escape closes it and focus 
   await page.keyboard.press('Escape'); assert.ok(await page.locator('#modal').isHidden()); assert.equal(await page.evaluate(() => document.activeElement.id), 'btn-settings'); });
 await ok('French: glossary and anniversaries are translated', async () => {
   await page.goto(base); await page.click('#btn-settings'); await page.click('[data-k=format]'); await page.selectOption('#st-lang', 'fr'); await page.keyboard.press('Escape');
-  await page.goto(base + '#/glossary'); const g = await page.locator('main').innerText(); assert.ok(g.includes('Hauteur de bloc') && g.includes('chaîne'), g.slice(0, 200));
+  await page.goto(base + '#/glossary'); await until(page, () => document.querySelector('main').innerText.includes('chaîne'), null, { timeout: 5000 }); const g = await page.locator('main').innerText(); assert.ok(g.includes('Hauteur de bloc') && g.includes('chaîne'), g.slice(0, 200));
   await page.goto(base + '#/events'); assert.ok((await page.locator('main').innerText()).includes('Quatrième halving'));
   await page.goto(base); await page.click('#btn-settings'); await page.click('[data-k=format]'); await page.selectOption('#st-lang', 'en'); await page.keyboard.press('Escape'); });
 await ok('accessibility: no axe-core violations on the main pages and dialogs, dark and light', async () => {
