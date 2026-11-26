@@ -416,4 +416,5 @@ export default {
   moveUp: "{t} nach oben",
   moveDown: "{t} nach unten",
   tilesReset: "Zurück zum Standard-Dashboard",
+  moscowHint: "Moskau-Zeit {t}: Ein {c} kauft {n} Sats, geschrieben wie eine Uhrzeit. Öffnet das Glossar.",
 };

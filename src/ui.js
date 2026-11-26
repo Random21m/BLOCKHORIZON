@@ -51,7 +51,8 @@ export function feeBands(hist) {
   for (const [f, v] of hist || []) { let i = 0; for (let k = 0; k < br.length; k++) if (f >= br[k]) i = k; sums[i] += v; }
   return br.map((b, i) => ({ v: sums[i], c: L.feeColor(b), label: `${b}+ sat/vB` })).filter((x) => x.v > 0);
 }
-export const minis = (rows) => el('div', { class: 'minis' }, rows.filter(Boolean).map(([k, v]) => el('div', { class: 'mini' }, el('small', null, k), el('b', null, v))));
+// Small label/value pairs. A row may add a link and an explanation: [label, value, { href, title }].
+export const minis = (rows) => el('div', { class: 'minis' }, rows.filter(Boolean).map(([k, v, o]) => el(o ? 'a' : 'div', o ? { class: 'mini', href: o.href, title: o.title, 'aria-label': o.title } : { class: 'mini' }, el('small', null, k), el('b', null, v))));
 export const cube = (p, fill, base) => el('div', { class: 'cube', style: `background:${base}` }, el('i', { style: `height:${Math.max(4, Math.min(100, p * 100)).toFixed(0)}%;background:${fill}` }));
 export const minedCube = (x) => cube((x.weight || 0) / 4e6, `linear-gradient(${L.MINED_TOP}, ${L.MINED_BOTTOM})`, L.MINED_EMPTY);
 export const upcomingCube = (b) => cube((b.blockVSize || 0) / 1e6, L.feeStripes(b.feeRange), L.UPCOMING_EMPTY);
