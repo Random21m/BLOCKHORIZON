@@ -2,6 +2,14 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
+## Unreleased
+
+- **Send a signed transaction.** Paste the raw hex your wallet exports (in Search, or on the new Send page linked from
+  Search and the Calculator) and see what it does before anything leaves your device: its ID, size, fee and fee rate,
+  every input and output with its address, and the privacy hints of the transaction page. It warns when the fee is
+  unusually high or too low, when coins it spends are already spent or missing, and when the network already has it.
+  Only when you press "Send to mempool.space" (or your own node) is it sent; never to the backup server.
+
 ## 0.21.0
 
 - **Three more long-term charts.** The **Puell Multiple** (the value of the bitcoins mined each day against its
