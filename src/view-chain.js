@@ -324,7 +324,14 @@ export function flowBox(raw) {
           el(
             'td',
             null,
-            i.addr ? who(i) : el('span', { class: 'dim' }, t('txNoAddr', { t: i.type || '?' })),
+            i.addr
+              ? who(i)
+              : el(
+                  'span',
+                  { class: 'dim' },
+                  // its coins not looked up (the Send page, before or without the lookup): unknown, not "no address"
+                  i.type ? t('txNoAddr', { t: i.type }) : t('txInUnknown')
+                ),
             ' ',
             el('a', { href: '#/tx/' + i.txid, class: 'dim prev', title: i.txid + ':' + i.vout }, '↩')
           ),

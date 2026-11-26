@@ -11,6 +11,7 @@ import { tradeChart } from './trade-chart.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 const cache = new Map(); // request key -> promise, for this session (price history is large: never put in localStorage)
+export const resetCharts = () => cache.clear(); // another data server: its own history
 const fetchOnce = (key, fn) => {
   if (!cache.has(key))
     cache.set(

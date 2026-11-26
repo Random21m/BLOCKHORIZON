@@ -356,7 +356,7 @@ export function txFlow(x) {
       : {
           addr: p.scriptpubkey_address || null,
           value: Number.isFinite(p.value) ? p.value : null,
-          type: p.scriptpubkey_type || '',
+          type: p.scriptpubkey_type || (i.prevout ? '?' : ''),
           txid: i.txid,
           vout: i.vout,
         };
@@ -1561,7 +1561,7 @@ export function parseRawTx(hex) {
       weight,
       vsize: Math.ceil(weight / 4),
       locktime,
-      rbf: vin.some((x) => x.sequence < 0xfffffffe),
+      rbf: version >= 3 || vin.some((x) => x.sequence < 0xfffffffe), // version 3 (TRUC) is always replaceable
       vin,
       vout,
     };
@@ -1868,4 +1868,18 @@ export function qrEncode(text, mask = -1) {
   applyMask(best);
   drawFormat(best);
   return { size, version: v, mask: best, get: (x, y) => mod[y * size + x] === 1 };
+}
+
+// Run fn over items with at most `n` at a time; results in the items' order.
+export async function mapLimit(items, n, fn) {
+  const out = new Array(items.length);
+  let next = 0;
+  const worker = async () => {
+    while (next < items.length) {
+      const i = next++;
+      out[i] = await fn(items[i], i);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(n, items.length) }, worker));
+  return out;
 }

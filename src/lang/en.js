@@ -592,7 +592,7 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'unknown until the coins it spends are found',
   sendRbf: 'It can be replaced later with a higher fee.',
-  sendFinal: 'It cannot be replaced with a higher fee later.',
+  sendFinal: 'It does not say it can be replaced; many nodes still accept a replacement with a higher fee.',
   sendMissing:
     'Some of the coins it spends were not found: they may be spent already, or belong to another network. It would likely be refused.',
   sendSpent: 'Coins it spends were already spent by another transaction in a block, so it would be refused.',
@@ -633,4 +633,7 @@ export default {
   addrQrAria: 'QR code of the address {a}',
   addrQrNote:
     'Scan it with a wallet to pay to this address. Drawn on this device; check the address your wallet shows.',
+  sendUnchecked:
+    'Some of the coins it spends could not be checked right now, so the fee may be unknown. Press Check again in a moment.',
+  txInUnknown: 'not looked up',
 };

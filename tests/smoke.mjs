@@ -2180,7 +2180,11 @@ await ok(
       await p.evaluate(() => window.__cv === document.querySelector('canvas.scene') && window.__cv.isConnected)
     );
     assert.ok(/Found: block/.test(await p.locator('.found').innerText()));
-    await p.click('.flinks a[href^="#/tx/"]');
+    // stop following: the box empties too, although it had been typed in (the page is redrawn in place)
+    const txLink = await p.getAttribute('.flinks a[href^="#/tx/"]', 'href');
+    await p.evaluate(() => (location.hash = '#/mining'));
+    await until(p, () => document.querySelector('#mf-tx')?.value === '');
+    await p.evaluate((h) => (location.hash = h), txLink);
     await until(p, () => /^#\/tx\/[0-9a-f]{64}$/.test(location.hash));
     for (let i = 0; i < 50 && !asked.includes('"track-mempool-block":-1'); i++) await p.waitForTimeout(100);
     assert.ok(asked.includes('"track-mempool-block":-1'), 'stops asking when the page is left');
@@ -3163,6 +3167,7 @@ await ok('send a signed transaction: read on the device, checked against the cha
     FRESH = '4efedffb191135b4dadd3bdeb65d9f93b5bf4606de1f8a9bafdc3016af781b7c';
   const posted = [],
     backup = [];
+  let txDown = false; // mempool.space busy or unreachable for transaction lookups
   let answer = { status: 200, body: FRESH },
     spentIn = null; // which block spent the coin it uses (null: unspent)
   const c = await b.newContext({ viewport: { width: 1280, height: 900 } });
@@ -3181,6 +3186,7 @@ await ok('send a signed transaction: read on the device, checked against the cha
       posted.push(q.postData());
       return route.fulfill({ status: answer.status, contentType: 'text/plain', body: answer.body });
     }
+    if (txDown && u.startsWith('/api/tx/') && q.method() === 'GET') return route.fulfill({ status: 503, body: '' });
     if (u === '/api/tx/' + raw.txid)
       return route.fulfill({
         contentType: 'application/json',
@@ -3213,7 +3219,7 @@ await ok('send a signed transaction: read on the device, checked against the cha
   for (const w of [
     '251 vB (1,004 weight units)',
     '10,437 sats · 42 sat/vB',
-    'cannot be replaced',
+    'does not say it can be replaced',
     'INPUTS (1)',
     '13S7yrqgrT…t5kJC3',
     '0.02 BTC',
@@ -3255,6 +3261,14 @@ await ok('send a signed transaction: read on the device, checked against the cha
   await until(p, () => /already been sent/.test(document.querySelector('#snd-out')?.textContent || ''));
   assert.equal(await p.locator('#snd-go').count(), 0);
   assert.equal(await p.getAttribute('#snd-open', 'href'), '#/tx/' + raw.txid);
+  // mempool.space not answering: the coins are "not checked", not "missing", and the backup server is not asked
+  txDown = true;
+  await p.fill('#snd-hex', fresh);
+  await p.click('.sendform button');
+  await until(p, () => /could not be checked right now/.test(document.querySelector('#snd-out')?.textContent || ''));
+  assert.doesNotMatch(await p.locator('#snd-out').innerText(), /were not found/);
+  assert.match(await p.locator('#snd-out p.sr-only').innerText(), /could not be checked/);
+  txDown = false;
   // not a transaction: said plainly
   await p.fill('#snd-hex', raw.txid);
   await p.click('.sendform button');
@@ -3263,11 +3277,7 @@ await ok('send a signed transaction: read on the device, checked against the cha
   await p.click('.sendform button');
   assert.match(await p.locator('#snd-out').innerText(), /not a complete transaction/);
   assert.equal(posted.length, 2);
-  assert.deepEqual(
-    backup.filter((x) => x.startsWith('POST')),
-    [],
-    'never sent to the backup server'
-  );
+  assert.deepEqual(backup, [], 'the backup server is never asked, not even to look up the coins it spends');
   await p.setViewportSize({ width: 360, height: 800 });
   assert.ok(
     await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),

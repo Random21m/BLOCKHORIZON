@@ -112,7 +112,9 @@ export function searchModal() {
     if (!L.parseRawTx(ti.value).error) {
       setDraft(ti.value.trim());
       closeModal();
-      location.hash = '#/send';
+      if (location.hash === '#/send')
+        hooks.renderView(); // already there: no hash change, so draw it again
+      else location.hash = '#/send';
       return;
     }
     msg.textContent = t('notTxOrAddr');

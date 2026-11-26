@@ -200,6 +200,13 @@ let rankAll = false,
   adjAt = 0,
   adjNa = false,
   adjShown = 10;
+// another data server (Settings): forget this one's figures, so the page shows the new server's, or says it has none
+export function resetMining() {
+  pools = rewards = adj = null;
+  poolsAt = adjAt = 0;
+  poolsNa = rewardsNa = adjNa = false;
+  for (const k of Object.keys(ranked)) delete ranked[k];
+}
 const rankRange = () => (RANK_RANGES[S.poolRange] ? S.poolRange : '1w');
 function loadRank(r) {
   if (r === '1w') return;
@@ -213,7 +220,7 @@ function loadRank(r) {
       hooks.render();
     },
     (e) => {
-      c.na = !c.v;
+      c.na = !c.v && !!(e && e.status >= 400 && e.status < 500);
       c.at = Date.now() - 540000;
       hooks.render();
     }
@@ -228,8 +235,8 @@ function loadAdj() {
       adjNa = false;
       hooks.render();
     },
-    () => {
-      adjNa = !adj;
+    (e) => {
+      adjNa = !adj && !!(e && e.status >= 400 && e.status < 500);
       adjAt = Date.now() - 3540000;
       hooks.render();
     }

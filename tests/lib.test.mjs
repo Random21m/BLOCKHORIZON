@@ -1310,3 +1310,29 @@ test('QR codes match a reference encoder module for module (byte mode, level M),
   assert.equal(L.qrEncode('z'.repeat(214)), null, 'beyond version 10');
   assert.equal(L.qrEncode('bitcoin:bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq').size, 33);
 });
+
+test('polish: a few at a time in order; version 3 is always replaceable; an input not looked up is not "no address"', async () => {
+  let live = 0,
+    most = 0;
+  const out = await L.mapLimit([5, 1, 4, 2, 3], 2, async (x) => {
+    most = Math.max(most, ++live);
+    await new Promise((r) => setTimeout(r, x * 3));
+    live--;
+    return x * 10;
+  });
+  assert.deepEqual(out, [50, 10, 40, 20, 30]);
+  assert.equal(most, 2);
+  assert.deepEqual(await L.mapLimit([], 3, async (x) => x), []);
+  // a transaction whose sequences are all final: replaceable only if it is version 3 (TRUC)
+  const raw = JSON.parse(fs.readFileSync(new URL('./fixtures/raw-txs.json', import.meta.url), 'utf8'))[3];
+  const tx = L.parseRawTx(raw.hex);
+  assert.equal(tx.rbf, false);
+  const v3 = L.parseRawTx('03' + raw.hex.slice(2));
+  assert.equal(v3.version, 3);
+  assert.equal(v3.rbf, true);
+  // inputs: unknown until looked up; a looked-up coin without an address keeps its type
+  const f = L.txFlow(L.asServerTx(tx));
+  assert.equal(f.ins[0].type, '');
+  const g = L.txFlow({ vin: [{ txid: 'a', vout: 0, prevout: { value: 5 } }], vout: [] });
+  assert.equal(g.ins[0].type, '?');
+});

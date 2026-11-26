@@ -21,9 +21,9 @@ import { initPush, ownNode } from './push.js';
 import { viewDash, viewClock, finalText, clockOpts, clockSince, staleText } from './view-dash.js';
 import { viewBlock, viewTx, viewAddress } from './view-chain.js';
 import { viewAlarm, viewCalc, paintFeeNow } from './view-tools.js';
-import { viewCharts } from './view-charts.js';
+import { viewCharts, resetCharts } from './view-charts.js';
 import { viewMy, paintMySince } from './view-my.js';
-import { viewMining, paintMining } from './view-mining.js';
+import { viewMining, paintMining, resetMining } from './view-mining.js';
 import { viewSend } from './view-send.js';
 import { measure, arrive } from './arrival.js';
 import { viewReplay, viewEvents, viewGlossary, viewWatch, viewAbout } from './view-info.js';
@@ -281,8 +281,13 @@ function morph(a, b) {
   }
   if (a.nodeType !== 1) return;
   if (a.hasAttribute('data-keep') && b.hasAttribute('data-keep')) return; // drawn by its own code (the Mining page's block picture)
+  // a typed-in field ignores its value attribute: when the page changes that value (the Mining page's followed
+  // transaction, say), show it, unless the person is typing in the field right now
+  const valueChanged =
+    (a.nodeName === 'INPUT' || a.nodeName === 'TEXTAREA') && a.getAttribute('value') !== b.getAttribute('value');
   for (const { name } of [...a.attributes]) if (!b.hasAttribute(name)) a.removeAttribute(name);
   for (const { name, value } of [...b.attributes]) if (a.getAttribute(name) !== value) a.setAttribute(name, value);
+  if (valueChanged && a !== document.activeElement) a.value = b.getAttribute('value') || '';
   const ak = [...a.childNodes],
     bk = [...b.childNodes];
   bk.forEach((n, i) => {
@@ -418,7 +423,21 @@ export async function boot() {
     newGeneration();
     resetAlarmTip();
     setServer(S.server);
-    for (const k of ['tip', 'blocks', 'diff', 'fees', 'mempool', 'projected', 'hashrate', 'ln', 'pools', 'rewards'])
+    resetMining();
+    resetCharts();
+    for (const k of [
+      'tip',
+      'blocks',
+      'diff',
+      'fees',
+      'mempool',
+      'projected',
+      'hashrate',
+      'ln',
+      'pools',
+      'rewards',
+      'adjust',
+    ])
       store(k, null);
     Object.assign(st, {
       tip: NaN,
