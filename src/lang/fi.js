@@ -534,4 +534,12 @@ export default {
   privTypes:
     'Osoitetyypit: vain yhdellä tulosteella on samanlainen osoite kuin syötteillä, mikä viittaa siihen, että se on vaihtoraha.',
   privNone: 'Tavallisia yksityisyysvuotoja ei löytynyt.',
+  blkPicture: 'Mitä siinä oli',
+  blkPicNote:
+    'Jokainen ruutu on osa lohkoa, väritetty maksutason mukaan, korkeimmat maksut alimpana. Napauta ruutua avataksesi sen siirron.',
+  blkPicAria: 'Kuva lohkosta: {n} siirtoa, maksutasot {lo}–{hi} sat/vB',
+  blkPicNone: 'Kuva tulee mempool.space-palvelusta, joka ei juuri nyt vastaa.',
+  blkTxRange: 'Siirrot {a}–{b} / {n}',
+  blkPrev: 'Edelliset {n}',
+  blkNext: 'Seuraavat {n}',
 };

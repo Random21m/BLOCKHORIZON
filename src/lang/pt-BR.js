@@ -538,4 +538,12 @@ export default {
   privTypes:
     'Tipos de endereço: só uma saída tem o mesmo tipo de endereço que as entradas, o que indica que é o troco.',
   privNone: 'Nenhum vazamento de privacidade comum encontrado.',
+  blkPicture: 'O que havia nele',
+  blkPicNote:
+    'Cada quadrado é uma parte do bloco, colorida pela taxa por vB, com as taxas mais altas embaixo. Toque em um para abrir a transação dele.',
+  blkPicAria: 'Imagem do bloco: {n} transações, taxas de {lo} a {hi} sat/vB',
+  blkPicNone: 'A imagem vem do mempool.space, que não está respondendo agora.',
+  blkTxRange: 'Transações {a}–{b} de {n}',
+  blkPrev: '{n} anteriores',
+  blkNext: 'Próximas {n}',
 };

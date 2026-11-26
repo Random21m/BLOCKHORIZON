@@ -536,4 +536,12 @@ export default {
   privTypes:
     'Adrestypes: maar één output heeft hetzelfde soort adres als de inputs, wat erop wijst dat het het wisselgeld is.',
   privNone: 'Geen gangbare privacylekken gevonden.',
+  blkPicture: 'Wat erin zat',
+  blkPicNote:
+    'Elk vierkantje is een stukje van het blok, gekleurd naar tarief, met de hoogste kosten onderaan. Tik erop om de transactie te openen.',
+  blkPicAria: 'Afbeelding van het blok: {n} transacties, tarieven van {lo} tot {hi} sat/vB',
+  blkPicNone: 'De afbeelding komt van mempool.space, dat nu niet reageert.',
+  blkTxRange: 'Transacties {a}–{b} van {n}',
+  blkPrev: 'Vorige {n}',
+  blkNext: 'Volgende {n}',
 };

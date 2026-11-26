@@ -532,4 +532,12 @@ export default {
   privRound: 'Jämnt belopp: en output är ett jämnt tal, så den andra är troligen växeln som kommer tillbaka.',
   privTypes: 'Adresstyper: bara en output har samma sorts adress som inputsen, vilket tyder på att den är växeln.',
   privNone: 'Inga vanliga integritetsläckor hittades.',
+  blkPicture: 'Vad som fanns i det',
+  blkPicNote:
+    'Varje ruta är en del av blocket, färgad efter avgiftsnivå, med de högsta avgifterna längst ner. Tryck på en för att öppna dess transaktion.',
+  blkPicAria: 'Bild av blocket: {n} transaktioner, avgiftsnivåer från {lo} till {hi} sat/vB',
+  blkPicNone: 'Bilden kommer från mempool.space, som inte svarar just nu.',
+  blkTxRange: 'Transaktioner {a}–{b} av {n}',
+  blkPrev: 'Föregående {n}',
+  blkNext: 'Nästa {n}',
 };
