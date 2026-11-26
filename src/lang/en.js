@@ -578,4 +578,7 @@ export default {
   diffRibbonNote:
     'When the averages bunch together, difficulty has stopped rising and miners are under pressure. Now they are {p}% apart.',
   last2y: 'Last 2 years',
+  blkFeesChart: 'Fees per block',
+  feeShareChart: 'Fees in miner income',
+  blkSizeChart: 'Block size',
 };
