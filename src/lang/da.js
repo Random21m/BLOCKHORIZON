@@ -533,4 +533,20 @@ export default {
   privTypes:
     'Adressetyper: kun ét output har samme slags adresse som inputtene, hvilket tyder på, at det er byttepengene.',
   privNone: 'Ingen almindelige lækager af privatliv fundet.',
+  mpHist: 'Mempool efter gebyrsats',
+  mpNote:
+    'Hvor meget der ventede på at blive minet, fordelt efter den gebyrsats, det betaler: grøn for lave gebyrer, rød for høje. Den stiplede linje er én blok.',
+  mpBlocks: 'cirka {n} blokke',
+  mpNext: 'Næste blok: cirka {a}–{b} sat/vB',
+  mpNextTop: 'Næste blok: {a} sat/vB eller mere',
+  mpNextLow: 'Næste blok: under {b} sat/vB',
+  mpNextAll: 'Næste blok: alt, der venter, kan være der',
+  mpNextL: 'Næste blok (sat/vB)',
+  mpEmptier: 'Tommere nu end {p} % af tiden ({r})',
+  mpFuller: 'Fyldigere nu end {p} % af tiden ({r})',
+  mpNone:
+    'Denne graf kræver mempool.space eller din egen mempool-server; reserveserveren har den ikke. Prøv igen senere.',
+  mpLow: 'Medtag under 1 sat/vB',
+  r24h: '24 timer',
+  r1w: '1 uge',
 };

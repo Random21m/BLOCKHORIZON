@@ -540,4 +540,20 @@ export default {
   privTypes:
     'Adresstypen: Nur ein Ausgang hat denselben Adresstyp wie die Eingänge, was darauf hindeutet, dass er das Wechselgeld ist.',
   privNone: 'Keine üblichen Datenlecks gefunden.',
+  mpHist: 'Mempool nach Gebührensatz',
+  mpNote:
+    'Wie viel darauf wartete, gemined zu werden, aufgeteilt nach Gebührensatz: grün für niedrige Gebühren, rot für hohe. Die gestrichelte Linie ist ein Block.',
+  mpBlocks: 'etwa {n} Blöcke',
+  mpNext: 'Nächster Block: etwa {a}–{b} sat/vB',
+  mpNextTop: 'Nächster Block: {a} sat/vB oder mehr',
+  mpNextLow: 'Nächster Block: unter {b} sat/vB',
+  mpNextAll: 'Nächster Block: alles Wartende passt hinein',
+  mpNextL: 'Nächster Block (sat/vB)',
+  mpEmptier: 'Jetzt leerer als in {p}% der Zeit ({r})',
+  mpFuller: 'Jetzt voller als in {p}% der Zeit ({r})',
+  mpNone:
+    'Dieses Diagramm braucht mempool.space oder einen eigenen Mempool-Server; der Ersatzserver hat diese Daten nicht. Später erneut versuchen.',
+  mpLow: 'Unter 1 sat/vB einbeziehen',
+  r24h: '24 Stunden',
+  r1w: '1 Woche',
 };

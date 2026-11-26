@@ -538,4 +538,20 @@ export default {
   privTypes:
     'Tipos de endereço: só uma saída tem o mesmo tipo de endereço que as entradas, o que indica que é o troco.',
   privNone: 'Não foram encontradas fugas de privacidade comuns.',
+  mpHist: 'Mempool por taxa',
+  mpNote:
+    'Quanto aguardava para ser minerado, dividido pela taxa que paga: verde para taxas baixas, vermelho para altas. A linha tracejada é um bloco.',
+  mpBlocks: 'cerca de {n} blocos',
+  mpNext: 'Próximo bloco: cerca de {a}–{b} sat/vB',
+  mpNextTop: 'Próximo bloco: {a} sat/vB ou mais',
+  mpNextLow: 'Próximo bloco: abaixo de {b} sat/vB',
+  mpNextAll: 'Próximo bloco: cabe tudo o que aguarda',
+  mpNextL: 'Próximo bloco (sat/vB)',
+  mpEmptier: 'Agora mais vazia do que em {p}% do tempo ({r})',
+  mpFuller: 'Agora mais cheia do que em {p}% do tempo ({r})',
+  mpNone:
+    'Este gráfico precisa do mempool.space ou do seu próprio servidor mempool; o servidor de reserva não o tem. Tente mais tarde.',
+  mpLow: 'Incluir abaixo de 1 sat/vB',
+  r24h: '24 horas',
+  r1w: '1 semana',
 };

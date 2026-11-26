@@ -532,4 +532,20 @@ export default {
   privTypes:
     'Adres türleri: girdilerle aynı tür adrese sahip tek bir çıktı var, bu da onun para üstü olduğuna işaret ediyor.',
   privNone: 'Yaygın bir gizlilik sızıntısı bulunmadı.',
+  mpHist: 'Ücret oranına göre mempool',
+  mpNote:
+    'Ne kadarının madencilik için beklediği, ödediği ücret oranına göre ayrılmış: düşük ücretler yeşil, yüksekler kırmızı. Kesikli çizgi bir bloktur.',
+  mpBlocks: 'yaklaşık {n} blok',
+  mpNext: 'Sonraki blok: yaklaşık {a}–{b} sat/vB',
+  mpNextTop: 'Sonraki blok: {a} sat/vB veya üzeri',
+  mpNextLow: 'Sonraki blok: {b} sat/vB altı',
+  mpNextAll: 'Sonraki blok: bekleyen her şey sığıyor',
+  mpNextL: 'Sonraki blok (sat/vB)',
+  mpEmptier: 'Şu an {r} içindeki zamanın %{p} kadarından daha boş',
+  mpFuller: 'Şu an {r} içindeki zamanın %{p} kadarından daha dolu',
+  mpNone:
+    'Bu grafik için mempool.space veya kendi mempool sunucunuz gerekir; yedek sunucuda bu veri yok. Daha sonra tekrar deneyin.',
+  mpLow: '1 sat/vB altını dahil et',
+  r24h: '24 saat',
+  r1w: '1 hafta',
 };

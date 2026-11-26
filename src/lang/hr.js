@@ -533,4 +533,20 @@ export default {
   privRound: 'Okrugli iznos: jedan izlaz je okrugao broj, pa je drugi vjerojatno ostatak koji se vraća.',
   privTypes: 'Vrste adresa: samo jedan izlaz ima istu vrstu adrese kao ulazi, što upućuje na to da je on ostatak.',
   privNone: 'Nisu pronađena uobičajena curenja privatnosti.',
+  mpHist: 'Mempool po stopi naknade',
+  mpNote:
+    'Koliko je čekalo na rudarenje, podijeljeno po stopi naknade: zeleno za niske naknade, crveno za visoke. Isprekidana linija je jedan blok.',
+  mpBlocks: 'otprilike {n} blokova',
+  mpNext: 'Sljedeći blok: otprilike {a}–{b} sat/vB',
+  mpNextTop: 'Sljedeći blok: {a} sat/vB ili više',
+  mpNextLow: 'Sljedeći blok: ispod {b} sat/vB',
+  mpNextAll: 'Sljedeći blok: stane sve što čeka',
+  mpNextL: 'Sljedeći blok (sat/vB)',
+  mpEmptier: 'Sada prazniji nego {p} % vremena ({r})',
+  mpFuller: 'Sada puniji nego {p} % vremena ({r})',
+  mpNone:
+    'Ovaj grafikon treba mempool.space ili vaš vlastiti mempool poslužitelj; rezervni poslužitelj ga nema. Pokušajte kasnije.',
+  mpLow: 'Uključi ispod 1 sat/vB',
+  r24h: '24 sata',
+  r1w: '1 tjedan',
 };

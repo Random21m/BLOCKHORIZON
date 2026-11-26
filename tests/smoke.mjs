@@ -1170,6 +1170,79 @@ await ok(
   }
 );
 await ok(
+  'charts: mempool by fee rate, with its own ranges, the under-1 sat/vB switch, crosshair, table, and a message when only the backup server answers',
+  async () => {
+    const c = await b.newContext({ viewport: { width: 1280, height: 900 } });
+    const backup = [];
+    await c.routeWebSocket(/./, (ws) => ws.close());
+    await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
+      /mempool\.space|blockstream\.info/.test(r.request().url()) ? r.fallback() : r.abort()
+    );
+    await c.route(/blockstream\.info/, (route) => {
+      backup.push(new URL(route.request().url()).pathname);
+      route.fulfill({ status: 500, body: '' });
+    });
+    await c.route(/mempool\.space/, (route) => {
+      const u = new URL(route.request().url()).pathname;
+      if (u === '/api/v1/statistics/24h')
+        return route.fulfill({ contentType: 'application/json', body: fx('statistics-24h.json') });
+      if (u.startsWith('/api/v1/statistics/')) return route.fulfill({ status: 503, body: '' }); // as if mempool.space were down
+      const m = MOCK[u];
+      if (!m) return route.fulfill({ status: 404, body: '' });
+      route.fulfill({ contentType: m[0], body: fx(m[1]) });
+    });
+    const p = await c.newPage();
+    const perr = [];
+    p.on('pageerror', (e) => perr.push(e.message));
+    await p.goto(base + '#/charts');
+    await until(p, () => document.querySelector('#ch-mempool .lchart'), null, { timeout: 15000 });
+    assert.equal(await p.getAttribute('#ch-mempool [data-m="24h"]', 'aria-pressed'), 'true');
+    assert.equal(await p.getAttribute('#ch-mempool .mplow', 'aria-pressed'), 'false');
+    // the recorded day: almost all of it pays under 1 sat/vB, which is left out until asked for
+    const head = await p.locator('#ch-mempool .chead').innerText();
+    assert.match(
+      head,
+      /^0\.\d MvB[\s\S]*Next block: under 1 sat\/vB[\s\S]*(Emptier|Fuller) now than \d+% of the time over 24 hours/,
+      head
+    );
+    const areas = await p.locator('#ch-mempool path.area').count();
+    assert.ok(areas >= 3, 'one area per fee band in use: ' + areas);
+    assert.match(await p.locator('#ch-mempool .mplegend').innerText(), /^1[\s\S]*sat\/vB/);
+    await p.click('#ch-mempool .mplow');
+    await until(p, () => /^\d\d MvB/.test(document.querySelector('#ch-mempool .cval')?.textContent || ''));
+    assert.match(await p.locator('#ch-mempool .chead').innerText(), /about \d\d blocks/);
+    assert.equal(await p.locator('#ch-mempool path.area').count(), areas + 1, 'the lowest band is back');
+    assert.match(await p.locator('#ch-mempool .mplegend').innerText(), /^0/);
+    // crosshair: size, where the next block would end, and when
+    await p.locator('#ch-mempool .plot').scrollIntoViewIfNeeded();
+    const box = await p.locator('#ch-mempool .plot').boundingBox();
+    await p.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.5);
+    assert.match(await p.locator('#ch-mempool .tip').innerText(), /MvB\s+Next block: [\s\S]*sat\/vB\s+\d+\/\d+\/\d{4}/);
+    await p.focus('#ch-mempool .lchart');
+    await p.keyboard.press('Home');
+    assert.match(await p.locator('#ch-mempool [aria-live]').innerText(), /MvB, Next block/);
+    await p.click('#ch-mempool summary');
+    assert.equal(await p.locator('#ch-mempool tbody tr').count(), 13);
+    assert.match(await p.locator('#ch-mempool tbody tr').first().innerText(), /MvB\s+\d+\+/);
+    // the setting is kept
+    assert.equal(await p.evaluate(() => JSON.parse(localStorage.getItem('bh.settings')).mpLow), true);
+    // a week is not answering: the panel says the backup server cannot stand in, and never asks it
+    await p.click('#ch-mempool [data-m="1w"]');
+    await until(p, () => /backup server does not have it/.test(document.querySelector('#ch-mempool').textContent));
+    assert.equal(await p.getAttribute('#ch-mempool [data-m="1w"]', 'aria-pressed'), 'true');
+    assert.ok(!backup.some((u) => u.includes('statistics')), 'the backup server was asked: ' + backup.join(' '));
+    await p.click('#ch-mempool [data-m="24h"]');
+    await until(p, () => document.querySelector('#ch-mempool .lchart'));
+    await p.setViewportSize({ width: 360, height: 800 });
+    assert.ok(
+      await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+      'no sideways scroll on a phone'
+    );
+    assert.deepEqual(perr, []);
+    await c.close();
+  }
+);
+await ok(
   'trading chart: Kraken candles, live updates, timeframes, indicators, crosshair, zoom, keyboard reading',
   async () => {
     const c = await b.newContext({ viewport: { width: 1280, height: 900 } });

@@ -536,4 +536,20 @@ export default {
   privTypes:
     'Adrestypes: maar één output heeft hetzelfde soort adres als de inputs, wat erop wijst dat het het wisselgeld is.',
   privNone: 'Geen gangbare privacylekken gevonden.',
+  mpHist: 'Mempool per tarief',
+  mpNote:
+    'Hoeveel er wachtte om gemined te worden, verdeeld naar het tarief dat het betaalt: groen voor lage fees, rood voor hoge. De stippellijn is één blok.',
+  mpBlocks: 'ongeveer {n} blokken',
+  mpNext: 'Volgend blok: ongeveer {a}–{b} sat/vB',
+  mpNextTop: 'Volgend blok: {a} sat/vB of meer',
+  mpNextLow: 'Volgend blok: onder {b} sat/vB',
+  mpNextAll: 'Volgend blok: alles wat wacht past erin',
+  mpNextL: 'Volgend blok (sat/vB)',
+  mpEmptier: 'Nu leger dan {p}% van de tijd ({r})',
+  mpFuller: 'Nu voller dan {p}% van de tijd ({r})',
+  mpNone:
+    'Deze grafiek heeft mempool.space of je eigen mempool-server nodig; de reserveserver heeft deze gegevens niet. Probeer het later opnieuw.',
+  mpLow: 'Onder 1 sat/vB meenemen',
+  r24h: '24 uur',
+  r1w: '1 week',
 };

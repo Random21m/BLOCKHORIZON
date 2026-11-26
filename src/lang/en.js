@@ -527,4 +527,20 @@ export default {
   privRound: 'Round amount: one output is a round number, so the other is probably the change coming back.',
   privTypes: 'Address types: only one output has the same kind of address as the inputs, which hints it is the change.',
   privNone: 'No common privacy leaks found.',
+  mpHist: 'Mempool by fee rate',
+  mpNote:
+    'How much was waiting to be mined, split by the fee rate it pays: green for low fees, red for high. The dashed line is one block.',
+  mpBlocks: 'about {n} blocks',
+  mpNext: 'Next block: about {a}–{b} sat/vB',
+  mpNextTop: 'Next block: {a} sat/vB or more',
+  mpNextLow: 'Next block: under {b} sat/vB',
+  mpNextAll: 'Next block: everything waiting fits',
+  mpNextL: 'Next block (sat/vB)',
+  mpEmptier: 'Emptier now than {p}% of the time over {r}',
+  mpFuller: 'Fuller now than {p}% of the time over {r}',
+  mpNone:
+    'This chart needs mempool.space or your own mempool server; the backup server does not have it. Try again later.',
+  mpLow: 'Include under 1 sat/vB',
+  r24h: '24 hours',
+  r1w: '1 week',
 };

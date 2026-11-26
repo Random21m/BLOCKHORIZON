@@ -939,6 +939,7 @@ test('backup source: only the essentials map to blockstream.info, and its fee es
   assert.equal(esploraFor('/v1/fees/recommended').path, '/fee-estimates');
   assert.equal(esploraFor('/v1/difficulty-adjustment'), null);
   assert.equal(esploraFor('/v1/mining/pools/1w'), null);
+  assert.equal(esploraFor('/v1/statistics/24h'), null, 'the mempool history is mempool.space only');
   assert.deepEqual(esploraFees({ 1: 12.34, 3: 8, 6: 5.06, 144: 0.4 }), {
     fastestFee: 12.3,
     halfHourFee: 8,
@@ -972,4 +973,49 @@ test('blocks from a refresh merge with the live ones: newest first, one per heig
     ).length,
     15
   );
+});
+
+test('mempool history by fee rate: bands, next block, stacked layers, how full compared with the range', () => {
+  const raw = JSON.parse(fs.readFileSync(new URL('./fixtures/statistics-24h.json', import.meta.url), 'utf8'));
+  const h = L.mempoolHistory(raw);
+  assert.equal(h.length, raw.length);
+  assert.ok(
+    h.every((p, i) => !i || p.t >= h[i - 1].t),
+    'ascending'
+  );
+  assert.equal(h[0].b.length, L.FEE_BREAKS.length);
+  const last = h[h.length - 1],
+    src = raw.reduce((a, r) => (r.added > a.added ? r : a));
+  assert.equal(last.t, src.added * 1000);
+  assert.equal(
+    last.v,
+    src.vsizes.reduce((a, x) => a + x, 0)
+  );
+  assert.deepEqual(L.mempoolHistory(null), []);
+  assert.deepEqual(L.mempoolHistory([{ added: 'x' }, { added: 5, vsizes: [3, -1] }]), [
+    { t: 5000, v: 3, b: [3].concat(Array(L.FEE_BREAKS.length - 1).fill(0)) },
+  ]);
+  // next block: filled from the top band down until 1,000,000 vB
+  const b = Array(L.FEE_BREAKS.length).fill(0);
+  b[0] = 5e6;
+  b[4] = 600000;
+  b[10] = 300000;
+  assert.equal(L.nextBlockBand(b), 0); // 300k at 15-20 and 600k at 4-5 make 900k: the block ends in the lowest band
+  b[4] = 800000;
+  assert.equal(L.nextBlockBand(b), 4); // now 1.1M from 4 sat/vB up
+  assert.equal(L.FEE_BREAKS[L.nextBlockBand(b)], 4);
+  assert.equal(L.nextBlockBand([1, 2, 3]), -1, 'everything fits');
+  assert.equal(L.nextBlockBand(b, 100000), 10, 'a smaller block ends in the top band');
+  // stacked layers: only bands that hold something, each top edge the running total
+  const pts = [
+    { t: 1, v: 3, b: [1, 0, 2] },
+    { t: 2, v: 4, b: [0, 0, 4] },
+  ];
+  assert.deepEqual(L.bandLayers(pts), [
+    { band: 0, top: [1, 0] },
+    { band: 2, top: [3, 4] },
+  ]);
+  assert.equal(L.shareAbove(pts, 3), 50);
+  assert.equal(L.shareAbove(pts, 4), 0);
+  assert.ok(Number.isNaN(L.shareAbove([], 1)));
 });

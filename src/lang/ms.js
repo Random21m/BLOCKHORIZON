@@ -538,4 +538,20 @@ export default {
   privTypes:
     'Jenis alamat: hanya satu output mempunyai jenis alamat yang sama dengan input, yang membayangkan ia ialah baki.',
   privNone: 'Tiada kebocoran privasi biasa ditemui.',
+  mpHist: 'Mempool mengikut kadar yuran',
+  mpNote:
+    'Berapa banyak yang menunggu untuk dilombong, dibahagi mengikut kadar yuran yang dibayar: hijau untuk yuran rendah, merah untuk tinggi. Garis putus-putus ialah satu blok.',
+  mpBlocks: 'kira-kira {n} blok',
+  mpNext: 'Blok seterusnya: kira-kira {a}–{b} sat/vB',
+  mpNextTop: 'Blok seterusnya: {a} sat/vB atau lebih',
+  mpNextLow: 'Blok seterusnya: bawah {b} sat/vB',
+  mpNextAll: 'Blok seterusnya: semua yang menunggu muat',
+  mpNextL: 'Blok seterusnya (sat/vB)',
+  mpEmptier: 'Kini lebih kosong berbanding {p}% masa dalam {r}',
+  mpFuller: 'Kini lebih penuh berbanding {p}% masa dalam {r}',
+  mpNone:
+    'Carta ini memerlukan mempool.space atau pelayan mempool anda sendiri; pelayan sandaran tidak memilikinya. Cuba lagi nanti.',
+  mpLow: 'Sertakan bawah 1 sat/vB',
+  r24h: '24 jam',
+  r1w: '1 minggu',
 };

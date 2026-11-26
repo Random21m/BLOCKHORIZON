@@ -1971,6 +1971,56 @@ html {
   stroke-width: 1;
   stroke-dasharray: 4 4;
 }
+/* mempool by fee rate: stacked areas in the fee colours, the total as a thin line on top, a ramp of the colours used */
+#ch-mempool {
+  margin-top: 14px;
+}
+.mpbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin: 2px 0 8px;
+}
+.mpbar .tabs {
+  margin: 0;
+  flex-wrap: wrap;
+}
+.mpbar button {
+  min-width: 0;
+  padding-left: 10px;
+  padding-right: 10px;
+  white-space: nowrap;
+}
+.lchart .area {
+  stroke: none;
+}
+.lchart .ln.mptotal {
+  stroke: var(--text);
+  stroke-width: 1;
+}
+.mpnote {
+  font-size: 12px;
+  margin: 0 0 6px;
+}
+.mplegend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--dim);
+  margin-bottom: 6px;
+}
+.mpramp {
+  display: flex;
+  flex: 0 1 220px;
+  height: 8px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.mpramp i {
+  flex: 1;
+}
 .clegend {
   display: flex;
   flex-wrap: wrap;

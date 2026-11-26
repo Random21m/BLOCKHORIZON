@@ -535,4 +535,20 @@ export default {
   privRound: 'Jumlah bulat: satu output berupa angka bulat, jadi output lainnya kemungkinan kembalian.',
   privTypes: 'Jenis alamat: hanya satu output yang jenis alamatnya sama dengan input, yang menandakan itu kembalian.',
   privNone: 'Tidak ditemukan kebocoran privasi yang umum.',
+  mpHist: 'Mempool menurut tarif biaya',
+  mpNote:
+    'Berapa banyak yang menunggu ditambang, dibagi menurut tarif biaya yang dibayar: hijau untuk biaya rendah, merah untuk tinggi. Garis putus-putus adalah satu blok.',
+  mpBlocks: 'sekitar {n} blok',
+  mpNext: 'Blok berikutnya: sekitar {a}–{b} sat/vB',
+  mpNextTop: 'Blok berikutnya: {a} sat/vB atau lebih',
+  mpNextLow: 'Blok berikutnya: di bawah {b} sat/vB',
+  mpNextAll: 'Blok berikutnya: semua yang menunggu muat',
+  mpNextL: 'Blok berikutnya (sat/vB)',
+  mpEmptier: 'Kini lebih kosong dari {p}% waktu selama {r}',
+  mpFuller: 'Kini lebih penuh dari {p}% waktu selama {r}',
+  mpNone:
+    'Grafik ini butuh mempool.space atau server mempool Anda sendiri; server cadangan tidak memilikinya. Coba lagi nanti.',
+  mpLow: 'Sertakan di bawah 1 sat/vB',
+  r24h: '24 jam',
+  r1w: '1 minggu',
 };
