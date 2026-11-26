@@ -7,11 +7,15 @@ export const LANGS = {
   de: 'Deutsch',
   es: 'Español',
   fr: 'Français',
-  pt: 'Português',
+  pt: 'Português (Portugal)',
+  'pt-BR': 'Português (Brasil)',
   it: 'Italiano',
   nl: 'Nederlands',
   tr: 'Türkçe',
+  ru: 'Русский',
   ja: '日本語',
+  ko: '한국어',
+  zh: '简体中文',
 };
 const T = { en: EN }; // the languages loaded so far
 const loading = {};
@@ -47,7 +51,10 @@ export function t(k, v) {
   return v ? s.replace(/\{(\w+)\}/g, (m, x) => (v[x] != null ? String(v[x]) : m)) : s;
 }
 export const getLang = () => cur;
-export function detectLang() {
-  const n = ((typeof navigator !== 'undefined' && navigator.language) || 'en').slice(0, 2);
-  return LANGS[n] ? n : 'en';
+// The browser's language: an exact match first (pt-BR), then the language alone (de-AT -> de, zh-TW -> zh, pt-PT -> pt).
+export function detectLang(tag = (typeof navigator !== 'undefined' && navigator.language) || 'en') {
+  const [l, r] = String(tag).split(/[-_]/),
+    full = l.toLowerCase() + (r ? '-' + r.toUpperCase() : '');
+  if (LANGS[full]) return full;
+  return LANGS[l.toLowerCase()] ? l.toLowerCase() : 'en';
 }
