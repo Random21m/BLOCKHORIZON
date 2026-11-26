@@ -641,4 +641,8 @@ export default {
   blkHealthNote:
     'mempool.space pagal savo mempool apskaičiuoja, kokių transakcijų tikėjosi šiame bloke. Mažiau nei 100 % reiškia, kad kasėjas kai kurias iš jų praleido.',
   blkHealthNone: 'Šiam blokui nepasiekiama: blokus lygina tik mempool.space, ir tik naujausius.',
+  addrQr: 'QR kodas',
+  addrQrAria: 'Adreso {a} QR kodas',
+  addrQrNote:
+    'Nuskaitykite jį pinigine, kad sumokėtumėte šiuo adresu. Sukurtas šiame įrenginyje; patikrinkite adresą, kurį rodo jūsų piniginė.',
 };

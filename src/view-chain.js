@@ -396,6 +396,31 @@ function txAlertRow(id) {
 }
 // An address: its balance and recent transactions, from the data server. The page says where it was looked up.
 export let addrToken = 0;
+// A QR code of the address (as a bitcoin: link, which wallets read), drawn on this device: dark on white in both
+// themes, with a quiet zone, as scanners expect.
+function addrQr(a) {
+  const q = L.qrEncode('bitcoin:' + a);
+  if (!q) return null;
+  const n = q.size + 8;
+  let d = '';
+  for (let y = 0; y < q.size; y++) for (let x = 0; x < q.size; x++) if (q.get(x, y)) d += `M${x + 4} ${y + 4}h1v1h-1z`;
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', `0 0 ${n} ${n}`);
+  svg.setAttribute('class', 'qr');
+  svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', t('addrQrAria', { a }));
+  svg.setAttribute('shape-rendering', 'crispEdges');
+  // a whole number of pixels per module (about 240 px in all), so every square comes out the same size
+  svg.setAttribute('width', String(n * Math.max(2, Math.floor(240 / n))));
+  svg.innerHTML = `<rect width="${n}" height="${n}" fill="#fff"/><path fill="#000" d="${d}"/>`;
+  return el(
+    'section',
+    { class: 'panel', id: 'addr-qr' },
+    el('h2', { class: 'sec' }, t('addrQr')),
+    svg,
+    el('p', { class: 'dim note' }, t('addrQrNote'))
+  );
+}
 export function viewAddress(a) {
   const root = el('div'),
     tok = ++addrToken;
@@ -405,7 +430,7 @@ export function viewAddress(a) {
     el('p', { class: 'dim mono txid' }, a)
   );
   const body = el('div', { class: 'panel' }, t('loading'));
-  root.append(body, el('p', { class: 'dim', id: 'addr-where' }, t('addrLookedUp', { s: lookupHost() })));
+  root.append(body, el('p', { class: 'dim', id: 'addr-where' }, t('addrLookedUp', { s: lookupHost() })), addrQr(a));
   (async () => {
     try {
       const [info, txs] = await Promise.all([api.address(a), api.addrTxs(a).catch(() => [])]);

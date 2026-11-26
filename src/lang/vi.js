@@ -634,4 +634,8 @@ export default {
   blkHealthNote:
     'mempool.space dựa vào mempool của chính mình để tính những giao dịch mà nó dự kiến khối này chứa. Dưới 100% nghĩa là thợ đào đã bỏ ra một số giao dịch trong đó.',
   blkHealthNone: 'Không có cho khối này: chỉ mempool.space so sánh các khối, và chỉ các khối gần đây.',
+  addrQr: 'Mã QR',
+  addrQrAria: 'Mã QR của địa chỉ {a}',
+  addrQrNote:
+    'Quét bằng ví để thanh toán tới địa chỉ này. Mã được tạo trên thiết bị này; hãy kiểm tra địa chỉ mà ví của bạn hiển thị.',
 };

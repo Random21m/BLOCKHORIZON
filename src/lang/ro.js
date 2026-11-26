@@ -646,4 +646,8 @@ export default {
   blkHealthNote:
     'mempool.space deduce din propriul mempool ce tranzacții se aștepta să conțină acest bloc. Sub 100% înseamnă că minerul a omis unele dintre ele.',
   blkHealthNone: 'Indisponibil pentru acest bloc: doar mempool.space compară blocurile, și doar pe cele recente.',
+  addrQr: 'Cod QR',
+  addrQrAria: 'Codul QR al adresei {a}',
+  addrQrNote:
+    'Scanează-l cu un portofel ca să plătești la această adresă. Generat pe acest dispozitiv; verifică adresa afișată de portofel.',
 };

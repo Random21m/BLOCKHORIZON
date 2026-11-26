@@ -635,4 +635,8 @@ export default {
   blkHealthNote:
     'mempool.space ze svého vlastního mempoolu odvozuje, které transakce v tomto bloku očekával. Méně než 100 % znamená, že těžař některé z nich vynechal.',
   blkHealthNone: 'Pro tento blok není k dispozici: bloky porovnává jen mempool.space, a jen ty nedávné.',
+  addrQr: 'QR kód',
+  addrQrAria: 'QR kód adresy {a}',
+  addrQrNote:
+    'Naskenujte ho peněženkou a zaplaťte na tuto adresu. Vytvořeno v tomto zařízení; zkontrolujte adresu, kterou ukazuje peněženka.',
 };

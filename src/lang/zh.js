@@ -607,4 +607,7 @@ export default {
   blkHealthNote:
     'mempool.space 根据自己的内存池推算出它预期这个区块会包含哪些交易。低于 100% 表示矿工遗漏了其中一部分。',
   blkHealthNone: '此区块无法提供：只有 mempool.space 会比较区块，而且只比较最近的区块。',
+  addrQr: 'QR 码',
+  addrQrAria: '地址 {a} 的 QR 码',
+  addrQrNote: '用钱包扫描即可向此地址付款。二维码在本设备上生成；请核对钱包显示的地址。',
 };

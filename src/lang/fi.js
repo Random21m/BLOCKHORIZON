@@ -644,4 +644,8 @@ export default {
   blkHealthNote:
     'mempool.space päättelee omasta mempoolistaan, mitä siirtoja se odotti tähän lohkoon. Alle 100 % tarkoittaa, että louhija jätti osan niistä pois.',
   blkHealthNone: 'Ei saatavilla tälle lohkolle: vain mempool.space vertaa lohkoja, ja vain tuoreita.',
+  addrQr: 'QR-koodi',
+  addrQrAria: 'Osoitteen {a} QR-koodi',
+  addrQrNote:
+    'Skannaa se lompakolla maksaaksesi tähän osoitteeseen. Luotu tällä laitteella; tarkista osoite, jonka lompakkosi näyttää.',
 };

@@ -637,4 +637,8 @@ export default {
   blkHealthNote:
     'mempool.space na podstawie własnego mempoola ustala, jakich transakcji oczekiwał w tym bloku. Mniej niż 100% oznacza, że górnik część z nich pominął.',
   blkHealthNone: 'Niedostępne dla tego bloku: bloki porównuje tylko mempool.space, i tylko te najnowsze.',
+  addrQr: 'Kod QR',
+  addrQrAria: 'Kod QR adresu {a}',
+  addrQrNote:
+    'Zeskanuj go portfelem, aby zapłacić na ten adres. Wygenerowany na tym urządzeniu; sprawdź adres, który pokazuje portfel.',
 };

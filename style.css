@@ -3388,3 +3388,14 @@ body.eink .clock-h {
 .sendstatus .btn-go {
   margin-top: 4px;
 }
+/* an address as a QR code: black on white in both themes, never wider than a phone allows */
+#addr-qr {
+  margin-top: 14px;
+}
+#addr-qr .qr {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 8px auto;
+  border-radius: 4px;
+}
