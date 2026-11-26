@@ -1615,6 +1615,8 @@ export function inflationAt(h) {
   if (!(h >= 0)) return NaN;
   const s = supplyAt(h);
   return s > 0 ? ((supplyAt(h + BLOCKS_YEAR) - s) / s) * 100 : NaN;
+}
+
 // ---- Block health: how closely a mined block matched the block mempool.space expected from its own mempool ----
 // From the block (extras.matchRate, expectedFees) and, when there is one, its audit summary (lists of txids):
 // { match (%), fees, expected (sats), missing (expected but left out), added (in it but not expected), fresh (of
