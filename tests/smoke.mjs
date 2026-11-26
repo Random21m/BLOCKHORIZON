@@ -2346,7 +2346,7 @@ await ok(
   'Japanese, Chinese, Korean, Russian, Ukrainian, Hindi, Arabic, Persian, Hebrew, Thai, Bengali, Greek, Indonesian, Vietnamese, Malay, Polish, Czech, Swedish, Danish, Norwegian, Finnish, Hungarian and Romanian: menu, dashboard and glossary are translated',
   async () => {
     // one script per language, or (for languages in Latin letters) a few words only the translation has, for the menu
-    // and for the glossary
+    // and for the glossary; menu words come from its first items, which never fold into More, whatever the font's width
     for (const [lang, script, gloss = script] of [
       ['ja', /[\u3040-\u30ff]/],
       ['zh', /[\u4e00-\u9fff]/],
@@ -2360,17 +2360,17 @@ await ok(
       ['fa', /[\u067e\u0686\u0698\u06af\u06a9\u06cc]/], // letters only Persian uses (پ چ ژ گ ک ی)
       ['he', /[\u05d0-\u05ea]/],
       ['th', /[\u0e00-\u0e7f]/],
-      ['cs', /Kalkulačka|Slovníček/, /Výška bloku|Obtížnost/],
-      ['sv', /Ordlista|Kalkylator/, /Blockhöjd|Svårighetsgrad/],
+      ['cs', /Horizont|Budík|Těžba/, /Výška bloku|Obtížnost/],
+      ['sv', /Horisont|Larm/, /Blockhöjd|Svårighetsgrad/],
       ['el', /[\u0370-\u03ff]/],
       ['bn', /[\u0980-\u09ff]/],
-      ['da', /Lommeregner|Ordliste/, /Blokhøjde|Sværhedsgrad/],
-      ['nb', /Ordliste|Kalkulator/, /Blokkhøyde|Vanskelighetsgrad/],
-      ['ro', /Glosar|Despre/, /Înălțimea blocului|Dificultate/],
-      ['ms', /Penggera|Glosari/, /Ketinggian blok|Kesukaran/],
-      ['fi', /Laskin|Sanasto/, /Lohkokorkeus|Vaikeus/],
-      ['hu', /Szószedet|Naptár/, /Blokkmagasság|Nehézség/],
-      ['pl', /Słowniczek|Kalendarz/, /Wysokość bloku|Trudność/],
+      ['da', /Horisont/, /Blokhøjde|Sværhedsgrad/],
+      ['nb', /Horisont|Utvinning/, /Blokkhøyde|Vanskelighetsgrad/],
+      ['ro', /Orizont|Alarmă/, /Înălțimea blocului|Dificultate/],
+      ['ms', /Penggera|Lombong/, /Ketinggian blok|Kesukaran/],
+      ['fi', /Horisontti|Hälytys|Louhinta/, /Lohkokorkeus|Vaikeus/],
+      ['hu', /Riasztás|Bányászat/, /Blokkmagasság|Nehézség/],
+      ['pl', /Horyzont|Kopanie/, /Wysokość bloku|Trudność/],
     ]) {
       const c = await b.newContext({ viewport: { width: 1280, height: 800 } });
       await c.routeWebSocket(/./, (ws) => ws.close());
