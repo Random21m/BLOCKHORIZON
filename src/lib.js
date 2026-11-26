@@ -374,7 +374,9 @@ export function txFlow(x) {
 // as on the Mining page). Each cell holds the index (into `list`, the transactions by fee rate) of the transaction
 // that covers the middle of its slice, or -1 when the block was not that full. The coinbase is left out: it pays no fee.
 export function blockCells(summary, cols, rows) {
-  const list = (Array.isArray(summary) ? summary : []).filter((x, i) => !(i === 0 && !x.fee)).sort((a, b) => b.rate - a.rate),
+  const list = (Array.isArray(summary) ? summary : [])
+      .filter((x, i) => !(i === 0 && !x.fee))
+      .sort((a, b) => b.rate - a.rate),
     total = list.reduce((a, x) => a + (x.vsize || 0), 0),
     n = cols * rows,
     unit = Math.max(total, 1e6) / n,

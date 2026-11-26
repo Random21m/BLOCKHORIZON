@@ -1,7 +1,7 @@
 // Block, transaction and address pages.
 import * as L from './lib.js';
 import { api, store, lookupHost } from './api.js';
-import { t } from './i18n.js';
+import { t, getLang, isRtl } from './i18n.js';
 import { S, st, fmtD, el, price, txAlerts } from './state.js';
 import { askNotify } from './data.js';
 import { pushAvailable } from './push.js';
@@ -123,8 +123,9 @@ const PAGE = 25;
 function blockList(hash, total, tok) {
   const tbody = el('tbody'),
     range = el('p', { class: 'dim', role: 'status' }),
-    prev = el('button', { id: 'blk-prev' }, '← ' + t('blkPrev', { n: PAGE })),
-    next = el('button', { id: 'blk-next' }, t('blkNext', { n: PAGE }) + ' →');
+    [back, fwd] = isRtl(getLang()) ? ['→', '←'] : ['←', '→'], // the arrows point the way the page reads
+    prev = el('button', { id: 'blk-prev' }, back + ' ' + t('blkPrev', { n: PAGE })),
+    next = el('button', { id: 'blk-next' }, t('blkNext', { n: PAGE }) + ' ' + fwd);
   let start = 0;
   const show = async () => {
     prev.disabled = next.disabled = true;

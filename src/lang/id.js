@@ -535,4 +535,12 @@ export default {
   privRound: 'Jumlah bulat: satu output berupa angka bulat, jadi output lainnya kemungkinan kembalian.',
   privTypes: 'Jenis alamat: hanya satu output yang jenis alamatnya sama dengan input, yang menandakan itu kembalian.',
   privNone: 'Tidak ditemukan kebocoran privasi yang umum.',
+  blkPicture: 'Isinya apa saja',
+  blkPicNote:
+    'Setiap kotak adalah sepotong blok, diwarnai menurut tarif biaya, biaya tertinggi di bawah. Ketuk salah satunya untuk membuka transaksinya.',
+  blkPicAria: 'Gambar blok: {n} transaksi, tarif biaya dari {lo} sampai {hi} sat/vB',
+  blkPicNone: 'Gambar ini berasal dari mempool.space, yang sedang tidak merespons.',
+  blkTxRange: 'Transaksi {a}–{b} dari {n}',
+  blkPrev: '{n} sebelumnya',
+  blkNext: '{n} berikutnya',
 };

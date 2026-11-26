@@ -511,4 +511,11 @@ export default {
   privRound: '整数金额：一个输出是整数，因此另一个很可能是找零。',
   privTypes: '地址类型：只有一个输出的地址类型与输入相同，暗示它是找零。',
   privNone: '未发现常见的隐私泄露。',
+  blkPicture: '里面有什么',
+  blkPicNote: '每个方块是区块的一部分，按费率着色，费用最高的在最下面。点一个即可打开它的交易。',
+  blkPicAria: '区块图：{n} 笔交易，费率从 {lo} 到 {hi} sat/vB',
+  blkPicNone: '这张图来自 mempool.space，它现在没有响应。',
+  blkTxRange: '第 {a}–{b} 笔交易，共 {n} 笔',
+  blkPrev: '上 {n} 笔',
+  blkNext: '下 {n} 笔',
 };

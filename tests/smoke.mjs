@@ -351,14 +351,19 @@ await ok('block page: details, a picture of what was in it, and its transactions
     await until(page, () => /^Transactions 26–/.test(document.querySelector('#blk-txs p.dim').textContent));
     assert.ok(!(await page.isDisabled('#blk-prev')));
   }
-  // the highest-fee square sits at the bottom left; tapping it opens that transaction
+  // squares fill from the bottom left by fee rate, each a 400 vB slice here (a full block's 1,000,000 vB / 2,500): the
+  // first slice's middle (200 vB) lies past the top payer (187 vB), in the next one, which tapping it opens
+  await page.locator('#blk-pic canvas').scrollIntoViewIfNeeded();
   const bx = await page.locator('#blk-pic canvas').boundingBox();
   await page.mouse.click(bx.x + 2, bx.y + bx.height - 2);
   await until(page, () => location.hash.startsWith('#/tx/'));
   assert.equal(
     await page.evaluate(() => location.hash),
-    '#/tx/2bb85f4b004be6da54f766c17c1e855187327112c231ef2ff35ebad0ea67c69e'
+    '#/tx/152b928e97bb9e874da1bd4abdf766ae0cdc7a2f260dad5542967cb414c58489'
   );
+  await page.goto(base + '#/block/840000'); // the next test starts from the block page
+  await page.waitForSelector('.panel dl', { timeout: 6000 });
+  await page.evaluate(() => scrollTo(0, 0));
 });
 await ok('block page has a visible way back to the dashboard on a phone', async () => {
   const back = page.locator('main a.back');
