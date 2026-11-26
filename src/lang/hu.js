@@ -281,7 +281,7 @@ export default {
   estAt: ' · kb. {d}',
   avgOf: '{p} átlag: {v}',
   issued: '{p}% kibocsátva',
-  btcLeft: ' · {n} BTC van hátra',
+  btcLeft: ' · még {n} BTC',
   full: '{p}% tele',
   feesRange: 'díjak: {a}–{b} sat/vB',
   fastSlow: '{f} gyors · {s} lassú · cél 10p',
@@ -434,7 +434,8 @@ export default {
   reduce: 'Kevesebb mozgás (nincs átmenet)',
   storedOnly: 'A beállítások csak ebben a böngészőben tárolódnak.',
   tab_tiles: 'Irányítópult',
-  tilesIntro: 'Válaszd ki, mely csempék látszanak az irányítópulton, és milyen sorrendben. A blokkmagasság mindig az első.',
+  tilesIntro:
+    'Válaszd ki, mely csempék látszanak az irányítópulton, és milyen sorrendben. A blokkmagasság mindig az első.',
   moveUp: '{t} feljebb',
   moveDown: '{t} lejjebb',
   tilesReset: 'Vissza az alap irányítópultra',
@@ -459,7 +460,8 @@ export default {
   txAlertSetPhone: 'Hangjelzést és üzenetet kapsz, amikor bekerül egy blokkba, és a node-od a telefonodnak is szól.',
   txConfirmedMsg: 'A(z) {id} tranzakciód megerősítve, blokk: {h}',
   txAlertsTitle: 'Tranzakciók',
-  txAlertsIntro: 'Hangjelzés és üzenet, amikor ezek bekerülnek egy blokkba. Egy várakozó tranzakció oldalán állíthatod be.',
+  txAlertsIntro:
+    'Hangjelzés és üzenet, amikor ezek bekerülnek egy blokkba. Egy várakozó tranzakció oldalán állíthatod be.',
   minutes: '{n} perc',
   staleFor: '{m} perce nincs új adat: ellenőrizd a kapcsolatot vagy a node-odat.',
   addrTitle: 'Cím figyelése',
@@ -508,12 +510,14 @@ export default {
   stuckTitle: 'Túl sokáig tart?',
   stuckIntro:
     'A díja alacsonyabb annál, amit a bányászok most elfogadnak. Átmegy, amint a díjak csökkennek, vagy felgyorsíthatod.',
-  stuckNow: 'A következő blokkhoz kb. {r} sat/vB kell: ez kb. {f} sats ennél a tranzakciónál, amely {p} satsot fizetett.',
+  stuckNow:
+    'A következő blokkhoz kb. {r} sat/vB kell: ez kb. {f} sats ennél a tranzakciónál, amely {p} satsot fizetett.',
   stuckRbf:
     'Cseréld le: abban a tárcában, amelyből küldted, keresd a „Bump fee”, „Speed up” vagy „Replace” (díjemelés, gyorsítás, csere) lehetőséget. Ugyanazt a fizetést küldi újra magasabb díjjal, kb. {f} sats.',
   stuckCpfp:
     'Fizesd meg egy követő tranzakcióval: ha ez a fizetés neked jött, küldd tovább ezeket a coinokat magadnak kb. {f} sats díjjal, így a bányászok a kettőt együtt veszik fel.',
-  stuckAcc: 'Fizess egy bányásznak: a mempool.space Accelerator szolgáltatása díj fejében megkéri a partner bányászpoolokat, hogy vegyék fel.',
+  stuckAcc:
+    'Fizess egy bányásznak: a mempool.space Accelerator szolgáltatása díj fejében megkéri a partner bányászpoolokat, hogy vegyék fel.',
   stuckAccLink: 'Gyorsítás a mempool.space-en',
   stuckWait:
     'Vagy várj: átmegy, amikor a díjak csökkennek. Ha soha nem bányásszák ki, a node-ok kb. két hét után elfelejtik, és a coinok visszakerülnek a tárcába.',

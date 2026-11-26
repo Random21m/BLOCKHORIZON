@@ -2343,7 +2343,7 @@ await ok('French: glossary and anniversaries are translated', async () => {
   await page.keyboard.press('Escape');
 });
 await ok(
-  'Japanese, Chinese, Korean, Russian, Ukrainian, Hindi, Arabic, Persian, Hebrew, Thai, Indonesian, Vietnamese, Polish, Czech and Swedish: menu, dashboard and glossary are translated',
+  'Japanese, Chinese, Korean, Russian, Ukrainian, Hindi, Arabic, Persian, Hebrew, Thai, Bengali, Greek, Indonesian, Vietnamese, Malay, Polish, Czech, Swedish, Danish, Norwegian, Finnish, Hungarian and Romanian: menu, dashboard and glossary are translated',
   async () => {
     // one script per language, or (for languages in Latin letters) a few words only the translation has, for the menu
     // and for the glossary
@@ -2369,6 +2369,7 @@ await ok(
       ['ro', /Glosar|Despre/, /Înălțimea blocului|Dificultate/],
       ['ms', /Penggera|Glosari/, /Ketinggian blok|Kesukaran/],
       ['fi', /Laskin|Sanasto/, /Lohkokorkeus|Vaikeus/],
+      ['hu', /Szószedet|Naptár/, /Blokkmagasság|Nehézség/],
       ['pl', /Słowniczek|Kalendarz/, /Wysokość bloku|Trudność/],
     ]) {
       const c = await b.newContext({ viewport: { width: 1280, height: 800 } });
