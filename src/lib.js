@@ -867,6 +867,65 @@ export const supplySeries = (r) =>
     ((r && r.difficulty) || []).map((p) => ({ t: p.time * 1000, v: p.height >= 0 ? supplyAt(p.height) / 1e8 : NaN }))
   );
 
+// The value of the bitcoins issued each day, in the price's currency: the day's blocks (at the pace of its difficulty
+// period, from the adjustments' heights and times) × the block subsidy then × that day's price. Fees are left out.
+export function issuanceValue(r, price) {
+  const ep = ((r && r.difficulty) || [])
+    .filter((p) => p && p.height >= 0 && p.time > 0)
+    .map((p) => ({ t: p.time * 1000, h: p.height }))
+    .sort((a, b) => a.t - b.t);
+  if (ep.length < 2) return [];
+  const out = [];
+  let j = 0;
+  for (const p of daily(price)) {
+    if (p.t < ep[0].t) continue;
+    while (j + 2 < ep.length && ep[j + 1].t <= p.t) j++;
+    const a = ep[j],
+      b = ep[j + 1],
+      rate = (b.h - a.h) / ((b.t - a.t) / DAY), // blocks a day in this period (after the last adjustment: the last pace)
+      h = a.h + (rate * (p.t - a.t)) / DAY;
+    out.push({ t: p.t, v: ((rate * subsidy(Math.round(h))) / 1e8) * p.v });
+  }
+  return out;
+}
+// Puell Multiple: the value issued each day divided by its 365-day average.
+export function puell(r, price) {
+  const d = issuanceValue(r, price),
+    ma = movingAvg(d, 365),
+    off = d.length - ma.length;
+  return ma.map((m, i) => ({ t: m.t, v: d[i + off].v / m.v }));
+}
+// Hash ribbons: the 30- and 60-day averages of the hashrate. `down` while the 30-day one is below (miners switching off,
+// "capitulation"), and since when it has been on that side.
+export function hashRibbons(r) {
+  const d = daily(SERIES.hashrate(r)),
+    short = movingAvg(d, 30),
+    long = movingAvg(d, 60);
+  if (!long.length) return { short, long, down: false, since: NaN };
+  const off = short.length - long.length,
+    below = (i) => short[i + off].v < long[i].v,
+    down = below(long.length - 1);
+  let i = long.length - 1;
+  while (i > 0 && below(i - 1) === down) i--;
+  return { short, long, down, since: long[i].t };
+}
+// Difficulty ribbon: moving averages of the difficulty over 9 to 200 days. When they bunch together, difficulty has
+// stopped rising; `spread` is how far apart (in %) the highest and lowest are on the last day.
+export const RIBBON_DAYS = [9, 14, 25, 40, 60, 90, 128, 200];
+export function diffRibbon(r) {
+  const d = daily(SERIES.difficulty(r)),
+    lines = RIBBON_DAYS.map((n) => ({ days: n, pts: movingAvg(d, n) })),
+    last = lines.map((l) => (l.pts.length ? l.pts[l.pts.length - 1].v : NaN)).filter(Number.isFinite);
+  return {
+    diff: d,
+    lines,
+    spread: last.length ? (Math.max(...last) / Math.min(...last) - 1) * 100 : NaN,
+  };
+}
+// The last `days` days of a series (counted back from its last point).
+export const lastDays = (pts, days) =>
+  pts.length ? pts.filter((p) => p.t >= pts[pts.length - 1].t - days * DAY) : pts;
+
 // ---- "Your block": a personal date on the chain ----
 export const GENESIS_TS = 1231006505; // 2009-01-03 18:15:05 UTC
 // 'YYYY-MM-DD' -> unix seconds at 12:00 UTC that day (the middle of the day in most time zones), or NaN.

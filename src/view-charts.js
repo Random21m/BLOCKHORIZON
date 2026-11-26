@@ -64,6 +64,7 @@ const CHARTS = [
 // Long-term charts: always all time, from the price history (in the chosen currency) and the difficulty adjustments.
 // Each build() returns the main line, optional extra lines and guides, and the line under the title.
 const priceAll = () => fetchOnce('price:' + S.cur, () => api.priceHistory(S.cur)).then((x) => L.SERIES.price(x, S.cur));
+const hrAll = () => fetchOnce('hr:all', () => api.hashrateHistory('all'));
 const money = (v) => L.fmtNum(v, v < 100 ? 2 : 0) + ' ' + S.cur;
 const times = (v) => '×' + L.trimZeros(L.fmtNum(v, v < 10 ? 2 : 0));
 const CYCLE_CLS = { 2012: 'c1', 2016: 'c2', 2020: 'c3', 2024: 'c4' };
@@ -97,6 +98,14 @@ const LONG = [
     },
   },
   {
+    id: 'puell',
+    title: () => t('chPuell'),
+    build: async () => {
+      const [price, r] = await Promise.all([priceAll(), hrAll()]);
+      return { pts: L.puell(r, price), guides: [1], note: t('puellNote'), fmt: times, axis: times, log: true };
+    },
+  },
+  {
     id: 'cycles',
     title: () => t('chCycles'),
     build: async () => {
@@ -125,7 +134,7 @@ const LONG = [
     id: 'supply',
     title: () => t('chSupply'),
     build: async () => {
-      const s = L.supplySeries(await fetchOnce('hr:all', () => api.hashrateHistory('all'))),
+      const s = L.supplySeries(await hrAll()),
         last = s[s.length - 1];
       return {
         pts: s,
@@ -134,6 +143,59 @@ const LONG = [
         fmt: (v) => L.fmtNum(v, 0) + ' BTC',
         axis: (v) => L.compact(v),
         log: false,
+      };
+    },
+  },
+  // the ribbons show the last two years: over all time their lines would lie on top of each other
+  {
+    id: 'ribbons',
+    title: () => t('chHashRibbons'),
+    build: async () => {
+      const hr = L.hashRibbons(await hrAll()),
+        n30 = t('maDays', { n: 30 }),
+        n60 = t('maDays', { n: 60 });
+      return {
+        pts: L.lastDays(hr.short, 730),
+        name: n30,
+        extra: [{ pts: L.lastDays(hr.long, 730), cls: 'c2', name: n60 }],
+        legend: [
+          [n30, ''],
+          [n60, 'c2'],
+        ],
+        note: hr.long.length ? t(hr.down ? 'ribbonDown' : 'ribbonUp', { d: fmtD(hr.since, { dateOnly: true }) }) : '',
+        fmt: L.fmtHashrate,
+        axis: L.fmtHashrate,
+        log: false,
+        span: t('last2y'),
+      };
+    },
+  },
+  {
+    id: 'diffribbon',
+    title: () => t('chDiffRibbon'),
+    build: async () => {
+      const dr = L.diffRibbon(await hrAll()),
+        k = dr.lines.length - 1;
+      return {
+        pts: L.lastDays(dr.diff, 730),
+        name: t('diffChart'),
+        // shortest average faint, longest strong; only those two are named in the tooltip
+        extra: dr.lines.map((l, i) => ({
+          pts: L.lastDays(l.pts, 730),
+          cls: 'rib',
+          op: (0.3 + (0.7 * i) / k).toFixed(2),
+          name: i === 0 || i === k ? t('maDays', { n: l.days }) : '',
+        })),
+        legend: [
+          [t('diffChart'), ''],
+          [t('ribbonAvgs'), 'rib'],
+        ],
+        note: Number.isFinite(dr.spread) ? t('diffRibbonNote', { p: L.fmtNum(dr.spread, 1) }) : '',
+        step: true, // difficulty changes only at each adjustment
+        fmt: L.fmtDifficulty,
+        axis: L.fmtDifficulty,
+        log: false,
+        span: t('last2y'),
       };
     },
   },
@@ -152,6 +214,7 @@ function longBody(c, d) {
       { class: 'chead' },
       d.days ? null : el('b', { class: 'cval' }, d.fmt(Number.isFinite(d.head) ? d.head : last.v)),
       d.note ? el('span', { class: 'dim' }, d.note) : null,
+      d.span ? el('span', { class: 'dim clog' }, d.span) : null,
       d.log ? el('span', { class: 'dim clog' }, t('logScale')) : null
     ),
     d.legend
@@ -163,6 +226,7 @@ function longBody(c, d) {
       : null,
     lineChart(pts, {
       log: d.log,
+      step: d.step,
       fmt: d.fmt,
       axis: d.axis,
       timeFmt,
@@ -170,7 +234,7 @@ function longBody(c, d) {
       extra,
       guides: d.guides,
       cls: d.cls,
-      label: t('chartAria', { n: c.title(), r: t('rAll'), a: d.fmt(pts[0].v), b: d.fmt(last.v) }),
+      label: t('chartAria', { n: c.title(), r: d.span || t('rAll'), a: d.fmt(pts[0].v), b: d.fmt(last.v) }),
     }),
   ].filter(Boolean);
 }
@@ -543,7 +607,12 @@ function lineChart(
         return `<path class="area" fill="${ly.fill}" d="${d}"/>`;
       })
       .join('') +
-    extra.map((x) => `<path class="ln ${x.cls}" vector-effect="non-scaling-stroke" d="${path(x.pts)}"/>`).join('') +
+    extra
+      .map(
+        (x) =>
+          `<path class="ln ${x.cls}"${x.op ? ` stroke-opacity="${x.op}"` : ''} vector-effect="non-scaling-stroke" d="${path(x.pts)}"/>`
+      )
+      .join('') +
     `<path class="ln ${cls}" vector-effect="non-scaling-stroke" d="${path(pts)}"/>`;
   const xh = el('div', { class: 'xh', hidden: true }),
     dot = el('div', { class: 'xd', hidden: true }),
@@ -569,11 +638,11 @@ function lineChart(
     dot.style.top = y + '%';
     tip.style.left = x + '%';
     tip.style.transform = `translate(${x < 18 ? '0' : x > 82 ? '-100%' : '-50%'}, -100%)`;
-    // the other lines at the same moment (when they reach it)
+    // the other named lines at the same moment (when they reach it)
     const others = extra
       .map((x) => {
         const q = x.pts[L.nearest(x.pts, p.t)];
-        return q && Math.abs(q.t - p.t) <= 8 * 864e5 ? x.name + ': ' + fmt(q.v) : '';
+        return x.name && q && Math.abs(q.t - p.t) <= 8 * 864e5 ? x.name + ': ' + fmt(q.v) : '';
       })
       .filter(Boolean)
       .concat(more ? more(cur) : []);

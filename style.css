@@ -1979,6 +1979,10 @@ html {
 .lchart .ln.c4 {
   stroke: var(--accent);
 }
+.lchart .ln.rib {
+  stroke: var(--violet);
+  stroke-width: 1.25;
+}
 .lchart .guide {
   stroke: var(--dim);
   stroke-width: 1;
@@ -2062,6 +2066,9 @@ html {
 .clegend .c2::before {
   background: var(--teal);
 }
+.clegend .rib::before {
+  background: var(--violet);
+}
 .clegend .c3::before {
   background: var(--blue);
 }
@@ -2080,6 +2087,7 @@ html {
   white-space: nowrap;
 }
 .lchart .xlabs {
+  direction: ltr; /* time runs left to right in every language, like the line above it */
   display: flex;
   justify-content: space-between;
   gap: 8px;
