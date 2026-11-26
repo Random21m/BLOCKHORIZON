@@ -610,6 +610,95 @@ export const GLOSSARY_TR = {
     ],
     ['Coinbase', 'A primeira transação de um bloco, em que o minerador recebe o subsídio e as taxas.'],
   ],
+  vi: [
+    [
+      'Timechain',
+      'Chuỗi khối Bitcoin có thứ tự. Mỗi khối trỏ về khối trước nó, nên thứ tự các sự kiện không thể bị lặng lẽ viết lại.',
+    ],
+    ['Khối', 'Một nhóm giao dịch được thợ đào thống nhất và thêm vào chuỗi, khoảng mười phút một lần.'],
+    [
+      'Chiều cao khối',
+      'Số khối nằm trước khối này. Khối đầu tiên (genesis) có chiều cao 0, nên chiều cao giống như chiếc đồng hồ chỉ đếm lên.',
+    ],
+    ['Kỷ nguyên', 'Một chặng 210.000 khối (khoảng bốn năm) mà trong đó phần thưởng khối giữ nguyên.'],
+    ['Halving', 'Sự kiện ở cuối mỗi kỷ nguyên, khi phần thưởng coin mới cho mỗi khối giảm còn một nửa.'],
+    ['Trợ cấp', 'Số bitcoin mới tạo ra mà thợ đào được nhận trong mỗi khối, chưa tính phí.'],
+    ['Nguồn cung', 'Toàn bộ bitcoin đã được tạo ra đến nay. Con số này không bao giờ vượt quá 21 triệu.'],
+    [
+      'Độ khó',
+      'Câu đố mà thợ đào phải giải khó đến mức nào. Nó được điều chỉnh sau mỗi 2.016 khối để giữ thời gian mỗi khối gần mười phút.',
+    ],
+    [
+      'Điều chỉnh độ khó',
+      'Chính lần điều chỉnh đó: nếu 2.016 khối vừa qua đến nhanh hơn mười phút mỗi khối thì độ khó tăng; nếu chậm hơn thì giảm.',
+    ],
+    [
+      'Hashrate',
+      'Số lần đoán mỗi giây mà tất cả thợ đào cùng thực hiện. Hashrate càng cao nghĩa là càng nhiều năng lượng bảo vệ chuỗi.',
+    ],
+    [
+      'Proof of work',
+      'Bằng chứng cho thấy công sức tính toán thật đã được bỏ ra để tạo một khối, khiến gian lận trở nên tốn kém.',
+    ],
+    ['Mempool', 'Phòng chờ của các giao dịch hợp lệ chưa được đưa vào khối nào.'],
+    ['Độ sâu mempool', 'Ước lượng cần bao nhiêu khối đầy để xử lý hết các giao dịch đang chờ.'],
+    [
+      'Mức phí',
+      'Số tiền một giao dịch trả cho mỗi đơn vị kích thước (sat/vB). Thợ đào thường chọn mức cao nhất trước.',
+    ],
+    ['vByte (vB)', 'Đơn vị đo kích thước giao dịch có tính đến ưu đãi của SegWit. Một khối chứa khoảng một triệu vB.'],
+    ['Sat', 'Một phần trăm triệu của một bitcoin, đơn vị nhỏ nhất.'],
+    ['Giờ Moscow', 'Một cách đọc đồng hồ vui: một đơn vị tiền tệ mua được bao nhiêu sats, hiển thị như giờ.'],
+    ['Node', 'Một máy tính tự kiểm tra mọi quy tắc và chuyển tiếp khối cùng giao dịch.'],
+    ['Mạng Lightning', 'Một lớp trên Bitcoin cho các khoản thanh toán nhỏ, nhanh qua các kênh được nạp tiền on-chain.'],
+    ['Coinbase', 'Giao dịch đầu tiên trong một khối, nơi thợ đào nhận trợ cấp và phí.'],
+  ],
+  hi: [
+    [
+      'टाइमचेन',
+      'बिटकॉइन ब्लॉकों की क्रम से जुड़ी चेन। हर ब्लॉक अपने पिछले ब्लॉक की ओर इशारा करता है, इसलिए घटनाओं का क्रम चुपचाप दोबारा नहीं लिखा जा सकता।',
+    ],
+    ['ब्लॉक', 'ट्रांज़ैक्शन का एक समूह जिस पर माइनर सहमत होते हैं और चेन में जोड़ते हैं, लगभग हर दस मिनट में एक बार।'],
+    [
+      'ब्लॉक ऊँचाई',
+      'इस ब्लॉक से पहले कितने ब्लॉक हैं। पहले ब्लॉक (जेनेसिस) की ऊँचाई 0 है, इसलिए ऊँचाई एक ऐसी घड़ी की तरह है जो सिर्फ़ आगे गिनती है।',
+    ],
+    ['युग', '210,000 ब्लॉकों (लगभग चार साल) का दौर, जिसमें ब्लॉक रिवॉर्ड एक जैसा रहता है।'],
+    ['हॉल्विंग', 'युग के अंत की वह घटना जब प्रति ब्लॉक नए कॉइन का रिवॉर्ड आधा हो जाता है।'],
+    ['सब्सिडी', 'नए बने बिटकॉइन जो माइनर हर ब्लॉक में ले सकता है, फ़ीस को छोड़कर।'],
+    ['सप्लाई', 'अब तक बने सारे बिटकॉइन। यह कभी 2.1 करोड़ से ज़्यादा नहीं हो सकती।'],
+    [
+      'डिफ़िकल्टी',
+      'माइनर जो पहेली हल करते हैं, वह कितनी मुश्किल है। ब्लॉकों को लगभग दस मिनट पर रखने के लिए इसे हर 2,016 ब्लॉक पर फिर से तय किया जाता है।',
+    ],
+    [
+      'डिफ़िकल्टी बदलाव',
+      'खुद यह नया तय करना: अगर पिछले 2,016 ब्लॉक दस मिनट प्रति ब्लॉक से तेज़ आए, तो डिफ़िकल्टी बढ़ती है; धीमे आए, तो घटती है।',
+    ],
+    [
+      'हैशरेट',
+      'माइनर मिलकर हर सेकंड कितने अंदाज़े लगाते हैं। ज़्यादा हैशरेट का मतलब है कि ज़्यादा ऊर्जा चेन की रक्षा कर रही है।',
+    ],
+    [
+      'प्रूफ़ ऑफ़ वर्क',
+      'इस बात का सबूत कि ब्लॉक बनाने में असली कंप्यूटिंग मेहनत लगी, जिससे धोखा देना महंगा हो जाता है।',
+    ],
+    ['मेमपूल', 'सही ट्रांज़ैक्शन का वेटिंग रूम, जो अभी किसी ब्लॉक में नहीं डाले गए हैं।'],
+    ['मेमपूल की गहराई', 'इंतज़ार कर रहे ट्रांज़ैक्शन निकालने में कितने भरे हुए ब्लॉक लगेंगे, इसकी मोटी गिनती।'],
+    [
+      'फ़ीस रेट',
+      'ट्रांज़ैक्शन साइज़ की हर इकाई के लिए कितना देता है (sat/vB)। माइनर आम तौर पर सबसे ऊँची रेट पहले चुनते हैं।',
+    ],
+    [
+      'vByte (vB)',
+      'ट्रांज़ैक्शन साइज़ की एक इकाई, जिसमें SegWit की छूट गिनी जाती है। एक ब्लॉक में लगभग दस लाख vB आते हैं।',
+    ],
+    ['सैट (sat)', 'एक बिटकॉइन का दस करोड़वाँ हिस्सा, सबसे छोटी इकाई।'],
+    ['मॉस्को टाइम', 'एक मज़ेदार घड़ी: किसी मुद्रा की एक इकाई में कितने sats आते हैं, समय की तरह दिखाया गया।'],
+    ['नोड', 'एक कंप्यूटर जो हर नियम खुद जाँचता है और ब्लॉक और ट्रांज़ैक्शन आगे भेजता है।'],
+    ['लाइटनिंग नेटवर्क', 'बिटकॉइन के ऊपर एक परत, ऑन-चेन भरे गए चैनलों के ज़रिए तेज़ और छोटे पेमेंट के लिए।'],
+    ['कॉइनबेस', 'किसी ब्लॉक का पहला ट्रांज़ैक्शन, जिसमें माइनर सब्सिडी और फ़ीस लेता है।'],
+  ],
 };
 export const ANNIV_TR = {
   de: [
@@ -731,5 +820,25 @@ export const ANNIV_TR = {
     'Segundo halving (bloco 420.000)',
     'Terceiro halving (bloco 630.000)',
     'Quarto halving (bloco 840.000)',
+  ],
+  vi: [
+    'Khối genesis được đào',
+    'Giao dịch Bitcoin đầu tiên (khối 170)',
+    'Bitcoin Pizza Day: lần mua hàng đầu tiên được biết đến bằng bitcoin',
+    'Sách trắng được công bố',
+    'Halving lần thứ nhất (khối 210.000)',
+    'Halving lần thứ hai (khối 420.000)',
+    'Halving lần thứ ba (khối 630.000)',
+    'Halving lần thứ tư (khối 840.000)',
+  ],
+  hi: [
+    'जेनेसिस ब्लॉक माइन हुआ',
+    'पहला बिटकॉइन ट्रांज़ैक्शन (ब्लॉक 170)',
+    'बिटकॉइन पिज़्ज़ा डे: बिटकॉइन से पहली जानी-मानी खरीद',
+    'व्हाइटपेपर प्रकाशित हुआ',
+    'पहली हॉल्विंग (ब्लॉक 210,000)',
+    'दूसरी हॉल्विंग (ब्लॉक 420,000)',
+    'तीसरी हॉल्विंग (ब्लॉक 630,000)',
+    'चौथी हॉल्विंग (ब्लॉक 840,000)',
   ],
 };
