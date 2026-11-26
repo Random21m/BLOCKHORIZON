@@ -171,7 +171,7 @@ export default {
   copyCode: 'העתקת קוד',
   codeCopied: 'הקוד הועתק',
   diffShort: 'קושי',
-  prodShort: 'בלוקים',
+  prodShort: 'קצב בלוקים',
   supplyShort: 'היצע',
   feesShort: 'עמלות',
   lnShort: 'Lightning',

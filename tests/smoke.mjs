@@ -2352,7 +2352,7 @@ await ok(
       ['fa', /[\u067e\u0686\u0698\u06af\u06a9\u06cc]/], // letters only Persian uses (پ چ ژ گ ک ی)
       ['he', /[\u05d0-\u05ea]/],
       ['th', /[\u0e00-\u0e7f]/],
-      ['cs', /CSMENU/, /CSGLOSS/],
+      ['cs', /Kalkulačka|Slovníček/, /Výška bloku|Obtížnost/],
       ['sv', /Ordlista|Kalkylator/, /Blockhöjd|Svårighetsgrad/],
       ['pl', /Słowniczek|Kalendarz/, /Wysokość bloku|Trudność/],
     ]) {
