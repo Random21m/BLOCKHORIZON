@@ -1699,6 +1699,14 @@ await ok('tile titles stay on one line on phones and tablets (short titles), in 
     [360, 'th'],
     [360, 'cs'],
     [360, 'sv'],
+    [360, 'da'],
+    [360, 'nb'],
+    [360, 'fi'],
+    [360, 'hu'],
+    [360, 'ro'],
+    [360, 'el'],
+    [360, 'bn'],
+    [360, 'ms'],
     [700, 'it'],
     [700, 'ru'],
     [1280, 'fr'],
@@ -2354,6 +2362,8 @@ await ok(
       ['th', /[\u0e00-\u0e7f]/],
       ['cs', /Kalkulačka|Slovníček/, /Výška bloku|Obtížnost/],
       ['sv', /Ordlista|Kalkylator/, /Blockhöjd|Svårighetsgrad/],
+      ['el', /[\u0370-\u03ff]/],
+      ['bn', /[\u0980-\u09ff]/],
       ['pl', /Słowniczek|Kalendarz/, /Wysokość bloku|Trudność/],
     ]) {
       const c = await b.newContext({ viewport: { width: 1280, height: 800 } });

@@ -11,6 +11,8 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
   texts read from the right, while numbers, amounts, charts and the block strips keep running left to right.
 - **Five more languages: فارسی, עברית, ไทย, Čeština and Svenska.** Persian and Hebrew are right to left, like Arabic.
   24 languages in all, glossary and calendar included; machine translations for now, corrections welcome.
+- **Eight more languages: Ελληνικά, Română, Magyar, Dansk, Norsk bokmål, Suomi, বাংলা and Bahasa Melayu.** 32
+  languages in all, glossary and calendar included; machine translations for now, corrections welcome.
 
 ## 0.20.0
 
