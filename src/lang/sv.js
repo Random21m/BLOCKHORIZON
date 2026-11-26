@@ -556,4 +556,20 @@ export default {
   mpLow: 'Ta med under 1 sat/vB',
   r24h: '24 timmar',
   r1w: '1 vecka',
+  poolRank: 'Miningpooler',
+  poolRankSum: '{b} block hittade av {n} pooler. De {k} största hittade mer än hälften av dem.',
+  poolRankNote:
+    'Varje block anger poolen som hittade det. En pools hashrate uppskattas utifrån dess andel av blocken, så över en kort period är den grov.',
+  poolL: 'Pool',
+  blocksL: 'Block',
+  shareL: 'Andel',
+  hashrateEst: 'Hashrate (uppsk.)',
+  showAllPools: 'Visa alla {n} pooler',
+  showFewer: 'Visa färre',
+  adjTitle: 'Tidigare svårighetsjusteringar',
+  adjSum: 'Det senaste året: {n} justeringar, {u} uppåt och {d} nedåt. Största ökning {a}, största minskning {b}.',
+  adjNote:
+    'Var 2 016:e block ändras svårighetsgraden så att det fortsätter komma ett block ungefär var 10:e minut, när hashraten stiger eller sjunker.',
+  changeL: 'Ändring',
+  showEarlier: 'Visa {n} tidigare',
 };

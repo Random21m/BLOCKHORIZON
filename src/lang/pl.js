@@ -554,4 +554,20 @@ export default {
   mpLow: 'Uwzględnij poniżej 1 sat/vB',
   r24h: '24 godziny',
   r1w: '1 tydzień',
+  poolRank: 'Pule wydobywcze',
+  poolRankSum: 'Bloki: {b}, pule: {n}. Największe pule ({k}) znalazły ponad połowę z nich.',
+  poolRankNote:
+    'Każdy blok podaje pulę, która go znalazła. Hashrate puli jest szacowany z jej udziału w blokach, więc w krótkim okresie jest tylko przybliżony.',
+  poolL: 'Pula',
+  blocksL: 'Bloki',
+  shareL: 'Udział',
+  hashrateEst: 'Hashrate (szac.)',
+  showAllPools: 'Pokaż wszystkie pule ({n})',
+  showFewer: 'Pokaż mniej',
+  adjTitle: 'Poprzednie zmiany trudności',
+  adjSum: 'W ostatnim roku: zmiany: {n}, w górę: {u}, w dół: {d}. Największy wzrost {a}, największy spadek {b}.',
+  adjNote:
+    'Co 2016 bloków trudność się zmienia, aby bloki nadal pojawiały się mniej więcej co 10 minut, gdy hashrate rośnie lub spada.',
+  changeL: 'Zmiana',
+  showEarlier: 'Pokaż wcześniejsze ({n})',
 };

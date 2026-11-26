@@ -1999,7 +1999,11 @@ html {
   margin: 0;
   flex-wrap: wrap;
 }
-.mpbar button {
+.tabs.mprange {
+  flex-wrap: wrap;
+}
+.mpbar button,
+.tabs.mprange button {
   min-width: 0;
   padding-left: 10px;
   padding-right: 10px;
@@ -2467,6 +2471,52 @@ canvas.scene {
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+}
+/* Mining page: the pool ranking and past adjustments, two wider panels side by side (one above the other on a phone) */
+.mgrid2 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr));
+  align-items: start;
+}
+.tscroll {
+  overflow-x: auto;
+}
+.ranktable {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.ranktable th,
+.ranktable td {
+  padding: 7px 6px;
+  text-align: start;
+}
+.ranktable tbody th {
+  color: var(--text);
+  font-weight: 500;
+}
+.ranktable .num {
+  text-align: end;
+  white-space: nowrap;
+}
+.ranktable thead th,
+.ranktable thead .num {
+  white-space: normal;
+  hyphens: auto;
+  overflow-wrap: anywhere;
+} /* a long header word may break on a phone (Moeilijkheid); the numbers below stay on one line */
+.morebtn {
+  margin-top: 10px;
+}
+@media (max-width: 480px) {
+  .ranktable {
+    font-size: 12px;
+  }
+  .ranktable th,
+  .ranktable td {
+    padding: 6px 3px;
+  }
+  .ranktable .opt {
+    display: none;
+  } /* the estimated hashrate: the share already says it, and a phone has no room */
 }
 .soundbtn {
   font-size: 12.5px;

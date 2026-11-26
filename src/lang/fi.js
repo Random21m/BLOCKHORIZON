@@ -558,4 +558,20 @@ export default {
   mpLow: 'Näytä myös alle 1 sat/vB',
   r24h: '24 tuntia',
   r1w: '1 viikko',
+  poolRank: 'Louhintapoolit',
+  poolRankSum: '{b} lohkoa, jotka löysi {n} poolia. Suurimmat {k} löysivät niistä yli puolet.',
+  poolRankNote:
+    'Jokaisessa lohkossa näkyy sen löytänyt pooli. Poolin laskentateho arvioidaan sen osuudesta lohkoista, joten lyhyellä jaksolla arvio on karkea.',
+  poolL: 'Pooli',
+  blocksL: 'Lohkot',
+  shareL: 'Osuus',
+  hashrateEst: 'Teho (arvio)',
+  showAllPools: 'Näytä kaikki {n} poolia',
+  showFewer: 'Näytä vähemmän',
+  adjTitle: 'Aiemmat vaikeuden säädöt',
+  adjSum: 'Viime vuonna: {n} säätöä, {u} ylös ja {d} alas. Suurin nousu {a}, suurin lasku {b}.',
+  adjNote:
+    'Vaikeus muuttuu 2 016 lohkon välein, jotta lohkoja tulee edelleen noin 10 minuutin välein, kun laskentateho nousee tai laskee.',
+  changeL: 'Muutos',
+  showEarlier: 'Näytä {n} aiempaa',
 };

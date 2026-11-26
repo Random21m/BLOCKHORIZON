@@ -562,4 +562,20 @@ export default {
   mpLow: 'Sertakan bawah 1 sat/vB',
   r24h: '24 jam',
   r1w: '1 minggu',
+  poolRank: 'Pool perlombongan',
+  poolRankSum: '{b} blok dijumpai oleh {n} pool. {k} pool terbesar menjumpai lebih separuh daripadanya.',
+  poolRankNote:
+    'Setiap blok menamakan pool yang menjumpainya. Kadar hash pool dianggarkan daripada bahagian bloknya, jadi bagi julat pendek ia kasar.',
+  poolL: 'Pool',
+  blocksL: 'Blok',
+  shareL: 'Bahagian',
+  hashrateEst: 'Kadar hash (angg.)',
+  showAllPools: 'Tunjuk semua {n} pool',
+  showFewer: 'Tunjuk kurang',
+  adjTitle: 'Pelarasan kesukaran lalu',
+  adjSum: 'Dalam setahun lalu: {n} pelarasan, {u} naik dan {d} turun. Kenaikan terbesar {a}, penurunan terbesar {b}.',
+  adjNote:
+    'Setiap 2,016 blok kesukaran berubah supaya blok terus datang kira-kira setiap 10 minit, apabila kadar hash naik atau turun.',
+  changeL: 'Perubahan',
+  showEarlier: 'Tunjuk {n} sebelumnya',
 };

@@ -560,4 +560,20 @@ export default {
   mpLow: 'Onder 1 sat/vB meenemen',
   r24h: '24 uur',
   r1w: '1 week',
+  poolRank: 'Miningpools',
+  poolRankSum: '{b} blokken gevonden door {n} pools. De grootste {k} vonden er meer dan de helft van.',
+  poolRankNote:
+    'Elk blok vermeldt de pool die het vond. De hashrate van een pool wordt geschat uit zijn aandeel in de blokken, dus over een korte periode is die ruw.',
+  poolL: 'Pool',
+  blocksL: 'Blokken',
+  shareL: 'Aandeel',
+  hashrateEst: 'Hashrate (sch.)',
+  showAllPools: 'Alle {n} pools tonen',
+  showFewer: 'Minder tonen',
+  adjTitle: 'Eerdere moeilijkheidsaanpassingen',
+  adjSum: 'Het afgelopen jaar: {n} aanpassingen, {u} omhoog en {d} omlaag. Grootste stijging {a}, grootste daling {b}.',
+  adjNote:
+    'Elke 2.016 blokken verandert de moeilijkheid, zodat er ongeveer elke 10 minuten een blok blijft komen terwijl de hashrate stijgt of daalt.',
+  changeL: 'Verandering',
+  showEarlier: '{n} eerdere tonen',
 };

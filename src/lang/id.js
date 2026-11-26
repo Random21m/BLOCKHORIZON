@@ -559,4 +559,21 @@ export default {
   mpLow: 'Sertakan di bawah 1 sat/vB',
   r24h: '24 jam',
   r1w: '1 minggu',
+  poolRank: 'Pool penambangan',
+  poolRankSum: '{b} blok ditemukan oleh {n} pool. {k} pool terbesar menemukan lebih dari separuhnya.',
+  poolRankNote:
+    'Setiap blok mencantumkan pool yang menemukannya. Hashrate pool diperkirakan dari porsi bloknya, jadi pada rentang pendek hasilnya kasar.',
+  poolL: 'Pool',
+  blocksL: 'Blok',
+  shareL: 'Porsi',
+  hashrateEst: 'Hashrate (perk.)',
+  showAllPools: 'Tampilkan semua {n} pool',
+  showFewer: 'Tampilkan lebih sedikit',
+  adjTitle: 'Penyesuaian kesulitan sebelumnya',
+  adjSum:
+    'Dalam setahun terakhir: {n} penyesuaian, {u} naik dan {d} turun. Kenaikan terbesar {a}, penurunan terbesar {b}.',
+  adjNote:
+    'Setiap 2.016 blok, kesulitan berubah agar blok tetap muncul sekitar tiap 10 menit, saat hashrate naik atau turun.',
+  changeL: 'Perubahan',
+  showEarlier: 'Tampilkan {n} sebelumnya',
 };

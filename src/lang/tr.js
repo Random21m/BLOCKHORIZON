@@ -556,4 +556,20 @@ export default {
   mpLow: '1 sat/vB altını dahil et',
   r24h: '24 saat',
   r1w: '1 hafta',
+  poolRank: 'Madencilik havuzları',
+  poolRankSum: '{n} havuz {b} blok buldu. En büyük {k} havuz bunların yarısından fazlasını buldu.',
+  poolRankNote:
+    "Her blok, onu bulan havuzun adını taşır. Bir havuzun hashrate'i blok payından tahmin edilir; kısa bir aralıkta bu tahmin kabadır.",
+  poolL: 'Havuz',
+  blocksL: 'Blok',
+  shareL: 'Pay',
+  hashrateEst: 'Hashrate (tahmini)',
+  showAllPools: '{n} havuzun tümünü göster',
+  showFewer: 'Daha az göster',
+  adjTitle: 'Geçmiş zorluk ayarları',
+  adjSum: 'Geçen yıl: {n} ayar, {u} artış ve {d} düşüş. En büyük artış {a}, en büyük düşüş {b}.',
+  adjNote:
+    'Hashrate artsa da düşse de bloklar yaklaşık 10 dakikada bir gelsin diye zorluk her 2.016 blokta bir değişir.',
+  changeL: 'Değişim',
+  showEarlier: '{n} önceki ayarı göster',
 };

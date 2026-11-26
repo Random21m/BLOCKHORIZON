@@ -557,4 +557,21 @@ export default {
   mpLow: 'Įtraukti mažiau nei 1 sat/vB',
   r24h: '24 valandos',
   r1w: '1 savaitė',
+  poolRank: 'Kasybos telkiniai',
+  poolRankSum: 'Blokų: {b}, telkinių: {n}. Didžiausi telkiniai ({k}) rado daugiau nei pusę jų.',
+  poolRankNote:
+    'Prie kiekvieno bloko nurodytas telkinys, kuris jį rado. Telkinio maišos galia vertinama pagal jo blokų dalį, todėl per trumpą laikotarpį ji tik apytikslė.',
+  poolL: 'Telkinys',
+  blocksL: 'Blokai',
+  shareL: 'Dalis',
+  hashrateEst: 'Galia (apyt.)',
+  showAllPools: 'Rodyti visus telkinius ({n})',
+  showFewer: 'Rodyti mažiau',
+  adjTitle: 'Ankstesnės sudėtingumo korekcijos',
+  adjSum:
+    'Per pastaruosius metus: korekcijų {n}, aukštyn {u}, žemyn {d}. Didžiausias kilimas {a}, didžiausias kritimas {b}.',
+  adjNote:
+    'Kas 2 016 blokų sudėtingumas pasikeičia, kad blokai ir toliau būtų randami maždaug kas 10 minučių, kai maišos galia kyla ar krenta.',
+  changeL: 'Pokytis',
+  showEarlier: 'Rodyti ankstesnius ({n})',
 };

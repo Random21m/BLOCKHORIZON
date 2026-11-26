@@ -3,8 +3,8 @@
 // be found and who is likely to find it (each pool's share of last week's blocks). Repainted on every live update.
 import * as L from './lib.js';
 import { api } from './api.js';
-import { t } from './i18n.js';
-import { S, st, el, price, hooks, save, toast } from './state.js';
+import { t, isRtl, getLang } from './i18n.js';
+import { S, st, el, price, hooks, save, toast, fmtD } from './state.js';
 import { kv, sinceText } from './ui.js';
 import { sceneStats, setMark, sceneHas } from './block-scene.js';
 import { play } from './sound.js';
@@ -190,6 +190,222 @@ function loadPools() {
       hooks.render();
     });
 }
+// The pool ranking (its own range; the week is the `pools` above) and the past difficulty adjustments (every
+// adjustment, newest first: loaded once an hour). Which range, and how many rows are shown, live here, since the page
+// is redrawn in place (morph) and keeps the first element's click handlers.
+const RANK_RANGES = { '24h': 'r24h', '1w': 'r1w', '1m': 'r1m', '1y': 'r1y' };
+const ranked = {}; // range -> { v, at, na }
+let rankAll = false,
+  adj = null,
+  adjAt = 0,
+  adjNa = false,
+  adjShown = 10;
+const rankRange = () => (RANK_RANGES[S.poolRange] ? S.poolRange : '1w');
+function loadRank(r) {
+  if (r === '1w') return;
+  const c = ranked[r] || (ranked[r] = { v: null, at: 0, na: false });
+  if (Date.now() - c.at < 600000) return;
+  c.at = Date.now();
+  api.poolsIn(r).then(
+    (v) => {
+      c.v = v;
+      c.na = false;
+      hooks.render();
+    },
+    (e) => {
+      c.na = !c.v;
+      c.at = Date.now() - 540000;
+      hooks.render();
+    }
+  );
+}
+function loadAdj() {
+  if (Date.now() - adjAt < 3600000) return;
+  adjAt = Date.now();
+  api.adjustments().then(
+    (v) => {
+      adj = v;
+      adjNa = false;
+      hooks.render();
+    },
+    () => {
+      adjNa = !adj;
+      adjAt = Date.now() - 3540000;
+      hooks.render();
+    }
+  );
+}
+const pct = (x, d = 1) => (x * 100).toFixed(d) + '%';
+// '▲ +5.54%', kept left to right as a whole inside a right-to-left sentence (the arrow stays before the number)
+const signed = (c) => {
+  const s = (c > 0 ? '▲ +' : c < 0 ? '▼ ' : '') + c.toFixed(2) + '%';
+  return isRtl(getLang()) ? '\u2066' + s + '\u2069' : s;
+};
+function rankPanel() {
+  const r = rankRange();
+  loadRank(r);
+  const c = r === '1w' ? { v: pools, na: poolsNa } : ranked[r] || {},
+    rk = L.poolRanking(c.v),
+    rows = rk ? (rankAll ? rk.rows : rk.rows.slice(0, 10)) : [];
+  return el(
+    'section',
+    { class: 'panel', id: 'pool-rank' },
+    el('h2', null, t('poolRank')),
+    el(
+      'div',
+      { class: 'tabs mprange', role: 'group', 'aria-label': t('rangeL') },
+      Object.keys(RANK_RANGES).map((k) =>
+        el(
+          'button',
+          {
+            'data-pr': k,
+            'aria-pressed': String(k === r),
+            onclick: () => {
+              S.poolRange = k;
+              save();
+              rankAll = false;
+              hooks.render();
+            },
+          },
+          t(RANK_RANGES[k])
+        )
+      )
+    ),
+    rk
+      ? [
+          el('p', null, t('poolRankSum', { b: L.fmtNum(rk.total), n: L.fmtNum(rk.rows.length), k: L.fmtNum(rk.half) })),
+          el(
+            'div',
+            { class: 'tscroll' },
+            el(
+              'table',
+              { class: 'ranktable' },
+              el(
+                'thead',
+                null,
+                el(
+                  'tr',
+                  null,
+                  el('th', { scope: 'col', class: 'num' }, '#'),
+                  el('th', { scope: 'col' }, t('poolL')),
+                  el('th', { scope: 'col', class: 'num' }, t('blocksL')),
+                  el('th', { scope: 'col', class: 'num' }, t('shareL')),
+                  el('th', { scope: 'col', class: 'num opt' }, t('hashrateEst'))
+                )
+              ),
+              el(
+                'tbody',
+                null,
+                rows.map((p) =>
+                  el(
+                    'tr',
+                    null,
+                    el('td', { class: 'num dim' }, L.fmtNum(p.rank)),
+                    el('th', { scope: 'row' }, p.name),
+                    el('td', { class: 'num' }, L.fmtNum(p.blocks)),
+                    el('td', { class: 'num' }, pct(p.share)),
+                    el('td', { class: 'num opt' }, L.fmtHashrate(p.hashrate))
+                  )
+                )
+              )
+            )
+          ),
+          rk.rows.length > 10
+            ? el(
+                'button',
+                {
+                  class: 'morebtn',
+                  'aria-expanded': String(rankAll),
+                  onclick: () => {
+                    rankAll = !rankAll;
+                    hooks.render();
+                  },
+                },
+                rankAll ? t('showFewer') : t('showAllPools', { n: L.fmtNum(rk.rows.length) })
+              )
+            : null,
+          el('p', { class: 'dim note' }, t('poolRankNote')),
+        ]
+      : el('p', { class: 'dim' }, c.na ? t('naServer') : t('loading'))
+  );
+}
+function adjPanel() {
+  loadAdj();
+  const all = L.diffAdjustments(adj),
+    rows = all.slice(0, adjShown),
+    sum = L.adjustSummary(all, Date.now() - 365.25 * 864e5);
+  return el(
+    'section',
+    { class: 'panel', id: 'adjustments' },
+    el('h2', null, t('adjTitle')),
+    all.length
+      ? [
+          sum
+            ? el(
+                'p',
+                null,
+                t('adjSum', {
+                  n: L.fmtNum(sum.n),
+                  u: L.fmtNum(sum.up),
+                  d: L.fmtNum(sum.down),
+                  a: signed(sum.maxUp),
+                  b: signed(sum.maxDown),
+                })
+              )
+            : null,
+          el(
+            'div',
+            { class: 'tscroll' },
+            el(
+              'table',
+              { class: 'ranktable' },
+              el(
+                'thead',
+                null,
+                el(
+                  'tr',
+                  null,
+                  el('th', { scope: 'col' }, t('dateL')),
+                  el('th', { scope: 'col', class: 'num' }, t('blockL')),
+                  el('th', { scope: 'col', class: 'num' }, t('diffChart')),
+                  el('th', { scope: 'col', class: 'num' }, t('changeL'))
+                )
+              ),
+              el(
+                'tbody',
+                null,
+                rows.map((a) =>
+                  el(
+                    'tr',
+                    null,
+                    el('td', null, fmtD(a.t, { dateOnly: true })),
+                    el('td', { class: 'num' }, el('a', { href: '#/block/' + a.height }, L.fmtNum(a.height))),
+                    el('td', { class: 'num' }, L.fmtDifficulty(a.diff)),
+                    el('td', { class: 'num' }, signed(a.change))
+                  )
+                )
+              )
+            )
+          ),
+          all.length > adjShown
+            ? el(
+                'button',
+                {
+                  class: 'morebtn',
+                  onclick: () => {
+                    adjShown += 20;
+                    hooks.render();
+                  },
+                },
+                t('showEarlier', { n: L.fmtNum(Math.min(20, all.length - adjShown)) })
+              )
+            : null,
+          el('p', { class: 'dim note' }, t('adjNote')),
+        ]
+      : el('p', { class: 'dim' }, adjNa ? t('naServer') : t('loading'))
+  );
+}
+
 const still = () =>
   S.reduced || (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches);
 function randomHash() {
@@ -440,6 +656,7 @@ export function viewMining(arg = '') {
       el('p', { class: 'dim note' }, t('searchNote'))
     )
   );
+  root.append(el('div', { class: 'grid mgrid2' }, rankPanel(), adjPanel()));
   return root;
 }
 // Each second: the hash count and the share of blocks that take longer. Four times a second (unless motion is reduced):

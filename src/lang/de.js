@@ -564,4 +564,21 @@ export default {
   mpLow: 'Unter 1 sat/vB einbeziehen',
   r24h: '24 Stunden',
   r1w: '1 Woche',
+  poolRank: 'Mining-Pools',
+  poolRankSum: '{b} Blöcke, gefunden von {n} Pools. Die {k} größten fanden mehr als die Hälfte davon.',
+  poolRankNote:
+    'Jeder Block nennt den Pool, der ihn gefunden hat. Die Hashrate eines Pools wird aus seinem Anteil an den Blöcken geschätzt, über einen kurzen Zeitraum also nur grob.',
+  poolL: 'Pool',
+  blocksL: 'Blöcke',
+  shareL: 'Anteil',
+  hashrateEst: 'Hashrate (gesch.)',
+  showAllPools: 'Alle {n} Pools zeigen',
+  showFewer: 'Weniger zeigen',
+  adjTitle: 'Frühere Schwierigkeitsanpassungen',
+  adjSum:
+    'Im letzten Jahr: {n} Anpassungen, {u} nach oben und {d} nach unten. Größter Anstieg {a}, größter Rückgang {b}.',
+  adjNote:
+    'Alle 2.016 Blöcke ändert sich die Schwierigkeit, damit weiterhin etwa alle 10 Minuten ein Block kommt, wenn die Hashrate steigt oder fällt.',
+  changeL: 'Änderung',
+  showEarlier: '{n} frühere zeigen',
 };

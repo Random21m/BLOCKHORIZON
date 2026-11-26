@@ -560,4 +560,21 @@ export default {
   mpLow: '1 sat/vB alattiak is',
   r24h: '24 óra',
   r1w: '1 hét',
+  poolRank: 'Bányászpoolok',
+  poolRankSum: '{b} blokkot {n} pool talált. A legnagyobb {k} ezek több mint felét találta.',
+  poolRankNote:
+    'Minden blokknál ott van a pool, amely megtalálta. Egy pool hashrate-jét a blokkokból való részesedéséből becsüljük, így rövid időszakra csak durva becslés.',
+  poolL: 'Pool',
+  blocksL: 'Blokkok',
+  shareL: 'Arány',
+  hashrateEst: 'Hashrate (becs.)',
+  showAllPools: 'Mind a(z) {n} pool mutatása',
+  showFewer: 'Kevesebb mutatása',
+  adjTitle: 'Korábbi nehézségállítások',
+  adjSum:
+    'Az elmúlt évben: {n} állítás, {u} felfelé és {d} lefelé. Legnagyobb emelkedés {a}, legnagyobb csökkenés {b}.',
+  adjNote:
+    'A nehézség 2016 blokkonként változik, hogy a blokkok továbbra is nagyjából 10 percenként jöjjenek, ahogy a hashrate nő vagy csökken.',
+  changeL: 'Változás',
+  showEarlier: '{n} korábbi mutatása',
 };

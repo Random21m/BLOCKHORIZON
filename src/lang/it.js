@@ -562,4 +562,20 @@ export default {
   mpLow: 'Includi sotto 1 sat/vB',
   r24h: '24 ore',
   r1w: '1 settimana',
+  poolRank: 'Pool di mining',
+  poolRankSum: '{b} blocchi trovati da {n} pool. Le {k} più grandi ne hanno trovati più della metà.',
+  poolRankNote:
+    "Ogni blocco indica la pool che l'ha trovato. L'hashrate di una pool è stimato dalla sua quota di blocchi, quindi su un periodo breve è approssimativo.",
+  poolL: 'Pool',
+  blocksL: 'Blocchi',
+  shareL: 'Quota',
+  hashrateEst: 'Hashrate (stima)',
+  showAllPools: 'Mostra tutte le {n} pool',
+  showFewer: 'Mostra meno',
+  adjTitle: 'Adeguamenti di difficoltà passati',
+  adjSum: "Nell'ultimo anno: {n} adeguamenti, {u} in rialzo e {d} in ribasso. Rialzo maggiore {a}, calo maggiore {b}.",
+  adjNote:
+    "Ogni 2.016 blocchi la difficoltà cambia, così i blocchi continuano ad arrivare circa ogni 10 minuti mentre l'hashrate sale o scende.",
+  changeL: 'Variazione',
+  showEarlier: 'Mostra {n} precedenti',
 };

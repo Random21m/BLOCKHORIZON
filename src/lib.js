@@ -1217,3 +1217,52 @@ export function shareAbove(pts, v) {
   if (!pts.length) return NaN;
   return (pts.filter((p) => p.v > v).length / pts.length) * 100;
 }
+
+// ---- Mining page: pool ranking and past difficulty adjustments ----
+// /v1/mining/pools/{range} -> every pool that found a block, largest first: its share of the blocks, an estimate of its
+// hashrate (that share of the network's) and its empty blocks; plus how few of the largest pools found more than half.
+export function poolRanking(resp) {
+  const ps = ((resp && resp.pools) || [])
+      .filter((p) => p && p.blockCount > 0)
+      .sort((a, b) => b.blockCount - a.blockCount),
+    total = ps.reduce((s, p) => s + p.blockCount, 0),
+    hr = resp && resp.lastEstimatedHashrate;
+  if (!total) return null;
+  let run = 0,
+    half = 0;
+  const rows = ps.map((p, i) => {
+    run += p.blockCount;
+    if (!half && run * 2 > total) half = i + 1;
+    const share = p.blockCount / total;
+    return {
+      rank: i + 1,
+      name: p.name,
+      blocks: p.blockCount,
+      share,
+      empty: p.emptyBlocks || 0,
+      hashrate: hr > 0 ? share * hr : NaN,
+    };
+  });
+  return { total, rows, half };
+}
+// /v1/mining/difficulty-adjustments: [[time (s), height, difficulty, new/old ratio]], newest first ->
+// [{ t (ms), height, diff, change (%) }], newest first, without the genesis block's entry (ratio 0).
+export function diffAdjustments(raw) {
+  return (Array.isArray(raw) ? raw : [])
+    .filter((r) => Array.isArray(r) && r[1] > 0 && r[3] > 0)
+    .map((r) => ({ t: r[0] * 1000, height: r[1], diff: r[2], change: (r[3] - 1) * 100 }))
+    .sort((a, b) => b.height - a.height);
+}
+// The adjustments since `from` (ms): how many, how many went up and down, and the largest rise and drop (in %).
+export function adjustSummary(rows, from) {
+  const xs = rows.filter((r) => r.t >= from);
+  if (!xs.length) return null;
+  const ch = xs.map((r) => r.change);
+  return {
+    n: xs.length,
+    up: ch.filter((c) => c > 0).length,
+    down: ch.filter((c) => c < 0).length,
+    maxUp: Math.max(...ch),
+    maxDown: Math.min(...ch),
+  };
+}

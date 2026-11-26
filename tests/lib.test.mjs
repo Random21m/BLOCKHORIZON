@@ -1049,3 +1049,40 @@ test('mempool history by fee rate: bands, next block, stacked layers, how full c
   assert.equal(L.shareAbove(pts, 4), 0);
   assert.ok(Number.isNaN(L.shareAbove([], 1)));
 });
+
+test('mining pools ranked by blocks found, and past difficulty adjustments with a summary', () => {
+  const fxj = (n) => JSON.parse(fs.readFileSync(new URL('./fixtures/' + n, import.meta.url), 'utf8'));
+  const r = L.poolRanking(fxj('pools-1w.json'));
+  assert.equal(r.total, 1086);
+  assert.equal(r.rows.length, 16);
+  assert.deepEqual(
+    r.rows.slice(0, 2).map((p) => [p.rank, p.name, p.blocks]),
+    [
+      [1, 'Foundry USA', 247],
+      [2, r.rows[1].name, 245],
+    ]
+  );
+  assert.equal(r.half, 3, '247 + 245 + 173 is more than half of 1,086');
+  assert.ok(Math.abs(r.rows.reduce((s, p) => s + p.share, 0) - 1) < 1e-9);
+  assert.ok(Math.abs(r.rows[0].hashrate - (247 / 1086) * 970289438388090200000) < 1e6);
+  assert.equal(r.rows.find((p) => p.empty).empty, 3);
+  assert.equal(L.poolRanking({ pools: [] }), null);
+  assert.equal(L.poolRanking(null), null);
+  assert.ok(Number.isNaN(L.poolRanking({ pools: [{ name: 'A', blockCount: 1 }] }).rows[0].hashrate));
+  assert.equal(L.poolRanking({ pools: [{ name: 'A', blockCount: 1 }] }).half, 1);
+  // adjustments: newest first, the genesis entry dropped, the ratio as a change in %
+  const raw = fxj('difficulty-adjustments.json'),
+    a = L.diffAdjustments(raw);
+  assert.equal(a.length, raw.length - 1);
+  assert.equal(a[0].height, 975744);
+  assert.equal(a[0].t, 1794632570000);
+  assert.ok(Math.abs(a[0].change - -9.1267) < 1e-9);
+  assert.ok(a.every((x) => x.height % 2016 === 0 && x.height > 0));
+  assert.deepEqual(L.diffAdjustments('x'), []);
+  const s = L.adjustSummary(a, a[2].t);
+  assert.equal(s.n, 3);
+  assert.equal(s.up + s.down, 3);
+  assert.ok(Math.abs(s.maxDown - -9.1267) < 1e-9);
+  assert.equal(s.maxUp, Math.max(a[0].change, a[1].change, a[2].change));
+  assert.equal(L.adjustSummary(a, Date.now() + 1e12), null);
+});

@@ -557,4 +557,20 @@ export default {
   mpLow: 'Uključi ispod 1 sat/vB',
   r24h: '24 sata',
   r1w: '1 tjedan',
+  poolRank: 'Rudarski poolovi',
+  poolRankSum: 'Blokovi: {b}, poolovi: {n}. Najveći poolovi ({k}) pronašli su više od polovice blokova.',
+  poolRankNote:
+    'Uz svaki blok navodi se pool koji ga je pronašao. Hashrate poola procjenjuje se iz njegova udjela u blokovima, pa je u kratkom razdoblju tek grub.',
+  poolL: 'Pool',
+  blocksL: 'Blokovi',
+  shareL: 'Udio',
+  hashrateEst: 'Hashrate (procj.)',
+  showAllPools: 'Prikaži sve poolove ({n})',
+  showFewer: 'Prikaži manje',
+  adjTitle: 'Prošle promjene težine',
+  adjSum: 'U posljednjih godinu dana: promjene: {n}, gore: {u}, dolje: {d}. Najveći rast {a}, najveći pad {b}.',
+  adjNote:
+    'Svakih 2.016 blokova težina se mijenja kako bi blokovi i dalje dolazili otprilike svakih 10 minuta dok hashrate raste ili pada.',
+  changeL: 'Promjena',
+  showEarlier: 'Prikaži starije ({n})',
 };
