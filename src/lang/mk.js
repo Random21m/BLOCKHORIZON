@@ -174,7 +174,7 @@ export default {
   copyCode: 'Копирај код',
   codeCopied: 'Кодот е копиран',
   diffShort: 'Тежина',
-  prodShort: 'Блокови',
+  prodShort: 'Темпо',
   supplyShort: 'Понуда',
   feesShort: 'Провизии',
   lnShort: 'Lightning',

@@ -1514,6 +1514,98 @@ export const GLOSSARY_TR = {
     ],
     ['Coinbase', 'Η πρώτη συναλλαγή σε ένα μπλοκ, με την οποία ο miner εισπράττει την επιδότηση και τις προμήθειες.'],
   ],
+  hr: [
+    [
+      'Timechain',
+      'Uređeni lanac Bitcoin blokova. Svaki blok upućuje na prethodni, pa se redoslijed događaja ne može potajno prepisati.',
+    ],
+    ['Blok', 'Skup transakcija oko kojih se rudari slože i dodaju ih u lanac, otprilike svakih deset minuta.'],
+    [
+      'Visina bloka',
+      'Koliko blokova stoji prije ovoga. Prvi blok (genesis) ima visinu 0, pa visina radi kao sat koji broji samo prema gore.',
+    ],
+    ['Epoha', 'Razdoblje od 210.000 blokova (oko četiri godine) tijekom kojeg nagrada za blok ostaje ista.'],
+    ['Halving', 'Prepolovljenje: događaj na kraju epohe kad se nagrada u novim novčićima po bloku smanji na pola.'],
+    ['Subvencija', 'Novostvoreni bitcoini koje rudar smije uzeti u svakom bloku, ne računajući naknade.'],
+    ['Ponuda', 'Svi dosad stvoreni bitcoini. Nikad ne može prijeći 21 milijun.'],
+    [
+      'Težina',
+      'Koliko je težak zadatak koji rudari rješavaju. Prilagođava se svakih 2.016 blokova kako bi blokovi stizali oko svakih deset minuta.',
+    ],
+    [
+      'Promjena težine',
+      'Sama prilagodba: ako je zadnjih 2.016 blokova stizalo brže od deset minuta po bloku, težina raste; ako sporije, pada.',
+    ],
+    ['Hashrate', 'Koliko pokušaja u sekundi rudari zajedno naprave. Veći hashrate znači da lanac štiti više energije.'],
+    ['Dokaz rada', 'Dokaz da je za stvaranje bloka utrošen stvarni računalni rad, zbog čega je varanje skupo.'],
+    ['Mempool', 'Čekaonica valjanih transakcija koje još nisu stavljene u blok.'],
+    ['Dubina mempoola', 'Gruba procjena koliko bi punih blokova trebalo da se isprazne transakcije koje čekaju.'],
+    [
+      'Stopa naknade',
+      'Koliko transakcija plaća po jedinici veličine (sat/vB). Rudari obično najprije biraju najviše stope.',
+    ],
+    ['vByte (vB)', 'Jedinica veličine transakcije koja uračunava SegWit popust. Blok stane otprilike milijun vB.'],
+    ['Sat', 'Stomilijunti dio bitcoina, najmanja jedinica.'],
+    ['Moskovsko vrijeme', 'Zaigrani prikaz sata: koliko satsa kupuje jedna jedinica valute, prikazano kao vrijeme.'],
+    ['Čvor', 'Računalo koje samo provjerava svako pravilo i prosljeđuje blokove i transakcije.'],
+    ['Mreža Lightning', 'Sloj iznad Bitcoina za brza, mala plaćanja kroz kanale financirane na lancu.'],
+    ['Coinbase', 'Prva transakcija u bloku, kojom rudar preuzima subvenciju i naknade.'],
+  ],
+  mk: [
+    [
+      'Timechain',
+      'Подреденият синџир на Bitcoin блокови. Секој блок покажува на претходниот, па редоследот на настаните не може тајно да се преработи.',
+    ],
+    [
+      'Блок',
+      'Пакет трансакции за кој рударите се согласуваат и го додаваат на синџирот, околу еднаш на секои десет минути.',
+    ],
+    [
+      'Висина на блок',
+      'Колку блокови има пред овој. Првиот блок (genesis) има висина 0, па висината работи како часовник што брои само нагоре.',
+    ],
+    ['Епоха', 'Период од 210.000 блокови (околу четири години) во кој наградата по блок останува иста.'],
+    ['Халвинг', 'Настанот на крајот на епохата кога наградата во нови монети по блок се преполовува.'],
+    ['Субвенција', 'Новосоздадените bitcoin што рударот може да ги земе во секој блок, без провизиите.'],
+    ['Понуда', 'Сите bitcoin создадени досега. Никогаш не може да помине 21 милион.'],
+    [
+      'Тежина',
+      'Колку е тешка загатката што ја решаваат рударите. Се приспособува на секои 2.016 блокови за блоковите да остануваат околу десет минути.',
+    ],
+    [
+      'Промена на тежината',
+      'Самото приспособување: ако последните 2.016 блокови дошле побрзо од десет минути секој, тежината расте; ако побавно, паѓа.',
+    ],
+    [
+      'Хашрејт',
+      'Колку обиди во секунда прават рударите заедно. Поголем хашрејт значи повеќе енергија што го штити синџирот.',
+    ],
+    [
+      'Доказ за работа',
+      'Доказ дека е потрошен вистински компјутерски труд за да се создаде блок, што го прави мамењето скапо.',
+    ],
+    ['Mempool', 'Чекалната на валидни трансакции што сè уште не се ставени во блок.'],
+    [
+      'Длабочина на mempool',
+      'Груба проценка колку полни блокови би биле потребни за да се испразнат трансакциите што чекаат.',
+    ],
+    [
+      'Стапка на провизија',
+      'Колку плаќа трансакцијата по единица големина (sat/vB). Рударите обично прво ги избираат највисоките стапки.',
+    ],
+    [
+      'vByte (vB)',
+      'Единица за големина на трансакција што го зема предвид попустот на SegWit. Блокот собира околу еден милион vB.',
+    ],
+    ['Сат', 'Еден стомилионити дел од bitcoin, најмалата единица.'],
+    [
+      'Московско време',
+      'Шеговит приказ како часовник: колку sats се купуваат за една единица валута, прикажано како време.',
+    ],
+    ['Јазол', 'Компјутер што сам ги проверува сите правила и ги пренесува блоковите и трансакциите.'],
+    ['Мрежа Lightning', 'Слој над Bitcoin за брзи, мали плаќања преку канали финансирани на синџирот.'],
+    ['Coinbase', 'Првата трансакција во блокот, со која рударот ги прибира субвенцијата и провизиите.'],
+  ],
 };
 export const ANNIV_TR = {
   de: [
@@ -1825,5 +1917,25 @@ export const ANNIV_TR = {
     'Το δεύτερο halving (μπλοκ 420.000)',
     'Το τρίτο halving (μπλοκ 630.000)',
     'Το τέταρτο halving (μπλοκ 840.000)',
+  ],
+  hr: [
+    'Iskopan genesis blok',
+    'Prva Bitcoin transakcija (blok 170)',
+    'Bitcoin Pizza Day: prva poznata kupnja bitcoinom',
+    'Objavljen whitepaper',
+    'Prvi halving (blok 210.000)',
+    'Drugi halving (blok 420.000)',
+    'Treći halving (blok 630.000)',
+    'Četvrti halving (blok 840.000)',
+  ],
+  mk: [
+    'Ископан е блокот genesis',
+    'Прва Bitcoin трансакција (блок 170)',
+    'Bitcoin Pizza Day: прво познато купување со bitcoin',
+    'Објавен е whitepaper-от',
+    'Прв халвинг (блок 210.000)',
+    'Втор халвинг (блок 420.000)',
+    'Трет халвинг (блок 630.000)',
+    'Четврт халвинг (блок 840.000)',
   ],
 };
