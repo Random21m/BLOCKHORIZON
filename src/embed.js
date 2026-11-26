@@ -3,7 +3,7 @@
 // show=mining draws a small picture of the block being mined: its fee mix from the projected block (no per-transaction feed).
 import * as L from './lib.js';
 import { api, loadConfig } from './api.js';
-import { t, setLang, detectLang, LANGS, loadLang } from './i18n.js';
+import { t, setLang, detectLang, LANGS, loadLang, isRtl } from './i18n.js';
 import { CURRENCIES } from './price.js';
 
 const q = new URLSearchParams(location.search),
@@ -19,6 +19,7 @@ const theme =
       : 'dark';
 document.documentElement.dataset.theme = theme;
 document.documentElement.lang = lang;
+document.documentElement.dir = isRtl(lang) ? 'rtl' : 'ltr';
 await loadLang(lang);
 setLang(lang);
 $('w').href =

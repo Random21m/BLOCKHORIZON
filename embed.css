@@ -127,3 +127,10 @@ main {
 .w.mining .num {
   font-size: clamp(18px, 7vw, 28px);
 }
+
+/* Right-to-left languages: the number keeps reading left to right ("60,504 USD"), on the reading side. */
+[dir='rtl'] .num {
+  unicode-bidi: plaintext;
+  text-align: -webkit-match-parent;
+  text-align: match-parent;
+}

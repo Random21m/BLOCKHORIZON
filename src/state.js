@@ -1,7 +1,7 @@
 // Settings, shared live state and small helpers used everywhere.
 import * as L from './lib.js';
 import { store } from './api.js';
-import { setLang, detectLang } from './i18n.js';
+import { setLang, detectLang, isRtl } from './i18n.js';
 
 export const VERSION = '0.20.0';
 export const TIP_ADDR = 'npub1vj8zjhnmkhekv93e2xmrz7kfwuxq25vrzw53u4dqhwd2lp5smvks3mwu2n@npub.cash';
@@ -113,6 +113,7 @@ export function applyLook() {
   const dark = S.theme === 'dark' || (S.theme === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
   document.documentElement.dataset.theme = dark ? 'dark' : 'light';
   document.documentElement.lang = S.lang;
+  document.documentElement.dir = isRtl(S.lang) ? 'rtl' : 'ltr';
   setLang(S.lang);
   document.body.classList.toggle('reduced', S.reduced);
   document.body.classList.toggle('nopulse', !S.pulse);
