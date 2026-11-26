@@ -2,6 +2,21 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
+## Unreleased
+
+- **Send page privacy:** checking a transaction looked up the coins it spends on the backup server (blockstream.info)
+  when the data server did not answer, even on your own node. It now asks only the data server the page names, a few
+  at a time, and says "could not be checked" instead of "not found" when that server is busy.
+- **Send page:** a version 3 transaction is shown as replaceable, and one that does not signal it no longer says it
+  "cannot be replaced" (many nodes accept a replacement anyway). Screen readers hear one short summary of the check.
+  Inputs not looked up say so instead of "no address". A transaction pasted into Search while on the Send page now
+  replaces the one shown.
+- **After switching data server,** the Mining and Charts pages show the new server's figures (or say it has none)
+  instead of keeping the old server's pool ranking, adjustments and history.
+- **Mining:** "Stop following" also empties the transaction box; a brief network hiccup no longer shows "Not
+  available from this data server" for the pool ranking or the past adjustments.
+- The fee tile's "later" fits in Finnish and Georgian; five unused texts were removed from every language.
+
 ## 0.22.0
 
 - **A QR code on every address page,** to pay to it from a phone wallet. It is drawn on your device (as a `bitcoin:`
