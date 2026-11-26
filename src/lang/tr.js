@@ -394,7 +394,7 @@ export default {
   about1:
     'BLOCKHORIZON, Bitcoin zincirini bir saat gibi gösterir: blok yüksekliği artar, geri kalan her şey (halving, zorluk, ücretler) bir sonraki bloğa doğru geri sayar.',
   about2:
-    "Statik bir sayfadır. Hesap yok, reklam yok, analiz yok, çerez yok. Ayarlar ve son değerler yalnızca bu tarayıcıda kalır. Canlı veriler doğrudan herkese açık mempool.space API'sinden ve Kraken'in herkese açık fiyat akışından gelir. Bunun yerine kendi düğümünüzü kullanabilirsiniz (Ayarlar, Veri).",
+    "Statik bir sayfadır. Hesap yok, reklam yok, analiz yok, çerez yok. Ayarlar ve son değerler yalnızca bu tarayıcıda kalır. Canlı veriler doğrudan herkese açık mempool.space API'sinden ve Kraken'in herkese açık fiyat akışından (Kraken yanıt vermezken Coinbase'inkinden) gelir. Bunun yerine kendi düğümünüzü kullanabilirsiniz (Ayarlar, Veri).",
   version: 'Sürüm {v}',
   source: "GitHub'da kaynak kod",
   privacy: 'Gizlilik',

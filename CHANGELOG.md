@@ -7,6 +7,10 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
 - **Four more languages: 简体中文, 한국어, Русский and Português (Brasil).** 13 languages in all, glossary and
   calendar included. Brazilian Portuguese is its own choice next to Portugal's; a browser set to Brazilian Portuguese
   gets it on its own, and one set to Chinese (any variant) gets Simplified Chinese.
+- **The live price keeps going when Kraken is down.** If Kraken's price feed goes quiet for 15 seconds, the price in
+  US dollars, euros and pounds streams from Coinbase's public feed instead, and switches back as soon as Kraken
+  answers again. The label under the price says which one you are seeing. Other currencies update from mempool.space
+  every minute meanwhile, as before.
 
 ## 0.18.0
 

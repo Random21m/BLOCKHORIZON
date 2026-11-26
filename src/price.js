@@ -1,7 +1,14 @@
-// Live BTC price from Kraken's public websocket (no key). Falls back to the mempool.space poll in app.js if it is down.
+// Live BTC price from Kraken's public websocket (no key). While Kraken is not delivering, a second public feed
+// (Coinbase Exchange, also no key) takes over for the currencies it trades (USD, EUR, GBP), and closes again as soon as
+// Kraken is back. The other currencies, and everything if both are down, come from the mempool.space poll in data.js.
 import { parseOhlc, parseBook, applyBook, bookChecksum, pricePrecision, parseTrades } from './lib.js';
 export const KRAKEN_URL = 'wss://ws.kraken.com/v2';
+export const BACKUP_URL = 'wss://ws-feed.exchange.coinbase.com';
 export const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'CHF', 'AUD', 'JPY'];
+export const BACKUP_CURRENCIES = ['USD', 'EUR', 'GBP'];
+// How long Kraken may go without a price before the backup feed is opened: 15 s while it is not connected, four times
+// that while it is connected but quiet (a calm market can be quiet for a while).
+export const BACKUP_AFTER = 15000;
 
 // Pure: raw websocket text -> [{cur, price, pct}] (empty for status, subscribe acks and bad frames).
 export function parseTicker(raw) {
@@ -22,45 +29,53 @@ export function parseTicker(raw) {
     return [];
   }
 }
+// Pure: a Coinbase Exchange ticker frame -> [{cur, price, pct}]; numbers arrive as strings, the 24 h change is worked
+// out from the price 24 hours ago (open_24h).
+export function parseBackupTicker(raw) {
+  try {
+    const m = JSON.parse(raw);
+    if (!m || m.type !== 'ticker' || typeof m.product_id !== 'string') return [];
+    const pm = /^BTC-([A-Z]{3})$/.exec(m.product_id),
+      price = parseFloat(m.price),
+      open = parseFloat(m.open_24h);
+    if (!pm || !Number.isFinite(price) || price <= 0) return [];
+    return [{ cur: pm[1], price, pct: Number.isFinite(open) && open > 0 ? (price / open - 1) * 100 : null }];
+  } catch {
+    return [];
+  }
+}
 
-export function livePrice(onTick, onState) {
-  // the same one-socket rules as live() in api.js
+// One websocket with the app's reconnect rules (the same one-socket rules as live() in api.js): it waits while the tab
+// is hidden or offline and retries with a growing delay. onFrame gets each message; returns { open, close }.
+function socket(url, subscribe, onFrame, onDown) {
   let ws,
     timer,
-    stopped = false,
+    on = false,
     delay = 3000;
   const open = () => {
+    on = true;
     clearTimeout(timer);
-    if (stopped || document.hidden || navigator.onLine === false || (ws && ws.readyState <= 1)) return;
+    if (document.hidden || navigator.onLine === false || (ws && ws.readyState <= 1)) return;
     let s;
     try {
-      s = ws = new WebSocket(KRAKEN_URL);
+      s = ws = new WebSocket(url);
     } catch {
-      onState(false);
+      onDown();
       return;
     }
     s.onopen = () => {
       if (s !== ws) return s.close();
       delay = 3000;
-      s.send(
-        JSON.stringify({
-          method: 'subscribe',
-          params: { channel: 'ticker', symbol: CURRENCIES.map((c) => 'BTC/' + c) },
-        })
-      );
+      s.send(JSON.stringify(subscribe));
     };
     s.onmessage = (e) => {
-      if (s !== ws) return;
-      const t = parseTicker(e.data);
-      if (t.length) {
-        onState(true);
-        t.forEach(onTick);
-      }
+      if (s === ws) onFrame(e.data);
     };
     s.onclose = () => {
       if (s !== ws) return;
-      onState(false);
-      if (!stopped) {
+      ws = null;
+      onDown();
+      if (on) {
         timer = setTimeout(open, delay);
         delay = Math.min(delay * 2, 30000);
       }
@@ -73,19 +88,78 @@ export function livePrice(onTick, onState) {
       }
     };
   };
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) open();
-  });
-  addEventListener('online', open);
-  open();
-  return () => {
-    stopped = true;
+  const close = () => {
+    on = false;
     clearTimeout(timer);
+    const s = ws;
+    ws = null;
     try {
-      ws && ws.close();
+      s && s.close();
     } catch {
       /* */
     }
+  };
+  return { open, close, isOn: () => on, connected: () => !!ws && ws.readyState === 1 };
+}
+
+// onTick({cur, price, pct}) for each price; onState(name) with the live source ('Kraken', 'Coinbase') or '' when none.
+export function livePrice(onTick, onState, wait = BACKUP_AFTER) {
+  let source = '',
+    krakenAt = Date.now(),
+    stopped = false;
+  const set = (s) => {
+    if (s !== source) onState((source = s));
+  };
+  const kraken = socket(
+    KRAKEN_URL,
+    { method: 'subscribe', params: { channel: 'ticker', symbol: CURRENCIES.map((c) => 'BTC/' + c) } },
+    (raw) => {
+      const t = parseTicker(raw);
+      if (!t.length) return;
+      krakenAt = Date.now();
+      if (backup.isOn()) backup.close();
+      set('Kraken');
+      t.forEach(onTick);
+    },
+    () => {
+      if (source === 'Kraken') set('');
+    }
+  );
+  const backup = socket(
+    BACKUP_URL,
+    { type: 'subscribe', product_ids: BACKUP_CURRENCIES.map((c) => 'BTC-' + c), channels: ['ticker_batch'] },
+    (raw) => {
+      const t = parseBackupTicker(raw);
+      if (!t.length || Date.now() - krakenAt < wait) return;
+      set('Coinbase');
+      t.forEach(onTick);
+    },
+    () => {
+      if (source === 'Coinbase') set('');
+    }
+  );
+  // Kraken silent for too long: open the backup (it closes again on Kraken's next price).
+  const watch = setInterval(
+    () => {
+      if (stopped || document.hidden) return;
+      const quiet = Date.now() - krakenAt;
+      if (!backup.isOn() && quiet >= (kraken.connected() ? 4 * wait : wait)) backup.open();
+    },
+    Math.min(5000, wait)
+  );
+  const wake = () => {
+    if (stopped || document.hidden) return;
+    kraken.open();
+    if (backup.isOn()) backup.open();
+  };
+  document.addEventListener('visibilitychange', wake);
+  addEventListener('online', wake);
+  kraken.open();
+  return () => {
+    stopped = true;
+    clearInterval(watch);
+    kraken.close();
+    backup.close();
   };
 }
 

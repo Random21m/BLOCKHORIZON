@@ -396,7 +396,7 @@ export default {
   about1:
     'BLOCKHORIZON zeigt die Bitcoin-Kette als Uhr: Die Blockhöhe zählt hoch, alles andere (Halving, Schwierigkeit, Gebühren) zählt bis zum nächsten Block herunter.',
   about2:
-    'Eine statische Seite. Kein Konto, keine Werbung, keine Analyse, keine Cookies. Einstellungen und letzte Werte bleiben nur in diesem Browser. Live-Daten kommen direkt von der öffentlichen mempool.space-API und dem öffentlichen Preis-Feed von Kraken. Stattdessen kannst du deinen eigenen Node nutzen (Einstellungen, Daten).',
+    'Eine statische Seite. Kein Konto, keine Werbung, keine Analyse, keine Cookies. Einstellungen und letzte Werte bleiben nur in diesem Browser. Live-Daten kommen direkt von der öffentlichen mempool.space-API und dem öffentlichen Preis-Feed von Kraken (solange Kraken nicht antwortet, dem von Coinbase). Stattdessen kannst du deinen eigenen Node nutzen (Einstellungen, Daten).',
   version: 'Version {v}',
   source: 'Quellcode auf GitHub',
   privacy: 'Datenschutz',

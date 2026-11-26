@@ -49,8 +49,8 @@ export const st = {
   dir: 0,
   raf: 0,
   pct: {},
-  priceLive: false,
-  priceAt: 0,
+  priceLive: '', // the live price feed delivering now ('Kraken', 'Coinbase'), or ''
+  priceAt: {}, // when each currency's price last came from the live feed
   tip: NaN,
   blocks: [],
   diff: null,

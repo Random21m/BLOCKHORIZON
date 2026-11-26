@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as L from '../src/lib.js';
-import { parseTicker } from '../src/price.js';
+import { parseTicker, parseBackupTicker, BACKUP_CURRENCIES, CURRENCIES } from '../src/price.js';
 import { normServer, esploraFor, esploraFees } from '../src/api.js';
 import { LANGS, loadLang, setLang, t, getLang, detectLang } from '../src/i18n.js';
 // every language's texts, as the app would load them one at a time
@@ -146,6 +146,22 @@ test('Kraken ticker parsing from recorded messages', () => {
     ),
     [{ cur: 'USD', price: 61000.5, pct: null }]
   );
+});
+
+test('backup price feed (Coinbase) parsing: string numbers, 24 h change from the price a day ago', () => {
+  const raw = (n) => fs.readFileSync(new URL('./fixtures/' + n, import.meta.url), 'utf8');
+  const [t] = parseBackupTicker(raw('coinbase-ticker.json'));
+  assert.equal(t.cur, 'EUR');
+  assert.equal(t.price, 52000.12);
+  assert.ok(Math.abs(t.pct - 4.00024) < 1e-4);
+  assert.deepEqual(parseBackupTicker(raw('coinbase-subscriptions.json')), []);
+  assert.deepEqual(parseBackupTicker('not json'), []);
+  assert.deepEqual(parseBackupTicker(JSON.stringify({ type: 'ticker', product_id: 'ETH-USD', price: '3000' })), []);
+  assert.deepEqual(parseBackupTicker(JSON.stringify({ type: 'ticker', product_id: 'BTC-USD', price: '-1' })), []);
+  assert.deepEqual(parseBackupTicker(JSON.stringify({ type: 'ticker', product_id: 'BTC-USD', price: '61000.5' })), [
+    { cur: 'USD', price: 61000.5, pct: null },
+  ]);
+  assert.ok(BACKUP_CURRENCIES.every((c) => CURRENCIES.includes(c)));
 });
 
 test('block colours follow the mempool.space fee ramp', () => {

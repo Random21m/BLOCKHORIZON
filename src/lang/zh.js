@@ -384,7 +384,7 @@ export default {
   about1:
     'BLOCKHORIZON 把比特币区块链显示成一座时钟：区块高度不断往上数，其他一切（减半、难度、手续费）都在向下一个区块倒数。',
   about2:
-    '这是一个静态页面。没有账户、没有广告、没有统计分析、没有 Cookie。设置和最近的数据只保存在这个浏览器里。实时数据直接来自公开的 mempool.space API 和 Kraken 的公开价格数据源。你也可以改用自己的节点（设置 → 数据）。',
+    '这是一个静态页面。没有账户、没有广告、没有统计分析、没有 Cookie。设置和最近的数据只保存在这个浏览器里。实时数据直接来自公开的 mempool.space API 和 Kraken 的公开价格数据源（Kraken 无响应时改用 Coinbase 的）。你也可以改用自己的节点（设置 → 数据）。',
   version: '版本 {v}',
   source: 'GitHub 上的源代码',
   privacy: '隐私',

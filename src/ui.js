@@ -173,9 +173,11 @@ export function priceLine() {
     st.pct[S.cur] != null
       ? el('span', { class: 'chg ' + (st.pct[S.cur] >= 0 ? 'up' : 'down') }, pct24() + ' ' + t('h24'))
       : null,
-    el('span', { class: 'src' }, st.priceLive ? t('live') + ' · Kraken' : srcHost())
+    el('span', { class: 'src' }, liveNow() ? t('live') + ' · ' + st.priceLive : srcHost())
   );
 }
+// The live feed is pricing the chosen currency right now (the backup feed has only some currencies).
+export const liveNow = () => !!st.priceLive && Date.now() - (st.priceAt[S.cur] || 0) < 30000;
 // The data host that answered last, for the 'where is this from' labels (mempool.space, your node, or the backup).
 export const srcHost = () => {
   try {

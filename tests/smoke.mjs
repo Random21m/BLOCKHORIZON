@@ -102,18 +102,26 @@ await ctx.routeWebSocket(/ws\.kraken\.com/, (ws) => {
         data: [{ symbol: 'BTC/USD', last: 61234.5, change_pct: 1.25 }],
       })
     );
-    setTimeout(
-      () =>
-        ws.send(
-          JSON.stringify({
-            channel: 'ticker',
-            type: 'update',
-            data: [{ symbol: 'BTC/USD', last: 61300.2, change_pct: 1.4 }],
-          })
-        ),
-      1500
-    );
+    // then the same price every few seconds, as the real feed keeps ticking (a silent Kraken opens the backup feed)
+    const tick = () =>
+      ws.send(
+        JSON.stringify({
+          channel: 'ticker',
+          type: 'update',
+          data: [{ symbol: 'BTC/USD', last: 61300.2, change_pct: 1.4 }],
+        })
+      );
+    setTimeout(tick, 1500);
+    const iv = setInterval(tick, 5000);
+    iv.unref();
+    ws.onClose(() => clearInterval(iv));
   });
+});
+// The backup price feed must stay closed while Kraken delivers.
+let backupOpened = 0;
+await ctx.routeWebSocket(/coinbase\.com/, (ws) => {
+  backupOpened++;
+  ws.close();
 });
 const ok = async (name, fn) => {
   try {
@@ -578,7 +586,8 @@ await ok(
       route.fulfill({ contentType: m[0], body: fx(m[1]) });
     });
     const p = await c.newPage();
-    await p.clock.install();
+    // start just after a whole minute, so the 5 s below cannot cross into the next one
+    await p.clock.install({ time: Math.floor(Date.now() / 60000) * 60000 + 1000 });
     await p.goto(base + '#/clock?kiosk&eink');
     await until(p, () => /\d+ min/.test(document.querySelector('#since')?.textContent || ''));
     assert.equal(await p.$('.clock-x'), null, 'no close button in kiosk mode');
@@ -2317,6 +2326,67 @@ await ok('Brazilian Portuguese is chosen for a pt-BR browser, European Portugues
     await c.close();
   }
 });
+await ok('price: Coinbase takes over while Kraken is silent, and closes once Kraken is back', async () => {
+  let krakenUp = false,
+    subscribed = null,
+    backupClosed = false,
+    backupConns = 0;
+  const c = await b.newContext({ viewport: { width: 1280, height: 800 }, locale: 'en-US' });
+  await c.routeWebSocket(/mempool\.space/, (ws) => ws.close());
+  await c.routeWebSocket(/ws\.kraken\.com/, (ws) => {
+    if (!krakenUp) return ws.close();
+    ws.onMessage(() =>
+      ws.send(
+        JSON.stringify({
+          channel: 'ticker',
+          type: 'snapshot',
+          data: [{ symbol: 'BTC/USD', last: 61234.5, change_pct: 1 }],
+        })
+      )
+    );
+  });
+  await c.routeWebSocket(/ws-feed\.exchange\.coinbase\.com/, (ws) => {
+    backupConns++;
+    ws.onMessage((m) => {
+      subscribed = JSON.parse(m);
+      ws.send(fx('coinbase-subscriptions.json'));
+      ws.send(JSON.stringify({ type: 'ticker', product_id: 'BTC-USD', price: '70000.50', open_24h: '68000.00' }));
+    });
+    ws.onClose(() => {
+      backupClosed = true;
+    });
+  });
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
+    r.request().url().includes('mempool.space') ? r.fallback() : r.abort()
+  );
+  await c.route(/mempool\.space/, (route) => {
+    const m = MOCK[new URL(route.request().url()).pathname];
+    if (!m) return route.fulfill({ status: 404, body: '' });
+    route.fulfill({ contentType: m[0], body: fx(m[1]) });
+  });
+  await c.addInitScript(() => localStorage.setItem('bh.settings', JSON.stringify({ cur: 'USD', _v: 2 })));
+  const p = await c.newPage();
+  await p.goto(base);
+  await until(p, () => document.querySelectorAll('.tile').length >= 10);
+  assert.equal(backupConns, 0, 'backup opened at once');
+  await until(p, () => /Coinbase/.test(document.querySelector('.btc .src')?.textContent || ''), null, {
+    timeout: 30000,
+  });
+  assert.deepEqual(subscribed, {
+    type: 'subscribe',
+    product_ids: ['BTC-USD', 'BTC-EUR', 'BTC-GBP'],
+    channels: ['ticker_batch'],
+  });
+  assert.match(await p.locator('#btc').innerText(), /70,00\d/);
+  assert.match(await p.locator('.btc .chg').innerText(), /2\.9/);
+  // Kraken answers again: it takes back over and the backup closes
+  krakenUp = true;
+  await p.evaluate(() => dispatchEvent(new Event('online')));
+  await until(p, () => /Kraken/.test(document.querySelector('.btc .src')?.textContent || ''), null, { timeout: 15000 });
+  await p.waitForTimeout(300);
+  assert.ok(backupClosed, 'backup still open');
+  await c.close();
+});
 await ok('accessibility: no axe-core violations on the main pages and dialogs, dark and light', async () => {
   let AXE;
   try {
@@ -2384,9 +2454,10 @@ await ok('accessibility: no axe-core violations on the main pages and dialogs, d
   assert.deepEqual(found, []);
 });
 await ok(
-  'only mempool.space is contacted (Kraken is only reached by the price feed and the trading chart)',
+  'only mempool.space is contacted (Kraken is only reached by the price feed and the trading chart, Coinbase only while Kraken is down)',
   async () => {
     assert.ok(external.length > 0);
+    assert.equal(backupOpened, 0, 'the backup price feed was opened while Kraken was working');
   }
 );
 await ok('no script errors', async () => {

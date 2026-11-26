@@ -66,7 +66,11 @@ export async function refreshAll() {
     }),
     prices: api.prices().then((v) => {
       if (!cur()) return v;
-      st.prices = Date.now() - st.priceAt < 30000 ? Object.assign({}, v, st.prices) : v;
+      // a currency the live feed priced in the last 30 s keeps that price; the others take the poll's
+      const live = {};
+      for (const c in st.priceAt)
+        if (Date.now() - st.priceAt[c] < 30000 && Number.isFinite(st.prices?.[c])) live[c] = st.prices[c];
+      st.prices = Object.assign({}, v, live);
       if (v && !v.__stale) checkPriceAlerts(v);
       return v;
     }),
@@ -157,7 +161,7 @@ export function glidePrice() {
 export function onPriceTick(tk) {
   const prev = st.prices && st.prices[tk.cur];
   st.prices = Object.assign({}, st.prices, { [tk.cur]: tk.price });
-  st.priceAt = Date.now();
+  st.priceAt[tk.cur] = Date.now();
   if (tk.pct != null) st.pct[tk.cur] = tk.pct;
   checkPriceAlerts({ [tk.cur]: tk.price });
   if (tk.cur === S.cur) {
