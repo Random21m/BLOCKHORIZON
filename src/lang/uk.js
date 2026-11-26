@@ -281,7 +281,7 @@ export default {
   estAt: ' · оч. {d}',
   avgOf: '{p} середнє {v}',
   issued: '{p}% випущено',
-  btcLeft: ' · лишилося {n} BTC',
+  btcLeft: ' · ще {n} BTC',
   full: '{p}% заповнено',
   feesRange: 'комісії {a}–{b} sat/vB',
   fastSlow: '{f} швидко · {s} повільно · ціль 10 хв',

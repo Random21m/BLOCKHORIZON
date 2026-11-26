@@ -2342,7 +2342,7 @@ await ok(
       ['id', /Kalkulator|Glosarium/, /Tinggi blok|Kesulitan/],
       ['vi', /Báo thức|Thuật ngữ/, /khối/],
       ['uk', /[іїєґ]/],
-      ['pl', /PLMENU/, /PLGLOSS/],
+      ['pl', /Słowniczek|Kalendarz/, /Wysokość bloku|Trudność/],
     ]) {
       const c = await b.newContext({ viewport: { width: 1280, height: 800 } });
       await c.routeWebSocket(/./, (ws) => ws.close());
