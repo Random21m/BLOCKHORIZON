@@ -4,6 +4,13 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
 
 ## Unreleased
 
+- **Three more long-term charts.** The **Puell Multiple** (the value of the bitcoins mined each day against its
+  average over the past year), **hash ribbons** (the hashrate's 30- and 60-day averages, saying since when miners have
+  been switching off or adding machines) and the **difficulty ribbon** (difficulty with its 9- to 200-day averages,
+  and how far apart they are now). The two ribbons show the last two years. No new data: they use the price history
+  and the hashrate and difficulty history the Charts page already loads.
+- In right-to-left languages, the dates under the history charts ran from the right while the lines ran from the
+  left; they now run from the left too.
 - **Mining pools ranked, and every past difficulty adjustment.** Two new panels at the bottom of the Mining page.
   **Mining pools** ranks every pool that found a block over the last 24 hours, week, month or year: blocks, share
   and an estimate of its hashrate, with how few of the largest pools found more than half of the blocks. **Past

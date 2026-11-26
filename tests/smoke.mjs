@@ -2873,48 +2873,75 @@ await ok(
     await c.close();
   }
 );
-await ok('long-term charts: 200-week average, Mayer Multiple, halving cycles and supply, always all time', async () => {
-  const c = await b.newContext({ viewport: { width: 1280, height: 900 } });
-  await c.routeWebSocket(/./, (ws) => ws.close());
-  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
-    r.request().url().includes('mempool.space') ? r.fallback() : r.abort()
-  );
-  await c.route(/mempool\.space/, (route) => {
-    const u = new URL(route.request().url()).pathname;
-    const m =
-      u === '/api/v1/mining/hashrate/all'
-        ? ['application/json', 'hashrate-all-difficulty.json']
-        : u === '/api/v1/historical-price'
-          ? ['application/json', 'price-history-weekly.json']
-          : MOCK[u];
-    if (!m) return route.fulfill({ status: 404, body: '' });
-    route.fulfill({ contentType: m[0], body: fx(m[1]) });
-  });
-  await c.addInitScript(() => localStorage.setItem('bh.settings', JSON.stringify({ cur: 'USD', _v: 2 })));
-  const p = await c.newPage();
-  await p.goto(base + '#/charts');
-  await p.waitForSelector('#ch-supply .lchart', { timeout: 15000 });
-  await p.waitForSelector('#ch-cycles .lchart');
-  const head = (id) => p.locator('#ch-' + id + ' .chead').innerText();
-  assert.match(await head('ma200w'), /[\d,]+ USD[\s\S]*×0\.\d+ its 200-week average/);
-  assert.match(await head('mayer'), /×\d\.\d\d/);
-  assert.match(await head('cycles'), /since the 2024 halving/);
-  assert.match(await head('supply'), /20,\d{3},\d{3} BTC[\s\S]*% of the 21 million/);
-  assert.equal(await p.locator('#ch-cycles .ln').count(), 4, 'one line per halving');
-  assert.equal(await p.locator('#ch-ma200w .ln').count(), 2, 'price and its average');
-  // the crosshair names every cycle at that day
-  await p.locator('#ch-cycles .lchart').focus();
-  await p.keyboard.press('Home'); // day 0: every cycle has a value
-  const tip = await p.locator('#ch-cycles .tip').innerText();
-  for (const y of ['2012', '2016', '2020', '2024']) assert.ok(tip.includes(y + ' halving'), tip);
-  // the range buttons change the history charts, not these
-  const before = await p.locator('#ch-ma200w .cval').innerText();
-  await p.click('[data-r="1m"]');
-  await p.waitForTimeout(300);
-  assert.equal(await p.locator('#ch-ma200w .cval').innerText(), before);
-  assert.match(await p.locator('#ch-ma200w .xlabs').innerText(), /2014/);
-  await c.close();
-});
+await ok(
+  'long-term charts: 200-week average, Mayer and Puell Multiples, halving cycles, supply, hash and difficulty ribbons; dates run left to right in Hebrew',
+  async () => {
+    const c = await b.newContext({ viewport: { width: 1280, height: 900 } });
+    await c.routeWebSocket(/./, (ws) => ws.close());
+    await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
+      r.request().url().includes('mempool.space') ? r.fallback() : r.abort()
+    );
+    await c.route(/mempool\.space/, (route) => {
+      const u = new URL(route.request().url()).pathname;
+      const m =
+        u === '/api/v1/mining/hashrate/all'
+          ? ['application/json', 'hashrate-all-difficulty.json']
+          : u === '/api/v1/historical-price'
+            ? ['application/json', 'price-history-weekly.json']
+            : MOCK[u];
+      if (!m) return route.fulfill({ status: 404, body: '' });
+      route.fulfill({ contentType: m[0], body: fx(m[1]) });
+    });
+    await c.addInitScript(() => localStorage.setItem('bh.settings', JSON.stringify({ cur: 'USD', _v: 2 })));
+    const p = await c.newPage();
+    await p.goto(base + '#/charts');
+    await p.waitForSelector('#ch-supply .lchart', { timeout: 15000 });
+    await p.waitForSelector('#ch-cycles .lchart');
+    const head = (id) => p.locator('#ch-' + id + ' .chead').innerText();
+    assert.match(await head('ma200w'), /[\d,]+ USD[\s\S]*×0\.\d+ its 200-week average/);
+    assert.match(await head('mayer'), /×\d\.\d\d/);
+    assert.match(await head('cycles'), /since the 2024 halving/);
+    assert.match(await head('supply'), /20,\d{3},\d{3} BTC[\s\S]*% of the 21 million/);
+    assert.equal(await p.locator('#ch-cycles .ln').count(), 4, 'one line per halving');
+    assert.equal(await p.locator('#ch-ma200w .ln').count(), 2, 'price and its average');
+    // the crosshair names every cycle at that day
+    await p.locator('#ch-cycles .lchart').focus();
+    await p.keyboard.press('Home'); // day 0: every cycle has a value
+    const tip = await p.locator('#ch-cycles .tip').innerText();
+    for (const y of ['2012', '2016', '2020', '2024']) assert.ok(tip.includes(y + ' halving'), tip);
+    // the range buttons change the history charts, not these
+    const before = await p.locator('#ch-ma200w .cval').innerText();
+    await p.click('[data-r="1m"]');
+    await p.waitForTimeout(300);
+    assert.equal(await p.locator('#ch-ma200w .cval').innerText(), before);
+    assert.match(await p.locator('#ch-ma200w .xlabs').innerText(), /2014/);
+    // Puell Multiple, hash ribbons and the difficulty ribbon (the ribbons over the last two years)
+    await p.waitForSelector('#ch-diffribbon .lchart');
+    assert.match(await head('puell'), /×\d\.\d\d[\s\S]*bitcoins mined each day/);
+    assert.match(
+      await head('ribbons'),
+      /[EZ]H\/s[\s\S]*30-day average has been (above|below) the 60-day one since \d\d\/\d\d\/\d{4}[\s\S]*Last 2 years/
+    );
+    assert.match(await head('diffribbon'), /\d+\.\d\d T[\s\S]*Now they are [\d.]+% apart[\s\S]*Last 2 years/);
+    assert.equal(await p.locator('#ch-ribbons .ln').count(), 2);
+    assert.equal(await p.locator('#ch-diffribbon .ln').count(), 9, 'difficulty and 8 averages');
+    await p.locator('#ch-diffribbon .lchart').focus();
+    await p.keyboard.press('End');
+    const rt = (await p.locator('#ch-diffribbon .tip').innerText()).split('\n');
+    assert.equal(rt.length, 4, 'only the shortest and longest averages are named: ' + rt.join(' / '));
+    assert.match(rt.join(' / '), /^Difficulty: [\d.]+ T \/ 9-day average: [\d.]+ T \/ 200-day average: [\d.]+ T \/ \d/);
+    assert.match(await p.getAttribute('#ch-ribbons .lchart', 'aria-label'), /Last 2 years/);
+    // right to left: time still runs from the left
+    await p.evaluate(() => localStorage.setItem('bh.settings', JSON.stringify({ cur: 'USD', lang: 'he', _v: 2 })));
+    await p.reload();
+    await p.waitForSelector('#ch-supply .lchart', { timeout: 15000 });
+    const xs = await p
+      .locator('#ch-supply .xlabs span')
+      .evaluateAll((e) => e.map((x) => [x.textContent, x.getBoundingClientRect().left]));
+    assert.ok(xs[0][1] < xs[2][1] && /2009/.test(xs[0][0]), 'oldest date on the left: ' + JSON.stringify(xs));
+    await c.close();
+  }
+);
 await ok(
   'address lookup: from search to its page, with balance and payments; it says where the address was sent, and never to the backup server',
   async () => {
