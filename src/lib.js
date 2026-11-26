@@ -1594,6 +1594,8 @@ export function asServerTx(tx, prevTx = new Map()) {
       scriptpubkey_address: o.address || undefined,
     })),
   };
+}
+
 // ---- Price and supply facts (the Charts page's long-term section) ----
 // The all-time high of a price series (ascending [{ t, v }], daily or weekly closes) and the live price, if that is
 // higher: { ath, at (ms), below (% under the high, 0 at it), days (since the high), now (true when the live price is it) }.
