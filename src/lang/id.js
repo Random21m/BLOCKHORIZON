@@ -601,7 +601,8 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'belum diketahui sampai koin yang dibelanjakannya ditemukan',
   sendRbf: 'Transaksi ini bisa diganti nanti dengan biaya lebih tinggi.',
-  sendFinal: 'Transaksi ini tidak bisa diganti nanti dengan biaya lebih tinggi.',
+  sendFinal:
+    'Transaksi ini tidak menyatakan bisa diganti; banyak node tetap menerima pengganti dengan biaya lebih tinggi.',
   sendMissing:
     'Sebagian koin yang dibelanjakannya tidak ditemukan: mungkin sudah dibelanjakan, atau milik jaringan lain. Kemungkinan besar akan ditolak.',
   sendSpent: 'Koin yang dibelanjakannya sudah dibelanjakan oleh transaksi lain di sebuah blok, jadi akan ditolak.',
@@ -643,4 +644,7 @@ export default {
   addrQrAria: 'Kode QR alamat {a}',
   addrQrNote:
     'Pindai dengan dompet untuk membayar ke alamat ini. Dibuat di perangkat ini; periksa alamat yang ditampilkan dompet Anda.',
+  sendUnchecked:
+    'Sebagian koin yang dibelanjakannya tidak bisa diperiksa sekarang, jadi biayanya mungkin tidak diketahui. Tekan Periksa lagi sebentar lagi.',
+  txInUnknown: 'belum dicek',
 };

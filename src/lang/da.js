@@ -599,7 +599,8 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'ukendt, indtil de mønter, den bruger, er fundet',
   sendRbf: 'Den kan erstattes senere med et højere gebyr.',
-  sendFinal: 'Den kan ikke erstattes senere med et højere gebyr.',
+  sendFinal:
+    'Den angiver ikke, at den kan erstattes; mange noder accepterer alligevel en erstatning med et højere gebyr.',
   sendMissing:
     'Nogle af de mønter, den bruger, blev ikke fundet: de er måske allerede brugt eller hører til et andet netværk. Den ville sandsynligvis blive afvist.',
   sendSpent: 'Mønter, den bruger, er allerede brugt af en anden transaktion i en blok, så den ville blive afvist.',
@@ -641,4 +642,7 @@ export default {
   addrQrAria: 'QR-kode for adressen {a}',
   addrQrNote:
     'Scan den med en wallet for at betale til denne adresse. Lavet på denne enhed; tjek adressen, som din wallet viser.',
+  sendUnchecked:
+    'Nogle af de mønter, den bruger, kunne ikke tjekkes lige nu, så gebyret kan være ukendt. Tryk på Tjek igen om lidt.',
+  txInUnknown: 'ikke slået op',
 };

@@ -603,7 +603,8 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'sconosciuta finché non si trovano le monete che spende',
   sendRbf: 'Può essere sostituita più tardi con una commissione più alta.',
-  sendFinal: 'Non può essere sostituita più tardi con una commissione più alta.',
+  sendFinal:
+    'Non indica di poter essere sostituita; molti nodi accettano comunque una sostituzione con una commissione più alta.',
   sendMissing:
     'Alcune delle monete che spende non sono state trovate: forse sono già spese, o appartengono a un’altra rete. Probabilmente verrebbe rifiutata.',
   sendSpent:
@@ -647,4 +648,7 @@ export default {
   addrQrAria: 'Codice QR dell’indirizzo {a}',
   addrQrNote:
     'Scansionalo con un wallet per pagare a questo indirizzo. Generato su questo dispositivo; controlla l’indirizzo mostrato dal tuo wallet.',
+  sendUnchecked:
+    'Alcune delle monete che spende non si sono potute controllare ora, quindi la commissione potrebbe essere sconosciuta. Premi di nuovo Controlla tra un momento.',
+  txInUnknown: 'non consultato',
 };

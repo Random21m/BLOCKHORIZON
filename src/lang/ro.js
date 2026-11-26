@@ -602,7 +602,7 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'necunoscut până sunt găsite monedele pe care le cheltuiește',
   sendRbf: 'Poate fi înlocuită mai târziu cu un comision mai mare.',
-  sendFinal: 'Nu poate fi înlocuită mai târziu cu un comision mai mare.',
+  sendFinal: 'Nu indică faptul că poate fi înlocuită; multe noduri acceptă totuși o înlocuire cu un comision mai mare.',
   sendMissing:
     'Unele dintre monedele pe care le cheltuiește nu au fost găsite: poate sunt deja cheltuite sau aparțin altei rețele. Probabil ar fi refuzată.',
   sendSpent:
@@ -645,4 +645,7 @@ export default {
   addrQrAria: 'Codul QR al adresei {a}',
   addrQrNote:
     'Scanează-l cu un portofel ca să plătești la această adresă. Generat pe acest dispozitiv; verifică adresa afișată de portofel.',
+  sendUnchecked:
+    'Unele dintre monedele pe care le cheltuiește nu au putut fi verificate acum, așa că este posibil ca comisionul să fie necunoscut. Apasă din nou Verifică peste câteva momente.',
+  txInUnknown: 'neverificat',
 };

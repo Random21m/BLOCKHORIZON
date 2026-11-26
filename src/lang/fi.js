@@ -600,7 +600,8 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'tuntematon, kunnes sen käyttämät kolikot löytyvät',
   sendRbf: 'Sen voi korvata myöhemmin korkeammalla maksulla.',
-  sendFinal: 'Sitä ei voi korvata myöhemmin korkeammalla maksulla.',
+  sendFinal:
+    'Siinä ei ilmoiteta, että sen voi korvata; monet solmut hyväksyvät silti korvaavan, korkeamman maksun tapahtuman.',
   sendMissing:
     'Osaa sen käyttämistä kolikoista ei löytynyt: ne voivat olla jo käytetty tai kuulua toiseen verkkoon. Se todennäköisesti hylättäisiin.',
   sendSpent: 'Toinen lohkossa oleva siirto on jo käyttänyt sen kolikot, joten se hylättäisiin.',
@@ -643,4 +644,7 @@ export default {
   addrQrAria: 'Osoitteen {a} QR-koodi',
   addrQrNote:
     'Skannaa se lompakolla maksaaksesi tähän osoitteeseen. Luotu tällä laitteella; tarkista osoite, jonka lompakkosi näyttää.',
+  sendUnchecked:
+    'Osaa sen käyttämistä kolikoista ei voitu nyt tarkistaa, joten maksu voi olla tuntematon. Paina Tarkista uudelleen hetken päästä.',
+  txInUnknown: 'ei haettu',
 };

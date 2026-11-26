@@ -603,7 +603,8 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'desconhecida até serem encontradas as moedas que gasta',
   sendRbf: 'Pode ser substituída mais tarde com uma taxa mais alta.',
-  sendFinal: 'Não pode ser substituída mais tarde com uma taxa mais alta.',
+  sendFinal:
+    'Não indica que pode ser substituída; muitos nós aceitam mesmo assim uma substituição com uma taxa mais alta.',
   sendMissing:
     'Algumas das moedas que gasta não foram encontradas: podem já estar gastas ou pertencer a outra rede. Provavelmente seria recusada.',
   sendSpent: 'As moedas que gasta já foram gastas por outra transação num bloco, por isso seria recusada.',
@@ -645,4 +646,7 @@ export default {
   addrQrAria: 'Código QR do endereço {a}',
   addrQrNote:
     'Leia-o com uma carteira para pagar para este endereço. Gerado neste dispositivo; confira o endereço que a sua carteira mostra.',
+  sendUnchecked:
+    'Algumas das moedas que gasta não puderam ser verificadas agora, por isso a taxa pode ser desconhecida. Prima Verificar de novo daqui a pouco.',
+  txInUnknown: 'não consultado',
 };

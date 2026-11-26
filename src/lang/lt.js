@@ -598,7 +598,7 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'nežinomas, kol nerandamos monetos, kurias ji išleidžia',
   sendRbf: 'Vėliau ją galima pakeisti didesniu mokesčiu.',
-  sendFinal: 'Vėliau jos negalima pakeisti didesniu mokesčiu.',
+  sendFinal: 'Joje nenurodyta, kad ją galima pakeisti; vis dėlto daug mazgų priima pakeitimą didesniu mokesčiu.',
   sendMissing:
     'Kai kurios monetos, kurias ji išleidžia, nerastos: jos gal jau išleistos arba priklauso kitam tinklui. Ji greičiausiai būtų atmesta.',
   sendSpent: 'Monetas, kurias ji išleidžia, jau išleido kita transakcija bloke, todėl ji būtų atmesta.',
@@ -640,4 +640,7 @@ export default {
   addrQrAria: 'Adreso {a} QR kodas',
   addrQrNote:
     'Nuskaitykite jį pinigine, kad sumokėtumėte šiuo adresu. Sukurtas šiame įrenginyje; patikrinkite adresą, kurį rodo jūsų piniginė.',
+  sendUnchecked:
+    'Kai kurių monetų, kurias ji išleidžia, dabar nepavyko patikrinti, todėl mokestis gali būti nežinomas. Po akimirkos dar kartą paspauskite Tikrinti.',
+  txInUnknown: 'nepatikrinta',
 };

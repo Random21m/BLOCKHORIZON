@@ -603,7 +603,7 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'tidak diketahui sehingga syiling yang dibelanjakannya ditemui',
   sendRbf: 'Ia boleh digantikan kemudian dengan yuran lebih tinggi.',
-  sendFinal: 'Ia tidak boleh digantikan kemudian dengan yuran lebih tinggi.',
+  sendFinal: 'Ia tidak menyatakan boleh digantikan; banyak nod masih menerima penggantian dengan yuran lebih tinggi.',
   sendMissing:
     'Sebahagian syiling yang dibelanjakannya tidak ditemui: mungkin sudah dibelanjakan, atau milik rangkaian lain. Ia mungkin akan ditolak.',
   sendSpent:
@@ -645,4 +645,7 @@ export default {
   addrQrAria: 'Kod QR bagi alamat {a}',
   addrQrNote:
     'Imbas dengan dompet untuk membayar ke alamat ini. Dijana pada peranti ini; semak alamat yang ditunjukkan oleh dompet anda.',
+  sendUnchecked:
+    'Sebahagian syiling yang dibelanjakannya tidak dapat disemak sekarang, jadi yurannya mungkin tidak diketahui. Tekan Semak sekali lagi sebentar nanti.',
+  txInUnknown: 'belum disemak',
 };

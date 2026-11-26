@@ -568,7 +568,7 @@ export default {
   sendFeeVal: '{s} 聪 · {r} sat/vB',
   sendFeeUnknown: '要找到它花费的币之后才知道',
   sendRbf: '以后可以用更高的手续费替换它。',
-  sendFinal: '以后无法用更高的手续费替换它。',
+  sendFinal: '它没有标明可以被替换；但许多节点仍会接受手续费更高的替换交易。',
   sendMissing: '它花费的部分币没有找到：可能已经被花掉，或属于另一个网络。它很可能会被拒绝。',
   sendSpent: '它花费的币已经被某个区块里的另一笔交易花掉了，所以会被拒绝。',
   sendReplaces: '它花费的币已被一笔仍在等待的交易使用。只有用更高的手续费替换那笔交易，这笔才能通过。',
@@ -605,4 +605,6 @@ export default {
   addrQr: 'QR 码',
   addrQrAria: '地址 {a} 的 QR 码',
   addrQrNote: '用钱包扫描即可向此地址付款。二维码在本设备上生成；请核对钱包显示的地址。',
+  sendUnchecked: '它花费的部分币暂时无法检查，所以手续费可能未知。请稍后再按一次“检查”。',
+  txInUnknown: '未查询',
 };

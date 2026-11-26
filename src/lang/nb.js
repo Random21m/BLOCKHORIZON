@@ -600,7 +600,7 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'ukjent til myntene den bruker er funnet',
   sendRbf: 'Den kan erstattes senere med høyere gebyr.',
-  sendFinal: 'Den kan ikke erstattes senere med høyere gebyr.',
+  sendFinal: 'Den oppgir ikke at den kan erstattes; mange noder godtar likevel en erstatning med høyere gebyr.',
   sendMissing:
     'Noen av myntene den bruker ble ikke funnet: de kan allerede være brukt, eller høre til et annet nettverk. Den ville trolig blitt avvist.',
   sendSpent: 'Mynter den bruker er allerede brukt av en annen transaksjon i en blokk, så den ville blitt avvist.',
@@ -641,4 +641,7 @@ export default {
   addrQrAria: 'QR-kode for adressen {a}',
   addrQrNote:
     'Skann den med en lommebok for å betale til denne adressen. Laget på denne enheten; sjekk adressen lommeboken din viser.',
+  sendUnchecked:
+    'Noen av myntene den bruker kunne ikke sjekkes akkurat nå, så gebyret kan være ukjent. Trykk på Sjekk igjen om litt.',
+  txInUnknown: 'ikke slått opp',
 };

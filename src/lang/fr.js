@@ -609,7 +609,8 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'inconnus tant que les pièces qu’elle dépense ne sont pas trouvées',
   sendRbf: 'Elle peut être remplacée plus tard avec des frais plus élevés.',
-  sendFinal: 'Elle ne peut pas être remplacée plus tard avec des frais plus élevés.',
+  sendFinal:
+    'Elle n’indique pas qu’elle peut être remplacée ; beaucoup de nœuds acceptent quand même un remplacement avec des frais plus élevés.',
   sendMissing:
     'Certaines des pièces qu’elle dépense sont introuvables : elles sont peut-être déjà dépensées, ou appartiennent à un autre réseau. Elle serait sans doute refusée.',
   sendSpent:
@@ -653,4 +654,7 @@ export default {
   addrQrAria: 'QR code de l’adresse {a}',
   addrQrNote:
     'Scannez-le avec un portefeuille pour payer à cette adresse. Généré sur cet appareil ; vérifiez l’adresse affichée par votre portefeuille.',
+  sendUnchecked:
+    'Certaines des pièces qu’elle dépense n’ont pas pu être vérifiées pour l’instant, les frais sont donc peut-être inconnus. Appuyez à nouveau sur Vérifier dans un instant.',
+  txInUnknown: 'non consulté',
 };

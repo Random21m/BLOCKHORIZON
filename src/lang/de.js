@@ -606,7 +606,8 @@ export default {
   sendFeeVal: '{s} Sats · {r} sat/vB',
   sendFeeUnknown: 'unbekannt, bis die Coins gefunden sind, die sie ausgibt',
   sendRbf: 'Sie kann später durch eine mit höherer Gebühr ersetzt werden.',
-  sendFinal: 'Sie kann später nicht durch eine mit höherer Gebühr ersetzt werden.',
+  sendFinal:
+    'Sie gibt nicht an, dass sie ersetzt werden kann; viele Knoten akzeptieren trotzdem einen Ersatz mit höherer Gebühr.',
   sendMissing:
     'Einige der Coins, die sie ausgibt, wurden nicht gefunden: Sie sind vielleicht schon ausgegeben oder gehören zu einem anderen Netzwerk. Sie würde wahrscheinlich abgelehnt.',
   sendSpent:
@@ -649,4 +650,7 @@ export default {
   addrQrAria: 'QR-Code der Adresse {a}',
   addrQrNote:
     'Mit einer Wallet scannen, um an diese Adresse zu zahlen. Auf diesem Gerät erzeugt; prüfe die Adresse, die deine Wallet anzeigt.',
+  sendUnchecked:
+    'Einige der Coins, die sie ausgibt, konnten gerade nicht geprüft werden, daher ist die Gebühr vielleicht unbekannt. Tippe gleich noch einmal auf Prüfen.',
+  txInUnknown: 'nicht abgefragt',
 };

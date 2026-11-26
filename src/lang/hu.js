@@ -602,7 +602,7 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'ismeretlen, amíg meg nem találjuk az elköltött coinokat',
   sendRbf: 'Később lecserélhető magasabb díjjal.',
-  sendFinal: 'Később nem cserélhető le magasabb díjjal.',
+  sendFinal: 'Nem jelzi, hogy lecserélhető; sok csomópont mégis elfogad helyette egy magasabb díjú tranzakciót.',
   sendMissing:
     'Az általa elköltött coinok egy része nem található: lehet, hogy már elköltötték őket, vagy egy másik hálózathoz tartoznak. Valószínűleg elutasítanák.',
   sendSpent: 'Az általa elköltött coinokat már elköltötte egy másik tranzakció egy blokkban, így elutasítanák.',
@@ -644,4 +644,7 @@ export default {
   addrQrAria: 'A(z) {a} cím QR-kódja',
   addrQrNote:
     'Olvasd be egy tárcával, hogy erre a címre fizess. Ezen az eszközön készült; ellenőrizd a címet, amit a tárcád mutat.',
+  sendUnchecked:
+    'Az általa elköltött coinok egy részét most nem sikerült ellenőrizni, így a díj ismeretlen lehet. Kicsit később nyomd meg újra az Ellenőrzés gombot.',
+  txInUnknown: 'nincs lekérve',
 };

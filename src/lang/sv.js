@@ -597,7 +597,7 @@ export default {
   sendFeeVal: '{s} sats · {r} sat/vB',
   sendFeeUnknown: 'okänd tills mynten den spenderar har hittats',
   sendRbf: 'Den kan ersättas senare med en högre avgift.',
-  sendFinal: 'Den kan inte ersättas senare med en högre avgift.',
+  sendFinal: 'Den anger inte att den kan ersättas; många noder godtar ändå en ersättning med högre avgift.',
   sendMissing:
     'Några av mynten den spenderar hittades inte: de kan redan vara spenderade eller höra till ett annat nätverk. Den skulle troligen avvisas.',
   sendSpent: 'Mynt den spenderar har redan spenderats av en annan transaktion i ett block, så den skulle avvisas.',
@@ -638,4 +638,7 @@ export default {
   addrQrAria: 'QR-kod för adressen {a}',
   addrQrNote:
     'Skanna den med en plånbok för att betala till den här adressen. Skapad på den här enheten; kontrollera adressen som din plånbok visar.',
+  sendUnchecked:
+    'Några av mynten den spenderar kunde inte kontrolleras just nu, så avgiften kan vara okänd. Tryck på Kontrollera igen om en stund.',
+  txInUnknown: 'ej uppslaget',
 };
