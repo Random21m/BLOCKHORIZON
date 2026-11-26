@@ -223,7 +223,8 @@ export function viewDash() {
           // the node count (the dashboard shows one line under each figure), rather than pass them as today's
           L.lnStale(l)
             ? [
-                more(t('channels', { n: L.fmtNum(l.channel_count) }) + ' · ' + t('lnAsOf', { d: lnDate(l) })),
+                // the date first: on a narrow tile the line is cut at its end, and the date is what matters here
+                more(t('lnAsOf', { d: lnDate(l) }) + ' · ' + t('channels', { n: L.fmtNum(l.channel_count) })),
                 less(t('lnAsOfShort', { d: lnDate(l) })), // a phone's tile has room for the date only
               ]
             : [t('channels', { n: L.fmtNum(l.channel_count) }), more(t('nodes', { n: L.fmtNum(l.node_count) }))],
@@ -335,8 +336,8 @@ export const clockSince = (now) =>
     : sinceText(now);
 // Shown on a screen left alone once nothing new has arrived for half an hour (connection lost, node down).
 export const staleText = (now) =>
-  (opts.kiosk || opts.eink) && st.dataAt && now - st.dataAt > STALE_SEC * 1000
-    ? t('staleFor', { m: Math.floor((now - st.dataAt) / 60000) })
+  (opts.kiosk || opts.eink) && now - st.dataAt > STALE_SEC * 1000
+    ? t('staleFor', { m: Math.floor((now - Math.min(st.dataAt, st.freshAt || st.dataAt)) / 60000) })
     : '';
 // The price, read at most once a minute on e-ink.
 let einkPrice = { at: 0, v: NaN };

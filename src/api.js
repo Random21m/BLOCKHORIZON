@@ -55,14 +55,24 @@ export function store(key, val) {
   return val === undefined ? null : val;
 }
 
+// A server that takes the connection but never answers counts as unreachable after this long (so the backup is
+// asked and the app shows it is offline, instead of waiting for ever).
+export const FETCH_TIMEOUT = 15000;
 async function fetchFrom(base, path, text) {
-  const r = await fetch(base + '/api' + path, { cache: 'no-store' });
-  if (!r.ok) {
-    const e = new Error('HTTP ' + r.status);
-    e.status = r.status;
-    throw e;
+  const ctl = new AbortController(),
+    timer = setTimeout(() => ctl.abort(), FETCH_TIMEOUT);
+  let r;
+  try {
+    r = await fetch(base + '/api' + path, { cache: 'no-store', signal: ctl.signal });
+    if (r.ok) return await (text ? r.text() : r.json());
+  } catch (e) {
+    throw new Error(ctl.signal.aborted ? 'timeout' : (e && e.message) || 'network');
+  } finally {
+    clearTimeout(timer);
   }
-  return text ? r.text() : r.json();
+  const e = new Error('HTTP ' + r.status);
+  e.status = r.status;
+  throw e;
 }
 // Esplora (blockstream.info) answers a few of the same questions in its own shape; null = no fallback for this path.
 export function esploraFor(path) {
@@ -85,7 +95,14 @@ export function esploraFees(e) {
   return { fastestFee: g(1), halfHourFee: g(3), hourFee: g(6), economyFee: g(144), minimumFee: 1 };
 }
 
+// The widget (embed.html) shares this origin's storage with the app: it keeps no copies, so it never overwrites the
+// app's saved values (which may come from another server or network).
+let cacheOff = false;
+export const noCache = () => {
+  cacheOff = true;
+};
 export async function getJSON(path, { cacheKey, text, noFallback } = {}) {
+  if (cacheOff) cacheKey = undefined;
   try {
     let v;
     try {

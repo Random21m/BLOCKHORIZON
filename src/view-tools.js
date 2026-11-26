@@ -367,11 +367,13 @@ export function viewCalc() {
   const sats = el('input', { id: 'c-sats', inputmode: 'decimal', placeholder: 'sats', 'aria-label': 'Sats' }),
     fiat = el('input', { id: 'c-fiat', inputmode: 'decimal', placeholder: S.cur, 'aria-label': S.cur });
   sats.addEventListener('input', () => {
-    const v = L.parsePriceInput(sats.value);
+    const v = L.parsePriceInput(sats.value),
+      p = price(); // the price now, not when the page opened
     fiat.value = Number.isFinite(v) && p ? ((v / 1e8) * p).toFixed(2) : '';
   });
   fiat.addEventListener('input', () => {
-    const v = L.parsePriceInput(fiat.value);
+    const v = L.parsePriceInput(fiat.value),
+      p = price();
     sats.value = Number.isFinite(v) && p ? Math.round((v / p) * 1e8) : '';
   });
   a.append(

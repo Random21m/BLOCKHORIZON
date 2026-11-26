@@ -1,8 +1,8 @@
-// The embeddable widget (embed.html): one live value with a link back to the app. No settings, no storage of its own:
-// everything comes from the URL. Polls every 30 seconds while visible (no websocket, to stay light on other people's pages).
+// The embeddable widget (embed.html): one live value with a link back to the app. No settings or storage of its own:
+// everything comes from the URL (it only reads the data server chosen in the app's Settings, if any). Polls every 30 seconds while visible (no websocket, to stay light on other people's pages).
 // show=mining draws a small picture of the block being mined: its fee mix from the projected block (no per-transaction feed).
 import * as L from './lib.js';
-import { api, loadConfig } from './api.js';
+import { api, loadConfig, noCache, store } from './api.js';
 import { t, setLang, detectLang, LANGS, loadLang, isRtl } from './i18n.js';
 import { CURRENCIES } from './price.js';
 
@@ -134,7 +134,9 @@ async function refresh() {
   }
   paint();
 }
-loadConfig().then(refresh);
+// The same server the app uses in this browser (Settings → Data), so a preview or a widget never asks another one.
+noCache();
+loadConfig((store('settings') || {}).server || '').then(refresh);
 setInterval(refresh, 30000);
 document.addEventListener('visibilitychange', refresh);
 if (show === 'height' || show === 'mining') setInterval(paint, 1000); // the "since last block" clock

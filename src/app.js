@@ -4,7 +4,7 @@ import { live, trackBlock, loadConfig, setServer, reconnect, store, source, FALL
 import { mountScene, dropLive } from './block-scene.js';
 import { livePrice } from './price.js';
 import { t, getLang, loadLang } from './i18n.js';
-import { VERSION, $, S, st, el, toast, applyLook, NAVS, PHONE_TABS, NAV_ICONS, hooks } from './state.js';
+import { VERSION, $, S, st, el, toast, applyLook, NAVS, PHONE_TABS, NAV_ICONS, hooks, price } from './state.js';
 import {
   refreshAll,
   newGeneration,
@@ -223,7 +223,36 @@ if (typeof document !== 'undefined') {
   );
 }
 const docTitle = () => 'BLOCKHORIZON' + (Number.isFinite(st.tip) ? ' · ' + L.fmtNum(st.tip) : '');
-function renderView() {
+// Pages that are not repainted live but show the height, the fees or the price (built once): if one opens before that
+// data has arrived (a link, a shortcut, a fresh start), it is built again once it does, unless something was typed in it.
+const REFILL = new Set(['/alarm', '/calc', '/replay', '/events', '/my']);
+const have = () => [Number.isFinite(st.tip), !!st.fees, Number.isFinite(price())];
+let builtWith = [];
+function refill() {
+  if (!REFILL.has(route) || !have().some((x, i) => x && !builtWith[i])) return;
+  const m = $('#main'),
+    typed = (f) => f.nodeName !== 'SELECT' && f.type !== 'checkbox' && f.value !== f.defaultValue;
+  if ([...m.querySelectorAll('input, textarea, select')].some((f) => f === document.activeElement || typed(f))) {
+    builtWith = have(); // the person is using the page: leave it as it is
+    return;
+  }
+  renderView(true);
+}
+// Build the page again (an alert fired or was removed) without losing what is being typed in it: each field's value,
+// the cursor's field and the scroll are carried over by id.
+function renderKeeping() {
+  const m = $('#main'),
+    vals = new Map([...m.querySelectorAll('input[id], textarea[id], select[id]')].map((f) => [f.id, f.value])),
+    focus = m.contains(document.activeElement) ? document.activeElement.id : '';
+  renderView(true);
+  for (const [id, v] of vals) {
+    const f = document.getElementById(id);
+    if (f && f.type !== 'checkbox' && f.value !== v) f.value = v;
+  }
+  const f = focus && document.getElementById(focus);
+  if (f) f.focus({ preventScroll: true });
+}
+function renderView(keepScroll) {
   // #/search (the app's Search shortcut) opens the dashboard with the search dialog
   if (location.hash === '#/search') {
     history.replaceState(null, '', '#/');
@@ -264,7 +293,8 @@ function renderView() {
   if (r.path === '/') stripScroll([]);
   renderNav(r.path);
   document.title = docTitle();
-  scrollTo(0, r.path === '/' ? y : 0);
+  scrollTo(0, r.path === '/' || keepScroll === true ? y : 0);
+  builtWith = have();
   trackBlock(r.path === '/mining');
   if (r.path === '/mining') mountScene();
 }
@@ -322,7 +352,10 @@ function render() {
     } finally {
       rendering = false;
     }
-  } else if (!LIVE[route]) document.title = 'BLOCKHORIZON · ' + L.fmtNum(st.tip);
+  } else if (!LIVE[route]) {
+    document.title = docTitle();
+    refill();
+  }
   trackBlock(route === '/mining');
   if (route === '/mining') mountScene();
   checkAlarms();
@@ -456,7 +489,7 @@ export async function boot() {
     renderView();
   };
   hooks.alerts = () => {
-    if (route === '/alarm') renderView();
+    if (route === '/alarm') renderKeeping();
     document.dispatchEvent(new Event('bh-alerts'));
   }; // price alerts changed or fired
   await loadLang(S.lang);
@@ -545,6 +578,8 @@ function pullToRefresh() {
     'touchstart',
     (e) => {
       if (e.touches.length !== 1 || scrollY > 0 || !$('#modal').hidden) return;
+      // a drag on a chart, a slider or a map moves that, not the page
+      if (e.target.closest && e.target.closest('canvas, svg, input, textarea, select, .tplot, [data-nopull]')) return;
       y0 = e.touches[0].clientY;
       x0 = e.touches[0].clientX;
       d = 0;

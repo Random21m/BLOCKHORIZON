@@ -37,7 +37,7 @@ export async function refreshAll() {
       if (!cur()) return v;
       const h = L.parseTipHeight(v);
       if (Number.isFinite(h) && !(h < st.tip)) st.tip = h;
-      if (Number.isFinite(h) && !(v && v.__stale)) st.dataAt = Date.now(); // fresh from the network (Clock mode's 'no new data' note)
+      if (Number.isFinite(h) && !(v && v.__stale)) gotFresh(); // fresh from the network (Clock mode's 'no new data' note)
       return v;
     }),
     blocks: api.blocks().then((b) => {
@@ -95,11 +95,15 @@ export async function refreshAll() {
   if (!Number.isFinite(st.tip) && st.blocks[0]) st.tip = st.blocks[0].height;
   hooks.render();
 }
+function gotFresh() {
+  st.dataAt = st.freshAt = Date.now();
+  store('dataAt', st.dataAt);
+}
 export function onNewBlock(b) {
   if (!b || !Number.isFinite(b.height)) return;
   const fresh = !(b.height <= st.tip); // also when no height is known yet (first start, or just after switching servers)
   st.blocks = L.mergeBlocks(st.blocks, [b]); // newest first even when a reorg resends a lower block
-  st.dataAt = Date.now();
+  gotFresh();
   if (fresh) {
     st.tip = b.height;
     if (S.sound) play(S.bsound);
@@ -135,6 +139,8 @@ export function onLive(m) {
 export let tickTimer;
 export function paintPrice() {
   const e = document.getElementById('btc');
+  // the e-ink clock shows a price that changes once a minute (its own repaint), not one that eases with each trade
+  if (document.body.classList.contains('eink')) return;
   if (e && Number.isFinite(st.shown)) e.textContent = priceStr(st.shown);
 }
 export function glidePrice() {
@@ -178,9 +184,11 @@ export function onPriceTick(tk) {
 }
 // Runs on every render, so an alarm fires however the new height arrived (live feed, the minute poll, or a reopened app).
 export let alarmTip = NaN;
+// another server (maybe another network, with lower heights): the height, transaction and address checks start over
 export const resetAlarmTip = () => {
-  alarmTip = NaN;
-}; // another server (maybe another network, with lower heights)
+  alarmTip = txTip = addrTip = NaN;
+  addrAt = 0;
+};
 export function checkAlarms() {
   if (!(st.tip > alarmTip) && Number.isFinite(alarmTip)) return;
   alarmTip = st.tip;

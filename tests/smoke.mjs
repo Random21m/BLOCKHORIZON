@@ -3147,7 +3147,7 @@ await ok(
     const p = await c.newPage();
     await p.goto(base);
     await until(p, () => document.querySelector('.t-ln .ts.s0'));
-    assert.equal(await p.locator('.t-ln .ts.s0').innerText(), '51,021 channels · Figures from 06/01/2024');
+    assert.equal(await p.locator('.t-ln .ts.s0').innerText(), 'Figures from 06/01/2024 · 51,021 channels');
     await p.setViewportSize({ width: 360, height: 800 });
     assert.equal(await p.locator('.t-ln .ts.s0').innerText(), 'As of 06/01/2024', 'a phone shows the date only');
     // fresh figures: as before, channels and nodes
@@ -3286,6 +3286,141 @@ await ok('send a signed transaction: read on the device, checked against the cha
   assert.deepEqual(perr, []);
   await c.close();
 });
+await ok('small screens: the clock fits a phone on its side, the mining widget fits 200 to 480 px wide', async () => {
+  const c = await b.newContext({ viewport: { width: 480, height: 320 } });
+  await c.routeWebSocket(/./, (ws) => ws.close());
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
+    r.request().url().includes('mempool.space') ? r.fallback() : r.abort()
+  );
+  await c.route(/mempool\.space/, (route) => {
+    const m = MOCK[new URL(route.request().url()).pathname];
+    if (!m) return route.fulfill({ status: 404, body: '' });
+    route.fulfill({ contentType: m[0], body: fx(m[1]) });
+  });
+  const p = await c.newPage();
+  await p.goto(base + '#/clock');
+  await until(p, () => /\d/.test(document.querySelector('.clock-h')?.textContent || ''));
+  const fit = () =>
+    p.evaluate(() => [
+      document.documentElement.scrollWidth - innerWidth,
+      document.documentElement.scrollHeight - innerHeight,
+    ]);
+  assert.deepEqual(await fit(), [0, 0], 'the clock fits 480 x 320');
+  assert.ok(await p.locator('.final-t').isVisible(), 'the final block countdown is still there');
+  for (const w of [200, 260, 300, 480]) {
+    await p.setViewportSize({ width: w, height: Math.round(w * 0.6) });
+    await p.goto(base + 'embed.html?show=mining&theme=dark');
+    await until(p, () => /#/.test(document.querySelector('.num')?.textContent || ''));
+    const r = await p.evaluate(() => ({
+      sw: document.documentElement.scrollWidth - innerWidth,
+      cut: [...document.querySelectorAll('.txt *')].filter((e) => e.scrollWidth > e.clientWidth + 1).length,
+      pic: getComputedStyle(document.querySelector('canvas')).display !== 'none',
+    }));
+    assert.deepEqual([r.sw, r.cut], [0, 0], 'mining widget at ' + w + ' px');
+    assert.equal(r.pic, w >= 300, 'the picture only where it fits beside the words');
+  }
+  await c.close();
+});
+await ok(
+  'late data fills pages opened early; Genesis day search; no pull-to-refresh on the chart; widget uses your server',
+  async () => {
+    const c = await b.newContext({ viewport: { width: 393, height: 851 }, hasTouch: true, isMobile: true });
+    const hosts = [],
+      stamps = [];
+    let slow = 1500;
+    await c.routeWebSocket(/mempool\.space|node\.example/, (ws) => ws.close());
+    await c.routeWebSocket(/ws\.kraken\.com/, (ws) => {
+      ws.onMessage((m) => {
+        const q = JSON.parse(m);
+        if (q.params.channel === 'ticker')
+          setTimeout(
+            () =>
+              ws.send(
+                JSON.stringify({
+                  channel: 'ticker',
+                  type: 'snapshot',
+                  data: [{ symbol: 'BTC/USD', last: 61234.5, change_pct: 1.25 }],
+                })
+              ),
+            slow
+          );
+        if (q.params.channel === 'ohlc' && q.method === 'subscribe' && q.params.interval === 60)
+          ws.send(fx('kraken-ohlc-snapshot.json'));
+      });
+    });
+    await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => {
+      const u = r.request().url();
+      return /mempool\.space|node\.example|api\.kraken\.com/.test(u) ? r.fallback() : r.abort();
+    });
+    await c.route(/api\.kraken\.com/, (route) =>
+      route.fulfill({
+        contentType: 'application/json',
+        headers: { 'access-control-allow-origin': '*' },
+        body: fx('kraken-ohlc-rest.json'),
+      })
+    );
+    await c.route(/mempool\.space|node\.example/, async (route) => {
+      const u = new URL(route.request().url());
+      hosts.push(u.host + u.pathname);
+      if (u.pathname.startsWith('/api/v1/mining/blocks/timestamp/')) {
+        stamps.push(u.pathname.split('/').pop());
+        return route.fulfill({ contentType: 'application/json', body: fx('bytime.json') });
+      }
+      const m = MOCK[u.pathname];
+      if (slow) await new Promise((ok) => setTimeout(ok, slow));
+      if (!m) return route.fulfill({ status: 404, body: '' }).catch(() => {});
+      route.fulfill({ contentType: m[0], body: fx(m[1]) }).catch(() => {});
+    });
+    const p = await c.newPage();
+    const perr = [];
+    p.on('pageerror', (e) => perr.push(e.message));
+    // the Calculator opened straight from a link, before any price or fee has arrived: it fills in once they do
+    await p.goto(base + '#/calc');
+    await p.waitForSelector('#c-sats');
+    assert.match(await p.locator('main').innerText(), /not loaded/i);
+    await until(p, () => !/not loaded/i.test(document.querySelector('main').innerText), null, { timeout: 10000 });
+    await p.fill('#c-sats', '100000000');
+    assert.equal(await p.inputValue('#c-fiat'), '61234.50');
+    slow = 0;
+    // Search by date: the Genesis day (its midnight is before the first block) finds block 0's time
+    await p.click('#btn-search');
+    await p.fill('#s-d', '2009-01-03');
+    await p.press('#s-d', 'Enter');
+    await until(p, () => location.hash.startsWith('#/block/'));
+    assert.deepEqual(stamps, ['1231006505']);
+    // a downward drag on the trading chart moves the chart, it does not reload the page
+    await p.goto(base + '#/charts');
+    await until(p, () => !!document.querySelector('.tplot canvas'), null, { timeout: 10000 });
+    await p.evaluate(() => {
+      scrollTo(0, 0);
+      window.__stay = 1;
+    });
+    const bx = await p.locator('.tplot').boundingBox();
+    const cdp = await c.newCDPSession(p);
+    const x = bx.x + bx.width / 2,
+      y0 = bx.y + 20;
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: y0 }] });
+    for (let i = 1; i <= 10; i++)
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y0 + i * 30 }] });
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    await p.waitForTimeout(800);
+    assert.equal(await p.evaluate(() => window.__stay), 1, 'the page was not reloaded');
+    // the widget asks the server chosen in Settings (never mempool.space) and leaves the app's saved values alone
+    await p.evaluate(() => {
+      const s = JSON.parse(localStorage.getItem('bh.settings') || '{}');
+      s.server = 'https://node.example';
+      localStorage.setItem('bh.settings', JSON.stringify(s));
+      localStorage.removeItem('bh.tip');
+    });
+    hosts.length = 0;
+    await p.goto(base + 'embed.html?show=height&theme=dark');
+    await until(p, () => /\d/.test(document.querySelector('.num')?.textContent || ''));
+    assert.ok(hosts.length && hosts.every((h) => h.startsWith('node.example/')), hosts.join(' '));
+    assert.equal(await p.evaluate(() => localStorage.getItem('bh.tip')), null);
+    assert.deepEqual(perr, []);
+    await c.close();
+  }
+);
 await ok('no script errors', async () => {
   assert.deepEqual(errs, []);
 });

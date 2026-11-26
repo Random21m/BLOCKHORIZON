@@ -84,8 +84,9 @@ export function searchModal() {
   const goD = async (e) => {
     e.preventDefault();
     if (!di.value) return;
-    const ts = Math.floor(Date.parse(di.value + 'T00:00:00Z') / 1000);
-    if (!Number.isFinite(ts) || ts < 1231006505) {
+    const day = Math.floor(Date.parse(di.value + 'T00:00:00Z') / 1000),
+      ts = Math.max(day, 1231006505); // 3 January 2009, the Genesis day, starts before its block was made
+    if (!Number.isFinite(day) || day < 1230940800) {
       msg.textContent = t('notFound');
       return;
     }
@@ -496,7 +497,8 @@ export function settingsModal() {
           'aria-controls': 'st-panel',
           onclick: () => show(k),
           onkeydown: (e) => {
-            const d = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+            // the next tab is on the left in a right-to-left page
+            const d = { ArrowRight: 1, ArrowLeft: -1 }[e.key] * (document.documentElement.dir === 'rtl' ? -1 : 1);
             if (!d) return;
             e.preventDefault();
             const n = keys[(keys.indexOf(k) + d + keys.length) % keys.length];

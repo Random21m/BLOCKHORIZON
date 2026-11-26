@@ -102,7 +102,9 @@ button:focus-visible,
 a:focus-visible,
 input:focus-visible,
 select:focus-visible,
-textarea:focus-visible {
+textarea:focus-visible,
+input[type='date']:focus,
+iframe:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
@@ -913,6 +915,10 @@ nav .navmore {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+/* Georgian letters are wide: a slightly smaller small print keeps the tiles' second lines whole */
+html[lang='ka'] .ts {
+  font-size: clamp(10.5px, 1.4vh, 12px);
 }
 .tile .arc {
   max-width: 120px;
@@ -1784,6 +1790,20 @@ html {
   margin: 0;
   font-size: clamp(12px, 1.6vw, 16px);
   text-wrap: balance;
+}
+/* a short landscape screen (a phone on its side): tighter, and the final block's countdown without its sentence */
+@media (max-height: 420px) {
+  .clockview {
+    gap: 0.8vh;
+    padding: 10px 16px;
+  }
+  .clockview .final {
+    margin-top: 1vh;
+    padding-top: 1vh;
+  }
+  .clockview .final p {
+    display: none;
+  }
 }
 .clock-x {
   position: absolute;
@@ -2901,6 +2921,13 @@ h2.hist {
   font-family: system-ui, sans-serif;
   font-size: 11px;
   border-bottom: 1px solid var(--line2);
+}
+/* a long heading (Russian, Georgian) takes two lines instead of being cut */
+.brow.bhead span {
+  white-space: normal;
+  line-height: 1.25;
+  align-self: end;
+  padding-bottom: 2px;
 }
 .book .brow.ask,
 .book .brow.bid {
