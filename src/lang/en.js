@@ -527,4 +527,12 @@ export default {
   privRound: 'Round amount: one output is a round number, so the other is probably the change coming back.',
   privTypes: 'Address types: only one output has the same kind of address as the inputs, which hints it is the change.',
   privNone: 'No common privacy leaks found.',
+  blkPicture: 'What was in it',
+  blkPicNote:
+    'Each square is a slice of the block, coloured by fee rate, highest fees at the bottom. Tap one to open its transaction.',
+  blkPicAria: 'Picture of the block: {n} transactions, fee rates from {lo} to {hi} sat/vB',
+  blkPicNone: 'The picture comes from mempool.space, which is not answering right now.',
+  blkTxRange: 'Transactions {a}–{b} of {n}',
+  blkPrev: 'Previous {n}',
+  blkNext: 'Next {n}',
 };
