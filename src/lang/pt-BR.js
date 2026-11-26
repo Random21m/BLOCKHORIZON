@@ -409,8 +409,6 @@ export default {
   copied: 'Endereço copiado',
   selectCopy: 'Selecione e copie o endereço',
   eg: 'ex.: {x}',
-  txid: 'ID da transação',
-  byTx: 'Por ID da transação',
   notTxid: 'Um ID de transação tem 64 caracteres (0–9, a–f)',
   tab_display: 'Exibição',
   tab_format: 'Formato',
@@ -496,4 +494,31 @@ export default {
   dayN: 'dia {n}',
   chSupply: 'Oferta ao longo do tempo',
   supplyNote: '{p}% dos 21 milhões que vão existir',
+  byTxAddr: 'Por ID da transação ou endereço',
+  txOrAddr: 'ID da transação ou endereço',
+  notTxOrAddr:
+    'Isso não é um ID de transação (64 caracteres, 0–9, a–f) nem um endereço Bitcoin. Confira se não há erros de digitação.',
+  addrSentTo: 'O endereço que você consulta é enviado para {s}, que pode associá-lo ao seu endereço IP.',
+  addrPage: 'Endereço',
+  addrBalance: 'Saldo',
+  addrPending: 'Aguardando confirmação',
+  addrReceivedAll: 'Recebido no total',
+  addrTxCount: 'Transações',
+  addrRecent: 'Transações recentes',
+  addrNoTx: 'Nenhuma transação ainda.',
+  addrLookedUp:
+    'Consultado em {s}, que pode associar este endereço ao seu endereço IP. No seu próprio nó, ele fica no seu nó.',
+  stuckTitle: 'Está demorando muito?',
+  stuckIntro:
+    'A taxa está abaixo do que os mineradores estão aceitando agora. Ela vai passar quando as taxas caírem, ou você pode acelerá-la.',
+  stuckNow: 'O próximo bloco pede cerca de {r} sat/vB: cerca de {f} sats para esta transação, que pagou {p} sats.',
+  stuckRbf:
+    'Substitua: na carteira que enviou, procure "Bump fee", "Speed up" ou "Replace". Isso envia o mesmo pagamento de novo com uma taxa maior, cerca de {f} sats.',
+  stuckCpfp:
+    'Pague com uma transação seguinte: se este pagamento veio para você, envie essas moedas para você mesmo com uma taxa de cerca de {f} sats, para que os mineradores incluam as duas juntas.',
+  stuckAcc:
+    'Pague um minerador: o Accelerator do mempool.space pede a pools de mineração parceiros que a incluam, cobrando uma taxa.',
+  stuckAccLink: 'Acelerar no mempool.space',
+  stuckWait:
+    'Ou espere: ela passa quando as taxas caírem. Se nunca for minerada, os nós a esquecem depois de cerca de duas semanas e as moedas voltam para a carteira.',
 };

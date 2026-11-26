@@ -408,8 +408,6 @@ export default {
   copied: 'Adres kopyalandı',
   selectCopy: 'Adresi seçip kopyalayın',
   eg: 'örn. {x}',
-  txid: 'İşlem kimliği',
-  byTx: 'İşlem kimliğine göre',
   notTxid: 'İşlem kimliği 64 karakterdir (0–9, a–f)',
   tab_display: 'Görünüm',
   tab_format: 'Biçim',
@@ -492,4 +490,30 @@ export default {
   dayN: '{n}. gün',
   chSupply: 'Zaman içinde arz',
   supplyNote: "toplamda var olacak 21 milyonun %{p}'i",
+  byTxAddr: 'İşlem kimliğine veya adrese göre',
+  txOrAddr: 'İşlem kimliği veya adres',
+  notTxOrAddr:
+    'Bu ne bir işlem kimliği (64 karakter, 0–9, a–f) ne de bir Bitcoin adresi. Yazım hatası olup olmadığını kontrol edin.',
+  addrSentTo: 'Aradığınız adres {s} sunucusuna gönderilir; bu sunucu adresi IP adresinizle ilişkilendirebilir.',
+  addrPage: 'Adres',
+  addrBalance: 'Bakiye',
+  addrPending: 'Onay bekliyor',
+  addrReceivedAll: 'Toplam alınan',
+  addrTxCount: 'İşlemler',
+  addrRecent: 'Son işlemler',
+  addrNoTx: 'Henüz işlem yok.',
+  addrLookedUp:
+    '{s} üzerinde arandı; bu sunucu bu adresi IP adresinizle ilişkilendirebilir. Kendi düğümünüzde adres düğümünüzde kalır.',
+  stuckTitle: 'Çok mu uzun sürüyor?',
+  stuckIntro: 'Ücreti, madencilerin şu an aldığı seviyenin altında. Ücretler düşünce geçer ya da hızlandırabilirsiniz.',
+  stuckNow: 'Sonraki blok yaklaşık {r} sat/vB istiyor: bu işlem için yaklaşık {f} sats; işlem {p} sats ödedi.',
+  stuckRbf:
+    'Değiştirin: gönderen cüzdanda "Bump fee", "Speed up" veya "Replace" seçeneğini arayın. Aynı ödemeyi daha yüksek bir ücretle, yaklaşık {f} sats ile yeniden gönderir.',
+  stuckCpfp:
+    'Ardından gelen bir işlemle ödeyin: bu ödeme size geldiyse, o coinleri yaklaşık {f} sats ücretle kendinize gönderin; madenciler ikisini birlikte alır.',
+  stuckAcc:
+    "Bir madenciye ödeyin: mempool.space'in Accelerator'ı, ücret karşılığında ortak madencilik havuzlarından işlemi eklemelerini ister.",
+  stuckAccLink: "mempool.space'te hızlandır",
+  stuckWait:
+    'Ya da bekleyin: ücretler düşünce geçer. Hiç kazılmazsa düğümler onu yaklaşık iki hafta sonra unutur ve coinler cüzdana geri döner.',
 };

@@ -410,8 +410,6 @@ export default {
   copied: 'Adresse kopiert',
   selectCopy: 'Adresse markieren und kopieren',
   eg: 'z. B. {x}',
-  txid: 'Transaktions-ID',
-  byTx: 'Nach Transaktions-ID',
   notTxid: 'Eine Transaktions-ID hat 64 Zeichen (0–9, a–f)',
   tab_display: 'Anzeige',
   tab_format: 'Format',
@@ -497,4 +495,32 @@ export default {
   dayN: 'Tag {n}',
   chSupply: 'Angebot im Verlauf',
   supplyNote: '{p} % der 21 Millionen, die es je geben wird',
+  byTxAddr: 'Nach Transaktions-ID oder Adresse',
+  txOrAddr: 'Transaktions-ID oder Adresse',
+  notTxOrAddr:
+    'Das ist weder eine Transaktions-ID (64 Zeichen, 0–9, a–f) noch eine Bitcoin-Adresse. Prüfe es auf Tippfehler.',
+  addrSentTo:
+    'Eine Adresse, die du nachschlägst, wird an {s} gesendet, das sie mit deiner IP-Adresse verknüpfen könnte.',
+  addrPage: 'Adresse',
+  addrBalance: 'Guthaben',
+  addrPending: 'Wartet auf Bestätigung',
+  addrReceivedAll: 'Insgesamt erhalten',
+  addrTxCount: 'Transaktionen',
+  addrRecent: 'Letzte Transaktionen',
+  addrNoTx: 'Noch keine Transaktionen.',
+  addrLookedUp:
+    'Auf {s} nachgeschlagen, das diese Adresse mit deiner IP-Adresse verknüpfen könnte. Auf deinem eigenen Node bleibt sie auf deinem Node.',
+  stuckTitle: 'Dauert es zu lange?',
+  stuckIntro:
+    'Die Gebühr liegt unter dem, was Miner gerade nehmen. Die Transaktion geht durch, sobald die Gebühren fallen, oder du beschleunigst sie.',
+  stuckNow: 'Der nächste Block braucht etwa {r} sat/vB: rund {f} Sats für diese Transaktion, die {p} Sats bezahlt hat.',
+  stuckRbf:
+    'Ersetzen: Such in der Wallet, die sie gesendet hat, nach „Bump fee“, „Speed up“ oder „Replace“. Das sendet dieselbe Zahlung noch einmal mit höherer Gebühr, etwa {f} Sats.',
+  stuckCpfp:
+    'Mit einer Folgezahlung bezahlen: Ging diese Zahlung an dich, schick die Coins an dich selbst weiter, mit einer Gebühr von etwa {f} Sats, damit Miner beide zusammen nehmen.',
+  stuckAcc:
+    'Einen Miner bezahlen: Der Accelerator von mempool.space bittet Partner-Mining-Pools gegen eine Gebühr, sie aufzunehmen.',
+  stuckAccLink: 'Auf mempool.space beschleunigen',
+  stuckWait:
+    'Oder warten: Sie geht durch, wenn die Gebühren fallen. Wird sie nie gemined, vergessen die Nodes sie nach etwa zwei Wochen und die Coins sind wieder in der Wallet.',
 };

@@ -410,8 +410,6 @@ export default {
   copied: 'Adres gekopieerd',
   selectCopy: 'Selecteer en kopieer het adres',
   eg: 'bijv. {x}',
-  txid: 'Transactie-ID',
-  byTx: 'Op transactie-ID',
   notTxid: 'Een transactie-ID heeft 64 tekens (0–9, a–f)',
   tab_display: 'Weergave',
   tab_format: 'Notatie',
@@ -496,4 +494,30 @@ export default {
   dayN: 'dag {n}',
   chSupply: 'Aanbod door de tijd',
   supplyNote: '{p}% van de 21 miljoen die er ooit zullen zijn',
+  byTxAddr: 'Op transactie-ID of adres',
+  txOrAddr: 'Transactie-ID of adres',
+  notTxOrAddr:
+    'Dit is geen transactie-ID (64 tekens, 0–9, a–f) en ook geen bitcoinadres. Controleer het op typefouten.',
+  addrSentTo: 'Een adres dat je opzoekt, wordt naar {s} gestuurd, dat het aan je IP-adres kan koppelen.',
+  addrPage: 'Adres',
+  addrBalance: 'Saldo',
+  addrPending: 'Wacht op bevestiging',
+  addrReceivedAll: 'Totaal ontvangen',
+  addrTxCount: 'Transacties',
+  addrRecent: 'Recente transacties',
+  addrNoTx: 'Nog geen transacties.',
+  addrLookedUp: 'Opgezocht op {s}, dat dit adres aan je IP-adres kan koppelen. Op je eigen node blijft het op je node.',
+  stuckTitle: 'Duurt het te lang?',
+  stuckIntro:
+    'De kosten liggen onder wat miners nu nemen. Ze gaat door zodra de kosten dalen, of je kunt haar versnellen.',
+  stuckNow: 'Het volgende blok vraagt ongeveer {r} sat/vB: zo’n {f} sats voor deze transactie, die {p} sats betaalde.',
+  stuckRbf:
+    'Vervang haar: zoek in de wallet die haar verstuurde naar ‘Bump fee’, ‘Speed up’ of ‘Replace’. Dat verstuurt dezelfde betaling opnieuw met hogere kosten, ongeveer {f} sats.',
+  stuckCpfp:
+    'Betaal met een vervolgtransactie: kwam deze betaling naar jou, stuur die munten dan door naar jezelf met kosten van ongeveer {f} sats, zodat miners ze samen meenemen.',
+  stuckAcc:
+    'Betaal een miner: de Accelerator van mempool.space vraagt partner-miningpools om haar op te nemen, tegen betaling.',
+  stuckAccLink: 'Versnellen op mempool.space',
+  stuckWait:
+    'Of wacht: ze gaat door als de kosten dalen. Wordt ze nooit gemined, dan vergeten nodes haar na ongeveer twee weken en staan de munten weer in de wallet.',
 };

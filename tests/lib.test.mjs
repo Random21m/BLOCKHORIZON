@@ -275,6 +275,33 @@ test('long-term charts: daily grid, moving averages, Mayer Multiple, halving cyc
   assert.ok(s.at(-1).v > 19.9e6);
 });
 
+test('address page: balance, waiting in or out, everything received, transaction count', () => {
+  assert.deepEqual(L.parseAddress(fx('address.json')), {
+    balance: 100000000,
+    pending: 1234500,
+    received: 150000000,
+    txs: 4,
+  });
+  assert.deepEqual(
+    L.parseAddress({
+      chain_stats: { funded_txo_sum: 300, spent_txo_sum: 100, tx_count: 3 },
+      mempool_stats: { funded_txo_sum: 0, spent_txo_sum: 50, tx_count: 1 },
+    }),
+    { balance: 200, pending: -50, received: 300, txs: 4 }
+  );
+  assert.deepEqual(L.parseAddress(null), { balance: 0, pending: 0, received: 0, txs: 0 });
+});
+
+test('speeding up a stuck transaction: replace at the new rate (at least 1 sat/vB more), or a follow-up pays for both', () => {
+  const tx = { fee: 1128, vsize: 189 };
+  assert.deepEqual(L.speedUp(tx, 20), { stuck: true, rbf: 3780, cpfp: 20 * (189 + L.CHILD_VB) - 1128 });
+  assert.equal(L.speedUp(tx, 5).stuck, false); // 6 sat/vB already makes the next block
+  assert.equal(L.speedUp({ fee: 1000, vsize: 200 }, 5.5).rbf, 1200); // the minimum step wins over 5.5 x 200
+  assert.equal(L.speedUp({ fee: 100000, vsize: 200 }, 300).cpfp, 0 + Math.max(0, 300 * 310 - 100000));
+  assert.equal(L.speedUp(tx, NaN), null);
+  assert.equal(L.speedUp({ fee: 0, vsize: 0 }, 5), null);
+});
+
 test('block colours follow the mempool.space fee ramp', () => {
   assert.equal(L.FEE_BREAKS.length, L.FEE_COLORS.length);
   assert.equal(L.feeColor(0), '#007d3d');

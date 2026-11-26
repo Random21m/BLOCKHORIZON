@@ -1,6 +1,6 @@
-// Block and transaction pages.
+// Block, transaction and address pages.
 import * as L from './lib.js';
-import { api, store } from './api.js';
+import { api, store, lookupHost } from './api.js';
 import { t } from './i18n.js';
 import { S, st, fmtD, el, price, txAlerts } from './state.js';
 import { askNotify } from './data.js';
@@ -77,7 +77,9 @@ export function viewTx(id) {
   root.append(body);
   (async () => {
     try {
-      const x = L.parseTx(await api.tx(id), st.tip);
+      // the fee estimate too, for a waiting transaction opened from a link before the app has fetched it
+      const [raw, fees] = await Promise.all([api.tx(id), st.fees || api.fees().catch(() => null)]);
+      const x = L.parseTx(raw, st.tip);
       if (tok !== txToken) return;
       const p = price(),
         fiat = (sats) => (Number.isFinite(p) ? ` (${L.fmtNum((sats / 1e8) * p, 2)} ${S.cur})` : '');
@@ -107,6 +109,7 @@ export function viewTx(id) {
             ? null
             : el('p', null, el('a', { href: '#/mining?tx=' + id, class: 'watchlink' }, t('watchTx') + ' →')),
           x.confirmed ? null : txAlertRow(id),
+          x.confirmed || x.coinbase ? null : stuckBox(x, fees),
           shareRow('/tx/' + id, 'BLOCKHORIZON · ' + t('txTitle')),
         ].filter(Boolean)
       );
@@ -141,4 +144,89 @@ function txAlertRow(id) {
   };
   paint();
   return el('p', { class: 'row' }, btn, msg);
+}
+// An address: its balance and recent transactions, from the data server. The page says where it was looked up.
+export let addrToken = 0;
+export function viewAddress(a) {
+  const root = el('div'),
+    tok = ++addrToken;
+  root.append(
+    el('a', { class: 'back', href: '#/' }, '← ' + t('dash')),
+    el('h1', null, t('addrPage')),
+    el('p', { class: 'dim mono txid' }, a)
+  );
+  const body = el('div', { class: 'panel' }, t('loading'));
+  root.append(body, el('p', { class: 'dim', id: 'addr-where' }, t('addrLookedUp', { s: lookupHost() })));
+  (async () => {
+    try {
+      const [info, txs] = await Promise.all([api.address(a), api.addrTxs(a).catch(() => [])]);
+      if (tok !== addrToken) return;
+      const x = L.parseAddress(info),
+        p = price(),
+        btc = (sats) =>
+          L.fmtBtc(sats) + ' BTC' + (Number.isFinite(p) ? ` (${L.fmtNum((sats / 1e8) * p, 2)} ${S.cur})` : '');
+      const rows = [[t('addrBalance'), btc(x.balance)]];
+      if (x.pending) rows.push([t('addrPending'), (x.pending > 0 ? '+' : '−') + btc(Math.abs(x.pending))]);
+      rows.push([t('addrReceivedAll'), btc(x.received)], [t('addrTxCount'), L.fmtNum(x.txs)]);
+      const list = (Array.isArray(txs) ? txs : []).slice(0, 25).map((tx) => {
+        const n = L.addrReceived(tx, a),
+          s = tx.status || {};
+        return el(
+          'tr',
+          null,
+          el(
+            'td',
+            { class: 'mono' },
+            el('a', { href: '#/tx/' + tx.txid }, tx.txid.slice(0, 8) + '…' + tx.txid.slice(-6))
+          ),
+          el('td', null, s.confirmed ? fmtD(s.block_time * 1000) : t('waiting')),
+          el('td', { class: 'num ' + (n >= 0 ? 'up' : 'down') }, (n >= 0 ? '+' : '−') + L.fmtBtc(Math.abs(n)) + ' BTC')
+        );
+      });
+      body.replaceChildren(
+        kv(rows),
+        el('h3', { class: 'sec' }, t('addrRecent')),
+        list.length
+          ? el('table', { id: 'addr-txs', class: 'addrtxs' }, el('tbody', null, list))
+          : el('p', { class: 'dim' }, t('addrNoTx')),
+        shareRow('/address/' + a, 'BLOCKHORIZON · ' + t('addrPage'))
+      );
+    } catch {
+      if (tok === addrToken) body.textContent = t('notFound');
+    }
+  })();
+  return root;
+}
+// A waiting transaction whose fee is below what the next block needs: what can be done, in plain words, with what each
+// way would cost now (from the fee estimate for the next block). Only a link to mempool.space's Accelerator: nothing
+// is sent anywhere unless it is followed.
+function stuckBox(x, fees) {
+  const rate = fees && fees.fastestFee,
+    s = L.speedUp(x, rate);
+  if (!s || !s.stuck) return null;
+  const sats = (n) => L.fmtNum(n);
+  return el(
+    'section',
+    { class: 'stuck', id: 'tx-stuck' },
+    el('h2', null, t('stuckTitle')),
+    el('p', { class: 'dim' }, t('stuckIntro')),
+    el('p', null, t('stuckNow', { r: L.fmtFee(rate), f: sats(s.rbf), p: sats(x.fee) })),
+    el(
+      'ul',
+      null,
+      el('li', null, t('stuckRbf', { f: sats(s.rbf) })),
+      el('li', null, t('stuckCpfp', { f: sats(s.cpfp) })),
+      el(
+        'li',
+        null,
+        t('stuckAcc') + ' ',
+        el(
+          'a',
+          { href: 'https://mempool.space/tx/' + x.id, target: '_blank', rel: 'noopener noreferrer' },
+          t('stuckAccLink') + ' ↗'
+        )
+      ),
+      el('li', null, t('stuckWait'))
+    )
+  );
 }

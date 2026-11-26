@@ -412,8 +412,6 @@ export default {
   copied: 'Dirección copiada',
   selectCopy: 'Selecciona y copia la dirección',
   eg: 'p. ej. {x}',
-  txid: 'ID de transacción',
-  byTx: 'Por ID de transacción',
   notTxid: 'Un ID de transacción tiene 64 caracteres (0–9, a–f)',
   tab_display: 'Pantalla',
   tab_format: 'Formato',
@@ -497,4 +495,31 @@ export default {
   dayN: 'día {n}',
   chSupply: 'Suministro en el tiempo',
   supplyNote: 'el {p} % de los 21 millones que llegará a haber',
+  byTxAddr: 'Por ID de transacción o dirección',
+  txOrAddr: 'ID de transacción o dirección',
+  notTxOrAddr:
+    'No es un ID de transacción (64 caracteres, 0–9, a–f) ni una dirección de Bitcoin. Comprueba que no haya erratas.',
+  addrSentTo: 'La dirección que consultes se envía a {s}, que podría vincularla con tu dirección IP.',
+  addrPage: 'Dirección',
+  addrBalance: 'Saldo',
+  addrPending: 'Esperando confirmación',
+  addrReceivedAll: 'Recibido en total',
+  addrTxCount: 'Transacciones',
+  addrRecent: 'Transacciones recientes',
+  addrNoTx: 'Aún no hay transacciones.',
+  addrLookedUp:
+    'Consultada en {s}, que podría vincular esta dirección con tu dirección IP. En tu propio nodo, se queda en tu nodo.',
+  stuckTitle: '¿Tarda demasiado?',
+  stuckIntro:
+    'Su comisión está por debajo de lo que aceptan ahora los mineros. Pasará cuando bajen las comisiones, o puedes acelerarla.',
+  stuckNow: 'El próximo bloque pide unos {r} sat/vB: unos {f} sats para esta transacción, que pagó {p} sats.',
+  stuckRbf:
+    'Reemplázala: en la cartera que la envió, busca «Bump fee», «Speed up» o «Replace». Envía el mismo pago otra vez con una comisión más alta, de unos {f} sats.',
+  stuckCpfp:
+    'Págala con otra transacción: si este pago era para ti, reenvíate esas monedas con una comisión de unos {f} sats, para que los mineros tomen las dos juntas.',
+  stuckAcc:
+    'Paga a un minero: el Accelerator de mempool.space pide a pools de minería asociados que la incluyan, a cambio de una comisión.',
+  stuckAccLink: 'Acelerar en mempool.space',
+  stuckWait:
+    'O espera: pasará cuando bajen las comisiones. Si nunca se mina, los nodos la olvidan tras unas dos semanas y las monedas vuelven a la cartera.',
 };

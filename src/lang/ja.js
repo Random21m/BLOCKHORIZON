@@ -409,8 +409,6 @@ export default {
   copied: 'アドレスをコピーしました',
   selectCopy: 'アドレスを選択してコピー',
   eg: '例：{x}',
-  txid: 'トランザクションID',
-  byTx: 'トランザクションIDで',
   notTxid: 'トランザクションIDは64文字です（0–9、a–f）',
   tab_display: '表示',
   tab_format: '形式',
@@ -494,4 +492,32 @@ export default {
   dayN: '{n}日目',
   chSupply: '供給量の推移',
   supplyNote: '最終的な2,100万枚の{p}%',
+  byTxAddr: 'トランザクションIDかアドレスで',
+  txOrAddr: 'トランザクションIDまたはアドレス',
+  notTxOrAddr:
+    'トランザクションID（64文字、0–9、a–f）でもビットコインアドレスでもありません。入力ミスがないか確認してください。',
+  addrSentTo: '調べたアドレスは {s} に送信され、IPアドレスと結び付けられる可能性があります。',
+  addrPage: 'アドレス',
+  addrBalance: '残高',
+  addrPending: '承認待ち',
+  addrReceivedAll: '受け取った合計',
+  addrTxCount: 'トランザクション',
+  addrRecent: '最近のトランザクション',
+  addrNoTx: 'まだトランザクションはありません。',
+  addrLookedUp:
+    '{s} で調べました。このアドレスがIPアドレスと結び付けられる可能性があります。自分のノードなら、ノードの外には出ません。',
+  stuckTitle: '時間がかかっていますか？',
+  stuckIntro:
+    '手数料が、いまマイナーが取り込んでいる水準より低くなっています。手数料が下がれば承認されますが、早めることもできます。',
+  stuckNow:
+    '次のブロックには約 {r} sat/vB が必要です。このトランザクションでは約 {f} sats で、支払われたのは {p} sats です。',
+  stuckRbf:
+    '置き換える：送金したウォレットで「Bump fee」「Speed up」「Replace」を探してください。同じ支払いを、より高い手数料（約 {f} sats）でもう一度送ります。',
+  stuckCpfp:
+    '後続のトランザクションで払う：この支払いを受け取った側なら、そのコインを手数料約 {f} sats で自分宛てに送ってください。マイナーが両方をまとめて取り込みます。',
+  stuckAcc:
+    'マイナーに支払う：mempool.space の Accelerator が、手数料と引き換えに提携マイニングプールへ取り込みを依頼します。',
+  stuckAccLink: 'mempool.space で加速する',
+  stuckWait:
+    'または待つ：手数料が下がれば承認されます。採掘されないままなら、約2週間でノードから忘れられ、コインはウォレットに戻ります。',
 };

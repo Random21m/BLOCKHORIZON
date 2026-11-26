@@ -7,6 +7,13 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
 - **Four long-term charts.** Below the history charts, a "Long term" section shows the price with its 200-week
   average, the Mayer Multiple (the price against its 200-day average), the halving cycles laid over each other (the
   price as a multiple of its value on each halving day) and the supply issued over time, all time, in your currency.
+- **Look up an address.** Search now also takes a Bitcoin address and opens its page: balance, what is waiting to
+  confirm, everything received, and the recent payments in and out. The search box and the page both say that the
+  address is sent to the data server (mempool.space, unless you use your own node); it is never sent to the backup
+  server.
+- **Help when a payment is stuck.** On a waiting transaction whose fee is below what the next block needs, "Taking too
+  long?" explains the ways out in plain words (replace it with a higher fee, a follow-up payment that pays for both,
+  mempool.space's paid Accelerator, or wait), with what each would cost right now.
 
 ## 0.19.0
 

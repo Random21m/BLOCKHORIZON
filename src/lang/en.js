@@ -408,8 +408,6 @@ export default {
   copied: 'Address copied',
   selectCopy: 'Select and copy the address',
   eg: 'e.g. {x}',
-  txid: 'Transaction ID',
-  byTx: 'By transaction ID',
   notTxid: 'A transaction ID has 64 characters (0–9, a–f)',
   tab_display: 'Display',
   tab_format: 'Format',
@@ -492,4 +490,28 @@ export default {
   dayN: 'day {n}',
   chSupply: 'Supply over time',
   supplyNote: '{p}% of the 21 million there will ever be',
+  byTxAddr: 'By transaction ID or address',
+  txOrAddr: 'Transaction ID or address',
+  notTxOrAddr: 'That is neither a transaction ID (64 characters, 0–9, a–f) nor a Bitcoin address. Check it for typos.',
+  addrSentTo: 'An address you look up is sent to {s}, which could link it to your IP address.',
+  addrPage: 'Address',
+  addrBalance: 'Balance',
+  addrPending: 'Waiting to confirm',
+  addrReceivedAll: 'Received in all',
+  addrTxCount: 'Transactions',
+  addrRecent: 'Recent transactions',
+  addrNoTx: 'No transactions yet.',
+  addrLookedUp:
+    'Looked up on {s}, which could link this address to your IP address. On your own node, it stays on your node.',
+  stuckTitle: 'Taking too long?',
+  stuckIntro: 'Its fee is below what miners are taking now. It will go through once fees drop, or you can speed it up.',
+  stuckNow: 'The next block needs about {r} sat/vB: about {f} sats for this transaction, which paid {p} sats.',
+  stuckRbf:
+    'Replace it: in the wallet that sent it, look for "Bump fee", "Speed up" or "Replace". It sends the same payment again with a higher fee, about {f} sats.',
+  stuckCpfp:
+    'Pay for it with a follow-up: if this payment came to you, send those coins on to yourself with a fee of about {f} sats, so miners take both together.',
+  stuckAcc: "Pay a miner: mempool.space's Accelerator asks partner mining pools to include it, for a fee.",
+  stuckAccLink: 'Accelerate on mempool.space',
+  stuckWait:
+    'Or wait: it goes through when fees drop. If it is never mined, nodes forget it after about two weeks and the coins are back in the wallet.',
 };

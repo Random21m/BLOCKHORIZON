@@ -411,8 +411,6 @@ export default {
   copied: 'Indirizzo copiato',
   selectCopy: 'Seleziona e copia l’indirizzo',
   eg: 'es. {x}',
-  txid: 'ID transazione',
-  byTx: 'Per ID transazione',
   notTxid: 'Un ID transazione ha 64 caratteri (0–9, a–f)',
   tab_display: 'Schermo',
   tab_format: 'Formato',
@@ -496,4 +494,31 @@ export default {
   dayN: 'giorno {n}',
   chSupply: 'Offerta nel tempo',
   supplyNote: 'il {p}% dei 21 milioni che esisteranno in tutto',
+  byTxAddr: 'Per ID transazione o indirizzo',
+  txOrAddr: 'ID transazione o indirizzo',
+  notTxOrAddr:
+    'Non è né un ID transazione (64 caratteri, 0–9, a–f) né un indirizzo Bitcoin. Controlla che non ci siano errori di battitura.',
+  addrSentTo: 'L’indirizzo che cerchi viene inviato a {s}, che potrebbe collegarlo al tuo indirizzo IP.',
+  addrPage: 'Indirizzo',
+  addrBalance: 'Saldo',
+  addrPending: 'In attesa di conferma',
+  addrReceivedAll: 'Ricevuto in totale',
+  addrTxCount: 'Transazioni',
+  addrRecent: 'Transazioni recenti',
+  addrNoTx: 'Ancora nessuna transazione.',
+  addrLookedUp:
+    'Cercato su {s}, che potrebbe collegare questo indirizzo al tuo indirizzo IP. Sul tuo nodo, resta sul tuo nodo.',
+  stuckTitle: 'Ci vuole troppo?',
+  stuckIntro:
+    'La sua commissione è sotto quella che i miner accettano ora. Passerà quando le commissioni scendono, oppure puoi accelerarla.',
+  stuckNow:
+    'Il prossimo blocco richiede circa {r} sat/vB: circa {f} sats per questa transazione, che ha pagato {p} sats.',
+  stuckRbf:
+    'Sostituiscila: nel wallet che l’ha inviata, cerca «Bump fee», «Speed up» o «Replace». Invia di nuovo lo stesso pagamento con una commissione più alta, circa {f} sats.',
+  stuckCpfp:
+    'Pagala con una transazione successiva: se questo pagamento era per te, rimanda quelle monete a te stesso con una commissione di circa {f} sats, così i miner le prendono insieme.',
+  stuckAcc: 'Paga un miner: l’Accelerator di mempool.space chiede ai mining pool partner di includerla, a pagamento.',
+  stuckAccLink: 'Accelera su mempool.space',
+  stuckWait:
+    'Oppure aspetta: passa quando le commissioni scendono. Se non viene mai minata, i nodi la dimenticano dopo circa due settimane e le monete tornano nel wallet.',
 };

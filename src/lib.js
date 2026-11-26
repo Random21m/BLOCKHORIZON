@@ -354,6 +354,19 @@ export function txQueuePos(feeRate, projected) {
   }
   return -1;
 }
+// A waiting transaction below the next block's fee rate: what speeding it up would cost, in sats, at `rate` sat/vB.
+// Replacing it (RBF) means paying the whole transaction at that rate, and at least 1 sat/vB more than it paid (the
+// network's minimum step). A follow-up that spends one of its outputs (CPFP, about CHILD_VB) pays for both together.
+export const CHILD_VB = 110;
+export function speedUp(tx, rate) {
+  if (!tx || !(tx.vsize > 0) || !(rate > 0)) return null;
+  const fee = tx.fee || 0;
+  return {
+    stuck: fee / tx.vsize < rate,
+    rbf: Math.max(Math.ceil(rate * tx.vsize), fee + tx.vsize),
+    cpfp: Math.max(0, Math.ceil(rate * (tx.vsize + CHILD_VB) - fee)),
+  };
+}
 // Approximate virtual size of a payment (vB) for the common address types: inputs, outputs and the fixed overhead.
 export const TX_SIZES = {
   segwit: { base: 10.5, in: 68, out: 31 },
@@ -1078,6 +1091,19 @@ export function addrEvents(seen, txs, addr) {
     else if (was === 'm' && conf) events.push({ kind: 'conf', txid: tx.txid, sats, height: tx.status.block_height });
   }
   return { seen: next, events };
+}
+// mempool.space /api/address/:a -> the address page's summary, in sats: balance (confirmed), what is waiting to confirm
+// (in minus out, can be negative), everything ever received, and the number of transactions.
+export function parseAddress(x) {
+  const c = (x && x.chain_stats) || {},
+    m = (x && x.mempool_stats) || {},
+    n = (v) => (Number.isFinite(v) ? v : 0);
+  return {
+    balance: n(c.funded_txo_sum) - n(c.spent_txo_sum),
+    pending: n(m.funded_txo_sum) - n(m.spent_txo_sum),
+    received: n(c.funded_txo_sum),
+    txs: n(c.tx_count) + n(m.tx_count),
+  };
 }
 // Satoshis -> a BTC amount without trailing zeros (12345000 -> "0.12345").
 export function fmtBtc(sats, loc) {
