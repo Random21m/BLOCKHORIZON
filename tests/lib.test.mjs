@@ -455,10 +455,54 @@ test('transactions: inputs and outputs, and the privacy hints anyone can read fr
     })),
     vout: outs.map(([a, v, ty = 'v0_p2wpkh']) => ({ scriptpubkey_address: a, value: v, scriptpubkey_type: ty })),
   });
-  assert.deepEqual(L.txPrivacy(tx([['A', 900000]], [['B', 500000], ['A', 399000]])), ['reuse', 'round']);
-  assert.deepEqual(L.txPrivacy(tx([['A', 1], ['C', 2]], [['B', 3]])), ['merge']);
-  assert.deepEqual(L.txPrivacy(tx([['A', 3e6]], [['B', 1234567], ['D', 1765432, 'v1_p2tr']])), ['types']);
-  assert.deepEqual(L.txPrivacy(tx([['A', 3e6]], [['B', 1234567], ['D', 1765432]])), []); // nothing stands out
+  assert.deepEqual(
+    L.txPrivacy(
+      tx(
+        [['A', 900000]],
+        [
+          ['B', 500000],
+          ['A', 399000],
+        ]
+      )
+    ),
+    ['reuse', 'round']
+  );
+  assert.deepEqual(
+    L.txPrivacy(
+      tx(
+        [
+          ['A', 1],
+          ['C', 2],
+        ],
+        [['B', 3]]
+      )
+    ),
+    ['merge']
+  );
+  assert.deepEqual(
+    L.txPrivacy(
+      tx(
+        [['A', 3e6]],
+        [
+          ['B', 1234567],
+          ['D', 1765432, 'v1_p2tr'],
+        ]
+      )
+    ),
+    ['types']
+  );
+  assert.deepEqual(
+    L.txPrivacy(
+      tx(
+        [['A', 3e6]],
+        [
+          ['B', 1234567],
+          ['D', 1765432],
+        ]
+      )
+    ),
+    []
+  ); // nothing stands out
   assert.deepEqual(L.txPrivacy({ vin: [{ is_coinbase: true }], vout: [{ value: 1 }] }), []); // new coins: nothing to say
   assert.deepEqual(L.txFlow({ vin: [{ is_coinbase: true }], vout: [] }).ins, [{ coinbase: true }]);
   assert.ok(L.isRoundSats(5e6) && !L.isRoundSats(5e6 + 1) && !L.isRoundSats(0));

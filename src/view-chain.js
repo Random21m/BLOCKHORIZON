@@ -77,9 +77,14 @@ export function viewTx(id) {
   root.append(body);
   (async () => {
     try {
-      // the fee estimate too, for a waiting transaction opened from a link before the app has fetched it
-      const [raw, fees] = await Promise.all([api.tx(id), st.fees || api.fees().catch(() => null)]);
-      const x = L.parseTx(raw, st.tip);
+      // the fee estimate too, for a waiting transaction opened from a link before the app has fetched it,
+      // and the chain tip, for the confirmation count of a link opened before the app has fetched it
+      const [raw, fees, tip] = await Promise.all([
+        api.tx(id),
+        st.fees || api.fees().catch(() => null),
+        Number.isFinite(st.tip) ? st.tip : api.tip().then(Number, () => NaN),
+      ]);
+      const x = L.parseTx(raw, Number.isFinite(st.tip) ? st.tip : tip);
       if (tok !== txToken) return;
       const p = price(),
         fiat = (sats) => (Number.isFinite(p) ? ` (${L.fmtNum((sats / 1e8) * p, 2)} ${S.cur})` : '');
@@ -124,7 +129,7 @@ export function viewTx(id) {
 // Where the coins came from and where they went: each input (an output of an earlier transaction, linked) and each
 // output, with its address (linked to the address page) and amount. Long lists show the first FLOW_MAX of each.
 const FLOW_MAX = 50;
-const shortAddr = (a) => (a.length > 24 ? a.slice(0, 12) + '…' + a.slice(-8) : a);
+const shortAddr = (a) => (a.length > 20 ? a.slice(0, 10) + '…' + a.slice(-6) : a);
 function flowBox(raw) {
   const f = L.txFlow(raw),
     btc = (v) => (Number.isFinite(v) ? L.fmtBtc(v) + ' BTC' : '–');
@@ -168,9 +173,9 @@ function flowBox(raw) {
   return el(
     'section',
     { class: 'txflow' },
-    el('h3', { class: 'sec' }, t('txIns', { n: L.fmtNum(f.ins.length) })),
+    el('h2', { class: 'sec' }, t('txIns', { n: L.fmtNum(f.ins.length) })),
     list(f.ins, inRow, 'tx-ins'),
-    el('h3', { class: 'sec' }, t('txOuts', { n: L.fmtNum(f.outs.length) })),
+    el('h2', { class: 'sec' }, t('txOuts', { n: L.fmtNum(f.outs.length) })),
     list(f.outs, outRow, 'tx-outs')
   );
 }
@@ -191,7 +196,7 @@ function privacyBox(raw) {
   return el(
     'section',
     { class: 'txpriv', id: 'tx-privacy' },
-    el('h3', { class: 'sec' }, t('privTitle')),
+    el('h2', { class: 'sec' }, t('privTitle')),
     el('p', { class: 'dim' }, t('privIntro')),
     hints.length
       ? el(

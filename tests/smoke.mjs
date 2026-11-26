@@ -692,6 +692,23 @@ await ok('transaction lookup: a confirmed transaction', async () => {
   await page.click('main dd a[href="#/block/840000"]');
   await until(page, () => location.hash === '#/block/840000');
 });
+await ok('transaction link opened directly: the confirmations are counted from the chain tip', async () => {
+  const c = await b.newContext();
+  await c.routeWebSocket(/./, (ws) => ws.close());
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
+    r.request().url().includes('mempool.space') ? r.fallback() : r.abort()
+  );
+  await c.route(/mempool\.space/, (route) => {
+    const m = MOCK[new URL(route.request().url()).pathname];
+    if (!m) return route.fulfill({ status: 404, body: '' });
+    route.fulfill({ contentType: m[0], body: fx(m[1]) });
+  });
+  const p = await c.newPage();
+  await p.goto(base + '#/tx/' + TXC);
+  await p.waitForSelector('main .panel dl', { timeout: 8000 });
+  assert.ok((await p.locator('main dl').innerText()).includes('137,412'));
+  await c.close();
+});
 await ok('transaction lookup: one waiting in the mempool, with its place in the queue', async () => {
   await page.goto(base);
   await until(page, () => document.querySelectorAll('.blk.proj').length > 0);
