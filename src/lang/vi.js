@@ -579,4 +579,14 @@ export default {
   diffRibbonNote:
     'Khi các đường trung bình dồn sát nhau, độ khó đã ngừng tăng và thợ đào đang chịu áp lực. Hiện chúng cách nhau {p}%.',
   last2y: '2 năm qua',
+  blkHealth: 'Sức khỏe khối',
+  blkMatch: 'Mức khớp với khối dự kiến',
+  blkFeesL: 'Phí',
+  blkFeesVs: '{a} trên {b} BTC dự kiến ({c})',
+  blkMissing: 'Dự kiến nhưng bị bỏ ra',
+  blkAdded: 'Có trong khối nhưng không dự kiến',
+  blkAddedFresh: '{n} ({f} trong số đó chỉ mới thấy ngay trước đó)',
+  blkHealthNote:
+    'mempool.space dựa vào mempool của chính mình để tính những giao dịch mà nó dự kiến khối này chứa. Dưới 100% nghĩa là thợ đào đã bỏ ra một số giao dịch trong đó.',
+  blkHealthNone: 'Không có cho khối này: chỉ mempool.space so sánh các khối, và chỉ các khối gần đây.',
 };

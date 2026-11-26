@@ -585,4 +585,14 @@ export default {
   diffRibbonNote:
     'Ko se povprečja zbližajo, težavnost ne raste več in rudarji so pod pritiskom. Zdaj so {p} % narazen.',
   last2y: 'Zadnji 2 leti',
+  blkHealth: 'Zdravje bloka',
+  blkMatch: 'Ujemanje s pričakovanim blokom',
+  blkFeesL: 'Provizije',
+  blkFeesVs: '{a} od pričakovanih {b} BTC ({c})',
+  blkMissing: 'Pričakovane, a izpuščene',
+  blkAdded: 'Vključene, a nepričakovane',
+  blkAddedFresh: '{n} (od tega {f} opaženih šele tik prej)',
+  blkHealthNote:
+    'mempool.space iz lastnega mempoola izračuna, katere transakcije je pričakoval v tem bloku. Manj kot 100 % pomeni, da je rudar nekatere izpustil.',
+  blkHealthNone: 'Za ta blok ni na voljo: bloke primerja le mempool.space, in le nedavne.',
 };

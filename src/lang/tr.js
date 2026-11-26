@@ -583,4 +583,15 @@ export default {
   diffRibbonNote:
     'Ortalamalar birbirine yaklaştığında zorluk artmayı bırakmıştır ve madenciler baskı altındadır. Şu an aralarında %{p} fark var.',
   last2y: 'Son 2 yıl',
+  blkHealth: 'Blok sağlığı',
+  blkMatch: 'Beklenen blokla uyum',
+  blkFeesL: 'Ücretler',
+  blkFeesVs: 'Beklenen {b} BTC yerine {a} ({c})',
+  blkMissing: 'Beklenip dışarıda bırakılan',
+  blkAdded: 'Beklenmeden eklenen',
+  blkAddedFresh: '{n} ({f} tanesi ancak hemen önce görüldü)',
+  blkHealthNote:
+    "mempool.space, kendi mempool'una bakarak bu bloğun hangi işlemleri içermesini beklediğini hesaplar. %100'ün altı, madencinin bunların bir kısmını dışarıda bıraktığı anlamına gelir.",
+  blkHealthNone:
+    'Bu blok için mevcut değil: blokları yalnızca mempool.space karşılaştırır, o da yalnızca yeni olanları.',
 };

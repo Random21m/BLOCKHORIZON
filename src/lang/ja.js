@@ -584,4 +584,15 @@ export default {
   ribbonAvgs: '9〜200日の平均',
   diffRibbonNote: '平均線が寄り集まると、難易度の上昇が止まり、マイナーは苦しい状況にあります。現在の開きは{p}%です。',
   last2y: '過去2年',
+  blkHealth: 'ブロックの健全性',
+  blkMatch: '予想ブロックとの一致',
+  blkFeesL: '手数料',
+  blkFeesVs: '見込みの {b} BTC に対して {a}（{c}）',
+  blkMissing: '予想されていたが未収録',
+  blkAdded: '予想外に収録',
+  blkAddedFresh: '{n}（うち {f} は直前に見えたばかり）',
+  blkHealthNote:
+    'mempool.space は自身のメモリプールをもとに、このブロックに入ると予想したトランザクションを割り出します。100% 未満なら、マイナーがその一部を入れなかったということです。',
+  blkHealthNone:
+    'このブロックでは利用できません。ブロックを比較しているのは mempool.space だけで、それも最近のブロックに限られます。',
 };

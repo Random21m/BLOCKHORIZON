@@ -592,4 +592,14 @@ export default {
   diffRibbonNote:
     'Rücken die Mittel zusammen, steigt die Schwierigkeit nicht mehr und Miner stehen unter Druck. Jetzt liegen sie {p} % auseinander.',
   last2y: 'Letzte 2 Jahre',
+  blkHealth: 'Blockgesundheit',
+  blkMatch: 'Übereinstimmung mit dem erwarteten Block',
+  blkFeesL: 'Gebühren',
+  blkFeesVs: '{a} der erwarteten {b} BTC ({c})',
+  blkMissing: 'Erwartet, aber weggelassen',
+  blkAdded: 'Enthalten, aber nicht erwartet',
+  blkAddedFresh: '{n} ({f} davon erst kurz vorher gesehen)',
+  blkHealthNote:
+    'mempool.space ermittelt aus seinem eigenen Mempool, welche Transaktionen es in diesem Block erwartet hat. Weniger als 100 % heißt, dass der Miner einige davon weggelassen hat.',
+  blkHealthNone: 'Für diesen Block nicht verfügbar: Nur mempool.space vergleicht Blöcke, und nur neuere.',
 };

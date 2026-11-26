@@ -587,4 +587,14 @@ export default {
   diffRibbonNote:
     'Saat rata-rata saling merapat, kesulitan berhenti naik dan penambang sedang tertekan. Saat ini selisihnya {p}%.',
   last2y: '2 tahun terakhir',
+  blkHealth: 'Kesehatan blok',
+  blkMatch: 'Kecocokan dengan blok yang diperkirakan',
+  blkFeesL: 'Biaya',
+  blkFeesVs: '{a} dari {b} BTC yang diperkirakan ({c})',
+  blkMissing: 'Diperkirakan tapi tidak dimasukkan',
+  blkAdded: 'Ada tapi tidak diperkirakan',
+  blkAddedFresh: '{n} ({f} di antaranya baru terlihat sesaat sebelumnya)',
+  blkHealthNote:
+    'mempool.space menghitung dari mempool miliknya sendiri transaksi mana yang ia perkirakan masuk ke blok ini. Kurang dari 100% berarti penambang tidak memasukkan sebagian di antaranya.',
+  blkHealthNone: 'Tidak tersedia untuk blok ini: hanya mempool.space yang membandingkan blok, dan hanya blok terbaru.',
 };

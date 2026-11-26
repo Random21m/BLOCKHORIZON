@@ -583,4 +583,14 @@ export default {
   diffRibbonNote:
     'När snitten klumpar ihop sig har svårighetsgraden slutat stiga och miners är pressade. Nu skiljer de {p} %.',
   last2y: 'Senaste 2 åren',
+  blkHealth: 'Blockhälsa',
+  blkMatch: 'Överensstämmelse med väntat block',
+  blkFeesL: 'Avgifter',
+  blkFeesVs: '{a} av väntade {b} BTC ({c})',
+  blkMissing: 'Väntade men utelämnade',
+  blkAdded: 'Med men inte väntade',
+  blkAddedFresh: '{n} (varav {f} sågs bara strax innan)',
+  blkHealthNote:
+    'mempool.space räknar utifrån sin egen mempool ut vilka transaktioner det väntade sig i det här blocket. Under 100 % betyder att minern utelämnade några av dem.',
+  blkHealthNone: 'Inte tillgängligt för det här blocket: bara mempool.space jämför block, och bara de senaste.',
 };

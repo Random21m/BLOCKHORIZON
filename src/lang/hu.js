@@ -588,4 +588,14 @@ export default {
   diffRibbonNote:
     'Ha az átlagok összetömörülnek, a nehézség már nem nő, és a bányászok nyomás alatt vannak. Most {p}% a különbség köztük.',
   last2y: 'Utolsó 2 év',
+  blkHealth: 'Blokk állapota',
+  blkMatch: 'Egyezés a várt blokkal',
+  blkFeesL: 'Díjak',
+  blkFeesVs: '{a} a várt {b} BTC-ből ({c})',
+  blkMissing: 'Várt, de kihagyott',
+  blkAdded: 'Benne van, de nem várt',
+  blkAddedFresh: '{n} (ebből {f} csak pillanatokkal előtte látott)',
+  blkHealthNote:
+    'A mempool.space a saját mempooljából számolja ki, mely tranzakciókat várta ebben a blokkban. A 100% alatti érték azt jelenti, hogy a bányász néhányat kihagyott közülük.',
+  blkHealthNone: 'Ehhez a blokkhoz nem érhető el: csak a mempool.space hasonlít össze blokkokat, és csak a frisseket.',
 };

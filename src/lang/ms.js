@@ -589,4 +589,14 @@ export default {
   diffRibbonNote:
     'Apabila purata-purata berhimpit, kesukaran telah berhenti meningkat dan pelombong berada di bawah tekanan. Kini jaraknya {p}%.',
   last2y: '2 tahun lalu',
+  blkHealth: 'Kesihatan blok',
+  blkMatch: 'Padanan dengan blok yang dijangka',
+  blkFeesL: 'Yuran',
+  blkFeesVs: '{a} daripada {b} BTC yang dijangka ({c})',
+  blkMissing: 'Dijangka tetapi ditinggalkan',
+  blkAdded: 'Ada tetapi tidak dijangka',
+  blkAddedFresh: '{n} ({f} daripadanya dilihat hanya sejurus sebelum itu)',
+  blkHealthNote:
+    'mempool.space mengira daripada mempoolnya sendiri transaksi mana yang dijangka ada dalam blok ini. Kurang daripada 100% bermakna pelombong meninggalkan sebahagian daripadanya.',
+  blkHealthNone: 'Tidak tersedia untuk blok ini: hanya mempool.space yang membandingkan blok, dan hanya blok terkini.',
 };

@@ -586,4 +586,14 @@ export default {
   diffRibbonNote:
     'Når snittene samler seg, har vanskelighetsgraden sluttet å stige og utvinnerne er presset. Nå er de {p} % fra hverandre.',
   last2y: 'Siste 2 år',
+  blkHealth: 'Blokkhelse',
+  blkMatch: 'Samsvar med ventet blokk',
+  blkFeesL: 'Gebyrer',
+  blkFeesVs: '{a} av ventede {b} BTC ({c})',
+  blkMissing: 'Ventet, men utelatt',
+  blkAdded: 'Med, men ikke ventet',
+  blkAddedFresh: '{n} ({f} av dem sett bare øyeblikk før)',
+  blkHealthNote:
+    'mempool.space regner ut fra sin egen mempool hvilke transaksjoner den ventet i denne blokken. Under 100 % betyr at mineren utelot noen av dem.',
+  blkHealthNone: 'Ikke tilgjengelig for denne blokken: bare mempool.space sammenligner blokker, og bare nyere.',
 };

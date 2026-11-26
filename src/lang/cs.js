@@ -579,4 +579,14 @@ export default {
   ribbonAvgs: 'Průměry za 9 až 200 dní',
   diffRibbonNote: 'Když se průměry sbíhají, obtížnost přestala růst a těžaři jsou pod tlakem. Teď je dělí {p} %.',
   last2y: 'Poslední 2 roky',
+  blkHealth: 'Zdraví bloku',
+  blkMatch: 'Shoda s očekávaným blokem',
+  blkFeesL: 'Poplatky',
+  blkFeesVs: '{a} z očekávaných {b} BTC ({c})',
+  blkMissing: 'Očekávané, ale vynechané',
+  blkAdded: 'Obsažené, ale neočekávané',
+  blkAddedFresh: '{n} (z toho {f} viděných teprve chvíli předtím)',
+  blkHealthNote:
+    'mempool.space ze svého vlastního mempoolu odvozuje, které transakce v tomto bloku očekával. Méně než 100 % znamená, že těžař některé z nich vynechal.',
+  blkHealthNone: 'Pro tento blok není k dispozici: bloky porovnává jen mempool.space, a jen ty nedávné.',
 };

@@ -595,4 +595,14 @@ export default {
   diffRibbonNote:
     'Quand les moyennes se resserrent, la difficulté a cessé de monter et les mineurs sont sous pression. Elles sont aujourd’hui à {p} % d’écart.',
   last2y: '2 dernières années',
+  blkHealth: 'Santé du bloc',
+  blkMatch: 'Correspondance avec le bloc prévu',
+  blkFeesL: 'Frais',
+  blkFeesVs: '{a} sur les {b} BTC prévus ({c})',
+  blkMissing: 'Prévues mais omises',
+  blkAdded: 'Incluses sans être prévues',
+  blkAddedFresh: '{n} (dont {f} vues juste avant)',
+  blkHealthNote:
+    'mempool.space déduit de sa propre mempool les transactions qu’il s’attendait à voir dans ce bloc. Moins de 100 % signifie que le mineur en a laissé de côté.',
+  blkHealthNone: 'Indisponible pour ce bloc : seul mempool.space compare les blocs, et seulement les récents.',
 };

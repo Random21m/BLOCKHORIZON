@@ -573,4 +573,14 @@ export default {
   diffRibbonNote:
     '평균들이 한데 모이면 난이도 상승이 멈추고 채굴자들이 압박을 받고 있다는 뜻이에요. 지금은 {p}% 벌어져 있어요.',
   last2y: '최근 2년',
+  blkHealth: '블록 상태',
+  blkMatch: '예상 블록과의 일치율',
+  blkFeesL: '수수료',
+  blkFeesVs: '예상 {b} BTC 중 {a} ({c})',
+  blkMissing: '예상됐지만 빠진 거래',
+  blkAdded: '예상 밖으로 들어간 거래',
+  blkAddedFresh: '{n} (그중 {f}개는 직전에야 보였어요)',
+  blkHealthNote:
+    'mempool.space는 자체 멤풀을 바탕으로 이 블록에 들어갈 거라 예상한 거래를 계산해요. 100% 미만이면 채굴자가 그중 일부를 넣지 않았다는 뜻이에요.',
+  blkHealthNone: '이 블록에는 제공되지 않아요. 블록을 비교하는 곳은 mempool.space뿐이고, 그것도 최근 블록만 비교해요.',
 };

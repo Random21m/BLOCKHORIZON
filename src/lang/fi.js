@@ -586,4 +586,14 @@ export default {
   diffRibbonNote:
     'Kun keskiarvot painuvat yhteen, vaikeus on lakannut nousemasta ja louhijat ovat paineessa. Nyt niiden ero on {p} %.',
   last2y: 'Viimeiset 2 vuotta',
+  blkHealth: 'Lohkon terveys',
+  blkMatch: 'Vastaavuus odotettuun lohkoon',
+  blkFeesL: 'Maksut',
+  blkFeesVs: '{a} odotetuista {b} BTC:stä ({c})',
+  blkMissing: 'Odotettu, mutta jätetty pois',
+  blkAdded: 'Mukana, mutta ei odotettu',
+  blkAddedFresh: '{n} (joista {f} nähty vasta hetkeä aiemmin)',
+  blkHealthNote:
+    'mempool.space päättelee omasta mempoolistaan, mitä siirtoja se odotti tähän lohkoon. Alle 100 % tarkoittaa, että louhija jätti osan niistä pois.',
+  blkHealthNone: 'Ei saatavilla tälle lohkolle: vain mempool.space vertaa lohkoja, ja vain tuoreita.',
 };

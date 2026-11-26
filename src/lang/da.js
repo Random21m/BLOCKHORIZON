@@ -585,4 +585,14 @@ export default {
   diffRibbonNote:
     'Når gennemsnittene samler sig, er sværhedsgraden holdt op med at stige, og minerne er pressede. Nu er de {p} % fra hinanden.',
   last2y: 'Seneste 2 år',
+  blkHealth: 'Blokkens sundhed',
+  blkMatch: 'Overensstemmelse med forventet blok',
+  blkFeesL: 'Gebyrer',
+  blkFeesVs: '{a} af de forventede {b} BTC ({c})',
+  blkMissing: 'Forventet, men udeladt',
+  blkAdded: 'Med, men ikke forventet',
+  blkAddedFresh: '{n} ({f} af dem set kun øjeblikke før)',
+  blkHealthNote:
+    'mempool.space regner ud fra sin egen mempool, hvilke transaktioner den forventede i denne blok. Under 100 % betyder, at mineren udelod nogle af dem.',
+  blkHealthNone: 'Ikke tilgængelig for denne blok: kun mempool.space sammenligner blokke, og kun nyere.',
 };

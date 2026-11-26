@@ -580,4 +580,14 @@ export default {
   ribbonAvgs: 'Średnie od 9 do 200 dni',
   diffRibbonNote: 'Gdy średnie się zbiegają, trudność przestała rosnąć, a górnicy są pod presją. Teraz dzieli je {p}%.',
   last2y: 'Ostatnie 2 lata',
+  blkHealth: 'Kondycja bloku',
+  blkMatch: 'Zgodność z oczekiwanym blokiem',
+  blkFeesL: 'Opłaty',
+  blkFeesVs: '{a} z oczekiwanych {b} BTC ({c})',
+  blkMissing: 'Oczekiwane, ale pominięte',
+  blkAdded: 'Dodane, choć nieoczekiwane',
+  blkAddedFresh: '{n} (w tym {f} widziane dopiero chwilę wcześniej)',
+  blkHealthNote:
+    'mempool.space na podstawie własnego mempoola ustala, jakich transakcji oczekiwał w tym bloku. Mniej niż 100% oznacza, że górnik część z nich pominął.',
+  blkHealthNone: 'Niedostępne dla tego bloku: bloki porównuje tylko mempool.space, i tylko te najnowsze.',
 };

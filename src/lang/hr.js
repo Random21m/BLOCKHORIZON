@@ -583,4 +583,14 @@ export default {
   ribbonAvgs: 'Prosjeci od 9 do 200 dana',
   diffRibbonNote: 'Kad se prosjeci zbiju, težina je prestala rasti i rudari su pod pritiskom. Sada su {p} % udaljeni.',
   last2y: 'Zadnje 2 godine',
+  blkHealth: 'Zdravlje bloka',
+  blkMatch: 'Podudaranje s očekivanim blokom',
+  blkFeesL: 'Naknade',
+  blkFeesVs: '{a} od očekivanih {b} BTC ({c})',
+  blkMissing: 'Očekivane, ali izostavljene',
+  blkAdded: 'Uključene, a neočekivane',
+  blkAddedFresh: '{n} (od toga {f} viđenih tek trenutak prije)',
+  blkHealthNote:
+    'mempool.space iz vlastitog mempoola izračunava koje je transakcije očekivao u ovom bloku. Manje od 100 % znači da je rudar neke od njih izostavio.',
+  blkHealthNone: 'Nije dostupno za ovaj blok: blokove uspoređuje samo mempool.space, i to samo nedavne.',
 };

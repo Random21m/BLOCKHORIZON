@@ -584,4 +584,14 @@ export default {
   ribbonAvgs: 'Vidurkiai per 9–200 dienų',
   diffRibbonNote: 'Kai vidurkiai susiglaudžia, sudėtingumas nebeauga ir kasėjams sunku. Dabar jie skiriasi {p} %.',
   last2y: 'Paskutiniai 2 metai',
+  blkHealth: 'Bloko sveikata',
+  blkMatch: 'Atitiktis numatytam blokui',
+  blkFeesL: 'Mokesčiai',
+  blkFeesVs: '{a} iš numatytų {b} BTC ({c})',
+  blkMissing: 'Numatytos, bet praleistos',
+  blkAdded: 'Įtrauktos, bet nenumatytos',
+  blkAddedFresh: '{n} (iš jų {f} pastebėtos tik akimirką prieš)',
+  blkHealthNote:
+    'mempool.space pagal savo mempool apskaičiuoja, kokių transakcijų tikėjosi šiame bloke. Mažiau nei 100 % reiškia, kad kasėjas kai kurias iš jų praleido.',
+  blkHealthNone: 'Šiam blokui nepasiekiama: blokus lygina tik mempool.space, ir tik naujausius.',
 };

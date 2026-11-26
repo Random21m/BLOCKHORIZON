@@ -556,4 +556,14 @@ export default {
   ribbonAvgs: '9 至 200 天平均',
   diffRibbonNote: '当各条平均线聚拢时，难度已停止上升，矿工承受压力。目前相差 {p}%。',
   last2y: '最近 2 年',
+  blkHealth: '区块健康度',
+  blkMatch: '与预期区块的吻合度',
+  blkFeesL: '手续费',
+  blkFeesVs: '预期 {b} BTC 中的 {a}（{c}）',
+  blkMissing: '预期中但被遗漏',
+  blkAdded: '包含但不在预期中',
+  blkAddedFresh: '{n}（其中 {f} 笔刚出现不久）',
+  blkHealthNote:
+    'mempool.space 根据自己的内存池推算出它预期这个区块会包含哪些交易。低于 100% 表示矿工遗漏了其中一部分。',
+  blkHealthNone: '此区块无法提供：只有 mempool.space 会比较区块，而且只比较最近的区块。',
 };

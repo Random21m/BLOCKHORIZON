@@ -589,4 +589,14 @@ export default {
   diffRibbonNote:
     'Quando le medie si stringono, la difficoltà ha smesso di salire e i miner sono sotto pressione. Ora distano il {p}%.',
   last2y: 'Ultimi 2 anni',
+  blkHealth: 'Salute del blocco',
+  blkMatch: 'Corrispondenza con il blocco previsto',
+  blkFeesL: 'Commissioni',
+  blkFeesVs: '{a} dei {b} BTC previsti ({c})',
+  blkMissing: 'Previste ma escluse',
+  blkAdded: 'Incluse ma non previste',
+  blkAddedFresh: '{n} ({f} viste solo pochi istanti prima)',
+  blkHealthNote:
+    'mempool.space ricava dalla propria mempool quali transazioni si aspettava in questo blocco. Meno del 100% significa che il miner ne ha lasciate fuori alcune.',
+  blkHealthNone: 'Non disponibile per questo blocco: solo mempool.space confronta i blocchi, e solo quelli recenti.',
 };

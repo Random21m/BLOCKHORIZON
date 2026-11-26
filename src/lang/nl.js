@@ -587,4 +587,14 @@ export default {
   diffRibbonNote:
     'Als de gemiddelden samenkomen, stijgt de moeilijkheid niet meer en staan miners onder druk. Nu liggen ze {p}% uit elkaar.',
   last2y: 'Laatste 2 jaar',
+  blkHealth: 'Blokgezondheid',
+  blkMatch: 'Overeenkomst met het verwachte blok',
+  blkFeesL: 'Kosten',
+  blkFeesVs: '{a} van de verwachte {b} BTC ({c})',
+  blkMissing: 'Verwacht maar weggelaten',
+  blkAdded: 'Erin maar niet verwacht',
+  blkAddedFresh: '{n} ({f} daarvan pas vlak ervoor gezien)',
+  blkHealthNote:
+    'mempool.space bepaalt uit zijn eigen mempool welke transacties het in dit blok verwachtte. Minder dan 100% betekent dat de miner er een aantal heeft weggelaten.',
+  blkHealthNone: 'Niet beschikbaar voor dit blok: alleen mempool.space vergelijkt blokken, en alleen recente.',
 };
