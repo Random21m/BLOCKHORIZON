@@ -1234,10 +1234,20 @@ await ok(
     await p.click('#ch-mempool [data-m="24h"]');
     await until(p, () => document.querySelector('#ch-mempool .lchart'));
     await p.setViewportSize({ width: 360, height: 800 });
-    assert.ok(
-      await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
-      'no sideways scroll on a phone'
+    // the trading chart above follows the new width a moment later
+    await until(p, () => document.documentElement.scrollWidth <= innerWidth + 1, null, { timeout: 5000 }).catch(
+      () => {}
     );
+    const wide = await p.evaluate(() =>
+      document.documentElement.scrollWidth <= innerWidth + 1
+        ? ''
+        : [...document.querySelectorAll('main *')]
+            .filter((e) => e.getBoundingClientRect().right > innerWidth + 1)
+            .slice(0, 5)
+            .map((e) => e.tagName + '.' + e.className + ' ' + Math.round(e.getBoundingClientRect().right))
+            .join(', ')
+    );
+    assert.equal(wide, '', 'no sideways scroll on a phone');
     assert.deepEqual(perr, []);
     await c.close();
   }
