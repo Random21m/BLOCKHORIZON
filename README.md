@@ -4,7 +4,7 @@
 
 ### [→ Open the app](https://random21m.github.io/BLOCKHORIZON/)
 
-No accounts, no ads, no tracking, nothing to install (though you can). Free public data, in 13 languages, and it works offline.
+No accounts, no ads, no tracking, nothing to install (though you can). Free public data, in 16 languages, and it works offline.
 
 [![GitHub stars](https://img.shields.io/github/stars/Random21m/BLOCKHORIZON?style=flat&label=GitHub%20stars)](https://github.com/Random21m/BLOCKHORIZON/stargazers)
 [![Container image](https://img.shields.io/badge/container-ghcr.io%2Frandom21m%2Fblockhorizon-blue)](https://github.com/users/Random21m/packages/container/package/blockhorizon) ([how many use it](#how-many-use-it))
@@ -46,7 +46,7 @@ BLOCKHORIZON is built around one idea: in Bitcoin, time is measured in blocks. T
 **Everywhere**
 - Your own node: point it at your own mempool server (**Settings, Data**), or run it on your node with the container (see [packaging](packaging/README.md)). If the data server stops answering, the height, blocks, fees and mempool come from blockstream.info until it is back, and the connection dot turns amber
 - On a phone, the four main pages sit in a tab bar along the bottom, the rest under **More**
-- Dark, light or automatic; English, German, Spanish, French, Portuguese (Portugal and Brazil), Italian, Dutch, Turkish, Russian, Japanese, Korean and Simplified Chinese (chosen from your browser's language at first); your currency, time and date format
+- Dark, light or automatic; English, German, Spanish, French, Portuguese (Portugal and Brazil), Italian, Dutch, Turkish, Indonesian, Vietnamese, Russian, Hindi, Japanese, Korean and Simplified Chinese (chosen from your browser's language at first); your currency, time and date format
 - Accessible: keyboard-friendly, screen-reader labels, and checked with axe-core on every page in both themes as part of the tests
 - Calm by design: flat, no flashing, no glow, and nothing moves if you turn on reduce motion
 
@@ -96,7 +96,7 @@ Show the live block height, the halving countdown or the price on your own websi
 <iframe src="https://random21m.github.io/BLOCKHORIZON/embed.html?show=height" width="320" height="120" style="border:0" title="BLOCKHORIZON: Block height" loading="lazy"></iframe>
 ```
 
-Options: `show=height|halving|price|mining` (`mining` draws a small picture of the block being mined; give it `height="150"`), `theme=auto|dark|light`, `lang=en|de|es|fr|pt|pt-BR|it|nl|tr|ru|ja|ko|zh`, and `cur=USD|EUR|GBP|CAD|CHF|AUD|JPY` for the price. The widget updates itself and links back to the app.
+Options: `show=height|halving|price|mining` (`mining` draws a small picture of the block being mined; give it `height="150"`), `theme=auto|dark|light`, `lang=en|de|es|fr|pt|pt-BR|it|nl|tr|id|vi|ru|hi|ja|ko|zh`, and `cur=USD|EUR|GBP|CAD|CHF|AUD|JPY` for the price. The widget updates itself and links back to the app.
 
 ## Privacy
 

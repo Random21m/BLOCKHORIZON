@@ -1688,6 +1688,9 @@ await ok('tile titles stay on one line on phones and tablets (short titles), in 
     [360, 'ko'],
     [360, 'ru'],
     [360, 'pt-BR'],
+    [360, 'id'],
+    [360, 'vi'],
+    [360, 'hi'],
     [700, 'it'],
     [700, 'ru'],
     [1280, 'fr'],
@@ -2323,36 +2326,48 @@ await ok('French: glossary and anniversaries are translated', async () => {
   await page.selectOption('#st-lang', 'en');
   await page.keyboard.press('Escape');
 });
-await ok('Japanese, Chinese, Korean and Russian: menu, dashboard and glossary are translated', async () => {
-  for (const [lang, script] of [
-    ['ja', /[\u3040-\u30ff]/],
-    ['zh', /[\u4e00-\u9fff]/],
-    ['ko', /[\uac00-\ud7af]/],
-    ['ru', /[\u0400-\u04ff]/],
-  ]) {
-    const c = await b.newContext({ viewport: { width: 1280, height: 800 } });
-    await c.routeWebSocket(/./, (ws) => ws.close());
-    await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
-      r.request().url().includes('mempool.space') ? r.fallback() : r.abort()
-    );
-    await c.route(/mempool\.space/, (route) => {
-      const m = MOCK[new URL(route.request().url()).pathname];
-      if (!m) return route.fulfill({ status: 404, body: '' });
-      route.fulfill({ contentType: m[0], body: fx(m[1]) });
-    });
-    await c.addInitScript((l) => localStorage.setItem('bh.settings', JSON.stringify({ lang: l, _v: 2 })), lang);
-    const p = await c.newPage();
-    await p.goto(base);
-    await until(p, (l) => document.querySelectorAll('.tile').length >= 10 && document.documentElement.lang === l, lang);
-    const d = await p.locator('main').innerText();
-    for (const w of ['blocks deep', 'channels', 'Since last', 'of epoch'])
-      assert.ok(!d.includes(w), lang + ': English left: ' + w);
-    assert.ok(script.test(await p.locator('#nav').innerText()), 'menu in ' + lang);
-    await p.goto(base + '#/glossary');
-    assert.ok(script.test(await p.locator('main').innerText()), 'glossary in ' + lang);
-    await c.close();
+await ok(
+  'Japanese, Chinese, Korean, Russian, Hindi, Indonesian and Vietnamese: menu, dashboard and glossary are translated',
+  async () => {
+    // one script per language, or (for languages in Latin letters) a few words only the translation has, for the menu
+    // and for the glossary
+    for (const [lang, script, gloss = script] of [
+      ['ja', /[\u3040-\u30ff]/],
+      ['zh', /[\u4e00-\u9fff]/],
+      ['ko', /[\uac00-\ud7af]/],
+      ['ru', /[\u0400-\u04ff]/],
+      ['hi', /[\u0900-\u097f]/],
+      ['id', /Kalkulator|Glosarium/, /Tinggi blok|Kesulitan/],
+      ['vi', /Báo thức|Thuật ngữ/, /khối/],
+    ]) {
+      const c = await b.newContext({ viewport: { width: 1280, height: 800 } });
+      await c.routeWebSocket(/./, (ws) => ws.close());
+      await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
+        r.request().url().includes('mempool.space') ? r.fallback() : r.abort()
+      );
+      await c.route(/mempool\.space/, (route) => {
+        const m = MOCK[new URL(route.request().url()).pathname];
+        if (!m) return route.fulfill({ status: 404, body: '' });
+        route.fulfill({ contentType: m[0], body: fx(m[1]) });
+      });
+      await c.addInitScript((l) => localStorage.setItem('bh.settings', JSON.stringify({ lang: l, _v: 2 })), lang);
+      const p = await c.newPage();
+      await p.goto(base);
+      await until(
+        p,
+        (l) => document.querySelectorAll('.tile').length >= 10 && document.documentElement.lang === l,
+        lang
+      );
+      const d = await p.locator('main').innerText();
+      for (const w of ['blocks deep', 'channels', 'Since last', 'of epoch'])
+        assert.ok(!d.includes(w), lang + ': English left: ' + w);
+      assert.ok(script.test(await p.locator('#nav').innerText()), 'menu in ' + lang);
+      await p.goto(base + '#/glossary');
+      assert.ok(gloss.test(await p.locator('main').innerText()), 'glossary in ' + lang);
+      await c.close();
+    }
   }
-});
+);
 await ok('Brazilian Portuguese is chosen for a pt-BR browser, European Portuguese for pt-PT', async () => {
   for (const [locale, want, word] of [
     ['pt-BR', 'pt-BR', 'celular'],
