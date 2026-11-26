@@ -585,6 +585,9 @@ export default {
   diffRibbonNote:
     'Ko se povprečja zbližajo, težavnost ne raste več in rudarji so pod pritiskom. Zdaj so {p} % narazen.',
   last2y: 'Zadnji 2 leti',
+  blkFeesChart: 'Provizije na blok',
+  feeShareChart: 'Provizije v prihodku rudarjev',
+  blkSizeChart: 'Velikost bloka',
   factsTitle: 'Dejstva o ceni in ponudbi',
   athL: 'Rekordna cena',
   belowAth: 'Pod rekordom',

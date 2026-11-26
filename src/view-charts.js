@@ -1,5 +1,6 @@
-// The live trading chart (trade-chart.js), then history charts: price, hashrate, difficulty and median fee rate over 1 month, 1 year or all time.
-// One range selector scopes all four. Each chart: latest value and change, a line with recessive grid, a crosshair
+// The live trading chart (trade-chart.js), then history charts: price, hashrate, difficulty, median fee rate, fees per block,
+// their share of miner income and block size over 1 month, 1 year or all time.
+// One range selector scopes them all. Each chart: latest value and change, a line with recessive grid, a crosshair
 // tooltip (pointer and arrow keys), and a table view. Data is fetched when the page opens and kept for the session.
 import * as L from './lib.js';
 import { api } from './api.js';
@@ -21,6 +22,7 @@ const fetchOnce = (key, fn) => {
     );
   return cache.get(key);
 };
+const blockFees = (r) => fetchOnce('bfee:' + r, () => api.blockFeeHistory(r));
 const RANGE_KEYS = { '1m': 'r1m', '1y': 'r1y', all: 'rAll' };
 const short = (v) => (v >= 1000 ? L.compact(v) : L.fmtNum(v, v < 10 ? 2 : 0));
 const CHARTS = [
@@ -59,6 +61,39 @@ const CHARTS = [
     axis: (v) => L.fmtFee(v),
     log: () => false,
     avg: { '1m': 1, '1y': 7, all: 30 },
+  },
+  // what miners take in per block: the fees, the fees' share of the reward (subsidy + fees), and how full blocks are
+  {
+    id: 'blockfees',
+    title: () => t('blkFeesChart'),
+    load: (r) => blockFees(r).then(L.SERIES.blockFees),
+    fmt: (v) => L.trimZeros(L.fmtNum(v, v < 1 ? 4 : 2)) + ' BTC',
+    axis: (v) => L.trimZeros(L.fmtNum(v, v < 1 ? 3 : 1)),
+    log: () => false,
+    avg: { '1y': 7, all: 30 },
+  },
+  {
+    id: 'feeshare',
+    title: () => t('feeShareChart'),
+    load: (r) =>
+      Promise.all([blockFees(r), fetchOnce('brw:' + r, () => api.blockRewardHistory(r))]).then(([f, w]) =>
+        L.feeShareSeries(f, w)
+      ),
+    fmt: (v) => L.fmtNum(v, v < 10 ? 2 : 1) + '%',
+    change: false, // a % change of a share reads wrong; the line says enough
+    axis: (v) => L.trimZeros(L.fmtNum(v, 1)) + '%',
+    log: () => false,
+    avg: { '1y': 7, all: 30 },
+  },
+  {
+    id: 'blocksize',
+    title: () => t('blkSizeChart'),
+    load: (r) => fetchOnce('bsz:' + r, () => api.blockSizeHistory(r)).then(L.SERIES.blockSizes),
+    fmt: (v) => L.fmtNum(v, 2) + ' MB',
+    change: false, // from a few hundred bytes in 2009, the change over all time is a meaningless huge number
+    axis: (v) => L.trimZeros(L.fmtNum(v, 1)) + ' MB',
+    log: () => false,
+    avg: { '1y': 7, all: 30 },
   },
 ];
 
@@ -527,7 +562,7 @@ function chartBody(c, pts, range) {
     'div',
     { class: 'chead' },
     el('b', { class: 'cval' }, c.fmt(last.v)),
-    Number.isFinite(ch)
+    Number.isFinite(ch) && c.change !== false
       ? el('span', { class: 'dim' }, t('overRange', { c: (ch >= 0 ? '▲ +' : '▼ ') + ch.toFixed(1) + '%', r: rl }))
       : null,
     (c.avg || {})[range] ? el('span', { class: 'dim clog' }, t('avgDays', { n: c.avg[range] })) : null,

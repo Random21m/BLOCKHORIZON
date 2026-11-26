@@ -583,6 +583,9 @@ export default {
   diffRibbonNote:
     'Ortalamalar birbirine yaklaştığında zorluk artmayı bırakmıştır ve madenciler baskı altındadır. Şu an aralarında %{p} fark var.',
   last2y: 'Son 2 yıl',
+  blkFeesChart: 'Blok başına ücretler',
+  feeShareChart: 'Madenci gelirinde ücretler',
+  blkSizeChart: 'Blok boyutu',
   factsTitle: 'Fiyat ve arz bilgileri',
   athL: 'Tüm zamanların zirvesi',
   belowAth: 'Zirvenin altında',

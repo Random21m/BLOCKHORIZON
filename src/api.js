@@ -143,6 +143,9 @@ export const api = {
   priceAt: (cur, ts) =>
     getJSON('/v1/historical-price?currency=' + encodeURIComponent(cur) + '&timestamp=' + Math.floor(ts)),
   feeHistory: (r) => getJSON('/v1/mining/blocks/fee-rates/' + r),
+  blockFeeHistory: (r) => getJSON('/v1/mining/blocks/fees/' + r),
+  blockRewardHistory: (r) => getJSON('/v1/mining/blocks/rewards/' + r),
+  blockSizeHistory: (r) => getJSON('/v1/mining/blocks/sizes-weights/' + r),
   mempoolStats: (r) => getJSON('/v1/statistics/' + r), // the mempool by fee rate over time (no backup: esploraFor has none)
   byTime: (ts) => getJSON('/v1/mining/blocks/timestamp/' + ts),
 };

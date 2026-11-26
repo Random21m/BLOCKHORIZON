@@ -4,6 +4,9 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
 
 ## Unreleased
 
+- **What miners earn per block, and how full blocks are.** Three more history charts on the Charts page, with the same
+  1 month, 1 year and all time buttons: the fees per block (in BTC), the fees' share of what miners earn (block reward
+  plus fees, in %) and the average block size (in MB).
 - **Price and supply facts.** The "Long term" section of the Charts page opens with the all-time high (in your
   currency, with its date), how far below it the price is and for how many days, and the supply's yearly inflation now
   and after the next halving.

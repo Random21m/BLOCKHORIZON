@@ -583,6 +583,9 @@ export default {
   diffRibbonNote:
     'När snitten klumpar ihop sig har svårighetsgraden slutat stiga och miners är pressade. Nu skiljer de {p} %.',
   last2y: 'Senaste 2 åren',
+  blkFeesChart: 'Avgifter per block',
+  feeShareChart: 'Avgifter i minerintäkter',
+  blkSizeChart: 'Blockstorlek',
   factsTitle: 'Fakta om pris och utbud',
   athL: 'Rekordnivå',
   belowAth: 'Under toppen',
