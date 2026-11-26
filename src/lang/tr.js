@@ -642,4 +642,8 @@ export default {
     "mempool.space, kendi mempool'una bakarak bu bloğun hangi işlemleri içermesini beklediğini hesaplar. %100'ün altı, madencinin bunların bir kısmını dışarıda bıraktığı anlamına gelir.",
   blkHealthNone:
     'Bu blok için mevcut değil: blokları yalnızca mempool.space karşılaştırır, o da yalnızca yeni olanları.',
+  addrQr: 'QR kodu',
+  addrQrAria: '{a} adresinin QR kodu',
+  addrQrNote:
+    'Bu adrese ödeme yapmak için bir cüzdanla tarayın. Bu cihazda oluşturuldu; cüzdanınızın gösterdiği adresi kontrol edin.',
 };

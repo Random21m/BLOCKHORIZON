@@ -1290,3 +1290,23 @@ test('block health: the match with the expected block, fees against the expected
   assert.equal(L.blockHealth({}, null), null);
   assert.equal(L.blockHealth(block, 'oops').match, 100);
 });
+
+test('QR codes match a reference encoder module for module (byte mode, level M), and say when text is too long', () => {
+  // recorded from the qrcode package (1.5.4); the same encoder was also read back with the jsQR decoder when written
+  const ref = JSON.parse(fs.readFileSync(new URL('./fixtures/qr-reference.json', import.meta.url), 'utf8'));
+  for (const [text, r] of Object.entries(ref)) {
+    const q = L.qrEncode(text);
+    assert.equal(q.version, r.version, text);
+    assert.equal(q.mask, r.mask, 'the same mask chosen for ' + text);
+    assert.equal(q.size, r.rows.length);
+    const rows = [];
+    for (let y = 0; y < q.size; y++) {
+      let s = '';
+      for (let x = 0; x < q.size; x++) s += q.get(x, y) ? '1' : '0';
+      rows.push(s);
+    }
+    assert.deepEqual(rows, r.rows, text);
+  }
+  assert.equal(L.qrEncode('z'.repeat(214)), null, 'beyond version 10');
+  assert.equal(L.qrEncode('bitcoin:bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq').size, 33);
+});

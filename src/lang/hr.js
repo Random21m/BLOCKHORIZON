@@ -640,4 +640,8 @@ export default {
   blkHealthNote:
     'mempool.space iz vlastitog mempoola izračunava koje je transakcije očekivao u ovom bloku. Manje od 100 % znači da je rudar neke od njih izostavio.',
   blkHealthNone: 'Nije dostupno za ovaj blok: blokove uspoređuje samo mempool.space, i to samo nedavne.',
+  addrQr: 'QR kod',
+  addrQrAria: 'QR kod adrese {a}',
+  addrQrNote:
+    'Skenirajte ga novčanikom za plaćanje na ovu adresu. Izrađen na ovom uređaju; provjerite adresu koju prikazuje novčanik.',
 };

@@ -628,4 +628,8 @@ export default {
   blkHealthNote:
     'mempool.space는 자체 멤풀을 바탕으로 이 블록에 들어갈 거라 예상한 거래를 계산해요. 100% 미만이면 채굴자가 그중 일부를 넣지 않았다는 뜻이에요.',
   blkHealthNone: '이 블록에는 제공되지 않아요. 블록을 비교하는 곳은 mempool.space뿐이고, 그것도 최근 블록만 비교해요.',
+  addrQr: 'QR 코드',
+  addrQrAria: '주소 {a}의 QR 코드',
+  addrQrNote:
+    '지갑으로 스캔하면 이 주소로 보낼 수 있어요. 이 기기에서 만든 코드예요. 지갑에 표시되는 주소를 확인하세요.',
 };

@@ -3023,6 +3023,18 @@ await ok(
     ])
       assert.ok(t.includes(w), w + ' in: ' + t);
     assert.equal(await p.locator('#addr-txs tr').count(), 4);
+    // its QR code (a bitcoin: link), drawn on the device: black on white, square, a whole number of pixels per module
+    const qr = await p.locator('#addr-qr svg').evaluate((e) => ({
+      label: e.getAttribute('aria-label'),
+      box: e.getAttribute('viewBox'),
+      w: e.getBoundingClientRect().width,
+      bg: e.querySelector('rect').getAttribute('fill'),
+      fg: e.querySelector('path').getAttribute('fill'),
+    }));
+    assert.equal(qr.label, 'QR code of the address ' + A);
+    assert.equal(qr.box, '0 0 41 41', 'version 4 (33 modules) and a 4-module quiet zone');
+    assert.equal(qr.w % 41, 0);
+    assert.deepEqual([qr.bg, qr.fg], ['#fff', '#000']);
     assert.equal(await p.locator('#addr-txs a').first().getAttribute('href'), '#/tx/' + 'd'.repeat(64));
     // the data server is down: the address is not sent to the backup server
     down = true;

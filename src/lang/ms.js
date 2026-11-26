@@ -646,4 +646,8 @@ export default {
   blkHealthNote:
     'mempool.space mengira daripada mempoolnya sendiri transaksi mana yang dijangka ada dalam blok ini. Kurang daripada 100% bermakna pelombong meninggalkan sebahagian daripadanya.',
   blkHealthNone: 'Tidak tersedia untuk blok ini: hanya mempool.space yang membandingkan blok, dan hanya blok terkini.',
+  addrQr: 'Kod QR',
+  addrQrAria: 'Kod QR bagi alamat {a}',
+  addrQrNote:
+    'Imbas dengan dompet untuk membayar ke alamat ini. Dijana pada peranti ini; semak alamat yang ditunjukkan oleh dompet anda.',
 };

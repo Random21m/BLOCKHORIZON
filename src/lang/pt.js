@@ -646,4 +646,8 @@ export default {
   blkHealthNote:
     'O mempool.space calcula, a partir da sua própria mempool, que transações esperava que este bloco contivesse. Menos de 100% significa que o minerador deixou algumas de fora.',
   blkHealthNone: 'Não disponível para este bloco: só o mempool.space compara blocos, e apenas os recentes.',
+  addrQr: 'Código QR',
+  addrQrAria: 'Código QR do endereço {a}',
+  addrQrNote:
+    'Leia-o com uma carteira para pagar para este endereço. Gerado neste dispositivo; confira o endereço que a sua carteira mostra.',
 };

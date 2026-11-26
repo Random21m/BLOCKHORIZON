@@ -1636,3 +1636,236 @@ export function blockHealth(block, audit) {
     fresh: n('freshTxs'),
   };
 }
+
+// ---- QR codes (the address page): byte mode, error correction level M, versions 1 to 10 ----
+// Written for this app (no library), following ISO/IEC 18004. Checked in the tests against the qrcode package
+// module for module, and read back with the jsQR decoder. -> { size, get(x, y) } or null when the text is too long.
+const QR_EC = [10, 16, 26, 18, 24, 16, 18, 22, 22, 26], // level M: error-correction codewords per block, versions 1..10
+  QR_BLOCKS = [1, 1, 1, 2, 2, 4, 4, 4, 5, 5];
+const qrRawModules = (v) => {
+  let r = (16 * v + 128) * v + 64;
+  if (v >= 2) {
+    const n = Math.floor(v / 7) + 2;
+    r -= (25 * n - 10) * n - 55;
+    if (v >= 7) r -= 36;
+  }
+  return r;
+};
+const qrDataCodewords = (v) => Math.floor(qrRawModules(v) / 8) - QR_EC[v - 1] * QR_BLOCKS[v - 1];
+const qrAlign = (v) => {
+  if (v === 1) return [];
+  const n = Math.floor(v / 7) + 2,
+    step = Math.floor((v * 8 + n * 3 + 5) / (n * 4 - 4)) * 2,
+    out = [6];
+  for (let p = v * 4 + 10; out.length < n; p -= step) out.splice(1, 0, p);
+  return out;
+};
+// Reed-Solomon over GF(256) with the QR polynomial 0x11d
+const gfMul = (x, y) => {
+  let z = 0;
+  for (let i = 7; i >= 0; i--) {
+    z = (z << 1) ^ ((z >>> 7) * 0x11d);
+    z ^= ((y >>> i) & 1) * x;
+  }
+  return z & 0xff;
+};
+function rsDivisor(deg) {
+  const r = new Array(deg).fill(0);
+  r[deg - 1] = 1;
+  let root = 1;
+  for (let i = 0; i < deg; i++) {
+    for (let j = 0; j < deg; j++) {
+      r[j] = gfMul(r[j], root);
+      if (j + 1 < deg) r[j] ^= r[j + 1];
+    }
+    root = gfMul(root, 2);
+  }
+  return r;
+}
+function rsRemainder(data, div) {
+  const r = div.map(() => 0);
+  for (const b of data) {
+    const f = b ^ r.shift();
+    r.push(0);
+    div.forEach((c, i) => (r[i] ^= gfMul(c, f)));
+  }
+  return r;
+}
+export function qrEncode(text, mask = -1) {
+  const bytes = new TextEncoder().encode(String(text));
+  let v = 1;
+  const need = (ver) => 4 + (ver < 10 ? 8 : 16) + bytes.length * 8;
+  while (v <= 10 && need(v) > qrDataCodewords(v) * 8) v++;
+  if (v > 10) return null;
+  // data bits: byte mode, length, the bytes, terminator, padding
+  const bits = [];
+  const put = (val, len) => {
+    for (let i = len - 1; i >= 0; i--) bits.push((val >>> i) & 1);
+  };
+  put(4, 4);
+  put(bytes.length, v < 10 ? 8 : 16);
+  for (const b of bytes) put(b, 8);
+  const cap = qrDataCodewords(v) * 8;
+  put(0, Math.min(4, cap - bits.length));
+  put(0, (8 - (bits.length % 8)) % 8);
+  for (let p = 0xec; bits.length < cap; p ^= 0xec ^ 0x11) put(p, 8);
+  const data = [];
+  for (let i = 0; i < bits.length; i += 8) data.push(parseInt(bits.slice(i, i + 8).join(''), 2));
+  // blocks, error correction, interleaving
+  const nb = QR_BLOCKS[v - 1],
+    ec = QR_EC[v - 1],
+    raw = Math.floor(qrRawModules(v) / 8),
+    shortLen = Math.floor(raw / nb),
+    nShort = nb - (raw % nb),
+    div = rsDivisor(ec),
+    blocks = [];
+  for (let i = 0, k = 0; i < nb; i++) {
+    const len = shortLen - ec + (i < nShort ? 0 : 1),
+      d = data.slice(k, k + len);
+    k += len;
+    const e = rsRemainder(d, div);
+    if (i < nShort) d.push(0);
+    blocks.push(d.concat(e));
+  }
+  const words = [];
+  for (let i = 0; i < blocks[0].length; i++)
+    blocks.forEach((b, j) => {
+      if (i !== shortLen - ec || j >= nShort) words.push(b[i]);
+    });
+  // the grid: function patterns first (marked), then the data in the zigzag
+  const size = v * 4 + 17,
+    mod = new Uint8Array(size * size),
+    fn = new Uint8Array(size * size);
+  const set = (x, y, dark, isFn = true) => {
+    mod[y * size + x] = dark ? 1 : 0;
+    if (isFn) fn[y * size + x] = 1;
+  };
+  for (let i = 0; i < size; i++) {
+    set(6, i, i % 2 === 0);
+    set(i, 6, i % 2 === 0);
+  }
+  const finder = (cx, cy) => {
+    for (let dy = -4; dy <= 4; dy++)
+      for (let dx = -4; dx <= 4; dx++) {
+        const d = Math.max(Math.abs(dx), Math.abs(dy)),
+          x = cx + dx,
+          y = cy + dy;
+        if (x >= 0 && x < size && y >= 0 && y < size) set(x, y, d !== 2 && d !== 4);
+      }
+  };
+  finder(3, 3);
+  finder(size - 4, 3);
+  finder(3, size - 4);
+  const al = qrAlign(v);
+  al.forEach((ax, i) =>
+    al.forEach((ay, j) => {
+      if ((i === 0 && j === 0) || (i === 0 && j === al.length - 1) || (i === al.length - 1 && j === 0)) return;
+      for (let dy = -2; dy <= 2; dy++)
+        for (let dx = -2; dx <= 2; dx++) set(ax + dx, ay + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1);
+    })
+  );
+  const drawFormat = (m) => {
+    const d = (0 << 3) | m; // level M is 00
+    let r = d;
+    for (let i = 0; i < 10; i++) r = (r << 1) ^ ((r >>> 9) * 0x537);
+    const b = ((d << 10) | r) ^ 0x5412,
+      bit = (i) => ((b >>> i) & 1) === 1;
+    for (let i = 0; i <= 5; i++) set(8, i, bit(i));
+    set(8, 7, bit(6));
+    set(8, 8, bit(7));
+    set(7, 8, bit(8));
+    for (let i = 9; i < 15; i++) set(14 - i, 8, bit(i));
+    for (let i = 0; i < 8; i++) set(size - 1 - i, 8, bit(i));
+    for (let i = 8; i < 15; i++) set(8, size - 15 + i, bit(i));
+    set(8, size - 8, true);
+  };
+  drawFormat(0); // reserve the format areas
+  if (v >= 7) {
+    let r = v;
+    for (let i = 0; i < 12; i++) r = (r << 1) ^ ((r >>> 11) * 0x1f25);
+    const b = (v << 12) | r;
+    for (let i = 0; i < 18; i++) {
+      const dark = ((b >>> i) & 1) === 1,
+        a = size - 11 + (i % 3),
+        c = Math.floor(i / 3);
+      set(a, c, dark);
+      set(c, a, dark);
+    }
+  }
+  let i = 0;
+  for (let right = size - 1; right >= 1; right -= 2) {
+    if (right === 6) right = 5;
+    for (let vert = 0; vert < size; vert++)
+      for (let j = 0; j < 2; j++) {
+        const x = right - j,
+          up = ((right + 1) & 2) === 0,
+          y = up ? size - 1 - vert : vert;
+        if (!fn[y * size + x] && i < words.length * 8) {
+          mod[y * size + x] = (words[i >>> 3] >>> (7 - (i & 7))) & 1;
+          i++;
+        }
+      }
+  }
+  const MASKS = [
+    (x, y) => (x + y) % 2 === 0,
+    (x, y) => y % 2 === 0,
+    (x) => x % 3 === 0,
+    (x, y) => (x + y) % 3 === 0,
+    (x, y) => (Math.floor(x / 3) + Math.floor(y / 2)) % 2 === 0,
+    (x, y) => ((x * y) % 2) + ((x * y) % 3) === 0,
+    (x, y) => (((x * y) % 2) + ((x * y) % 3)) % 2 === 0,
+    (x, y) => (((x + y) % 2) + ((x * y) % 3)) % 2 === 0,
+  ];
+  const applyMask = (m) => {
+    for (let y = 0; y < size; y++)
+      for (let x = 0; x < size; x++) if (!fn[y * size + x] && MASKS[m](x, y)) mod[y * size + x] ^= 1;
+  };
+  const penalty = () => {
+    let p = 0;
+    const g = (x, y) => mod[y * size + x];
+    for (const hor of [true, false]) {
+      for (let a = 0; a < size; a++) {
+        let run = 0,
+          prev = -1;
+        const line = [];
+        for (let b = 0; b < size; b++) {
+          const c = hor ? g(b, a) : g(a, b);
+          line.push(c);
+          if (c === prev) run++;
+          else {
+            if (run >= 5) p += run - 2;
+            run = 1;
+            prev = c;
+          }
+        }
+        if (run >= 5) p += run - 2;
+        // finder-like 1:1:3:1:1 with four light modules on one side, as the standard scores it
+        const s = line.join('');
+        for (const pat of ['10111010000', '00001011101'])
+          for (let k = s.indexOf(pat); k >= 0; k = s.indexOf(pat, k + 1)) p += 40;
+      }
+    }
+    for (let y = 0; y < size - 1; y++)
+      for (let x = 0; x < size - 1; x++) {
+        const c = g(x, y);
+        if (c === g(x + 1, y) && c === g(x, y + 1) && c === g(x + 1, y + 1)) p += 3;
+      }
+    const dark = mod.reduce((a, c) => a + c, 0);
+    p += Math.floor(Math.abs(dark * 20 - size * size * 10) / (size * size)) * 10;
+    return p;
+  };
+  let best = mask;
+  if (best < 0) {
+    let low = Infinity;
+    for (let m = 0; m < 8; m++) {
+      applyMask(m);
+      drawFormat(m);
+      const p = penalty();
+      if (p < low) [low, best] = [p, m];
+      applyMask(m);
+    }
+  }
+  applyMask(best);
+  drawFormat(best);
+  return { size, version: v, mask: best, get: (x, y) => mod[y * size + x] === 1 };
+}

@@ -650,4 +650,8 @@ export default {
   blkHealthNote:
     'mempool.space ermittelt aus seinem eigenen Mempool, welche Transaktionen es in diesem Block erwartet hat. Weniger als 100 % heißt, dass der Miner einige davon weggelassen hat.',
   blkHealthNone: 'Für diesen Block nicht verfügbar: Nur mempool.space vergleicht Blöcke, und nur neuere.',
+  addrQr: 'QR-Code',
+  addrQrAria: 'QR-Code der Adresse {a}',
+  addrQrNote:
+    'Mit einer Wallet scannen, um an diese Adresse zu zahlen. Auf diesem Gerät erzeugt; prüfe die Adresse, die deine Wallet anzeigt.',
 };
