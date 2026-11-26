@@ -578,4 +578,15 @@ export default {
     'Setiap 2,016 blok kesukaran berubah supaya blok terus datang kira-kira setiap 10 minit, apabila kadar hash naik atau turun.',
   changeL: 'Perubahan',
   showEarlier: 'Tunjuk {n} sebelumnya',
+  chPuell: 'Puell Multiple',
+  puellNote: 'Nilai bitcoin yang dilombong setiap hari, berbanding puratanya sepanjang setahun lalu.',
+  chHashRibbons: 'Reben hash',
+  ribbonUp: 'Purata 30 hari berada di atas purata 60 hari sejak {d}: pelombong sedang menambah mesin.',
+  ribbonDown: 'Purata 30 hari berada di bawah purata 60 hari sejak {d}: sesetengah pelombong sedang mematikan mesin.',
+  maDays: 'Purata {n} hari',
+  chDiffRibbon: 'Reben kesukaran',
+  ribbonAvgs: 'Purata 9 hingga 200 hari',
+  diffRibbonNote:
+    'Apabila purata-purata berhimpit, kesukaran telah berhenti meningkat dan pelombong berada di bawah tekanan. Kini jaraknya {p}%.',
+  last2y: '2 tahun lalu',
 };

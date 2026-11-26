@@ -581,4 +581,15 @@ export default {
     'Alle 2.016 Blöcke ändert sich die Schwierigkeit, damit weiterhin etwa alle 10 Minuten ein Block kommt, wenn die Hashrate steigt oder fällt.',
   changeL: 'Änderung',
   showEarlier: '{n} frühere zeigen',
+  chPuell: 'Puell-Multiple',
+  puellNote: 'Der Wert der täglich geschürften Bitcoins im Vergleich zu seinem Mittel des letzten Jahres.',
+  chHashRibbons: 'Hash Ribbons',
+  ribbonUp: 'Das 30-Tage-Mittel liegt seit {d} über dem 60-Tage-Mittel: Miner schalten Maschinen zu.',
+  ribbonDown: 'Das 30-Tage-Mittel liegt seit {d} unter dem 60-Tage-Mittel: einige Miner schalten ab.',
+  maDays: '{n}-Tage-Mittel',
+  chDiffRibbon: 'Difficulty Ribbon',
+  ribbonAvgs: 'Mittel über 9 bis 200 Tage',
+  diffRibbonNote:
+    'Rücken die Mittel zusammen, steigt die Schwierigkeit nicht mehr und Miner stehen unter Druck. Jetzt liegen sie {p} % auseinander.',
+  last2y: 'Letzte 2 Jahre',
 };

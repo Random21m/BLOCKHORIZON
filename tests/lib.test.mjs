@@ -1086,3 +1086,56 @@ test('mining pools ranked by blocks found, and past difficulty adjustments with 
   assert.equal(s.maxUp, Math.max(a[0].change, a[1].change, a[2].change));
   assert.equal(L.adjustSummary(a, Date.now() + 1e12), null);
 });
+
+test('more long-term charts: Puell Multiple, hash ribbons and the difficulty ribbon', () => {
+  const fxj = (n) => JSON.parse(fs.readFileSync(new URL('./fixtures/' + n, import.meta.url), 'utf8'));
+  const r = fxj('hashrate-all-difficulty.json'),
+    price = L.SERIES.price(fxj('price-history-weekly.json'), 'USD');
+  // issuance: blocks a day at the period's pace × subsidy × price
+  const iv = L.issuanceValue(r, price);
+  assert.ok(iv.length > 5000);
+  const day = (s) => iv[L.nearest(iv, Date.parse(s))];
+  // mid-2023: 6.25 BTC a block, about 144 blocks a day
+  const mid23 = day('2023-06-15'),
+    p23 = L.daily(price)[L.nearest(L.daily(price), Date.parse('2023-06-15'))].v;
+  assert.ok(Math.abs(mid23.v / p23 / 6.25 - 144) < 15, 'blocks a day: ' + mid23.v / p23 / 6.25);
+  // after the 2024 halving the same pace issues half as much
+  const late24 = day('2024-09-15'),
+    p24 = L.daily(price)[L.nearest(L.daily(price), Date.parse('2024-09-15'))].v;
+  assert.ok(Math.abs(late24.v / p24 / 3.125 - 144) < 15);
+  assert.deepEqual(L.issuanceValue({ difficulty: [] }, price), []);
+  // Puell: known tops and bottoms
+  const pu = L.puell(r, price),
+    at = (s) => pu[L.nearest(pu, Date.parse(s))].v;
+  assert.ok(at('2017-12-17') > 4, 'late 2017 top: ' + at('2017-12-17'));
+  assert.ok(at('2018-12-15') < 0.5, 'late 2018 bottom: ' + at('2018-12-15'));
+  assert.equal(pu[0].t - iv[0].t, 364 * 864e5, 'starts after a full year');
+  // hash ribbons: 30- and 60-day averages, which side the short one is on, and since when
+  const hr = L.hashRibbons(r);
+  assert.equal(hr.short.length - hr.long.length, 30);
+  const lastS = hr.short[hr.short.length - 1].v,
+    lastL = hr.long[hr.long.length - 1].v;
+  assert.equal(hr.down, lastS < lastL);
+  assert.ok(hr.since <= hr.long[hr.long.length - 1].t && hr.since >= hr.long[0].t);
+  const flat = {
+    hashrates: Array.from({ length: 100 }, (_, i) => ({ timestamp: 1e9 + i * 86400, avgHashrate: i < 80 ? 100 : 50 })),
+  };
+  const fr = L.hashRibbons(flat);
+  assert.equal(fr.down, true, 'a drop pulls the 30-day average under the 60-day one');
+  assert.equal(fr.since, Math.floor((1e9 + 80 * 86400) / 86400) * 864e5, 'from the day the drop began');
+  assert.equal(L.hashRibbons({ hashrates: [] }).down, false);
+  // difficulty ribbon: 8 averages, their spread on the last day
+  const dr = L.diffRibbon(r);
+  assert.deepEqual(
+    dr.lines.map((l) => l.days),
+    [9, 14, 25, 40, 60, 90, 128, 200]
+  );
+  assert.equal(dr.lines[0].pts.length - dr.lines[7].pts.length, 191);
+  const last = dr.lines.map((l) => l.pts[l.pts.length - 1].v);
+  assert.ok(Math.abs(dr.spread - (Math.max(...last) / Math.min(...last) - 1) * 100) < 1e-9);
+  assert.ok(Number.isNaN(L.diffRibbon({}).spread));
+  // the last two years of a series
+  const two = L.lastDays(dr.diff, 730);
+  assert.equal(two.length, 731);
+  assert.deepEqual(L.lastDays([], 5), []);
+});

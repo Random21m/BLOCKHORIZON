@@ -577,4 +577,15 @@ export default {
     'A nehézség 2016 blokkonként változik, hogy a blokkok továbbra is nagyjából 10 percenként jöjjenek, ahogy a hashrate nő vagy csökken.',
   changeL: 'Változás',
   showEarlier: '{n} korábbi mutatása',
+  chPuell: 'Puell-szorzó',
+  puellNote: 'A naponta kibányászott bitcoinok értéke az elmúlt év átlagához képest.',
+  chHashRibbons: 'Hash ribbons',
+  ribbonUp: 'A 30 napos átlag {d} óta a 60 napos fölött van: a bányászok új gépeket kapcsolnak be.',
+  ribbonDown: 'A 30 napos átlag {d} óta a 60 napos alatt van: néhány bányász lekapcsol.',
+  maDays: '{n} napos átlag',
+  chDiffRibbon: 'Difficulty ribbon',
+  ribbonAvgs: 'Átlagok 9 és 200 nap között',
+  diffRibbonNote:
+    'Ha az átlagok összetömörülnek, a nehézség már nem nő, és a bányászok nyomás alatt vannak. Most {p}% a különbség köztük.',
+  last2y: 'Utolsó 2 év',
 };

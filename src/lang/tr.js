@@ -572,4 +572,15 @@ export default {
     'Hashrate artsa da düşse de bloklar yaklaşık 10 dakikada bir gelsin diye zorluk her 2.016 blokta bir değişir.',
   changeL: 'Değişim',
   showEarlier: '{n} önceki ayarı göster',
+  chPuell: 'Puell Çarpanı',
+  puellNote: 'Her gün madenciliği yapılan bitcoinlerin değeri, son bir yıllık ortalamasına göre.',
+  chHashRibbons: 'Hash şeritleri',
+  ribbonUp: '30 günlük ortalama {d} tarihinden beri 60 günlüğün üzerinde: madenciler makine ekliyor.',
+  ribbonDown: '30 günlük ortalama {d} tarihinden beri 60 günlüğün altında: bazı madenciler makinelerini kapatıyor.',
+  maDays: '{n} günlük ortalama',
+  chDiffRibbon: 'Zorluk şeridi',
+  ribbonAvgs: '9 ile 200 gün arası ortalamalar',
+  diffRibbonNote:
+    'Ortalamalar birbirine yaklaştığında zorluk artmayı bırakmıştır ve madenciler baskı altındadır. Şu an aralarında %{p} fark var.',
+  last2y: 'Son 2 yıl',
 };

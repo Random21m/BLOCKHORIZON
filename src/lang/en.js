@@ -567,4 +567,15 @@ export default {
     'Every 2,016 blocks the difficulty changes so that blocks keep coming about every 10 minutes, as the hashrate rises or falls.',
   changeL: 'Change',
   showEarlier: 'Show {n} earlier',
+  chPuell: 'Puell Multiple',
+  puellNote: 'The value of the bitcoins mined each day, against its average over the past year.',
+  chHashRibbons: 'Hash ribbons',
+  ribbonUp: 'The 30-day average has been above the 60-day one since {d}: miners are adding machines.',
+  ribbonDown: 'The 30-day average has been below the 60-day one since {d}: some miners are switching off.',
+  maDays: '{n}-day average',
+  chDiffRibbon: 'Difficulty ribbon',
+  ribbonAvgs: 'Averages over 9 to 200 days',
+  diffRibbonNote:
+    'When the averages bunch together, difficulty has stopped rising and miners are under pressure. Now they are {p}% apart.',
+  last2y: 'Last 2 years',
 };

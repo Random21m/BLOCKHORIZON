@@ -573,4 +573,16 @@ export default {
     'Hver 2.016. blok ændres sværhedsgraden, så der fortsat kommer en blok cirka hvert 10. minut, når hashraten stiger eller falder.',
   changeL: 'Ændring',
   showEarlier: 'Vis {n} tidligere',
+  chPuell: 'Puell Multiple',
+  puellNote: 'Værdien af de bitcoin, der mines hver dag, set mod dens gennemsnit det seneste år.',
+  chHashRibbons: 'Hash ribbons',
+  ribbonUp:
+    '30-dages gennemsnittet har ligget over 60-dages gennemsnittet siden {d}: minere sætter flere maskiner til.',
+  ribbonDown: '30-dages gennemsnittet har ligget under 60-dages gennemsnittet siden {d}: nogle minere slukker.',
+  maDays: '{n}-dages gennemsnit',
+  chDiffRibbon: 'Difficulty ribbon',
+  ribbonAvgs: 'Gennemsnit over 9 til 200 dage',
+  diffRibbonNote:
+    'Når gennemsnittene samler sig, er sværhedsgraden holdt op med at stige, og minerne er pressede. Nu er de {p} % fra hinanden.',
+  last2y: 'Seneste 2 år',
 };

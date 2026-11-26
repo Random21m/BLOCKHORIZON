@@ -582,4 +582,17 @@ export default {
     "Tous les 2 016 blocs, la difficulté change pour que les blocs continuent d'arriver environ toutes les 10 minutes, quand le hashrate monte ou baisse.",
   changeL: 'Variation',
   showEarlier: 'Afficher {n} plus anciens',
+  chPuell: 'Multiple de Puell',
+  puellNote: 'La valeur des bitcoins minés chaque jour, comparée à sa moyenne sur l’année écoulée.',
+  chHashRibbons: 'Hash ribbons',
+  ribbonUp:
+    'La moyenne sur 30 jours est au-dessus de celle sur 60 jours depuis le {d} : les mineurs ajoutent des machines.',
+  ribbonDown:
+    'La moyenne sur 30 jours est en dessous de celle sur 60 jours depuis le {d} : certains mineurs s’éteignent.',
+  maDays: 'Moyenne sur {n} jours',
+  chDiffRibbon: 'Ruban de difficulté',
+  ribbonAvgs: 'Moyennes sur 9 à 200 jours',
+  diffRibbonNote:
+    'Quand les moyennes se resserrent, la difficulté a cessé de monter et les mineurs sont sous pression. Elles sont aujourd’hui à {p} % d’écart.',
+  last2y: '2 dernières années',
 };

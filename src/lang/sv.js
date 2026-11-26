@@ -572,4 +572,15 @@ export default {
     'Var 2 016:e block ändras svårighetsgraden så att det fortsätter komma ett block ungefär var 10:e minut, när hashraten stiger eller sjunker.',
   changeL: 'Ändring',
   showEarlier: 'Visa {n} tidigare',
+  chPuell: 'Puell Multiple',
+  puellNote: 'Värdet av de bitcoin som utvinns varje dag, jämfört med sitt snitt det senaste året.',
+  chHashRibbons: 'Hash ribbons',
+  ribbonUp: '30-dagarssnittet har legat över 60-dagarssnittet sedan {d}: miners kopplar in fler maskiner.',
+  ribbonDown: '30-dagarssnittet har legat under 60-dagarssnittet sedan {d}: vissa miners stänger av.',
+  maDays: '{n}-dagarssnitt',
+  chDiffRibbon: 'Difficulty ribbon',
+  ribbonAvgs: 'Snitt över 9 till 200 dagar',
+  diffRibbonNote:
+    'När snitten klumpar ihop sig har svårighetsgraden slutat stiga och miners är pressade. Nu skiljer de {p} %.',
+  last2y: 'Senaste 2 åren',
 };

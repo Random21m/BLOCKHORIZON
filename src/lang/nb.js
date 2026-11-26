@@ -575,4 +575,15 @@ export default {
     'Hver 2016. blokk endres vanskelighetsgraden, slik at det fortsatt kommer en blokk omtrent hvert 10. minutt, når hashraten stiger eller faller.',
   changeL: 'Endring',
   showEarlier: 'Vis {n} tidligere',
+  chPuell: 'Puell-multippel',
+  puellNote: 'Verdien av bitcoinene som utvinnes hver dag, mot snittet for det siste året.',
+  chHashRibbons: 'Hash ribbons',
+  ribbonUp: '30-dagers snittet har ligget over 60-dagers snittet siden {d}: utvinnerne kobler til flere maskiner.',
+  ribbonDown: '30-dagers snittet har ligget under 60-dagers snittet siden {d}: noen utvinnere slår av.',
+  maDays: '{n}-dagers snitt',
+  chDiffRibbon: 'Difficulty ribbon',
+  ribbonAvgs: 'Snitt over 9 til 200 dager',
+  diffRibbonNote:
+    'Når snittene samler seg, har vanskelighetsgraden sluttet å stige og utvinnerne er presset. Nå er de {p} % fra hverandre.',
+  last2y: 'Siste 2 år',
 };

@@ -574,4 +574,16 @@ export default {
     'Vaikeus muuttuu 2 016 lohkon välein, jotta lohkoja tulee edelleen noin 10 minuutin välein, kun laskentateho nousee tai laskee.',
   changeL: 'Muutos',
   showEarlier: 'Näytä {n} aiempaa',
+  chPuell: 'Puell Multiple',
+  puellNote: 'Päivittäin louhittujen bitcoinien arvo verrattuna sen viime vuoden keskiarvoon.',
+  chHashRibbons: 'Hash ribbons',
+  ribbonUp: '30 päivän keskiarvo on ollut 60 päivän keskiarvon yläpuolella {d} lähtien: louhijat lisäävät koneita.',
+  ribbonDown:
+    '30 päivän keskiarvo on ollut 60 päivän keskiarvon alapuolella {d} lähtien: osa louhijoista sammuttaa koneitaan.',
+  maDays: '{n} päivän keskiarvo',
+  chDiffRibbon: 'Difficulty ribbon',
+  ribbonAvgs: 'Keskiarvot 9–200 päivältä',
+  diffRibbonNote:
+    'Kun keskiarvot painuvat yhteen, vaikeus on lakannut nousemasta ja louhijat ovat paineessa. Nyt niiden ero on {p} %.',
+  last2y: 'Viimeiset 2 vuotta',
 };
