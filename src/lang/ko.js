@@ -562,4 +562,15 @@ export default {
   adjNote: '2,016블록마다 난이도가 바뀌어, 해시레이트가 오르거나 내려도 블록이 약 10분마다 나오도록 해요.',
   changeL: '변화',
   showEarlier: '이전 {n}개 보기',
+  chPuell: 'Puell 멀티플',
+  puellNote: '매일 채굴되는 비트코인의 가치를 지난 1년 평균과 비교한 값이에요.',
+  chHashRibbons: '해시 리본',
+  ribbonUp: '{d}부터 30일 평균이 60일 평균보다 높아요. 채굴자들이 장비를 늘리고 있어요.',
+  ribbonDown: '{d}부터 30일 평균이 60일 평균보다 낮아요. 일부 채굴자가 장비를 끄고 있어요.',
+  maDays: '{n}일 평균',
+  chDiffRibbon: '난이도 리본',
+  ribbonAvgs: '9~200일 평균',
+  diffRibbonNote:
+    '평균들이 한데 모이면 난이도 상승이 멈추고 채굴자들이 압박을 받고 있다는 뜻이에요. 지금은 {p}% 벌어져 있어요.',
+  last2y: '최근 2년',
 };

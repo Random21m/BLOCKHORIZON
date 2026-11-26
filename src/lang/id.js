@@ -576,4 +576,15 @@ export default {
     'Setiap 2.016 blok, kesulitan berubah agar blok tetap muncul sekitar tiap 10 menit, saat hashrate naik atau turun.',
   changeL: 'Perubahan',
   showEarlier: 'Tampilkan {n} sebelumnya',
+  chPuell: 'Puell Multiple',
+  puellNote: 'Nilai bitcoin yang ditambang setiap hari, dibandingkan rata-ratanya selama setahun terakhir.',
+  chHashRibbons: 'Hash Ribbons',
+  ribbonUp: 'Rata-rata 30 hari berada di atas rata-rata 60 hari sejak {d}: penambang menambah mesin.',
+  ribbonDown: 'Rata-rata 30 hari berada di bawah rata-rata 60 hari sejak {d}: sebagian penambang mematikan mesin.',
+  maDays: 'Rata-rata {n} hari',
+  chDiffRibbon: 'Pita kesulitan',
+  ribbonAvgs: 'Rata-rata 9 hingga 200 hari',
+  diffRibbonNote:
+    'Saat rata-rata saling merapat, kesulitan berhenti naik dan penambang sedang tertekan. Saat ini selisihnya {p}%.',
+  last2y: '2 tahun terakhir',
 };

@@ -568,4 +568,15 @@ export default {
   adjNote: 'Cứ mỗi 2.016 khối, độ khó thay đổi để khối vẫn ra khoảng 10 phút một lần khi hashrate tăng hay giảm.',
   changeL: 'Thay đổi',
   showEarlier: 'Hiện {n} lần trước',
+  chPuell: 'Puell Multiple',
+  puellNote: 'Giá trị số bitcoin được đào mỗi ngày, so với mức trung bình của nó trong một năm qua.',
+  chHashRibbons: 'Hash Ribbons',
+  ribbonUp: 'Trung bình 30 ngày nằm trên trung bình 60 ngày từ {d}: thợ đào đang thêm máy.',
+  ribbonDown: 'Trung bình 30 ngày nằm dưới trung bình 60 ngày từ {d}: một số thợ đào đang tắt máy.',
+  maDays: 'Trung bình {n} ngày',
+  chDiffRibbon: 'Dải độ khó',
+  ribbonAvgs: 'Các mức trung bình từ 9 đến 200 ngày',
+  diffRibbonNote:
+    'Khi các đường trung bình dồn sát nhau, độ khó đã ngừng tăng và thợ đào đang chịu áp lực. Hiện chúng cách nhau {p}%.',
+  last2y: '2 năm qua',
 };

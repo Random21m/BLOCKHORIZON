@@ -577,4 +577,15 @@ export default {
     'La fiecare 2.016 blocuri dificultatea se schimbă, ca blocurile să vină în continuare cam la fiecare 10 minute, pe măsură ce hashrate-ul crește sau scade.',
   changeL: 'Schimbare',
   showEarlier: 'Arată mai vechi ({n})',
+  chPuell: 'Multiplul Puell',
+  puellNote: 'Valoarea bitcoinilor minați în fiecare zi, față de media ei din ultimul an.',
+  chHashRibbons: 'Hash ribbons',
+  ribbonUp: 'Media pe 30 de zile este peste cea pe 60 de zile din {d}: minerii adaugă mașini.',
+  ribbonDown: 'Media pe 30 de zile este sub cea pe 60 de zile din {d}: unii mineri opresc mașinile.',
+  maDays: 'Media pe {n} zile',
+  chDiffRibbon: 'Difficulty ribbon',
+  ribbonAvgs: 'Medii pe 9 până la 200 de zile',
+  diffRibbonNote:
+    'Când mediile se strâng laolaltă, dificultatea a încetat să crească și minerii sunt sub presiune. Acum sunt la {p}% distanță.',
+  last2y: 'Ultimii 2 ani',
 };

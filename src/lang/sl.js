@@ -574,4 +574,15 @@ export default {
     'Vsakih 2016 blokov se težavnost spremeni, da bloki še naprej prihajajo približno vsakih 10 minut, ko hashrate raste ali pada.',
   changeL: 'Sprememba',
   showEarlier: 'Prikaži starejše ({n})',
+  chPuell: 'Puellov mnogokratnik',
+  puellNote: 'Vrednost bitcoinov, izrudarjenih vsak dan, v primerjavi z njenim povprečjem v zadnjem letu.',
+  chHashRibbons: 'Hash ribbons',
+  ribbonUp: '30-dnevno povprečje je od {d} nad 60-dnevnim: rudarji dodajajo stroje.',
+  ribbonDown: '30-dnevno povprečje je od {d} pod 60-dnevnim: nekateri rudarji ugašajo stroje.',
+  maDays: '{n}-dnevno povprečje',
+  chDiffRibbon: 'Difficulty ribbon',
+  ribbonAvgs: 'Povprečja od 9 do 200 dni',
+  diffRibbonNote:
+    'Ko se povprečja zbližajo, težavnost ne raste več in rudarji so pod pritiskom. Zdaj so {p} % narazen.',
+  last2y: 'Zadnji 2 leti',
 };

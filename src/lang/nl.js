@@ -576,4 +576,15 @@ export default {
     'Elke 2.016 blokken verandert de moeilijkheid, zodat er ongeveer elke 10 minuten een blok blijft komen terwijl de hashrate stijgt of daalt.',
   changeL: 'Verandering',
   showEarlier: '{n} eerdere tonen',
+  chPuell: 'Puell Multiple',
+  puellNote: 'De waarde van de bitcoins die elke dag gemined worden, tegenover het gemiddelde van het afgelopen jaar.',
+  chHashRibbons: 'Hash ribbons',
+  ribbonUp: 'Het 30-daags gemiddelde ligt sinds {d} boven het 60-daagse: miners zetten er machines bij.',
+  ribbonDown: 'Het 30-daags gemiddelde ligt sinds {d} onder het 60-daagse: sommige miners schakelen uit.',
+  maDays: '{n}-daags gemiddelde',
+  chDiffRibbon: 'Difficulty ribbon',
+  ribbonAvgs: 'Gemiddelden over 9 tot 200 dagen',
+  diffRibbonNote:
+    'Als de gemiddelden samenkomen, stijgt de moeilijkheid niet meer en staan miners onder druk. Nu liggen ze {p}% uit elkaar.',
+  last2y: 'Laatste 2 jaar',
 };

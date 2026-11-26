@@ -578,4 +578,15 @@ export default {
     "Ogni 2.016 blocchi la difficoltà cambia, così i blocchi continuano ad arrivare circa ogni 10 minuti mentre l'hashrate sale o scende.",
   changeL: 'Variazione',
   showEarlier: 'Mostra {n} precedenti',
+  chPuell: 'Multiplo di Puell',
+  puellNote: 'Il valore dei bitcoin minati ogni giorno, rispetto alla sua media dell’ultimo anno.',
+  chHashRibbons: 'Hash ribbons',
+  ribbonUp: 'La media a 30 giorni è sopra quella a 60 giorni dal {d}: i miner stanno aggiungendo macchine.',
+  ribbonDown: 'La media a 30 giorni è sotto quella a 60 giorni dal {d}: alcuni miner stanno spegnendo.',
+  maDays: 'Media a {n} giorni',
+  chDiffRibbon: 'Difficulty ribbon',
+  ribbonAvgs: 'Medie da 9 a 200 giorni',
+  diffRibbonNote:
+    'Quando le medie si stringono, la difficoltà ha smesso di salire e i miner sono sotto pressione. Ora distano il {p}%.',
+  last2y: 'Ultimi 2 anni',
 };
