@@ -372,7 +372,8 @@ export default {
   legacy: 'Legacy (1…)',
   paySize: 'Kira-kira {n} vB',
   feesMissing: 'Yuran belum dimuatkan',
-  payNote: 'Saiz biasa untuk dompet tandatangan tunggal standard. Dompet anda menunjukkan yuran tepat sebelum anda menghantar.',
+  payNote:
+    'Saiz biasa untuk dompet tandatangan tunggal standard. Dompet anda menunjukkan yuran tepat sebelum anda menghantar.',
   replayIntro: 'Lalui setiap halving: ganjaran setiap blok berkurang separuh setiap 210,000 blok.',
   halvingStep: 'Langkah halving',
   genesisEpoch: 'Epoch genesis',
@@ -495,8 +496,7 @@ export default {
   supplyNote: '{p}% daripada 21 juta yang akan pernah wujud',
   byTxAddr: 'Mengikut ID transaksi atau alamat',
   txOrAddr: 'ID transaksi atau alamat',
-  notTxOrAddr:
-    'Itu bukan ID transaksi (64 aksara, 0–9, a–f) mahupun alamat Bitcoin. Semak jika ada salah taip.',
+  notTxOrAddr: 'Itu bukan ID transaksi (64 aksara, 0–9, a–f) mahupun alamat Bitcoin. Semak jika ada salah taip.',
   addrSentTo: 'Alamat yang anda cari dihantar ke {s}, yang boleh mengaitkannya dengan alamat IP anda.',
   addrPage: 'Alamat',
   addrBalance: 'Baki',

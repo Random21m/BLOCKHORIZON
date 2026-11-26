@@ -1098,6 +1098,214 @@ export const GLOSSARY_TR = {
     ],
     ['Coinbase', 'اولین تراکنش هر بلاک، که ماینر در آن یارانه بلاک و کارمزدها را دریافت می‌کند.'],
   ],
+  da: [
+    [
+      'Timechain',
+      'Den ordnede kæde af Bitcoin-blokke. Hver blok peger på den forrige, så rækkefølgen ikke kan skrives om i det stille.',
+    ],
+    ['Blok', 'En samling transaktioner, som minerne bliver enige om og føjer til kæden, cirka hvert tiende minut.'],
+    [
+      'Blokhøjde',
+      'Hvor mange blokke der ligger før denne. Den første blok (genesis) har højde 0, så højden fungerer som et ur, der kun tæller op.',
+    ],
+    ['Epoke', 'En periode på 210.000 blokke (cirka fire år), hvor blokbelønningen er den samme.'],
+    ['Halvering', 'Begivenheden ved slutningen af en epoke, hvor belønningen i nye mønter pr. blok halveres.'],
+    ['Subsidie', 'De nyskabte bitcoin, en miner må tage i hver blok, gebyrer ikke medregnet.'],
+    ['Udbud', 'Alle bitcoin, der er skabt indtil nu. Det kan aldrig komme over 21 millioner.'],
+    [
+      'Sværhedsgrad',
+      'Hvor svær den gåde er, som minerne løser. Den justeres hver 2.016. blok, så blokkene holder sig omkring ti minutter.',
+    ],
+    [
+      'Sværhedsjustering',
+      'Selve justeringen: kom de sidste 2.016 blokke hurtigere end ti minutter hver, stiger sværhedsgraden; kom de langsommere, falder den.',
+    ],
+    [
+      'Hashrate',
+      'Hvor mange gæt i sekundet minerne laver tilsammen. En højere hashrate betyder, at mere energi beskytter kæden.',
+    ],
+    ['Proof of work', 'Bevis for, at der er brugt ægte regnekraft på at skabe en blok, hvilket gør snyd dyrt.'],
+    ['Mempool', 'Venteværelset for gyldige transaktioner, der endnu ikke er kommet i en blok.'],
+    ['Mempool-dybde', 'Et groft tal for, hvor mange fulde blokke der skal til for at rydde de ventende transaktioner.'],
+    [
+      'Gebyrsats',
+      'Hvad en transaktion betaler pr. størrelsesenhed (sat/vB). Minerne vælger som regel de højeste satser først.',
+    ],
+    [
+      'vByte (vB)',
+      'En enhed for transaktionsstørrelse, der tager højde for SegWit-rabatten. En blok rummer cirka en million vB.',
+    ],
+    ['Sat', 'En hundrede milliontedel af en bitcoin, den mindste enhed.'],
+    ['Moskva-tid', 'En legende urvisning: hvor mange sats én enhed af en valuta køber, vist som et klokkeslæt.'],
+    ['Node', 'En computer, der selv tjekker alle regler og sender blokke og transaktioner videre.'],
+    [
+      'Lightning-netværket',
+      'Et lag oven på Bitcoin til hurtige, små betalinger gennem kanaler, der er finansieret on-chain.',
+    ],
+    ['Coinbase', 'Den første transaktion i en blok, hvor mineren indkasserer subsidien og gebyrerne.'],
+  ],
+  ms: [
+    [
+      'Timechain',
+      'Rantaian blok Bitcoin yang tersusun. Setiap blok merujuk kepada blok sebelumnya, jadi susunan peristiwa tidak boleh ditulis semula secara diam-diam.',
+    ],
+    [
+      'Blok',
+      'Sekumpulan transaksi yang dipersetujui pelombong dan ditambah ke rantaian, kira-kira setiap sepuluh minit.',
+    ],
+    [
+      'Ketinggian blok',
+      'Berapa banyak blok yang berada sebelum blok ini. Blok pertama (genesis) mempunyai ketinggian 0, jadi ketinggian berfungsi sebagai jam yang hanya mengira ke atas.',
+    ],
+    ['Epoch', 'Tempoh 210,000 blok (kira-kira empat tahun) di mana ganjaran blok kekal sama.'],
+    ['Halving', 'Peristiwa di penghujung epoch apabila ganjaran syiling baharu setiap blok dipotong separuh.'],
+    ['Subsidi', 'Bitcoin baharu yang boleh dituntut pelombong dalam setiap blok, tidak termasuk yuran.'],
+    ['Bekalan', 'Semua bitcoin yang telah dicipta setakat ini. Ia tidak boleh melebihi 21 juta.'],
+    [
+      'Kesukaran',
+      'Betapa sukarnya teka-teki yang diselesaikan pelombong. Ia dilaraskan semula setiap 2,016 blok supaya blok kekal sekitar sepuluh minit.',
+    ],
+    [
+      'Pelarasan kesukaran',
+      'Pelarasan itu sendiri: jika 2,016 blok terakhir datang lebih cepat daripada sepuluh minit setiap satu, kesukaran naik; jika lebih perlahan, ia turun.',
+    ],
+    [
+      'Kadar hash',
+      'Berapa banyak tekaan sesaat yang dibuat pelombong bersama-sama. Kadar hash yang lebih tinggi bermakna lebih banyak tenaga melindungi rantaian.',
+    ],
+    [
+      'Proof of work',
+      'Bukti bahawa usaha pengkomputeran sebenar telah digunakan untuk mencipta blok, yang menjadikan penipuan mahal.',
+    ],
+    ['Mempool', 'Ruang menunggu bagi transaksi sah yang belum dimasukkan ke dalam blok.'],
+    [
+      'Kedalaman mempool',
+      'Anggaran kasar berapa banyak blok penuh yang diperlukan untuk mengosongkan transaksi yang menunggu.',
+    ],
+    [
+      'Kadar yuran',
+      'Bayaran transaksi bagi setiap unit saiz (sat/vB). Pelombong cenderung memilih kadar tertinggi dahulu.',
+    ],
+    [
+      'vByte (vB)',
+      'Unit saiz transaksi yang mengambil kira diskaun SegWit. Satu blok memuatkan kira-kira satu juta vB.',
+    ],
+    ['Sat', 'Satu per seratus juta bitcoin, unit terkecil.'],
+    [
+      'Waktu Moscow',
+      'Bacaan jam yang santai: berapa banyak sats yang boleh dibeli dengan satu unit mata wang, dipaparkan seperti waktu.',
+    ],
+    ['Nod', 'Komputer yang menyemak setiap peraturan sendiri dan menyampaikan blok serta transaksi.'],
+    [
+      'Rangkaian Lightning',
+      'Lapisan di atas Bitcoin untuk pembayaran kecil yang pantas melalui saluran yang dibiayai dalam rantaian.',
+    ],
+    ['Coinbase', 'Transaksi pertama dalam blok, di mana pelombong mengutip subsidi dan yuran.'],
+  ],
+  nb: [
+    [
+      'Timechain',
+      'Den ordnede kjeden av Bitcoin-blokker. Hver blokk peker på den forrige, så rekkefølgen kan ikke skrives om i det stille.',
+    ],
+    [
+      'Blokk',
+      'En bunt med transaksjoner som utvinnerne blir enige om og legger til kjeden, omtrent hvert tiende minutt.',
+    ],
+    [
+      'Blokkhøyde',
+      'Hvor mange blokker som ligger før denne. Den første blokken (genesis) har høyde 0, så høyden fungerer som en klokke som bare teller oppover.',
+    ],
+    ['Epoke', 'En periode på 210 000 blokker (omtrent fire år) der blokkbelønningen er den samme.'],
+    ['Halvering', 'Hendelsen på slutten av en epoke der belønningen i nye mynter per blokk blir halvert.'],
+    ['Subsidie', 'De nylagde bitcoinene en utvinner kan kreve i hver blokk, gebyrer ikke medregnet.'],
+    ['Mengde', 'Alle bitcoin som er laget så langt. Det kan aldri passere 21 millioner.'],
+    [
+      'Vanskelighetsgrad',
+      'Hvor vanskelig gåten er som utvinnerne løser. Den justeres hver 2016. blokk for å holde blokkene på rundt ti minutter.',
+    ],
+    [
+      'Justering av vanskelighetsgrad',
+      'Selve justeringen: kom de siste 2016 blokkene raskere enn hvert tiende minutt, øker vanskelighetsgraden; kom de saktere, synker den.',
+    ],
+    [
+      'Hashrate',
+      'Hvor mange forsøk per sekund utvinnerne gjør til sammen. Høyere hashrate betyr at mer energi beskytter kjeden.',
+    ],
+    ['Proof of work', 'Bevis på at ekte regnekraft ble brukt for å lage en blokk, noe som gjør juks dyrt.'],
+    ['Mempool', 'Venterommet for gyldige transaksjoner som ennå ikke er lagt i en blokk.'],
+    [
+      'Mempool-dybde',
+      'Et grovt anslag over hvor mange fulle blokker som trengs for å tømme de ventende transaksjonene.',
+    ],
+    [
+      'Gebyrsats',
+      'Hva en transaksjon betaler per størrelsesenhet (sat/vB). Utvinnerne tar som regel de høyeste satsene først.',
+    ],
+    [
+      'vByte (vB)',
+      'En enhet for transaksjonsstørrelse som tar hensyn til SegWit-rabatten. En blokk rommer omtrent én million vB.',
+    ],
+    ['Sat', 'Én hundremilliondel av en bitcoin, den minste enheten.'],
+    ['Moskva-tid', 'En leken klokkeavlesning: hvor mange sats én enhet av en valuta kjøper, vist som et klokkeslett.'],
+    ['Node', 'En datamaskin som selv sjekker hver regel og sender blokker og transaksjoner videre.'],
+    [
+      'Lightning-nettverket',
+      'Et lag oppå Bitcoin for raske, små betalinger gjennom kanaler som er finansiert på kjeden.',
+    ],
+    ['Coinbase', 'Den første transaksjonen i en blokk, der utvinneren henter subsidien og gebyrene.'],
+  ],
+  ro: [
+    [
+      'Timechain',
+      'Lanțul ordonat de blocuri Bitcoin. Fiecare bloc trimite la cel dinaintea lui, așa că ordinea evenimentelor nu poate fi rescrisă pe ascuns.',
+    ],
+    [
+      'Bloc',
+      'Un pachet de tranzacții asupra căruia minerii cad de acord și care se adaugă la lanț, cam o dată la zece minute.',
+    ],
+    [
+      'Înălțimea blocului',
+      'Câte blocuri se află înaintea acestuia. Primul bloc (geneza) are înălțimea 0, așa că înălțimea funcționează ca un ceas care doar crește.',
+    ],
+    ['Epocă', 'O perioadă de 210.000 de blocuri (aproximativ patru ani) în care recompensa pe bloc rămâne aceeași.'],
+    ['Halving', 'Momentul de la sfârșitul unei epoci când recompensa în monede noi pe bloc se înjumătățește.'],
+    [
+      'Subvenție',
+      'Bitcoinii nou creați pe care un miner îi poate lua în fiecare bloc, fără a pune la socoteală comisioanele.',
+    ],
+    ['Ofertă', 'Toți bitcoinii creați până acum. Oferta nu poate depăși niciodată 21 de milioane.'],
+    [
+      'Dificultate',
+      'Cât de greu este puzzle-ul pe care îl rezolvă minerii. Se reajustează la fiecare 2.016 blocuri, ca blocurile să rămână în jur de zece minute.',
+    ],
+    [
+      'Ajustarea dificultății',
+      'Reajustarea propriu-zisă: dacă ultimele 2.016 blocuri au venit mai repede de zece minute fiecare, dificultatea crește; dacă mai încet, scade.',
+    ],
+    [
+      'Hashrate',
+      'Câte încercări pe secundă fac minerii împreună. Un hashrate mai mare înseamnă mai multă energie care protejează lanțul.',
+    ],
+    ['Proof of work', 'Dovada că s-a depus efort real de calcul pentru a crea un bloc, ceea ce face frauda scumpă.'],
+    ['Mempool', 'Sala de așteptare a tranzacțiilor valide care nu au fost încă puse într-un bloc.'],
+    [
+      'Adâncimea mempoolului',
+      'O estimare aproximativă a câte blocuri pline ar fi necesare pentru a goli tranzacțiile în așteptare.',
+    ],
+    [
+      'Rata comisionului',
+      'Cât plătește o tranzacție pe unitatea de dimensiune (sat/vB). Minerii tind să aleagă mai întâi ratele cele mai mari.',
+    ],
+    [
+      'vByte (vB)',
+      'O unitate de dimensiune a tranzacției care ține cont de reducerea SegWit. Într-un bloc încap aproximativ un milion de vB.',
+    ],
+    ['Sat', 'A suta milioana parte dintr-un bitcoin, cea mai mică unitate.'],
+    ['Ora Moscovei', 'O citire jucăușă de ceas: câți sats cumpără o unitate dintr-o monedă, afișat ca o oră.'],
+    ['Nod', 'Un calculator care verifică singur fiecare regulă și transmite mai departe blocuri și tranzacții.'],
+    ['Rețeaua Lightning', 'Un strat peste Bitcoin pentru plăți rapide și mici, prin canale finanțate on-chain.'],
+    ['Coinbase', 'Prima tranzacție dintr-un bloc, în care minerul încasează subvenția și comisioanele.'],
+  ],
 };
 export const ANNIV_TR = {
   de: [
@@ -1329,5 +1537,45 @@ export const ANNIV_TR = {
     'دومین هاوینگ (بلاک 420,000)',
     'سومین هاوینگ (بلاک 630,000)',
     'چهارمین هاوینگ (بلاک 840,000)',
+  ],
+  da: [
+    'Genesis-blokken udvundet',
+    'Første Bitcoin-transaktion (blok 170)',
+    'Bitcoin Pizza Day: første kendte køb med bitcoin',
+    'Whitepaper udgivet',
+    'Første halvering (blok 210.000)',
+    'Anden halvering (blok 420.000)',
+    'Tredje halvering (blok 630.000)',
+    'Fjerde halvering (blok 840.000)',
+  ],
+  ms: [
+    'Blok genesis dilombong',
+    'Transaksi Bitcoin pertama (blok 170)',
+    'Bitcoin Pizza Day: pembelian pertama yang diketahui dengan bitcoin',
+    'Whitepaper diterbitkan',
+    'Halving pertama (blok 210,000)',
+    'Halving kedua (blok 420,000)',
+    'Halving ketiga (blok 630,000)',
+    'Halving keempat (blok 840,000)',
+  ],
+  nb: [
+    'Genesisblokken blir utvunnet',
+    'Første Bitcoin-transaksjon (blokk 170)',
+    'Bitcoin Pizza Day: første kjente kjøp med bitcoin',
+    'Whitepaperen blir publisert',
+    'Første halvering (blokk 210 000)',
+    'Andre halvering (blokk 420 000)',
+    'Tredje halvering (blokk 630 000)',
+    'Fjerde halvering (blokk 840 000)',
+  ],
+  ro: [
+    'Blocul geneză este minat',
+    'Prima tranzacție Bitcoin (blocul 170)',
+    'Bitcoin Pizza Day: prima cumpărătură cunoscută plătită cu bitcoin',
+    'Whitepaperul este publicat',
+    'Primul halving (blocul 210.000)',
+    'Al doilea halving (blocul 420.000)',
+    'Al treilea halving (blocul 630.000)',
+    'Al patrulea halving (blocul 840.000)',
   ],
 };

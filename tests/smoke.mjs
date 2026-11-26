@@ -2364,6 +2364,10 @@ await ok(
       ['sv', /Ordlista|Kalkylator/, /Blockhöjd|Svårighetsgrad/],
       ['el', /[\u0370-\u03ff]/],
       ['bn', /[\u0980-\u09ff]/],
+      ['da', /Lommeregner|Ordliste/, /Blokhøjde|Sværhedsgrad/],
+      ['nb', /Ordliste|Kalkulator/, /Blokkhøyde|Vanskelighetsgrad/],
+      ['ro', /Glosar|Despre/, /Înălțimea blocului|Dificultate/],
+      ['ms', /Penggera|Glosari/, /Ketinggian blok|Kesukaran/],
       ['pl', /Słowniczek|Kalendarz/, /Wysokość bloku|Trudność/],
     ]) {
       const c = await b.newContext({ viewport: { width: 1280, height: 800 } });

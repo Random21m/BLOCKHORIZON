@@ -508,14 +508,15 @@ export default {
   addrLookedUp:
     'Căutată pe {s}, care ar putea lega această adresă de adresa ta IP. Pe propriul nod, rămâne pe nodul tău.',
   stuckTitle: 'Durează prea mult?',
-  stuckIntro:
-    'Comisionul ei este sub ce acceptă minerii acum. Va trece când scad comisioanele, sau o poți grăbi.',
-  stuckNow: 'Următorul bloc cere aproximativ {r} sat/vB: cam {f} sats pentru această tranzacție, care a plătit {p} sats.',
+  stuckIntro: 'Comisionul ei este sub ce acceptă minerii acum. Va trece când scad comisioanele, sau o poți grăbi.',
+  stuckNow:
+    'Următorul bloc cere aproximativ {r} sat/vB: cam {f} sats pentru această tranzacție, care a plătit {p} sats.',
   stuckRbf:
     'Înlocuiește-o: în portofelul din care a fost trimisă, caută „Bump fee”, „Speed up” sau „Replace”. Trimite aceeași plată din nou cu un comision mai mare, cam {f} sats.',
   stuckCpfp:
     'Plătește pentru ea cu o tranzacție ulterioară: dacă plata a venit la tine, trimite-ți aceste monede mai departe ție însuți cu un comision de cam {f} sats, ca minerii să le ia pe amândouă împreună.',
-  stuckAcc: 'Plătește un miner: Accelerator de la mempool.space le cere pool-urilor partenere să o includă, contra unei taxe.',
+  stuckAcc:
+    'Plătește un miner: Accelerator de la mempool.space le cere pool-urilor partenere să o includă, contra unei taxe.',
   stuckAccLink: 'Accelerează pe mempool.space',
   stuckWait:
     'Sau așteaptă: trece când scad comisioanele. Dacă nu este minată niciodată, nodurile o uită după aproximativ două săptămâni, iar monedele revin în portofel.',
