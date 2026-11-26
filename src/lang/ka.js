@@ -590,6 +590,8 @@ export default {
   blkFeesChart: 'საკომისიო ბლოკზე',
   feeShareChart: 'საკომისიო მაინერების შემოსავალში',
   blkSizeChart: 'ბლოკის ზომა',
+  lnAsOf: 'მონაცემები: {d}',
+  lnAsOfShort: '{d}-ის მდგომარეობით',
   sendTitle: 'ტრანზაქციის გაგზავნა',
   sendLink: 'ხელმოწერილი ტრანზაქციის გაგზავნა',
   sendIntro:

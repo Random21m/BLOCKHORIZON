@@ -594,6 +594,8 @@ export default {
   blkFeesChart: 'Προμήθειες ανά μπλοκ',
   feeShareChart: 'Προμήθειες στα έσοδα των miners',
   blkSizeChart: 'Μέγεθος μπλοκ',
+  lnAsOf: 'Στοιχεία της {d}',
+  lnAsOfShort: 'Στις {d}',
   sendTitle: 'Αποστολή συναλλαγής',
   sendLink: 'Αποστολή υπογεγραμμένης συναλλαγής',
   sendIntro:

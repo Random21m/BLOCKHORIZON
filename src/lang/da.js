@@ -588,6 +588,8 @@ export default {
   blkFeesChart: 'Gebyrer pr. blok',
   feeShareChart: 'Gebyrer i minerindtægt',
   blkSizeChart: 'Blokstørrelse',
+  lnAsOf: 'Tal fra {d}',
+  lnAsOfShort: 'Pr. {d}',
   sendTitle: 'Send en transaktion',
   sendLink: 'Send en signeret transaktion',
   sendIntro:

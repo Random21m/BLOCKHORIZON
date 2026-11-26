@@ -582,6 +582,8 @@ export default {
   blkFeesChart: 'Phí mỗi khối',
   feeShareChart: 'Phí trong thu nhập thợ đào',
   blkSizeChart: 'Kích thước khối',
+  lnAsOf: 'Số liệu ngày {d}',
+  lnAsOfShort: 'Tính đến {d}',
   sendTitle: 'Gửi giao dịch',
   sendLink: 'Gửi một giao dịch đã ký',
   sendIntro:

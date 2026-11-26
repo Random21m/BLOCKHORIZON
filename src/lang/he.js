@@ -572,6 +572,8 @@ export default {
   blkFeesChart: 'עמלות לבלוק',
   feeShareChart: 'עמלות בהכנסת הכורים',
   blkSizeChart: 'גודל בלוק',
+  lnAsOf: 'נתונים מ-{d}',
+  lnAsOfShort: 'נכון ל-{d}',
   sendTitle: 'שליחת עסקה',
   sendLink: 'שליחת עסקה חתומה',
   sendIntro:

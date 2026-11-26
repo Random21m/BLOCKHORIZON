@@ -4,7 +4,7 @@ storage:
   dataRoot: data
 category: bitcoin
 name: BLOCKHORIZON
-version: "0.20.0"
+version: "0.21.0"
 tagline: A calm, live Bitcoin dashboard where time is measured in blocks
 description: >-
   BLOCKHORIZON shows your node's view of Bitcoin on one calm screen: the block height, the next halving,
@@ -20,14 +20,13 @@ description: >-
   asks a third party for it. The price comes from Kraken's public feed (Coinbase's while Kraken is down). No
   accounts and no tracking; settings stay in your browser.
 releaseNotes: >-
-  Watch your own addresses: on the Alarm page, add up to 10 Bitcoin addresses and get a sound and a message when a
-  payment to one of them is seen and again when it confirms, with "On your phone" on your phone too. Addresses are
-  only looked up on your own node.
+  Now in 38 languages, including Arabic, Persian and Hebrew written right to left.
 
 
-  Also new: help when a payment is stuck, search by address, four long-term charts (200-week average, Mayer
-  Multiple, halving cycles, supply), Chinese, Korean, Russian and Brazilian Portuguese, and a backup live price
-  from Coinbase while Kraken is down.
+  Also new: every input and output of a transaction, with plain-words privacy hints; a picture of what was in a
+  past block and all its transactions; the mempool over time by fee rate, to see whether now is a good time to
+  send; a ranking of mining pools and every past difficulty adjustment; and three more long-term charts (Puell
+  Multiple, hash ribbons, difficulty ribbon).
 
 developer: Random21m
 website: https://random21m.github.io/BLOCKHORIZON/

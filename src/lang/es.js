@@ -593,6 +593,8 @@ export default {
   blkFeesChart: 'Comisiones por bloque',
   feeShareChart: 'Comisiones en ingreso minero',
   blkSizeChart: 'Tamaño de bloque',
+  lnAsOf: 'Datos del {d}',
+  lnAsOfShort: 'Al {d}',
   sendTitle: 'Enviar una transacción',
   sendLink: 'Enviar una transacción firmada',
   sendIntro:

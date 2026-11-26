@@ -575,6 +575,8 @@ export default {
   blkFeesChart: 'الرسوم لكل كتلة',
   feeShareChart: 'الرسوم من دخل المعدّنين',
   blkSizeChart: 'حجم الكتلة',
+  lnAsOf: 'أرقام بتاريخ {d}',
+  lnAsOfShort: 'حتى {d}',
   sendTitle: 'إرسال معاملة',
   sendLink: 'إرسال معاملة موقّعة',
   sendIntro:

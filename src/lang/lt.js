@@ -587,6 +587,8 @@ export default {
   blkFeesChart: 'Mokesčiai už bloką',
   feeShareChart: 'Mokesčiai kasėjų pajamose',
   blkSizeChart: 'Bloko dydis',
+  lnAsOf: 'Duomenys: {d}',
+  lnAsOfShort: 'Būklė: {d}',
   sendTitle: 'Siųsti transakciją',
   sendLink: 'Siųsti pasirašytą transakciją',
   sendIntro:

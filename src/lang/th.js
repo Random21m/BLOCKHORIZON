@@ -577,6 +577,8 @@ export default {
   blkFeesChart: 'ค่าธรรมเนียมต่อบล็อก',
   feeShareChart: 'ค่าธรรมเนียมในรายได้นักขุด',
   blkSizeChart: 'ขนาดบล็อก',
+  lnAsOf: 'ข้อมูล ณ {d}',
+  lnAsOfShort: 'ณ {d}',
   sendTitle: 'ส่งธุรกรรม',
   sendLink: 'ส่งธุรกรรมที่ลงนามแล้ว',
   sendIntro:

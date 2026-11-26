@@ -583,6 +583,8 @@ export default {
   blkFeesChart: 'Opłaty na blok',
   feeShareChart: 'Opłaty w przychodzie górników',
   blkSizeChart: 'Rozmiar bloku',
+  lnAsOf: 'Dane z {d}',
+  lnAsOfShort: 'Stan na {d}',
   sendTitle: 'Wyślij transakcję',
   sendLink: 'Wyślij podpisaną transakcję',
   sendIntro:

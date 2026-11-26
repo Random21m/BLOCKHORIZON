@@ -559,6 +559,8 @@ export default {
   blkFeesChart: '每区块手续费',
   feeShareChart: '手续费占矿工收入',
   blkSizeChart: '区块大小',
+  lnAsOf: '数据截至 {d}',
+  lnAsOfShort: '截至 {d}',
   sendTitle: '发送交易',
   sendLink: '发送已签名的交易',
   sendIntro: '粘贴一笔已签名的交易：你的钱包导出的原始 hex。它会先在你的设备上读取；在你按下发送之前，什么都不会发出。',

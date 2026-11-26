@@ -587,6 +587,8 @@ export default {
   blkFeesChart: 'ブロックあたりの手数料',
   feeShareChart: 'マイナー収入に占める手数料',
   blkSizeChart: 'ブロックサイズ',
+  lnAsOf: '{d} 時点の数値',
+  lnAsOfShort: '{d} 時点',
   sendTitle: 'トランザクションを送信',
   sendLink: '署名済みトランザクションを送信',
   sendIntro:

@@ -591,6 +591,8 @@ export default {
   blkFeesChart: 'Comisioane pe bloc',
   feeShareChart: 'Comisioane în venitul minerilor',
   blkSizeChart: 'Dimensiunea blocului',
+  lnAsOf: 'Date din {d}',
+  lnAsOfShort: 'La {d}',
   sendTitle: 'Trimite o tranzacție',
   sendLink: 'Trimite o tranzacție semnată',
   sendIntro:

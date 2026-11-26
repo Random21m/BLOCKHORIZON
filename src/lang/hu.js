@@ -591,6 +591,8 @@ export default {
   blkFeesChart: 'Díjak blokkonként',
   feeShareChart: 'Díjak a bányászbevételben',
   blkSizeChart: 'Blokkméret',
+  lnAsOf: 'Adatok: {d}',
+  lnAsOfShort: 'Állapot: {d}',
   sendTitle: 'Tranzakció küldése',
   sendLink: 'Aláírt tranzakció küldése',
   sendIntro:

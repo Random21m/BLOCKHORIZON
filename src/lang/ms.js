@@ -592,6 +592,8 @@ export default {
   blkFeesChart: 'Yuran setiap blok',
   feeShareChart: 'Yuran dalam pendapatan pelombong',
   blkSizeChart: 'Saiz blok',
+  lnAsOf: 'Data pada {d}',
+  lnAsOfShort: 'Setakat {d}',
   sendTitle: 'Hantar transaksi',
   sendLink: 'Hantar transaksi yang ditandatangani',
   sendIntro:

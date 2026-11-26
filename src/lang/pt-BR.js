@@ -592,6 +592,8 @@ export default {
   blkFeesChart: 'Taxas por bloco',
   feeShareChart: 'Taxas na receita de mineração',
   blkSizeChart: 'Tamanho do bloco',
+  lnAsOf: 'Dados de {d}',
+  lnAsOfShort: 'Em {d}',
   sendTitle: 'Enviar uma transação',
   sendLink: 'Enviar uma transação assinada',
   sendIntro:

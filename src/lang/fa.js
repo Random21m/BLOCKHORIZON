@@ -583,6 +583,8 @@ export default {
   blkFeesChart: 'کارمزد هر بلاک',
   feeShareChart: 'سهم کارمزد از درآمد ماینر',
   blkSizeChart: 'اندازه بلاک',
+  lnAsOf: 'داده‌های {d}',
+  lnAsOfShort: 'تا {d}',
   sendTitle: 'ارسال تراکنش',
   sendLink: 'ارسال تراکنش امضاشده',
   sendIntro:

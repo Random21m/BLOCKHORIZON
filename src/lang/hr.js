@@ -586,6 +586,8 @@ export default {
   blkFeesChart: 'Naknade po bloku',
   feeShareChart: 'Naknade u prihodu rudara',
   blkSizeChart: 'Veličina bloka',
+  lnAsOf: 'Podaci od {d}',
+  lnAsOfShort: 'Stanje {d}',
   sendTitle: 'Pošalji transakciju',
   sendLink: 'Pošalji potpisanu transakciju',
   sendIntro:

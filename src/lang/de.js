@@ -595,6 +595,8 @@ export default {
   blkFeesChart: 'Gebühren pro Block',
   feeShareChart: 'Gebühren im Miner-Ertrag',
   blkSizeChart: 'Blockgröße',
+  lnAsOf: 'Zahlen vom {d}',
+  lnAsOfShort: 'Stand {d}',
   sendTitle: 'Transaktion senden',
   sendLink: 'Signierte Transaktion senden',
   sendIntro:
