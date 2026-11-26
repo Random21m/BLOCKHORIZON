@@ -643,4 +643,8 @@ export default {
   blkHealthNote:
     'mempool.space iz lastnega mempoola izračuna, katere transakcije je pričakoval v tem bloku. Manj kot 100 % pomeni, da je rudar nekatere izpustil.',
   blkHealthNone: 'Za ta blok ni na voljo: bloke primerja le mempool.space, in le nedavne.',
+  addrQr: 'Koda QR',
+  addrQrAria: 'Koda QR naslova {a}',
+  addrQrNote:
+    'Skenirajte jo z denarnico, da plačate na ta naslov. Ustvarjena na tej napravi; preverite naslov, ki ga pokaže denarnica.',
 };

@@ -642,4 +642,8 @@ export default {
   blkHealthNote:
     'mempool.space regner ud fra sin egen mempool, hvilke transaktioner den forventede i denne blok. Under 100 % betyder, at mineren udelod nogle af dem.',
   blkHealthNone: 'Ikke tilgængelig for denne blok: kun mempool.space sammenligner blokke, og kun nyere.',
+  addrQr: 'QR-kode',
+  addrQrAria: 'QR-kode for adressen {a}',
+  addrQrNote:
+    'Scan den med en wallet for at betale til denne adresse. Lavet på denne enhed; tjek adressen, som din wallet viser.',
 };

@@ -654,4 +654,8 @@ export default {
   blkHealthNote:
     'mempool.space déduit de sa propre mempool les transactions qu’il s’attendait à voir dans ce bloc. Moins de 100 % signifie que le mineur en a laissé de côté.',
   blkHealthNone: 'Indisponible pour ce bloc : seul mempool.space compare les blocs, et seulement les récents.',
+  addrQr: 'QR code',
+  addrQrAria: 'QR code de l’adresse {a}',
+  addrQrNote:
+    'Scannez-le avec un portefeuille pour payer à cette adresse. Généré sur cet appareil ; vérifiez l’adresse affichée par votre portefeuille.',
 };

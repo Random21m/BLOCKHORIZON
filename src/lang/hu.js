@@ -645,4 +645,8 @@ export default {
   blkHealthNote:
     'A mempool.space a saját mempooljából számolja ki, mely tranzakciókat várta ebben a blokkban. A 100% alatti érték azt jelenti, hogy a bányász néhányat kihagyott közülük.',
   blkHealthNone: 'Ehhez a blokkhoz nem érhető el: csak a mempool.space hasonlít össze blokkokat, és csak a frisseket.',
+  addrQr: 'QR-kód',
+  addrQrAria: 'A(z) {a} cím QR-kódja',
+  addrQrNote:
+    'Olvasd be egy tárcával, hogy erre a címre fizess. Ezen az eszközön készült; ellenőrizd a címet, amit a tárcád mutat.',
 };
