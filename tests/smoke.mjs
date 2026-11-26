@@ -2380,6 +2380,7 @@ await ok(
       ['fi', /Horisontti|Hälytys|Louhinta/, /Lohkokorkeus|Vaikeus/],
       ['hu', /Riasztás|Bányászat/, /Blokkmagasság|Nehézség/],
       ['hr', /Horizont|Rudarenje/, /Visina bloka|Težina/],
+      ['lt', /Horizontas|Žadintuvas|Kasyba/, /Bloko aukštis|Sudėtingumas/],
       ['pl', /Horyzont|Kopanie/, /Wysokość bloku|Trudność/],
     ]) {
       const c = await b.newContext({ viewport: { width: 1280, height: 800 } });
