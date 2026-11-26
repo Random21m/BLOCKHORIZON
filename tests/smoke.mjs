@@ -3147,7 +3147,7 @@ await ok(
     const p = await c.newPage();
     await p.goto(base);
     await until(p, () => document.querySelector('.t-ln .ts.s0'));
-    assert.equal(await p.locator('.t-ln .ts.s0').innerText(), '51,021 channels · Figures from 06/01/2024');
+    assert.equal(await p.locator('.t-ln .ts.s0').innerText(), 'Figures from 06/01/2024 · 51,021 channels');
     await p.setViewportSize({ width: 360, height: 800 });
     assert.equal(await p.locator('.t-ln .ts.s0').innerText(), 'As of 06/01/2024', 'a phone shows the date only');
     // fresh figures: as before, channels and nodes

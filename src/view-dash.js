@@ -223,7 +223,8 @@ export function viewDash() {
           // the node count (the dashboard shows one line under each figure), rather than pass them as today's
           L.lnStale(l)
             ? [
-                more(t('channels', { n: L.fmtNum(l.channel_count) }) + ' · ' + t('lnAsOf', { d: lnDate(l) })),
+                // the date first: on a narrow tile the line is cut at its end, and the date is what matters here
+                more(t('lnAsOf', { d: lnDate(l) }) + ' · ' + t('channels', { n: L.fmtNum(l.channel_count) })),
                 less(t('lnAsOfShort', { d: lnDate(l) })), // a phone's tile has room for the date only
               ]
             : [t('channels', { n: L.fmtNum(l.channel_count) }), more(t('nodes', { n: L.fmtNum(l.node_count) }))],
