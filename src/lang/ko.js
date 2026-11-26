@@ -27,10 +27,6 @@ export default {
   close: '닫기',
   go: '이동',
   blocksToGo: '블록 남음',
-  priority: '우선',
-  soon: '빠름',
-  anytime: '언제든',
-  economy: '절약',
   byHeight: '블록 높이로',
   byDate: '날짜로',
   notFound: '찾을 수 없어요',
@@ -386,7 +382,6 @@ export default {
   evDiff: '블록 {h}에서 난이도 조정 ({c}% 예상)',
   evBlock: '블록 {n}',
   anniversaries: '기념일',
-  noConf: '컨퍼런스 목록은 아직 준비되지 않았어요 (신뢰할 수 있는 데이터 출처가 필요해요).',
   watchIntro: 'YouTube의 비트코인 채널과 몇몇 사이트, A부터 Z 순이에요. 링크는 새 탭에서 열려요.',
   sites: '사이트',
   about1:

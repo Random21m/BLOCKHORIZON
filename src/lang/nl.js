@@ -28,10 +28,6 @@ export default {
   close: 'Sluiten',
   go: 'Ga',
   blocksToGo: 'blokken te gaan',
-  priority: 'Prioriteit',
-  soon: 'Binnenkort',
-  anytime: 'Op elk moment',
-  economy: 'Zuinig',
   byHeight: 'Op hoogte',
   byDate: 'Op datum',
   notFound: 'Niets gevonden',
@@ -391,7 +387,6 @@ export default {
   evDiff: 'Moeilijkheidsaanpassing bij blok {h} ({c}% verwacht)',
   evBlock: 'Blok {n}',
   anniversaries: 'Jubilea',
-  noConf: 'Conferenties staan er nog niet in (er is nog geen betrouwbare bron).',
   watchIntro: 'Bitcoin-kanalen op YouTube en een paar websites, van A tot Z. Links openen in een nieuw tabblad.',
   sites: 'Websites',
   about1:

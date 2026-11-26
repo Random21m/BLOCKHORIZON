@@ -28,10 +28,6 @@ export default {
   close: 'Tutup',
   go: 'Pergi',
   blocksToGo: 'blok lagi',
-  priority: 'Keutamaan',
-  soon: 'Segera',
-  anytime: 'Bila-bila masa',
-  economy: 'Jimat',
   byHeight: 'Mengikut ketinggian blok',
   byDate: 'Mengikut tarikh',
   notFound: 'Tiada apa-apa dijumpai',
@@ -391,7 +387,6 @@ export default {
   evDiff: 'Pelarasan kesukaran pada blok {h} (dijangka {c}%)',
   evBlock: 'Blok {n}',
   anniversaries: 'Ulang tahun',
-  noConf: 'Senarai persidangan belum dibina (memerlukan sumber data yang dipercayai).',
   watchIntro: 'Saluran Bitcoin di YouTube dan beberapa laman, A hingga Z. Pautan dibuka dalam tab baharu.',
   sites: 'Laman',
   about1:

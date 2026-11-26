@@ -28,10 +28,6 @@ export default {
   close: 'Uždaryti',
   go: 'Eiti',
   blocksToGo: 'blokų liko',
-  priority: 'Pirmenybė',
-  soon: 'Greitai',
-  anytime: 'Bet kada',
-  economy: 'Taupiai',
   byHeight: 'Pagal bloko aukštį',
   byDate: 'Pagal datą',
   notFound: 'Nieko nerasta',
@@ -391,7 +387,6 @@ export default {
   evDiff: 'Sudėtingumo korekcija ties bloku {h} (numatoma {c}%)',
   evBlock: 'Blokas {n}',
   anniversaries: 'Sukaktys',
-  noConf: 'Konferencijų sąrašo dar nėra (reikia patikimo duomenų šaltinio).',
   watchIntro: 'Bitcoin kanalai YouTube ir kelios svetainės, nuo A iki Z. Nuorodos atsidaro naujame skirtuke.',
   sites: 'Svetainės',
   about1:

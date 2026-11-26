@@ -28,10 +28,6 @@ export default {
   close: 'ปิด',
   go: 'ไป',
   blocksToGo: 'บล็อกที่เหลือ',
-  priority: 'ด่วนที่สุด',
-  soon: 'เร็ว',
-  anytime: 'เมื่อไรก็ได้',
-  economy: 'ประหยัด',
   byHeight: 'ตามความสูงบล็อก',
   byDate: 'ตามวันที่',
   notFound: 'ไม่พบข้อมูล',
@@ -387,7 +383,6 @@ export default {
   evDiff: 'ปรับความยากที่บล็อก {h} (คาดว่า {c}%)',
   evBlock: 'บล็อก {n}',
   anniversaries: 'วันครบรอบ',
-  noConf: 'ยังไม่มีรายการงานสัมมนา (ต้องมีแหล่งข้อมูลที่เชื่อถือได้)',
   watchIntro: 'ช่อง Bitcoin บน YouTube และเว็บไซต์บางแห่ง เรียงจาก A ถึง Z ลิงก์จะเปิดในแท็บใหม่',
   sites: 'เว็บไซต์',
   about1:

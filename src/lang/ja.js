@@ -28,10 +28,6 @@ export default {
   close: '閉じる',
   go: '移動',
   blocksToGo: 'ブロック残り',
-  priority: '優先',
-  soon: '早め',
-  anytime: 'いつでも',
-  economy: '節約',
   byHeight: 'ブロック高で',
   byDate: '日付で',
   notFound: '見つかりませんでした',
@@ -389,7 +385,6 @@ export default {
   evDiff: 'ブロック {h} で難易度調整（{c}% の見込み）',
   evBlock: 'ブロック {n}',
   anniversaries: '記念日',
-  noConf: 'カンファレンス一覧はまだありません（信頼できるデータソースが必要です）。',
   watchIntro: 'YouTube のビットコインチャンネルといくつかのサイト（A〜Z順）。リンクは新しいタブで開きます。',
   sites: 'サイト',
   about1:

@@ -28,10 +28,6 @@ export default {
   close: 'बंद करें',
   go: 'जाएँ',
   blocksToGo: 'ब्लॉक बाकी',
-  priority: 'प्राथमिकता',
-  soon: 'जल्द',
-  anytime: 'कभी भी',
-  economy: 'किफ़ायती',
   byHeight: 'ब्लॉक ऊँचाई से',
   byDate: 'तारीख से',
   notFound: 'कुछ नहीं मिला',
@@ -389,7 +385,6 @@ export default {
   evDiff: 'ब्लॉक {h} पर डिफ़िकल्टी बदलाव ({c}% अपेक्षित)',
   evBlock: 'ब्लॉक {n}',
   anniversaries: 'सालगिरह',
-  noConf: 'कॉन्फ़्रेंस सूची अभी नहीं बनी है (भरोसेमंद डेटा स्रोत चाहिए)।',
   watchIntro: 'YouTube पर बिटकॉइन चैनल और कुछ साइटें, A से Z। लिंक नए टैब में खुलते हैं।',
   sites: 'साइटें',
   about1:

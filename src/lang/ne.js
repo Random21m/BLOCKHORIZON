@@ -28,10 +28,6 @@ export default {
   close: 'बन्द गर्नुहोस्',
   go: 'जानुहोस्',
   blocksToGo: 'ब्लक बाँकी',
-  priority: 'प्राथमिकता',
-  soon: 'छिट्टै',
-  anytime: 'जुनसुकै बेला',
-  economy: 'किफायती',
   byHeight: 'ब्लक उचाइ अनुसार',
   byDate: 'मिति अनुसार',
   notFound: 'केही भेटिएन',
@@ -388,7 +384,6 @@ export default {
   evDiff: 'ब्लक {h} मा कठिनाइ समायोजन ({c}% अपेक्षित)',
   evBlock: 'ब्लक {n}',
   anniversaries: 'वार्षिकोत्सव',
-  noConf: 'सम्मेलन सूची अझै बनेको छैन (भरपर्दो डेटा स्रोत चाहिन्छ)।',
   watchIntro: 'YouTube र केही साइटका Bitcoin च्यानलहरू, A देखि Z सम्म। लिङ्कहरू नयाँ ट्याबमा खुल्छन्।',
   sites: 'साइटहरू',
   about1:

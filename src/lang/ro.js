@@ -28,10 +28,6 @@ export default {
   close: 'Închide',
   go: 'Du-te',
   blocksToGo: 'blocuri rămase',
-  priority: 'Prioritar',
-  soon: 'Curând',
-  anytime: 'Oricând',
-  economy: 'Economic',
   byHeight: 'După înălțimea blocului',
   byDate: 'După dată',
   notFound: 'Nu s-a găsit nimic',
@@ -391,7 +387,6 @@ export default {
   evDiff: 'Ajustarea dificultății la blocul {h} ({c}% estimat)',
   evBlock: 'Blocul {n}',
   anniversaries: 'Aniversări',
-  noConf: 'Lista conferințelor nu este gata încă (are nevoie de o sursă de date de încredere).',
   watchIntro: 'Canale Bitcoin pe YouTube și câteva site-uri, de la A la Z. Linkurile se deschid într-o filă nouă.',
   sites: 'Site-uri',
   about1:

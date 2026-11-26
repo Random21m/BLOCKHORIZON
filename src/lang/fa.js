@@ -28,10 +28,6 @@ export default {
   close: 'بستن',
   go: 'برو',
   blocksToGo: 'بلاک مانده',
-  priority: 'اولویت',
-  soon: 'زود',
-  anytime: 'هر زمان',
-  economy: 'اقتصادی',
   byHeight: 'با ارتفاع بلاک',
   byDate: 'با تاریخ',
   notFound: 'چیزی پیدا نشد',
@@ -389,7 +385,6 @@ export default {
   evDiff: 'تنظیم سختی در بلاک {h} ({c}% پیش‌بینی)',
   evBlock: 'بلاک {n}',
   anniversaries: 'سالگردها',
-  noConf: 'فهرست همایش‌ها هنوز ساخته نشده است (به یک منبع داده مطمئن نیاز دارد).',
   watchIntro: 'کانال‌های بیت‌کوین در YouTube و چند سایت، از A تا Z. پیوندها در زبانه جدید باز می‌شوند.',
   sites: 'سایت‌ها',
   about1:

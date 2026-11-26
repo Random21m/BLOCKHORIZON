@@ -28,10 +28,6 @@ export default {
   close: 'Schließen',
   go: 'Los',
   blocksToGo: 'Blöcke übrig',
-  priority: 'Priorität',
-  soon: 'Bald',
-  anytime: 'Jederzeit',
-  economy: 'Spar',
   byHeight: 'Nach Blockhöhe',
   byDate: 'Nach Datum',
   notFound: 'Nichts gefunden',
@@ -390,7 +386,6 @@ export default {
   evDiff: 'Schwierigkeitsanpassung bei Block {h} ({c} % erwartet)',
   evBlock: 'Block {n}',
   anniversaries: 'Jahrestage',
-  noConf: 'Konferenztermine gibt es noch nicht (dafür fehlt eine verlässliche Quelle).',
   watchIntro: 'Bitcoin-Kanäle auf YouTube und ein paar Websites, A bis Z. Links öffnen sich in einem neuen Tab.',
   sites: 'Websites',
   about1:

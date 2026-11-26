@@ -28,10 +28,6 @@ export default {
   close: 'Zatvori',
   go: 'Idi',
   blocksToGo: 'blokova do kraja',
-  priority: 'Prioritet',
-  soon: 'Uskoro',
-  anytime: 'Bilo kad',
-  economy: 'Ekonomično',
   byHeight: 'Po visini bloka',
   byDate: 'Po datumu',
   notFound: 'Ništa nije pronađeno',
@@ -391,7 +387,6 @@ export default {
   evDiff: 'Promjena težine kod bloka {h} (očekuje se {c}%)',
   evBlock: 'Blok {n}',
   anniversaries: 'Obljetnice',
-  noConf: 'Popis konferencija još ne postoji (potreban je pouzdan izvor podataka).',
   watchIntro: 'Bitcoin kanali na YouTubeu i nekoliko stranica, od A do Ž. Poveznice se otvaraju u novoj kartici.',
   sites: 'Stranice',
   about1:

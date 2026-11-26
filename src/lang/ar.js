@@ -28,10 +28,6 @@ export default {
   close: 'إغلاق',
   go: 'انتقال',
   blocksToGo: 'كتلة متبقية',
-  priority: 'أولوية',
-  soon: 'قريبًا',
-  anytime: 'في أي وقت',
-  economy: 'اقتصادي',
   byHeight: 'حسب ارتفاع الكتلة',
   byDate: 'حسب التاريخ',
   notFound: 'لم يُعثر على شيء',
@@ -388,7 +384,6 @@ export default {
   evDiff: 'تعديل الصعوبة عند الكتلة {h} (متوقع {c}%)',
   evBlock: 'الكتلة {n}',
   anniversaries: 'ذكريات',
-  noConf: 'قوائم المؤتمرات غير جاهزة بعد (تحتاج إلى مصدر بيانات موثوق).',
   watchIntro: 'قنوات Bitcoin على YouTube وبعض المواقع، من A إلى Z. تفتح الروابط في علامة تبويب جديدة.',
   sites: 'مواقع',
   about1:

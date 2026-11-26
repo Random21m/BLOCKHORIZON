@@ -28,10 +28,6 @@ export default {
   close: 'Bezárás',
   go: 'Mehet',
   blocksToGo: 'blokk van hátra',
-  priority: 'Elsőbbségi',
-  soon: 'Hamarosan',
-  anytime: 'Bármikor',
-  economy: 'Takarékos',
   byHeight: 'Blokkmagasság szerint',
   byDate: 'Dátum szerint',
   notFound: 'Nincs találat',
@@ -390,7 +386,6 @@ export default {
   evDiff: 'Nehézségállítás a(z) {h}. blokknál (várhatóan {c}%)',
   evBlock: '{n}. blokk',
   anniversaries: 'Évfordulók',
-  noConf: 'A konferencialista még nem készült el (megbízható adatforrás kell hozzá).',
   watchIntro: 'Bitcoin-csatornák a YouTube-on és néhány oldal, A-tól Z-ig. A linkek új lapon nyílnak meg.',
   sites: 'Oldalak',
   about1:

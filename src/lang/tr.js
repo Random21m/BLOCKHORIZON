@@ -28,10 +28,6 @@ export default {
   close: 'Kapat',
   go: 'Git',
   blocksToGo: 'blok kaldı',
-  priority: 'Öncelik',
-  soon: 'Yakında',
-  anytime: 'Her an',
-  economy: 'Ekonomik',
   byHeight: 'Yüksekliğe göre',
   byDate: 'Tarihe göre',
   notFound: 'Bulunamadı',
@@ -388,7 +384,6 @@ export default {
   evDiff: 'Blok {h} zorluk ayarı (beklenen %{c})',
   evBlock: 'Blok {n}',
   anniversaries: 'Yıldönümleri',
-  noConf: 'Konferans listesi henüz yok (güvenilir bir veri kaynağı gerekiyor).',
   watchIntro: "YouTube'daki Bitcoin kanalları ve birkaç site, A'dan Z'ye. Bağlantılar yeni sekmede açılır.",
   sites: 'Siteler',
   about1:

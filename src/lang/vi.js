@@ -28,10 +28,6 @@ export default {
   close: 'Đóng',
   go: 'Đi',
   blocksToGo: 'khối nữa',
-  priority: 'Ưu tiên',
-  soon: 'Sớm',
-  anytime: 'Lúc nào cũng được',
-  economy: 'Tiết kiệm',
   byHeight: 'Theo chiều cao khối',
   byDate: 'Theo ngày',
   notFound: 'Không tìm thấy gì',
@@ -389,7 +385,6 @@ export default {
   evDiff: 'Điều chỉnh độ khó tại khối {h} (dự kiến {c}%)',
   evBlock: 'Khối {n}',
   anniversaries: 'Ngày kỷ niệm',
-  noConf: 'Danh sách hội nghị chưa được làm (cần nguồn dữ liệu đáng tin cậy).',
   watchIntro: 'Các kênh Bitcoin trên YouTube và vài trang web, từ A đến Z. Liên kết mở trong tab mới.',
   sites: 'Trang web',
   about1:

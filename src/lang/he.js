@@ -28,10 +28,6 @@ export default {
   close: 'סגירה',
   go: 'מעבר',
   blocksToGo: 'בלוקים שנותרו',
-  priority: 'עדיפות',
-  soon: 'בקרוב',
-  anytime: 'מתי שהוא',
-  economy: 'חסכוני',
   byHeight: 'לפי גובה בלוק',
   byDate: 'לפי תאריך',
   notFound: 'לא נמצא דבר',
@@ -387,7 +383,6 @@ export default {
   evDiff: 'התאמת קושי בבלוק {h} ({c}% צפוי)',
   evBlock: 'בלוק {n}',
   anniversaries: 'ימי שנה',
-  noConf: 'רשימת הכנסים עוד לא קיימת (נדרש מקור נתונים אמין).',
   watchIntro: 'ערוצי ביטקוין ב-YouTube וכמה אתרים, מ-A עד Z. הקישורים נפתחים בכרטיסייה חדשה.',
   sites: 'אתרים',
   about1:

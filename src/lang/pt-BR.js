@@ -27,10 +27,6 @@ export default {
   close: 'Fechar',
   go: 'Ir',
   blocksToGo: 'blocos restantes',
-  priority: 'Prioridade',
-  soon: 'Em breve',
-  anytime: 'Sem pressa',
-  economy: 'Econômica',
   byHeight: 'Por altura do bloco',
   byDate: 'Por data',
   notFound: 'Nada encontrado',
@@ -390,7 +386,6 @@ export default {
   evDiff: 'Ajuste de dificuldade no bloco {h} ({c}% previsto)',
   evBlock: 'Bloco {n}',
   anniversaries: 'Aniversários',
-  noConf: 'As conferências ainda não estão listadas (falta uma fonte de dados confiável).',
   watchIntro: 'Canais de Bitcoin no YouTube e alguns sites, de A a Z. Os links abrem em uma nova aba.',
   sites: 'Sites',
   about1:

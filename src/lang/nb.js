@@ -28,10 +28,6 @@ export default {
   close: 'Lukk',
   go: 'Gå',
   blocksToGo: 'blokker igjen',
-  priority: 'Prioritet',
-  soon: 'Snart',
-  anytime: 'Når som helst',
-  economy: 'Økonomi',
   byHeight: 'Etter blokkhøyde',
   byDate: 'Etter dato',
   notFound: 'Fant ingenting',
@@ -391,7 +387,6 @@ export default {
   evDiff: 'Justering av vanskelighetsgrad ved blokk {h} ({c} % ventet)',
   evBlock: 'Blokk {n}',
   anniversaries: 'Merkedager',
-  noConf: 'Konferanseoversikten er ikke laget ennå (trenger en pålitelig datakilde).',
   watchIntro: 'Bitcoin-kanaler på YouTube og noen få nettsteder, fra A til Å. Lenkene åpnes i en ny fane.',
   sites: 'Nettsteder',
   about1:

@@ -28,10 +28,6 @@ export default {
   close: 'Luk',
   go: 'Gå',
   blocksToGo: 'blokke tilbage',
-  priority: 'Prioritet',
-  soon: 'Snart',
-  anytime: 'Når som helst',
-  economy: 'Økonomi',
   byHeight: 'Efter blokhøjde',
   byDate: 'Efter dato',
   notFound: 'Intet fundet',
@@ -391,7 +387,6 @@ export default {
   evDiff: 'Sværhedsjustering ved blok {h} ({c}% forventet)',
   evBlock: 'Blok {n}',
   anniversaries: 'Mærkedage',
-  noConf: 'Oversigten over konferencer er ikke lavet endnu (kræver en pålidelig datakilde).',
   watchIntro: 'Bitcoin-kanaler på YouTube og et par sider, fra A til Å. Links åbner i en ny fane.',
   sites: 'Sider',
   about1:

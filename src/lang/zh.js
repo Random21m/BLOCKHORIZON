@@ -27,10 +27,6 @@ export default {
   close: '关闭',
   go: '前往',
   blocksToGo: '个区块待出',
-  priority: '优先',
-  soon: '较快',
-  anytime: '不急',
-  economy: '经济',
   byHeight: '按区块高度',
   byDate: '按日期',
   notFound: '未找到',
@@ -378,7 +374,6 @@ export default {
   evDiff: '区块 {h} 难度调整（预计 {c}%）',
   evBlock: '区块 {n}',
   anniversaries: '纪念日',
-  noConf: '会议列表尚未建立（需要可信的数据来源）。',
   watchIntro: 'YouTube 上的比特币频道和几个网站，按 A 到 Z 排列。链接在新标签页打开。',
   sites: '网站',
   about1:

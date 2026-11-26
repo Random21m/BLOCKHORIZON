@@ -28,10 +28,6 @@ export default {
   close: 'Tutup',
   go: 'Buka',
   blocksToGo: 'blok lagi',
-  priority: 'Prioritas',
-  soon: 'Segera',
-  anytime: 'Kapan saja',
-  economy: 'Hemat',
   byHeight: 'Menurut tinggi blok',
   byDate: 'Menurut tanggal',
   notFound: 'Tidak ditemukan',
@@ -391,7 +387,6 @@ export default {
   evDiff: 'Penyesuaian kesulitan di blok {h} (perkiraan {c}%)',
   evBlock: 'Blok {n}',
   anniversaries: 'Hari peringatan',
-  noConf: 'Daftar konferensi belum dibuat (perlu sumber data tepercaya).',
   watchIntro: 'Kanal Bitcoin di YouTube dan beberapa situs, A sampai Z. Tautan terbuka di tab baru.',
   sites: 'Situs',
   about1:

@@ -28,10 +28,6 @@ export default {
   close: 'Zavřít',
   go: 'Přejít',
   blocksToGo: 'bloků zbývá',
-  priority: 'Přednostně',
-  soon: 'Brzy',
-  anytime: 'Kdykoli',
-  economy: 'Úsporně',
   byHeight: 'Podle výšky bloku',
   byDate: 'Podle data',
   notFound: 'Nic nenalezeno',
@@ -390,7 +386,6 @@ export default {
   evDiff: 'Změna obtížnosti v bloku {h} (očekáváno {c} %)',
   evBlock: 'Blok {n}',
   anniversaries: 'Výročí',
-  noConf: 'Přehled konferencí zatím není hotový (chybí důvěryhodný zdroj dat).',
   watchIntro: 'Bitcoinové kanály na YouTube a několik webů, od A do Z. Odkazy se otevírají v nové kartě.',
   sites: 'Weby',
   about1:

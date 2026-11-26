@@ -28,10 +28,6 @@ export default {
   close: 'Sulje',
   go: 'Siirry',
   blocksToGo: 'lohkoa jäljellä',
-  priority: 'Kiireellinen',
-  soon: 'Pian',
-  anytime: 'Milloin vain',
-  economy: 'Edullinen',
   byHeight: 'Lohkokorkeuden mukaan',
   byDate: 'Päivämäärän mukaan',
   notFound: 'Mitään ei löytynyt',
@@ -391,7 +387,6 @@ export default {
   evDiff: 'Vaikeuden säätö lohkossa {h} (odotettu {c} %)',
   evBlock: 'Lohko {n}',
   anniversaries: 'Vuosipäivät',
-  noConf: 'Konferenssilistaa ei ole vielä tehty (tarvitsee luotettavan tietolähteen).',
   watchIntro: 'Bitcoin-kanavia YouTubessa ja muutama sivusto, A–Ö. Linkit avautuvat uuteen välilehteen.',
   sites: 'Sivustot',
   about1:

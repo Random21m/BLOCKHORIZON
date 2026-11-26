@@ -28,10 +28,6 @@ export default {
   close: 'Stäng',
   go: 'Gå',
   blocksToGo: 'block kvar',
-  priority: 'Prioritet',
-  soon: 'Snart',
-  anytime: 'När som helst',
-  economy: 'Ekonomi',
   byHeight: 'Efter blockhöjd',
   byDate: 'Efter datum',
   notFound: 'Inget hittades',
@@ -389,7 +385,6 @@ export default {
   evDiff: 'Svårighetsjustering vid block {h} ({c}% väntas)',
   evBlock: 'Block {n}',
   anniversaries: 'Årsdagar',
-  noConf: 'Listor över konferenser finns inte än (kräver en pålitlig datakälla).',
   watchIntro: 'Bitcoinkanaler på YouTube och några webbplatser, A till Ö. Länkarna öppnas i en ny flik.',
   sites: 'Webbplatser',
   about1:
