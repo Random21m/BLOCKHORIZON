@@ -416,4 +416,5 @@ export default {
   moveUp: "{t} omhoog",
   moveDown: "{t} omlaag",
   tilesReset: "Terug naar het standaarddashboard",
+  moscowHint: "Moskoutijd {t}: één {c} koopt {n} sats, geschreven als een tijd. Opent de woordenlijst.",
 };

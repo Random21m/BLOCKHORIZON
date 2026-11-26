@@ -416,4 +416,5 @@ export default {
   moveUp: "Move {t} up",
   moveDown: "Move {t} down",
   tilesReset: "Back to the standard dashboard",
+  moscowHint: "Moscow time {t}: one {c} buys {n} sats, written like a clock. Opens the glossary.",
 };

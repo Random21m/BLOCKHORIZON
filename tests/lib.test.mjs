@@ -135,6 +135,7 @@ test('version number matches in the app (state.js), the offline cache name and t
   const v = read('src/state.js').match(/VERSION = '([\d.]+)'/)[1];
   assert.ok(read('sw.js').includes(`'blockhorizon-v${v}'`), 'sw.js cache name');
   assert.ok(read('README.md').includes(`Version ${v}.`), 'README');
+  assert.ok(read('CHANGELOG.md').includes(`\n## ${v}\n`), 'CHANGELOG has a section for this version');
 });
 
 test('transactions: txid check, parse a confirmed and a waiting transaction', () => {

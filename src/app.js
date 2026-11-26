@@ -68,6 +68,20 @@ function stripScroll(saved) {
   els.forEach((e, i) => { e.scrollLeft = saved[i] || 0; });
   const s = els[0], g = s && s.children[1];
   if (s && g && !saved[0] && s.scrollWidth > s.clientWidth + 1) s.scrollLeft = g.offsetLeft - s.offsetLeft - s.clientWidth * 0.45;
+  els.forEach(edges);
+}
+// A strip with more blocks out of view fades out at that edge, so it is clear there is more to scroll to.
+function edges(e) {
+  const more = e.scrollWidth > e.clientWidth + 1, l = more && e.scrollLeft > 1, r = more && e.scrollLeft + e.clientWidth < e.scrollWidth - 1;
+  e.classList.toggle('more-l', l); e.classList.toggle('more-r', r);
+}
+if (typeof document !== 'undefined') {
+addEventListener('scroll', (ev) => { const e = ev.target; if (e.classList && (e.classList.contains('strip2') || (e.classList.contains('blocks') && e.closest('.strip2')))) edges(e); }, true);
+addEventListener('resize', () => stripScroll(stripScroll()));
+// A mouse wheel over a block strip scrolls it sideways (the dashboard itself does not scroll on a computer).
+addEventListener('wheel', (ev) => { const e = ev.target.closest && ev.target.closest('.strip2 .blocks, .strip2');
+  if (!e || ev.deltaX || !ev.deltaY || e.scrollWidth <= e.clientWidth + 1 || document.documentElement.scrollHeight > innerHeight + 1) return;
+  e.scrollLeft += ev.deltaY; ev.preventDefault(); }, { passive: false });
 }
 const docTitle = () => 'BLOCKHORIZON' + (Number.isFinite(st.tip) ? ' · ' + L.fmtNum(st.tip) : '');
 function renderView() {

@@ -416,4 +416,5 @@ export default {
   moveUp: "{t} yukarı taşı",
   moveDown: "{t} aşağı taşı",
   tilesReset: "Standart panoya dön",
+  moscowHint: "Moskova saati {t}: bir {c} ile {n} sats alınır, saat gibi yazılır. Sözlüğü açar.",
 };

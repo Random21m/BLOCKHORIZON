@@ -373,3 +373,12 @@ main:focus{outline:none} /* focus lands here after following a link inside the p
 .tilelist{list-style:none;margin:8px 0 12px;padding:0}.tilelist li{display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--line)}
 .tilelist .chk{flex:1 1 0;min-width:0;hyphens:auto;overflow-wrap:break-word;margin:4px 0;min-height:40px}.tilelist .mv{flex:none}.tilelist .mv{min-width:40px;min-height:40px;padding:0}.tilelist .mv:disabled{opacity:.35;cursor:default}
 #modal .tabs[role=tablist]{flex-wrap:wrap} /* five settings tabs: a second row on narrow phones rather than cut off */
+/* Block strips with more blocks out of view fade out at that edge */
+.strip2 .more-r{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 56px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 56px),transparent)}
+.strip2 .more-l{-webkit-mask-image:linear-gradient(to left,#000 calc(100% - 56px),transparent);mask-image:linear-gradient(to left,#000 calc(100% - 56px),transparent)}
+.strip2 .more-l.more-r{-webkit-mask-image:linear-gradient(to right,transparent,#000 56px,#000 calc(100% - 56px),transparent);mask-image:linear-gradient(to right,transparent,#000 56px,#000 calc(100% - 56px),transparent)}
+.strip2.more-l,.strip2.more-r{-webkit-mask-image:none;mask-image:none} /* phones scroll the whole row: its own edges fade instead, below */
+@media (max-width:899px){.strip2.more-r{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent)}
+  .strip2.more-l{-webkit-mask-image:linear-gradient(to left,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to left,#000 calc(100% - 40px),transparent)}
+  .strip2.more-l.more-r{-webkit-mask-image:linear-gradient(to right,transparent,#000 40px,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to right,transparent,#000 40px,#000 calc(100% - 40px),transparent)}}
+a.mini{color:inherit;text-decoration:none;display:block}a.mini:hover small,a.mini:focus-visible small{text-decoration:underline}

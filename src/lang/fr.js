@@ -416,4 +416,5 @@ export default {
   moveUp: "Monter {t}",
   moveDown: "Descendre {t}",
   tilesReset: "Revenir au tableau de bord standard",
+  moscowHint: "Heure de Moscou {t} : un {c} achète {n} sats, écrit comme une heure. Ouvre le glossaire.",
 };

@@ -416,4 +416,5 @@ export default {
   moveUp: "Sposta su {t}",
   moveDown: "Sposta giù {t}",
   tilesReset: "Torna alla dashboard standard",
+  moscowHint: "Ora di Mosca {t}: un {c} compra {n} sats, scritto come un orario. Apre il glossario.",
 };
