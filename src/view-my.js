@@ -146,15 +146,15 @@ export function viewMy(query) {
                 id: 'my-nostr',
                 onclick: async () => {
                   const url = location.href.split('#')[0] + '#' + myLink(d, l);
-                  const r = await shareNostr(
-                    t('nostrText', {
-                      name,
-                      n: L.fmtNum(h),
-                      d: fmtDay(mined),
-                      s: Number.isFinite(since) ? L.fmtNum(since) : '…',
-                      u: url,
-                    })
-                  );
+                  // the link goes in after t(), so no right-to-left isolate mark sticks to it (a client would link it)
+                  const text = t('nostrText', {
+                    name,
+                    n: L.fmtNum(h),
+                    d: fmtDay(mined),
+                    s: Number.isFinite(since) ? L.fmtNum(since) : '…',
+                    u: '\u0000',
+                  }).replace(/\u2068?\u0000\u2069?/, () => url);
+                  const r = await shareNostr(text);
                   toast(
                     r.how === 'posted'
                       ? t('nostrPosted', { n: r.relays })

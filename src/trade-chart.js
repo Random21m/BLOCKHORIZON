@@ -876,9 +876,10 @@ export function tradeChart() {
     g.fillText(text, x0 + 6, y);
   }
   function axisTime(ms, dayTf) {
-    const o = { h12: S.h12, utc: S.utc, dateFmt: S.dateFmt },
+    // day and week candles open at midnight UTC: they are named by that UTC date, wherever the reader is
+    const o = { h12: S.h12, utc: S.utc || minutes >= 1440, dateFmt: S.dateFmt },
       d = new Date(ms),
-      mid = S.utc ? d.getUTCHours() === 0 && d.getUTCMinutes() === 0 : d.getHours() === 0 && d.getMinutes() === 0;
+      mid = o.utc ? d.getUTCHours() === 0 && d.getUTCMinutes() === 0 : d.getHours() === 0 && d.getMinutes() === 0;
     if (dayTf || mid) {
       const s = L.fmtDate(ms, Object.assign(o, { dateOnly: true }));
       return o.dateFmt === 'iso' ? s.slice(5) : s.slice(0, 5);
@@ -887,7 +888,7 @@ export function tradeChart() {
   }
   function readout(i) {
     const k = candles[i];
-    return { k, ch: (k.c / k.o - 1) * 100, time: fmtD(k.t, minutes >= 1440 ? { dateOnly: true } : {}) };
+    return { k, ch: (k.c / k.o - 1) * 100, time: fmtD(k.t, minutes >= 1440 ? { dateOnly: true, utc: true } : {}) };
   }
   function legendFor(i) {
     const { k, ch } = readout(i),

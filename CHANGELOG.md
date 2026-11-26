@@ -16,6 +16,28 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
 - **Mining:** "Stop following" also empties the transaction box; a brief network hiccup no longer shows "Not
   available from this data server" for the pool ranking or the past adjustments.
 - The fee tile's "later" fits in Finnish and Georgian; five unused texts were removed from every language.
+- **A data server that stops answering** (an overloaded node, a stalled VPN or Tor link) now counts as offline after
+  15 seconds: the app switches to the backup server and shows the dot as offline, instead of waiting for ever.
+- **Your own node only, also in the widget:** the widget preview on the About page (and a widget opened in the same
+  browser) asked mempool.space even when Settings names your own node. It now asks the same server as the app, and
+  no longer overwrites the app's saved values.
+- **Pages opened before the data arrives** (from a link, a home-screen shortcut, or just after starting) fill in once
+  it does: the Calculator's price and fees, the coming events, "Your block", the Alarm page's height and the halving
+  replay. The Calculator also uses the latest price, not the one from when the page opened.
+- **Phones:** a downward drag on the trading chart (moving a line or an alert) no longer reloads the page.
+- **The e-ink clock's price** changes once a minute, as intended, instead of flickering with every trade. A kiosk
+  screen that reloads during an outage still says that no new data has come in.
+- **The Alarm page** keeps what you are typing when an alert fires. After switching data server, transaction and
+  address alerts are checked again (they stopped on a network with lower block heights, such as signet).
+- **Day and week candles** on the trading chart are named by their UTC date, so they no longer show the previous day
+  west of UTC.
+- Arabic, Persian, Hebrew: the link in a Nostr share no longer carries invisible marks that broke it, and the arrow
+  keys move through the Settings tabs in the direction they point.
+- Search by date finds the Genesis block for 3 January 2009.
+- **Small screens:** the clock fits a phone on its side; the mining widget's words fit from 200 px wide (its picture
+  from 300 px); the Lightning tile puts the date first, so a narrow tile never cuts it. The date field and the widget
+  preview show the keyboard focus ring. Greek: the phone tab bar's "More" is shorter so it is not cut. Russian and
+  Georgian: the order book's headings wrap instead of being cut. Georgian: the tiles' second lines fit on large screens.
 
 ## 0.22.0
 

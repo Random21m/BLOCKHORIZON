@@ -336,8 +336,8 @@ export const clockSince = (now) =>
     : sinceText(now);
 // Shown on a screen left alone once nothing new has arrived for half an hour (connection lost, node down).
 export const staleText = (now) =>
-  (opts.kiosk || opts.eink) && st.dataAt && now - st.dataAt > STALE_SEC * 1000
-    ? t('staleFor', { m: Math.floor((now - st.dataAt) / 60000) })
+  (opts.kiosk || opts.eink) && now - st.dataAt > STALE_SEC * 1000
+    ? t('staleFor', { m: Math.floor((now - Math.min(st.dataAt, st.freshAt || st.dataAt)) / 60000) })
     : '';
 // The price, read at most once a minute on e-ink.
 let einkPrice = { at: 0, v: NaN };

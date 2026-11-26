@@ -916,6 +916,10 @@ nav .navmore {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Georgian letters are wide: a slightly smaller small print keeps the tiles' second lines whole */
+html[lang='ka'] .ts {
+  font-size: clamp(10.5px, 1.4vh, 12px);
+}
 .tile .arc {
   max-width: 120px;
   margin: 0 auto;
@@ -2917,6 +2921,13 @@ h2.hist {
   font-family: system-ui, sans-serif;
   font-size: 11px;
   border-bottom: 1px solid var(--line2);
+}
+/* a long heading (Russian, Georgian) takes two lines instead of being cut */
+.brow.bhead span {
+  white-space: normal;
+  line-height: 1.25;
+  align-self: end;
+  padding-bottom: 2px;
 }
 .book .brow.ask,
 .book .brow.bid {

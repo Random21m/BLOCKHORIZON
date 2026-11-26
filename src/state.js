@@ -62,7 +62,10 @@ export const st = {
   ln: null,
   last: 0,
   conn: 'off',
-  dataAt: 0,
+  // fresh data last came from the network: since this page started until it does (so a screen that reloads during an
+  // outage still says so), and when it last did in this browser (for how long ago)
+  dataAt: Date.now(),
+  freshAt: store('dataAt') || 0,
 };
 export const alarms = () => store('alarms') || [];
 export const feeAlerts = () => store('feeAlerts') || [];

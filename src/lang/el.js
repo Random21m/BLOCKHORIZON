@@ -61,7 +61,7 @@ export default {
   footPrivacy: 'Απόρρητο',
   footSupport: 'Υποστήριξη',
   footData: 'Δεδομένα: {s} και δημόσιες ροές του Kraken',
-  navMore: 'Περισσότερα',
+  navMore: 'Άλλα',
   tab_data: 'Δεδομένα',
   srvL: 'Διακομιστής δεδομένων',
   srvIntro:
