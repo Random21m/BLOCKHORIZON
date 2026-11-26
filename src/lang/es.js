@@ -397,7 +397,6 @@ export default {
   satsSym: "Símbolo de sats",
   hrAvg: "Media de hashrate",
   days: "{n} días",
-  showFees: "Mostrar comisiones y mempool",
   feesRtl: "Comisiones de derecha a izquierda",
   showPool: "Mostrar pool de minería",
   showMoscow: "Mostrar hora de Moscú",
@@ -412,4 +411,9 @@ export default {
   blockSound: "Sonido de bloque",
   reduce: "Reducir movimiento (sin transiciones)",
   storedOnly: "Los ajustes se guardan solo en este navegador.",
+  tab_tiles: "Panel",
+  tilesIntro: "Elige los recuadros que muestra el panel y su orden. La altura de bloque va siempre primero.",
+  moveUp: "Subir {t}",
+  moveDown: "Bajar {t}",
+  tilesReset: "Volver al panel estándar",
 };

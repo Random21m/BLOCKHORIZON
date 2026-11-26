@@ -397,7 +397,6 @@ export default {
   satsSym: "Symbole des sats",
   hrAvg: "Moyenne du hashrate",
   days: "{n} jours",
-  showFees: "Afficher frais et mempool",
   feesRtl: "Frais de droite à gauche",
   showPool: "Afficher le pool de minage",
   showMoscow: "Afficher l’heure de Moscou",
@@ -412,4 +411,9 @@ export default {
   blockSound: "Son de bloc",
   reduce: "Réduire les animations (sans transitions)",
   storedOnly: "Les réglages sont enregistrés uniquement dans ce navigateur.",
+  tab_tiles: "Tableau de bord",
+  tilesIntro: "Choisissez les tuiles du tableau de bord et leur ordre. La hauteur de bloc reste toujours en premier.",
+  moveUp: "Monter {t}",
+  moveDown: "Descendre {t}",
+  tilesReset: "Revenir au tableau de bord standard",
 };

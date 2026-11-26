@@ -4,7 +4,7 @@ import { api, normServer, DEFAULT_SERVER, FALLBACK, getServer } from './api.js';
 import { CURRENCIES } from './price.js';
 import { t, LANGS, loadLang } from './i18n.js';
 import { play, BLOCK_SOUNDS } from './sound.js';
-import { hooks, $, S, save, st, el, applyLook } from './state.js';
+import { hooks, $, S, save, st, el, applyLook, dashTiles, tileOn, TILES, STRIPS } from './state.js';
 
 // ---------- modals ----------
 // Dialogs are named by their heading, keep keyboard focus inside while open, and hand it back to where it was on close.
@@ -46,8 +46,23 @@ export function settingsModal() {
   const days = (n) => t('days', { n });
   const tabs = { display: () => el('div', null, row(t('theme'), sel('theme', [['dark', t('dark')], ['light', t('light')], ['auto', t('auto')]])), row(t('currency'), sel('cur', CURRENCIES.map((c) => [c, c]))),
       row(t('satsSym'), sel('satsSym', [['sats', 'sats'], ['SATS', 'SATS'], ['sat', 'sat']])), row(t('hrAvg'), sel('hr', [['d7', days(7)], ['d14', days(14)], ['d30', days(30)], ['d90', days(90)]])),
-      chk('showFees', t('showFees')), chk('feesRtl', t('feesRtl')), chk('showPool', t('showPool')), chk('showMoscow', t('showMoscow')), chk('showCap', t('showCap')),
+      chk('feesRtl', t('feesRtl')), chk('showPool', t('showPool')), chk('showMoscow', t('showMoscow')), chk('showCap', t('showCap')),
       el('button', { onclick: () => { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen && document.documentElement.requestFullscreen().catch(() => {}); } }, t('fullscreen'))),
+    // Dashboard: which tiles are shown and in what order (the block height always comes first)
+    tiles: () => {
+      const list = dashTiles(), put = () => { S.tileOrder = list.map((x) => x.id); S.tileOff = [...list.filter((x) => !x.on).map((x) => x.id), ...STRIPS.map((x) => x[0]).filter((id) => !tileOn(id))]; save(); hooks.renderView(); };
+      const name = (id) => t(TILES.find((x) => x[0] === id)[1]);
+      const redraw = (focus) => { settingsModal.tab = 'tiles'; settingsModal(); if (focus) { const b = $(focus); if (b && !b.disabled) b.focus(); else { const c = $('#tl-' + focus.split('-')[2]); if (c) c.focus(); } } };
+      const move = (i, d) => { const [x] = list.splice(i, 1); list.splice(i + d, 0, x); put(); redraw(`#tl-${d < 0 ? 'up' : 'dn'}-${x.id}`); };
+      return el('div', null, el('p', { class: 'dim' }, t('tilesIntro')),
+        el('ul', { class: 'tilelist' }, list.map((x, i) => el('li', null,
+          el('label', { class: 'chk' }, el('input', { type: 'checkbox', id: 'tl-' + x.id, checked: x.on, onchange: (e) => { x.on = e.target.checked; put(); } }), name(x.id)),
+          el('button', { id: 'tl-up-' + x.id, class: 'mv', 'aria-label': t('moveUp', { t: name(x.id) }), title: t('moveUp', { t: name(x.id) }), disabled: i === 0, onclick: () => move(i, -1) }, '↑'),
+          el('button', { id: 'tl-dn-' + x.id, class: 'mv', 'aria-label': t('moveDown', { t: name(x.id) }), title: t('moveDown', { t: name(x.id) }), disabled: i === list.length - 1, onclick: () => move(i, 1) }, '↓')))),
+        STRIPS.map(([id, k]) => el('label', { class: 'chk' }, el('input', { type: 'checkbox', id: 'tl-' + id, checked: tileOn(id), onchange: (e) => {
+          const off = (S.tileOff || []).filter((y) => y !== id); if (!e.target.checked) off.push(id); S.tileOff = off; save(); hooks.renderView(); } }), t(k))),
+        el('button', { onclick: () => { S.tileOrder = null; S.tileOff = null; save(); hooks.renderView(); redraw(); } }, t('tilesReset')));
+    },
     format: () => el('div', null, row(t('language'), sel('lang', Object.entries(LANGS), () => { if ($('#modal').hidden) return; settingsModal.tab = 'format'; settingsModal(); })), row(t('timeL'), sel('h12', [[false, t('h24f')], [true, t('h12f')]])), row(t('dateL'), sel('dateFmt', [['iso', '2026-11-24'], ['dmy', '24.11.2026'], ['mdy', '11/24/2026']])), row(t('zone'), sel('utc', [[false, t('local')], [true, 'UTC']]))),
     sounds: () => el('div', null, chk('sound', t('soundNew')), row(t('blockSound'), sel('bsound', Object.entries(BLOCK_SOUNDS).map(([k, v]) => [k, t(v)]))), el('button', { onclick: () => play(S.bsound) }, '▶ ' + t('test')),
       chk('reduced', t('reduce'))),

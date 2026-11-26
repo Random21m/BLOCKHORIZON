@@ -397,7 +397,6 @@ export default {
   satsSym: "Sats-symbool",
   hrAvg: "Hashrate-gemiddelde",
   days: "{n} dagen",
-  showFees: "Kosten en mempool tonen",
   feesRtl: "Kosten van rechts naar links",
   showPool: "Miningpool tonen",
   showMoscow: "Moskou-tijd tonen",
@@ -412,4 +411,9 @@ export default {
   blockSound: "Blokgeluid",
   reduce: "Minder beweging (geen overgangen)",
   storedOnly: "Instellingen worden alleen in deze browser bewaard.",
+  tab_tiles: "Dashboard",
+  tilesIntro: "Kies welke tegels het dashboard toont en in welke volgorde. De blokhoogte staat altijd voorop.",
+  moveUp: "{t} omhoog",
+  moveDown: "{t} omlaag",
+  tilesReset: "Terug naar het standaarddashboard",
 };

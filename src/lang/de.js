@@ -397,7 +397,6 @@ export default {
   satsSym: "Sats-Symbol",
   hrAvg: "Hashrate-Mittel",
   days: "{n} Tage",
-  showFees: "Gebühren und Mempool zeigen",
   feesRtl: "Gebühren von rechts nach links",
   showPool: "Mining-Pool zeigen",
   showMoscow: "Moskau-Zeit zeigen",
@@ -412,4 +411,9 @@ export default {
   blockSound: "Block-Ton",
   reduce: "Weniger Bewegung (keine Übergänge)",
   storedOnly: "Einstellungen werden nur in diesem Browser gespeichert.",
+  tab_tiles: "Dashboard",
+  tilesIntro: "Wähle die Kacheln des Dashboards und ihre Reihenfolge. Die Blockhöhe steht immer vorn.",
+  moveUp: "{t} nach oben",
+  moveDown: "{t} nach unten",
+  tilesReset: "Zurück zum Standard-Dashboard",
 };

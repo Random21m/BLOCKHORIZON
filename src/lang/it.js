@@ -397,7 +397,6 @@ export default {
   satsSym: "Simbolo dei sats",
   hrAvg: "Media dell’hashrate",
   days: "{n} giorni",
-  showFees: "Mostra commissioni e mempool",
   feesRtl: "Commissioni da destra a sinistra",
   showPool: "Mostra la pool di mining",
   showMoscow: "Mostra l’ora di Mosca",
@@ -412,4 +411,9 @@ export default {
   blockSound: "Suono del blocco",
   reduce: "Riduci il movimento (senza transizioni)",
   storedOnly: "Le impostazioni sono salvate solo in questo browser.",
+  tab_tiles: "Dashboard",
+  tilesIntro: "Scegli i riquadri della dashboard e il loro ordine. L'altezza del blocco è sempre la prima.",
+  moveUp: "Sposta su {t}",
+  moveDown: "Sposta giù {t}",
+  tilesReset: "Torna alla dashboard standard",
 };

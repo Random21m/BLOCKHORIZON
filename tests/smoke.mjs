@@ -175,6 +175,22 @@ await ok('German: dashboard, block page and settings have no English left', asyn
   for (const w of [' ago', 'blocks deep', 'channels', 'of epoch', 'issued', 'Since last']) assert.ok(!d.includes(w), 'English left: ' + w);
   await page.goto(base + '#/block/840000'); await page.waitForSelector('.panel dl', { timeout: 6000 }); assert.ok((await page.locator('main').innerText()).includes('Transaktionen'));
   await page.goto(base); await page.click('#btn-settings'); await page.click('[data-k=format]'); await page.selectOption('#st-lang', 'en'); await page.keyboard.press('Escape'); });
+await ok('dashboard tiles: hide one, move one to the front, kept after a reload; the standard set comes back; the old fees switch carries over', async () => {
+  const order = () => page.evaluate(() => [...document.querySelectorAll('.dashgrid > .tile:not(.hero)')].map((x) => x.className.match(/t-(\w+)/)[1]));
+  await page.goto(base); await until(page, () => document.querySelectorAll('.dashgrid > .tile').length >= 11);
+  await page.click('#btn-settings'); await page.click('[data-k=tiles]'); await page.uncheck('#tl-ln');
+  for (let i = 0; i < 12 && !(await page.isDisabled('#tl-up-price')); i++) await page.click('#tl-up-price');
+  assert.equal(await page.evaluate(() => document.activeElement.id), 'tl-price'); // focus stays on the moved tile once it is first
+  await page.keyboard.press('Escape'); let o = await order(); assert.equal(o[0], 'price'); assert.ok(!o.includes('ln'), o.join());
+  await page.reload(); await until(page, () => document.querySelectorAll('.dashgrid > .tile').length >= 10); o = await order(); assert.equal(o[0], 'price'); assert.ok(!o.includes('ln'));
+  await page.click('#btn-settings'); await page.click('[data-k=tiles]'); await page.uncheck('#tl-rec'); await page.keyboard.press('Escape');
+  assert.equal(await page.locator('.strip2 .blk:not(.proj)').count(), 0); assert.ok(await page.locator('.strip2 .blk.proj').count() > 0);
+  await page.click('#btn-settings'); await page.click('[data-k=tiles]'); await page.click('text=' + 'Back to the standard dashboard'); await page.keyboard.press('Escape');
+  assert.deepEqual(await order(), ['halving', 'diff', 'hash', 'supply', 'last', 'prod', 'fees', 'mem', 'price', 'ln']); assert.ok(await page.locator('.strip2 .blk:not(.proj)').count() > 0);
+  await page.evaluate(() => { const s = JSON.parse(localStorage.getItem('bh.settings')); delete s.tileOff; delete s.tileOrder; s.showFees = false; localStorage.setItem('bh.settings', JSON.stringify(s)); });
+  await page.reload(); await until(page, () => document.querySelectorAll('.dashgrid > .tile').length >= 8); o = await order();
+  assert.ok(!o.includes('fees') && !o.includes('mem') && o.includes('price'), o.join()); assert.equal(await page.locator('.strip2 .blk.proj').count(), 0);
+  await page.evaluate(() => { const s = JSON.parse(localStorage.getItem('bh.settings')); delete s.tileOff; delete s.showFees; localStorage.setItem('bh.settings', JSON.stringify(s)); }); });
 await ok('fee alert: fires when fees are at or below the limit, then is removed', async () => {
   await page.goto(base + 'privacy.html'); await page.evaluate(() => localStorage.setItem('bh.feeAlerts', JSON.stringify([{ level: 'next', max: 6, sound: 'clock' }, { level: 'next', max: 0.5 }])));
   await page.goto(base); await until(page, () => /Fees dropped: Next block is 5\.0 sat\/vB \(your limit 6\.0\)/.test(document.querySelector('#toast')?.textContent || ''), null, { timeout: 8000 });
@@ -551,7 +567,7 @@ await ok('keyboard: Tab stays inside an open dialog, Escape closes it and focus 
   await page.goto(base); await page.focus('#btn-settings'); await page.keyboard.press('Enter'); await page.waitForSelector('#st-theme');
   for (let i = 0; i < 25; i++) { await page.keyboard.press('Tab'); assert.ok(await page.evaluate(() => document.querySelector('#modal').contains(document.activeElement)), 'focus left the dialog at Tab ' + (i + 1)); }
   assert.equal(await page.getAttribute('#modal', 'aria-labelledby'), 'modal-title');
-  await page.focus('#tab-display'); await page.keyboard.press('ArrowRight'); assert.equal(await page.evaluate(() => document.activeElement.id), 'tab-format'); assert.equal(await page.getAttribute('#tab-format', 'aria-selected'), 'true');
+  await page.focus('#tab-display'); await page.keyboard.press('ArrowRight'); assert.equal(await page.evaluate(() => document.activeElement.id), 'tab-tiles'); assert.equal(await page.getAttribute('#tab-tiles', 'aria-selected'), 'true');
   await page.keyboard.press('Escape'); assert.ok(await page.locator('#modal').isHidden()); assert.equal(await page.evaluate(() => document.activeElement.id), 'btn-settings'); });
 await ok('French: glossary and anniversaries are translated', async () => {
   await page.goto(base); await page.click('#btn-settings'); await page.click('[data-k=format]'); await page.selectOption('#st-lang', 'fr'); await page.keyboard.press('Escape');

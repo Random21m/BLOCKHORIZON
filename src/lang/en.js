@@ -397,7 +397,6 @@ export default {
   satsSym: "Sats symbol",
   hrAvg: "Hashrate average",
   days: "{n} days",
-  showFees: "Show fees and mempool",
   feesRtl: "Fees right to left",
   showPool: "Show mining pool",
   showMoscow: "Show Moscow time",
@@ -412,4 +411,9 @@ export default {
   blockSound: "Block sound",
   reduce: "Reduce motion (no transitions)",
   storedOnly: "Settings are stored only in this browser.",
+  tab_tiles: "Dashboard",
+  tilesIntro: "Choose the tiles the dashboard shows and their order. The block height is always first.",
+  moveUp: "Move {t} up",
+  moveDown: "Move {t} down",
+  tilesReset: "Back to the standard dashboard",
 };

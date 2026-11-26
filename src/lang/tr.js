@@ -397,7 +397,6 @@ export default {
   satsSym: "Sats simgesi",
   hrAvg: "Hashrate ortalaması",
   days: "{n} gün",
-  showFees: "Ücretleri ve mempool'u göster",
   feesRtl: "Ücretler sağdan sola",
   showPool: "Madencilik havuzunu göster",
   showMoscow: "Moskova saatini göster",
@@ -412,4 +411,9 @@ export default {
   blockSound: "Blok sesi",
   reduce: "Hareketi azalt (geçiş yok)",
   storedOnly: "Ayarlar yalnızca bu tarayıcıda saklanır.",
+  tab_tiles: "Pano",
+  tilesIntro: "Panoda hangi kutucukların ve hangi sırayla görüneceğini seçin. Blok yüksekliği her zaman ilk sırada.",
+  moveUp: "{t} yukarı taşı",
+  moveDown: "{t} aşağı taşı",
+  tilesReset: "Standart panoya dön",
 };
