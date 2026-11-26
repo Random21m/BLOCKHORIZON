@@ -467,4 +467,20 @@ export default {
     'Een geluid en een bericht zodra elk ervan in een blok staat. In te stellen op de pagina van een wachtende transactie.',
   minutes: '{n} min',
   staleFor: 'Al {m} minuten geen nieuwe gegevens: controleer de verbinding of je node.',
+  addrTitle: 'Een adres volgen',
+  addrIntro:
+    'Een geluid en een bericht als er munten binnenkomen op een van je adressen: één keer als de betaling gezien wordt, en nog een keer als die bevestigd is. Alleen je node wordt ernaar gevraagd; het adres gaat nergens anders heen.',
+  addrNeedsNode:
+    'Hiervoor moet je node de gegevensserver zijn (Instellingen, Gegevens), zodat je adressen alleen op je eigen node worden opgezocht.',
+  addrPh: 'bc1q…, 1… of 3…',
+  addrL: 'Bitcoinadres',
+  addrAdd: 'Volgen',
+  addrBad: 'Dat is geen bitcoinadres. Controleer het op typefouten.',
+  addrDup: 'Dit adres wordt al gevolgd.',
+  addrMax: 'Je kunt tot 10 adressen volgen.',
+  addrPhone:
+    'Staat ‘Op je telefoon’ aan, dan krijgt je telefoon deze berichten ook. Ze tonen het begin en einde van het adres en het bedrag, en gaan via je ntfy-server.',
+  addrActive: 'Gevolgde adressen',
+  addrIncoming: '{a} ontvangt {amt} BTC (nog niet bevestigd)',
+  addrConfirmed: '{a} heeft {amt} BTC ontvangen, bevestigd in blok {h}',
 };

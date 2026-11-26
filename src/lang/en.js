@@ -463,4 +463,20 @@ export default {
   txAlertsIntro: "A sound and a message when each of these is in a block. Set on a waiting transaction's page.",
   minutes: '{n} min',
   staleFor: 'No new data for {m} minutes: check the connection or your node.',
+  addrTitle: 'Watch an address',
+  addrIntro:
+    'A sound and a message when coins arrive at one of your addresses: once when the payment is seen, and again when it is confirmed. Only your node is asked about it; the address is never sent anywhere else.',
+  addrNeedsNode:
+    'This needs your node as the data server (Settings, Data), so that your addresses are only ever looked up on your node.',
+  addrPh: 'bc1q…, 1… or 3…',
+  addrL: 'Bitcoin address',
+  addrAdd: 'Watch',
+  addrBad: 'That is not a Bitcoin address. Check it for typos.',
+  addrDup: 'This address is already watched.',
+  addrMax: 'You can watch up to 10 addresses.',
+  addrPhone:
+    'With "On your phone" on, your phone gets these messages too. They show the start and end of the address and the amount, and pass through your ntfy server.',
+  addrActive: 'Watched addresses',
+  addrIncoming: '{a} is receiving {amt} BTC (not confirmed yet)',
+  addrConfirmed: '{a} received {amt} BTC, confirmed in block {h}',
 };

@@ -13,10 +13,11 @@ import {
   checkAlarms,
   checkFeeAlerts,
   checkTxAlerts,
+  checkAddrAlerts,
   resetAlarmTip,
 } from './data.js';
 import { sinceText, srcHost } from './ui.js';
-import { initPush } from './push.js';
+import { initPush, ownNode } from './push.js';
 import { viewDash, viewClock, finalText, clockOpts, clockSince, staleText } from './view-dash.js';
 import { viewBlock, viewTx } from './view-chain.js';
 import { viewAlarm, viewCalc, paintFeeNow } from './view-tools.js';
@@ -316,6 +317,7 @@ function render() {
   checkAlarms();
   checkFeeAlerts();
   checkTxAlerts();
+  checkAddrAlerts(ownNode());
   paintFeeNow();
   paintMySince();
   paintFoot();

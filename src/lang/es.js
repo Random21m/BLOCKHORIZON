@@ -468,4 +468,20 @@ export default {
     'Un sonido y un mensaje cuando cada una esté en un bloque. Se activa en la página de una transacción en espera.',
   minutes: '{n} min',
   staleFor: 'Sin datos nuevos desde hace {m} minutos: revisa la conexión o tu nodo.',
+  addrTitle: 'Vigilar una dirección',
+  addrIntro:
+    'Un sonido y un mensaje cuando llegan monedas a una de tus direcciones: una vez cuando se ve el pago y otra cuando se confirma. Solo se consulta a tu nodo; la dirección nunca se envía a ningún otro sitio.',
+  addrNeedsNode:
+    'Necesita tu nodo como servidor de datos (Ajustes, Datos), para que tus direcciones solo se consulten en tu nodo.',
+  addrPh: 'bc1q…, 1… o 3…',
+  addrL: 'Dirección de Bitcoin',
+  addrAdd: 'Vigilar',
+  addrBad: 'Eso no es una dirección de Bitcoin. Revisa si hay erratas.',
+  addrDup: 'Ya estás vigilando esta dirección.',
+  addrMax: 'Puedes vigilar hasta 10 direcciones.',
+  addrPhone:
+    'Con «En tu móvil» activado, tu móvil también recibe estos mensajes. Muestran el principio y el final de la dirección y el importe, y pasan por tu servidor ntfy.',
+  addrActive: 'Direcciones vigiladas',
+  addrIncoming: '{a} está recibiendo {amt} BTC (aún sin confirmar)',
+  addrConfirmed: '{a} recibió {amt} BTC, confirmado en el bloque {h}',
 };

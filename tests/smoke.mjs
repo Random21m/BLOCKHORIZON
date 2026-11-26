@@ -2387,6 +2387,106 @@ await ok('price: Coinbase takes over while Kraken is silent, and closes once Kra
   assert.ok(backupClosed, 'backup still open');
   await c.close();
 });
+await ok(
+  'watched address, on a node only: checked on the node, a payment gives a message when seen and when confirmed; never on the public site',
+  async () => {
+    assert.equal(
+      await page.evaluate(async () => {
+        location.hash = '#/alarm';
+        await new Promise((r) => setTimeout(r, 300));
+        return !!document.querySelector('#ad-a') || /Watch an address/.test(document.querySelector('main').innerText);
+      }),
+      false,
+      'offered on the public site'
+    );
+    const A = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+      o = '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa';
+    const tx = (id, sats, h) => ({
+      txid: id.repeat(64),
+      vin: [{ prevout: { scriptpubkey_address: o, value: sats * 2 } }],
+      vout: [{ scriptpubkey_address: A, value: sats }],
+      status: h ? { confirmed: true, block_height: h } : { confirmed: false },
+    });
+    let txs = [tx('1', 50000, 977000)],
+      tip = 977411;
+    const asked = [],
+      synced = [];
+    const c = await b.newContext({ viewport: { width: 1280, height: 900 } });
+    await c.routeWebSocket(/./, (ws) => ws.close());
+    await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => {
+      asked.push(r.request().url());
+      r.abort();
+    });
+    const json = (o) => ({ contentType: 'application/json', body: JSON.stringify(o) });
+    await c.route(/127\.0\.0\.1:\d+\/config\.json/, (r) => r.fulfill(json({ server: 'self', push: true })));
+    await c.route(/127\.0\.0\.1:\d+\/push\/sync$/, (r) => {
+      const j = JSON.parse(r.request().postData());
+      synced.push(j);
+      r.fulfill(json({ ok: true, watching: j.alerts.length }));
+    });
+    // the node's own mempool, behind its /api
+    await c.route(/127\.0\.0\.1:\d+\/api\//, (route) => {
+      const u = new URL(route.request().url()).pathname;
+      if (u === '/api/address/' + A + '/txs') return route.fulfill(json(txs));
+      if (u === '/api/blocks/tip/height') return route.fulfill({ contentType: 'text/plain', body: String(tip) });
+      const m = MOCK[u];
+      if (!m) return route.fulfill({ status: 404, body: '' });
+      route.fulfill({ contentType: m[0], body: fx(m[1]) });
+    });
+    const p = await c.newPage();
+    const toastText = () => p.evaluate(() => document.querySelector('#toast')?.textContent || '');
+    await p.goto(base + '#/alarm');
+    await p.waitForSelector('#ad-a');
+    await p.fill('#ad-a', A.slice(0, -1) + 'x');
+    await p.click('#ad-go');
+    assert.match(await toastText(), /not a Bitcoin address/);
+    await p.fill('#ad-a', A.toUpperCase());
+    await p.fill('#ad-l', 'Savings');
+    await p.click('#ad-go');
+    await until(p, () => /Savings/.test(document.querySelector('#ad-list')?.textContent || ''));
+    assert.match(await p.locator('#ad-list').innerText(), /bc1qar0s…wf5mdq/);
+    await until(p, (a) => !!(JSON.parse(localStorage.getItem('bh.addrSeen') || '{}')[a] || null), A);
+    await p.waitForTimeout(500);
+    assert.doesNotMatch(await toastText(), /receiving|received/, 'the old payment is only noted');
+    // a new payment arrives, then a block: checked again at the new height
+    txs = [tx('2', 1234500), ...txs];
+    tip = 977412;
+    await p.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+    await until(p, () =>
+      /bc1qar0s…wf5mdq \(Savings\) is receiving 0\.012345 BTC/.test(document.querySelector('#toast')?.textContent || '')
+    );
+    txs[0] = tx('2', 1234500, 977413);
+    tip = 977413;
+    await p.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+    await until(p, () =>
+      /received 0\.012345 BTC, confirmed in block 977,413/.test(document.querySelector('#toast')?.textContent || '')
+    );
+    // with "On your phone" on, the node gets the address and both messages, with {amt} and {now} for it to fill in
+    await p.check('#pu-on');
+    await until(p, () => /watching 1/.test(document.querySelector('#pu-msg')?.textContent || ''));
+    const last = synced[synced.length - 1].alerts.find((a) => a.kind === 'addr');
+    assert.deepEqual(last, {
+      kind: 'addr',
+      addr: A,
+      msg: '₿ bc1qar0s…wf5mdq (Savings) is receiving {amt} BTC (not confirmed yet)',
+      msg2: '✅ bc1qar0s…wf5mdq (Savings) received {amt} BTC, confirmed in block {now}',
+    });
+    assert.ok(!asked.some((u) => u.includes('/address/')), 'an address was asked of another server');
+    // with another data server picked in Settings, the address is not asked there, and the panel says why
+    await p.evaluate(() => {
+      const s = JSON.parse(localStorage.getItem('bh.settings'));
+      s.server = 'https://mempool.space';
+      localStorage.setItem('bh.settings', JSON.stringify(s));
+    });
+    await p.reload();
+    await until(p, () => /needs your node as the data server/.test(document.querySelector('main')?.innerText || ''));
+    assert.equal(await p.locator('#ad-a').count(), 0);
+    tip = 977414;
+    await p.waitForTimeout(1000);
+    assert.ok(!asked.some((u) => u.includes('/address/')), 'an address was asked of another server');
+    await c.close();
+  }
+);
 await ok('accessibility: no axe-core violations on the main pages and dialogs, dark and light', async () => {
   let AXE;
   try {

@@ -69,6 +69,9 @@ export const feeAlerts = () => store('feeAlerts') || [];
 export const priceAlerts = () => store('priceAlerts') || [];
 // Transactions to report once confirmed: [{ txid }] (set on a waiting transaction's page).
 export const txAlerts = () => store('txAlerts') || [];
+// Addresses watched for incoming payments, on a node only: [{ addr, label }]. What was already seen at each address is
+// kept apart (addrSeen: { addr: { txid: 'm' | 'c' } }), so checking does not count as a change to the list.
+export const addrAlerts = () => store('addrAlerts') || [];
 export const fmtPrice = (v, cur) => L.fmtNum(v, L.priceDigits(v)) + ' ' + cur;
 export const FEE_LVL_KEYS = { next: 'lvlNext', h30: 'lvl30', h1: 'lvl60' }; // translation keys for the fee alert speeds
 export function tzShort(ms) {

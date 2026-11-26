@@ -958,3 +958,70 @@ export function mergeBlocks(cur, fresh) {
   for (const b of [...(cur || []), ...(fresh || [])]) if (b && Number.isFinite(b.height)) by.set(b.height, b);
   return [...by.values()].sort((a, b) => b.height - a.height).slice(0, 15);
 }
+
+// ---- watched addresses (on a node only) ----
+const B32 = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+function bech32Ok(s) {
+  // the checksum of a bech32 (version 0) or bech32m (version 1+) address, so a typo is caught before it is watched
+  const i = s.lastIndexOf('1'),
+    hrp = s.slice(0, i),
+    data = [...s.slice(i + 1)].map((c) => B32.indexOf(c));
+  if (i < 1 || data.length < 7 || data.some((d) => d < 0)) return false;
+  let chk = 1;
+  const G = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3];
+  const step = (v) => {
+    const b = chk >>> 25;
+    chk = ((chk & 0x1ffffff) << 5) ^ v;
+    for (let k = 0; k < 5; k++) if ((b >>> k) & 1) chk ^= G[k];
+  };
+  for (const c of hrp) step(c.charCodeAt(0) >> 5);
+  step(0);
+  for (const c of hrp) step(c.charCodeAt(0) & 31);
+  for (const d of data) step(d);
+  const want = data[0] === 0 ? 1 : 0x2bc830a3;
+  return chk >>> 0 === want;
+}
+// A Bitcoin address as typed -> the address to watch ('' if it is not one). Mainnet, testnet, signet and regtest shapes:
+// legacy (1…, 3…, m…, n…, 2…) by their shape, and bech32 (bc1…, tb1…, bcrt1…) with its checksum.
+export function normAddress(s) {
+  s = String(s || '').trim();
+  if (/^[13mn2][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(s)) return s;
+  const l = s.toLowerCase();
+  if (s !== l && s !== s.toUpperCase()) return ''; // bech32 is all one case
+  if (/^(bc|tb|bcrt)1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{8,87}$/.test(l) && bech32Ok(l)) return l;
+  return '';
+}
+export const shortAddr = (a) => (a.length > 16 ? a.slice(0, 8) + '…' + a.slice(-6) : a);
+// What a transaction (mempool.space /api/address/:a/txs shape) pays an address, net of what it spends from it, in sats.
+export function addrReceived(tx, addr) {
+  let n = 0;
+  for (const o of (tx && tx.vout) || []) if (o && o.scriptpubkey_address === addr) n += o.value || 0;
+  for (const i of (tx && tx.vin) || [])
+    if (i && i.prevout && i.prevout.scriptpubkey_address === addr) n -= i.prevout.value || 0;
+  return n;
+}
+// The payments to an address since it was last checked. `seen` maps txid -> 'm' (waiting) or 'c' (confirmed); null
+// means never checked, which only records what is there now. Returns the new `seen` and the events to report: 'in' for
+// a payment first seen while it waits, 'conf' once it is in a block (also for one first seen already confirmed).
+export function addrEvents(seen, txs, addr) {
+  const next = {},
+    events = [];
+  for (const tx of txs || []) {
+    if (!tx || typeof tx.txid !== 'string') continue;
+    const sats = addrReceived(tx, addr);
+    if (sats <= 0) continue; // a payment from this address, or change back to it
+    const conf = !!(tx.status && tx.status.confirmed);
+    next[tx.txid] = conf ? 'c' : 'm';
+    if (!seen) continue;
+    const was = seen[tx.txid];
+    if (!was)
+      events.push({ kind: conf ? 'conf' : 'in', txid: tx.txid, sats, height: conf ? tx.status.block_height : 0 });
+    else if (was === 'm' && conf) events.push({ kind: 'conf', txid: tx.txid, sats, height: tx.status.block_height });
+  }
+  return { seen: next, events };
+}
+// Satoshis -> a BTC amount without trailing zeros (12345000 -> "0.12345").
+export function fmtBtc(sats, loc) {
+  const d = (Math.abs(sats) / 1e8).toFixed(8).replace(/0+$/, '').split('.')[1] || '';
+  return fmtNum(sats / 1e8, d.length, loc);
+}

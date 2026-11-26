@@ -119,6 +119,7 @@ export const api = {
   pools: () => getJSON('/v1/mining/pools/1w', { cacheKey: 'pools' }), // each pool's blocks in the past week (the Mining page)
   rewards: () => getJSON('/v1/mining/reward-stats/144', { cacheKey: 'rewards' }), // miner revenue and fees over the last 144 blocks (a day)
   tx: (id) => getJSON('/tx/' + id),
+  addrTxs: (a) => getJSON('/address/' + a + '/txs'), // only ever asked of your own node (push.js ownNode)
   // history for the Charts page (not saved in localStorage: the price history is over a megabyte)
   priceHistory: (cur) => getJSON('/v1/historical-price?currency=' + encodeURIComponent(cur)),
   hashrateHistory: (r) => getJSON('/v1/mining/hashrate/' + r),

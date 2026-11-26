@@ -467,4 +467,20 @@ export default {
     'Um som e uma mensagem quando cada uma delas entrar em um bloco. Ative na página de uma transação em espera.',
   minutes: '{n} min',
   staleFor: 'Sem dados novos há {m} minutos: verifique a conexão ou o seu nó.',
+  addrTitle: 'Acompanhar um endereço',
+  addrIntro:
+    'Um som e uma mensagem quando chegam moedas em um dos seus endereços: uma vez quando o pagamento é visto e de novo quando é confirmado. Só o seu nó é consultado; o endereço nunca é enviado para nenhum outro lugar.',
+  addrNeedsNode:
+    'Isso precisa do seu nó como servidor de dados (Configurações, Dados), para que seus endereços sejam consultados só no seu nó.',
+  addrPh: 'bc1q…, 1… ou 3…',
+  addrL: 'Endereço Bitcoin',
+  addrAdd: 'Acompanhar',
+  addrBad: 'Isso não é um endereço Bitcoin. Verifique se há erros de digitação.',
+  addrDup: 'Este endereço já está sendo acompanhado.',
+  addrMax: 'Você pode acompanhar até 10 endereços.',
+  addrPhone:
+    'Com "No seu celular" ativado, seu celular também recebe estas mensagens. Elas mostram o início e o fim do endereço e o valor, e passam pelo seu servidor ntfy.',
+  addrActive: 'Endereços acompanhados',
+  addrIncoming: '{a} está recebendo {amt} BTC (ainda não confirmado)',
+  addrConfirmed: '{a} recebeu {amt} BTC, confirmado no bloco {h}',
 };

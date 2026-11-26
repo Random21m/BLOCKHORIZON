@@ -33,6 +33,7 @@ const chain = {
   fees: { fastestFee: 12, halfHourFee: 8, hourFee: 5, economyFee: 2, minimumFee: 1 },
   prices: { time: 1, USD: 60000, EUR: 55000 },
   txs: {}, // txid -> block height (0 while waiting)
+  addrs: {}, // address -> its transactions, newest first (mempool.space /api/address/:a/txs shape)
 };
 const mempool = await listen((q, r) => {
   const u = q.url.replace(/^\/api/, '');
@@ -49,6 +50,15 @@ const mempool = await listen((q, r) => {
     }
     r.setHeader('content-type', 'application/json');
     return r.end(JSON.stringify(h ? { confirmed: true, block_height: h } : { confirmed: false }));
+  }
+  const am = /^\/address\/([^/]+)\/txs$/.exec(u);
+  if (am) {
+    if (!chain.addrs[am[1]]) {
+      r.statusCode = 400;
+      return r.end('Invalid Bitcoin address');
+    }
+    r.setHeader('content-type', 'application/json');
+    return r.end(JSON.stringify(chain.addrs[am[1]]));
   }
   if (u === '/v1/prices') {
     r.setHeader('content-type', 'application/json');
@@ -238,6 +248,71 @@ try {
       [T2]
     );
   });
+  await ok(
+    'a watched address: what is there is only noted; each new payment is sent when seen and when confirmed',
+    async () => {
+      const A = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+        other = '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa';
+      const tx = (id, outs, ins, h) => ({
+        txid: id.repeat(64),
+        vin: (ins || []).map(([a, v]) => ({ prevout: { scriptpubkey_address: a, value: v } })),
+        vout: outs.map(([a, v]) => ({ scriptpubkey_address: a, value: v })),
+        status: h ? { confirmed: true, block_height: h } : { confirmed: false },
+      });
+      chain.addrs[A] = [tx('1', [[A, 50000]], [[other, 60000]], 899000)]; // an old payment
+      const alerts = [
+        {
+          kind: 'addr',
+          addr: A,
+          msg: 'Savings is receiving {amt} BTC',
+          msg2: 'Savings received {amt} BTC in block {now}',
+        },
+        { kind: 'addr', addr: 'bc1qnotanaddress!', msg: 'x', msg2: 'y' },
+        { kind: 'addr', addr: other, msg: 'no second message' },
+      ];
+      const r = await sync({ id: 'browser0004', url: topic, grp: '.', dec: ',', alerts });
+      assert.equal(r.json.watching, 1);
+      const n = got.length;
+      await wait(2500);
+      assert.equal(got.length, n, 'the old payment is not sent');
+      // a new payment, waiting; and a spend from the address with change back to it (not a payment)
+      chain.addrs[A] = [
+        tx(
+          '3',
+          [
+            [other, 20000],
+            [A, 5000],
+          ],
+          [[A, 50000]]
+        ),
+        tx('2', [[A, 123450000]], [[other, 200000000]]),
+        ...chain.addrs[A],
+      ];
+      await until(() => got.length === n + 1);
+      assert.equal(got[n].body, 'Savings is receiving 1,2345 BTC');
+      await wait(2000);
+      assert.equal(got.length, n + 1, 'once while it waits');
+      // the browser sends its list again (a restart): nothing is sent again
+      await sync({ id: 'browser0004', url: topic, grp: '.', dec: ',', alerts });
+      await wait(2000);
+      assert.equal(got.length, n + 1, 'not again after a sync');
+      chain.addrs[A][1] = tx('2', [[A, 123450000]], [[other, 200000000]], 900012);
+      await until(() => got.length === n + 2);
+      assert.equal(got[n + 1].body, 'Savings received 1,2345 BTC in block 900.012');
+      // a payment first seen already in a block: one message
+      chain.addrs[A].unshift(tx('4', [[A, 700]], [[other, 1000]], 900013));
+      await until(() => got.length === n + 3);
+      assert.equal(got[n + 2].body, 'Savings received 0,000007 BTC in block 900.013');
+      await wait(2000);
+      assert.equal(got.length, n + 3);
+      const saved = JSON.parse(fs.readFileSync(path.join(data, 'push.json'), 'utf8'));
+      assert.deepEqual(
+        saved.clients.browser0004.alerts.map((a) => a.addr),
+        [A],
+        'still watched'
+      );
+    }
+  );
 } finally {
   ng.kill();
   mempool.close();
