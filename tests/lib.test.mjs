@@ -343,6 +343,11 @@ test('browser language: an exact region first, then the language alone, else Eng
   assert.equal(detectLang('pl-PL'), 'pl');
   assert.equal(detectLang('uk-UA'), 'uk');
   assert.equal(detectLang('ar-EG'), 'ar');
+  assert.equal(detectLang('fa-IR'), 'fa');
+  assert.equal(detectLang('he-IL'), 'he');
+  assert.equal(detectLang('th-TH'), 'th');
+  assert.equal(detectLang('cs-CZ'), 'cs');
+  assert.equal(detectLang('sv-SE'), 'sv');
   assert.equal(detectLang('de_AT'), 'de');
   assert.equal(detectLang('xx-YY'), 'en');
 });
@@ -362,7 +367,7 @@ test('languages load one at a time: English until another is fetched, unknown on
 });
 
 test('Arabic reads right to left: texts start with a right-to-left mark and filled-in values are isolated', async () => {
-  assert.ok(isRtl('ar') && !isRtl('en') && !isRtl('he-xx'));
+  assert.ok(isRtl('ar') && isRtl('fa') && isRtl('he') && !isRtl('en') && !isRtl('he-xx'));
   await loadLang('ar');
   setLang('ar');
   assert.equal(t('calc'), '\u200f' + TABLES.ar.calc);

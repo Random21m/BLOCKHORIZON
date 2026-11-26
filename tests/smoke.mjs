@@ -1694,6 +1694,11 @@ await ok('tile titles stay on one line on phones and tablets (short titles), in 
     [360, 'pl'],
     [360, 'uk'],
     [360, 'ar'],
+    [360, 'fa'],
+    [360, 'he'],
+    [360, 'th'],
+    [360, 'cs'],
+    [360, 'sv'],
     [700, 'it'],
     [700, 'ru'],
     [1280, 'fr'],
@@ -2330,7 +2335,7 @@ await ok('French: glossary and anniversaries are translated', async () => {
   await page.keyboard.press('Escape');
 });
 await ok(
-  'Japanese, Chinese, Korean, Russian, Ukrainian, Hindi, Arabic, Indonesian, Vietnamese and Polish: menu, dashboard and glossary are translated',
+  'Japanese, Chinese, Korean, Russian, Ukrainian, Hindi, Arabic, Persian, Hebrew, Thai, Indonesian, Vietnamese, Polish, Czech and Swedish: menu, dashboard and glossary are translated',
   async () => {
     // one script per language, or (for languages in Latin letters) a few words only the translation has, for the menu
     // and for the glossary
@@ -2344,6 +2349,11 @@ await ok(
       ['vi', /Báo thức|Thuật ngữ/, /khối/],
       ['uk', /[іїєґ]/],
       ['ar', /[\u0600-\u06ff]/],
+      ['fa', /[\u067e\u0686\u0698\u06af\u06a9\u06cc]/], // letters only Persian uses (پ چ ژ گ ک ی)
+      ['he', /[\u05d0-\u05ea]/],
+      ['th', /[\u0e00-\u0e7f]/],
+      ['cs', /CSMENU/, /CSGLOSS/],
+      ['sv', /SVMENU/, /SVGLOSS/],
       ['pl', /Słowniczek|Kalendarz/, /Wysokość bloku|Trudność/],
     ]) {
       const c = await b.newContext({ viewport: { width: 1280, height: 800 } });
@@ -2375,42 +2385,53 @@ await ok(
   }
 );
 await ok(
-  'Arabic: the page is mirrored right to left, numbers keep left to right, nothing scrolls sideways at 360 px',
+  'Arabic, Persian and Hebrew: the page is mirrored right to left, numbers keep left to right, nothing scrolls sideways at 360 px',
   async () => {
-    const c = await b.newContext({ viewport: { width: 360, height: 800 } });
-    await c.routeWebSocket(/./, (ws) => ws.close());
-    await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
-      r.request().url().includes('mempool.space') ? r.fallback() : r.abort()
-    );
-    await c.route(/mempool\.space/, (route) => {
-      const m = MOCK[new URL(route.request().url()).pathname];
-      if (!m) return route.fulfill({ status: 404, body: '' });
-      route.fulfill({ contentType: m[0], body: fx(m[1]) });
-    });
-    await c.addInitScript(() => localStorage.setItem('bh.settings', JSON.stringify({ lang: 'ar', _v: 2 })));
-    const p = await c.newPage();
-    await p.goto(base);
-    await until(p, () => document.documentElement.dir === 'rtl' && document.querySelectorAll('.tile').length >= 10);
-    // the first tile title sits at the right edge, the way Arabic reads
-    const h = await p.locator('.tile h2').first().boundingBox();
-    assert.ok(h.x + h.width > 360 / 2, JSON.stringify(h));
-    // a value with a Latin unit keeps its own left-to-right order
-    assert.equal(await p.locator('.t-hash .tv').evaluate((e) => getComputedStyle(e).unicodeBidi), 'plaintext');
-    for (const r of ['', '#/glossary', '#/calc', '#/mining']) {
-      await p.goto(base + r);
-      await p.waitForSelector('main .panel, main .tile', { timeout: 6000 });
-      assert.ok(
-        await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
-        'sideways scroll on ' + r
+    for (const lang of ['ar', 'fa', 'he']) {
+      const c = await b.newContext({ viewport: { width: 360, height: 800 } });
+      await c.routeWebSocket(/./, (ws) => ws.close());
+      await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
+        r.request().url().includes('mempool.space') ? r.fallback() : r.abort()
       );
+      await c.route(/mempool\.space/, (route) => {
+        const m = MOCK[new URL(route.request().url()).pathname];
+        if (!m) return route.fulfill({ status: 404, body: '' });
+        route.fulfill({ contentType: m[0], body: fx(m[1]) });
+      });
+      await c.addInitScript((l) => localStorage.setItem('bh.settings', JSON.stringify({ lang: l, _v: 2 })), lang);
+      const p = await c.newPage();
+      await p.goto(base);
+      await until(
+        p,
+        (l) =>
+          document.documentElement.dir === 'rtl' &&
+          document.documentElement.lang === l &&
+          document.querySelectorAll('.tile').length >= 10,
+        lang
+      );
+      // the first tile title sits at the right edge, the way these languages read
+      const h = await p.locator('.tile h2').first().boundingBox();
+      assert.ok(h.x + h.width > 360 / 2, lang + ' ' + JSON.stringify(h));
+      // a value with a Latin unit keeps its own left-to-right order
+      assert.equal(await p.locator('.t-hash .tv').evaluate((e) => getComputedStyle(e).unicodeBidi), 'plaintext');
+      for (const r of ['', '#/glossary', '#/calc', '#/mining']) {
+        await p.goto(base + r);
+        await p.waitForSelector('main .panel, main .tile', { timeout: 6000 });
+        assert.ok(
+          await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+          lang + ': sideways scroll on ' + r
+        );
+      }
+      if (lang === 'ar') {
+        await p.click('#btn-settings');
+        await p.click('[data-k=format]');
+        await p.selectOption('#st-lang', 'en');
+        await until(p, () => document.documentElement.dir === 'ltr' && document.documentElement.lang === 'en', null, {
+          timeout: 5000,
+        });
+      }
+      await c.close();
     }
-    await p.click('#btn-settings');
-    await p.click('[data-k=format]');
-    await p.selectOption('#st-lang', 'en');
-    await until(p, () => document.documentElement.dir === 'ltr' && document.documentElement.lang === 'en', null, {
-      timeout: 5000,
-    });
-    await c.close();
   }
 );
 await ok('Brazilian Portuguese is chosen for a pt-BR browser, European Portuguese for pt-PT', async () => {
