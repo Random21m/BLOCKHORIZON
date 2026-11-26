@@ -8,8 +8,9 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
   glossary and calendar included. A browser set to one of them gets its language on its own. These are machine
   translations for now; corrections from native speakers are welcome.
 - **العربية (Arabic), the first language written right to left.** The whole page is mirrored for it: menus, tiles and
-  texts read from the right, while numbers, amounts, charts and the block strips keep running left to right. 19
-  languages in all.
+  texts read from the right, while numbers, amounts, charts and the block strips keep running left to right.
+- **Five more languages: فارسی, עברית, ไทย, Čeština and Svenska.** Persian and Hebrew are right to left, like Arabic.
+  24 languages in all, glossary and calendar included; machine translations for now, corrections welcome.
 
 ## 0.20.0
 

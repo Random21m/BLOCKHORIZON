@@ -12,9 +12,12 @@ export const LANGS = {
   it: 'Italiano',
   nl: 'Nederlands',
   pl: 'Polski',
+  cs: 'Čeština',
+  sv: 'Svenska',
   tr: 'Türkçe',
   id: 'Bahasa Indonesia',
   vi: 'Tiếng Việt',
+  th: 'ไทย',
   ru: 'Русский',
   uk: 'Українська',
   hi: 'हिन्दी',
@@ -22,9 +25,11 @@ export const LANGS = {
   ko: '한국어',
   zh: '简体中文',
   ar: 'العربية',
+  fa: 'فارسی',
+  he: 'עברית',
 };
 // Languages written right to left: the page is mirrored for them (charts, block strips and numbers keep left to right).
-export const isRtl = (l) => l === 'ar';
+export const isRtl = (l) => l === 'ar' || l === 'fa' || l === 'he';
 const T = { en: EN }; // the languages loaded so far
 const loading = {};
 // Fetch a language's texts (once). Resolves when they are ready; if they cannot be fetched (offline and never saved)
