@@ -543,4 +543,20 @@ export default {
   mpLow: 'Include under 1 sat/vB',
   r24h: '24 hours',
   r1w: '1 week',
+  poolRank: 'Mining pools',
+  poolRankSum: '{b} blocks found by {n} pools. The largest {k} found more than half of them.',
+  poolRankNote:
+    'Each block names the pool that found it. A pool’s hashrate is estimated from its share of the blocks, so over a short range it is rough.',
+  poolL: 'Pool',
+  blocksL: 'Blocks',
+  shareL: 'Share',
+  hashrateEst: 'Hashrate (est.)',
+  showAllPools: 'Show all {n} pools',
+  showFewer: 'Show fewer',
+  adjTitle: 'Past difficulty adjustments',
+  adjSum: 'In the past year: {n} adjustments, {u} up and {d} down. Largest rise {a}, largest drop {b}.',
+  adjNote:
+    'Every 2,016 blocks the difficulty changes so that blocks keep coming about every 10 minutes, as the hashrate rises or falls.',
+  changeL: 'Change',
+  showEarlier: 'Show {n} earlier',
 };

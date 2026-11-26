@@ -125,6 +125,8 @@ export const api = {
   hashrate: () => getJSON('/v1/mining/hashrate/1y', { cacheKey: 'hashrate' }),
   lightning: () => getJSON('/v1/lightning/statistics/latest', { cacheKey: 'ln' }),
   pools: () => getJSON('/v1/mining/pools/1w', { cacheKey: 'pools' }), // each pool's blocks in the past week (the Mining page)
+  poolsIn: (r) => getJSON('/v1/mining/pools/' + r), // the pool ranking over another range (the Mining page)
+  adjustments: () => getJSON('/v1/mining/difficulty-adjustments', { cacheKey: 'adjust' }), // every past adjustment, newest first
   rewards: () => getJSON('/v1/mining/reward-stats/144', { cacheKey: 'rewards' }), // miner revenue and fees over the last 144 blocks (a day)
   tx: (id) => getJSON('/tx/' + id),
   // an address: never asked of the backup server (esploraFor has no /address); the address page says where it went
