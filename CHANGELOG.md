@@ -2,7 +2,7 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
-## Unreleased
+## 0.20.0
 
 - **Four long-term charts.** Below the history charts, a "Long term" section shows the price with its 200-week
   average, the Mayer Multiple (the price against its 200-day average), the halving cycles laid over each other (the
