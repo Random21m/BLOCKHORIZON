@@ -61,6 +61,120 @@ const CHARTS = [
   },
 ];
 
+// Long-term charts: always all time, from the price history (in the chosen currency) and the difficulty adjustments.
+// Each build() returns the main line, optional extra lines and guides, and the line under the title.
+const priceAll = () => fetchOnce('price:' + S.cur, () => api.priceHistory(S.cur)).then((x) => L.SERIES.price(x, S.cur));
+const money = (v) => L.fmtNum(v, v < 100 ? 2 : 0) + ' ' + S.cur;
+const times = (v) => '×' + L.trimZeros(L.fmtNum(v, v < 10 ? 2 : 0));
+const CYCLE_CLS = { 2012: 'c1', 2016: 'c2', 2020: 'c3', 2024: 'c4' };
+const LONG = [
+  {
+    id: 'ma200w',
+    title: () => t('ch200w') + ' (' + S.cur + ')',
+    build: async () => {
+      const price = await priceAll(),
+        wma = L.ma200w(price),
+        from = wma.length ? wma[0].t : Infinity,
+        last = price[price.length - 1];
+      return {
+        pts: price.filter((p) => p.t >= from),
+        name: t('price'),
+        extra: [{ pts: wma, cls: 'c2', name: t('ch200w') }],
+        head: wma.length ? wma[wma.length - 1].v : NaN,
+        note: wma.length ? t('ma200wNote', { x: times(last.v / wma[wma.length - 1].v) }) : '',
+        fmt: money,
+        axis: short,
+        log: true,
+      };
+    },
+  },
+  {
+    id: 'mayer',
+    title: () => t('chMayer'),
+    build: async () => {
+      const m = L.mayer(await priceAll());
+      return { pts: m, guides: [1], note: t('mayerNote'), fmt: times, axis: times, log: true };
+    },
+  },
+  {
+    id: 'cycles',
+    title: () => t('chCycles'),
+    build: async () => {
+      const cs = L.halvingCycles(await priceAll());
+      if (!cs.length) return { pts: [] };
+      const main = cs.reduce((a, c) => (c.pts.length > a.pts.length ? c : a)),
+        now = cs[cs.length - 1];
+      return {
+        pts: main.pts,
+        cls: CYCLE_CLS[main.year],
+        name: t('cycleName', { y: main.year }),
+        extra: cs
+          .filter((c) => c !== main)
+          .map((c) => ({ pts: c.pts, cls: CYCLE_CLS[c.year] || 'c1', name: t('cycleName', { y: c.year }) })),
+        legend: cs.map((c) => [t('cycleName', { y: c.year }), CYCLE_CLS[c.year] || 'c1']),
+        note: t('cyclesNote', { x: times(now.pts[now.pts.length - 1].v), y: now.year }),
+        guides: [1],
+        fmt: times,
+        axis: times,
+        log: true,
+        days: true,
+      };
+    },
+  },
+  {
+    id: 'supply',
+    title: () => t('chSupply'),
+    build: async () => {
+      const s = L.supplySeries(await fetchOnce('hr:all', () => api.hashrateHistory('all'))),
+        last = s[s.length - 1];
+      return {
+        pts: s,
+        guides: [21e6],
+        note: last ? t('supplyNote', { p: L.fmtNum((last.v / 21e6) * 100, 2) }) : '',
+        fmt: (v) => L.fmtNum(v, 0) + ' BTC',
+        axis: (v) => L.compact(v),
+        log: false,
+      };
+    },
+  },
+];
+function longBody(c, d) {
+  const pts = L.thin(d.pts || [], 400);
+  if (pts.length < 2) return [el('p', { class: 'dim' }, t('noData'))];
+  const extra = (d.extra || []).map((x) => Object.assign({}, x, { pts: L.thin(x.pts, 400) })),
+    timeFmt = d.days
+      ? (ms) => t('dayN', { n: L.fmtNum(Math.round(ms / 864e5)) })
+      : (ms) => fmtD(ms, { dateOnly: true }),
+    last = pts[pts.length - 1];
+  return [
+    el(
+      'div',
+      { class: 'chead' },
+      d.days ? null : el('b', { class: 'cval' }, d.fmt(Number.isFinite(d.head) ? d.head : last.v)),
+      d.note ? el('span', { class: 'dim' }, d.note) : null,
+      d.log ? el('span', { class: 'dim clog' }, t('logScale')) : null
+    ),
+    d.legend
+      ? el(
+          'div',
+          { class: 'clegend', 'aria-hidden': 'true' },
+          d.legend.map(([n, cls]) => el('span', { class: cls }, n))
+        )
+      : null,
+    lineChart(pts, {
+      log: d.log,
+      fmt: d.fmt,
+      axis: d.axis,
+      timeFmt,
+      name: d.name,
+      extra,
+      guides: d.guides,
+      cls: d.cls,
+      label: t('chartAria', { n: c.title(), r: t('rAll'), a: d.fmt(pts[0].v), b: d.fmt(last.v) }),
+    }),
+  ].filter(Boolean);
+}
+
 export function viewCharts() {
   let range = RANGE_KEYS[S.chartRange] ? S.chartRange : '1y';
   const panels = CHARTS.map((c) =>
@@ -110,6 +224,15 @@ export function viewCharts() {
         });
     });
   queueMicrotask(load);
+  // the long-term charts do not follow the range buttons: they are always all time
+  const longPanels = LONG.map((c) => {
+    const body = el('div', { class: 'cbody' }, el('p', { class: 'dim' }, t('loading')));
+    c.build().then(
+      (d) => body.replaceChildren(...longBody(c, d)),
+      () => body.replaceChildren(el('p', { class: 'dim' }, t('chartError')))
+    );
+    return el('section', { class: 'panel cpanel', id: 'ch-' + c.id }, el('h2', null, c.title()), body);
+  });
   return el(
     'div',
     null,
@@ -118,7 +241,10 @@ export function viewCharts() {
     tradeChart(),
     el('h2', { class: 'hist' }, t('historyL')),
     el('div', { class: 'tabs range', role: 'group', 'aria-label': t('rangeL') }, buttons),
-    el('div', { class: 'chartgrid' }, panels)
+    el('div', { class: 'chartgrid' }, panels),
+    el('h2', { class: 'hist' }, t('longTermL')),
+    el('p', { class: 'dim' }, t('longTermIntro')),
+    el('div', { class: 'chartgrid long' }, longPanels)
   );
 }
 
@@ -172,9 +298,14 @@ function chartBody(c, pts, range) {
   ];
 }
 
-// A single-series line chart. The SVG only draws the line and grid (stretched to the box); all text is HTML so it never distorts.
-function lineChart(pts, { log, step, fmt, axis, timeFmt, label }) {
-  const vs = pts.map((p) => p.v),
+// A line chart. The SVG only draws the lines and grid (stretched to the box); all text is HTML so it never distorts.
+// `pts` is the main series (the crosshair and keys follow it); `extra` are more lines ({ pts, cls, name }) shown in the
+// tooltip by name, and `guides` are values marked with a dashed line (such as 1 for a ratio).
+function lineChart(
+  pts,
+  { log, step, fmt, axis, timeFmt, label, name: label0 = '', extra = [], guides = [], cls = '' }
+) {
+  const vs = pts.map((p) => p.v).concat(...extra.map((x) => x.pts.map((p) => p.v)), guides),
     lo0 = Math.min(...vs),
     hi0 = Math.max(...vs),
     useLog = log && lo0 > 0;
@@ -188,8 +319,16 @@ function lineChart(pts, { log, step, fmt, axis, timeFmt, label }) {
   const f = useLog ? Math.log10 : (x) => x,
     fl = f(lo),
     span = f(hi) - fl || 1,
-    t0 = pts[0].t,
-    t1 = pts[pts.length - 1].t;
+    t0 = Math.min(pts[0].t, ...extra.map((x) => x.pts[0].t)),
+    t1 = Math.max(pts[pts.length - 1].t, ...extra.map((x) => x.pts[x.pts.length - 1].t));
+  const path = (ps) =>
+    ps
+      .map(
+        (p, i) =>
+          (i ? (step ? 'H' + X(p.t).toFixed(2) + 'V' : 'L' + X(p.t).toFixed(2) + ' ') : 'M' + X(p.t).toFixed(2) + ' ') +
+          Y(p.v).toFixed(2)
+      )
+      .join('');
   const X = (tm) => ((tm - t0) / (t1 - t0 || 1)) * 100,
     Y = (v) => (1 - (f(Math.max(v, useLog ? lo : -Infinity)) - fl) / span) * 100;
   const svg = document.createElementNS(NS, 'svg');
@@ -204,7 +343,14 @@ function lineChart(pts, { log, step, fmt, axis, timeFmt, label }) {
           `<line class="grid" x1="0" x2="100" y1="${Y(v).toFixed(2)}" y2="${Y(v).toFixed(2)}" vector-effect="non-scaling-stroke"/>`
       )
       .join('') +
-    `<path class="ln" vector-effect="non-scaling-stroke" d="${pts.map((p, i) => (i ? (step ? 'H' + X(p.t).toFixed(2) + 'V' : 'L' + X(p.t).toFixed(2) + ' ') : 'M' + X(p.t).toFixed(2) + ' ') + Y(p.v).toFixed(2)).join('')}"/>`;
+    guides
+      .map(
+        (v) =>
+          `<line class="guide" x1="0" x2="100" y1="${Y(v).toFixed(2)}" y2="${Y(v).toFixed(2)}" vector-effect="non-scaling-stroke"/>`
+      )
+      .join('') +
+    extra.map((x) => `<path class="ln ${x.cls}" vector-effect="non-scaling-stroke" d="${path(x.pts)}"/>`).join('') +
+    `<path class="ln ${cls}" vector-effect="non-scaling-stroke" d="${path(pts)}"/>`;
   const xh = el('div', { class: 'xh', hidden: true }),
     dot = el('div', { class: 'xd', hidden: true }),
     tip = el('div', { class: 'tip', hidden: true }),
@@ -229,9 +375,20 @@ function lineChart(pts, { log, step, fmt, axis, timeFmt, label }) {
     dot.style.top = y + '%';
     tip.style.left = x + '%';
     tip.style.transform = `translate(${x < 18 ? '0' : x > 82 ? '-100%' : '-50%'}, -100%)`;
-    tip.replaceChildren(el('b', null, fmt(p.v)), el('span', null, timeFmt(p.t)));
+    // the other lines at the same moment (when they reach it)
+    const others = extra
+      .map((x) => {
+        const q = x.pts[L.nearest(x.pts, p.t)];
+        return q && Math.abs(q.t - p.t) <= 8 * 864e5 ? x.name + ': ' + fmt(q.v) : '';
+      })
+      .filter(Boolean);
+    tip.replaceChildren(
+      el('b', null, (extra.length && label0 ? label0 + ': ' : '') + fmt(p.v)),
+      ...others.map((o) => el('span', null, o)),
+      el('span', null, timeFmt(p.t))
+    );
     xh.hidden = dot.hidden = tip.hidden = false;
-    if (speak) said.textContent = fmt(p.v) + ', ' + timeFmt(p.t);
+    if (speak) said.textContent = [fmt(p.v)].concat(others, timeFmt(p.t)).join(', ');
   };
   const hide = () => {
     xh.hidden = dot.hidden = tip.hidden = true;
