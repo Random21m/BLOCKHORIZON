@@ -536,6 +536,14 @@ export default {
   privTypes:
     'Tipuri de adresă: doar o ieșire are același tip de adresă ca intrările, ceea ce sugerează că este restul.',
   privNone: 'Nu s-au găsit scurgeri obișnuite de confidențialitate.',
+  blkPicture: 'Ce conținea',
+  blkPicNote:
+    'Fiecare pătrat este o parte a blocului, colorată după rata comisionului, cu cele mai mari comisioane jos. Atinge unul pentru a-i deschide tranzacția.',
+  blkPicAria: 'Imaginea blocului: {n} tranzacții, rate ale comisionului de la {lo} la {hi} sat/vB',
+  blkPicNone: 'Imaginea vine de la mempool.space, care nu răspunde acum.',
+  blkTxRange: 'Tranzacțiile {a}–{b} din {n}',
+  blkPrev: '{n} anterioare',
+  blkNext: 'Următoarele {n}',
   mpHist: 'Mempool după rata comisionului',
   mpNote:
     'Cât aștepta să fie minat, împărțit după rata comisionului plătit: verde pentru comisioane mici, roșu pentru mari. Linia punctată este un bloc.',

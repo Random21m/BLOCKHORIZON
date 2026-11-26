@@ -11,6 +11,10 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
   1 sat/vB (often most of it, and it may never be mined) is left out until you switch it on. The data comes from
   mempool.space or your own mempool server; the backup server does not have it, so the chart says so while it is in
   use.
+- **What was in a past block.** A block's page now shows a picture of its transactions: each square is a slice of the
+  block, coloured by fee rate, highest fees at the bottom, and tapping one opens its transaction. Below it, all its
+  transactions 25 at a time, each with its fee rate and amount. The list also works from the backup server; the
+  picture needs mempool.space and says so when it is not answering.
 - **Where a transaction's coins came from and went.** A transaction's page lists every input and output, with its
   address (a link to the address page) and amount; each input links to the transaction that made it. Below, a
   **Privacy** box says in plain words what anyone looking at it can tell: an address used again, coins from several

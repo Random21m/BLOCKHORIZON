@@ -530,6 +530,14 @@ export default {
   privRound: 'Kulatá částka: jeden výstup je kulaté číslo, takže druhý je nejspíš vracející se drobné.',
   privTypes: 'Typy adres: jen jeden výstup má stejný typ adresy jako vstupy, což naznačuje, že jde o drobné.',
   privNone: 'Nenalezeny žádné běžné úniky soukromí.',
+  blkPicture: 'Co v něm bylo',
+  blkPicNote:
+    'Každý čtvereček je část bloku, obarvená podle výše poplatku, nejvyšší poplatky dole. Klepnutím otevřete jeho transakci.',
+  blkPicAria: 'Obrázek bloku: transakce: {n}, poplatky od {lo} do {hi} sat/vB',
+  blkPicNone: 'Obrázek pochází z mempool.space, který teď neodpovídá.',
+  blkTxRange: 'Transakce {a}–{b} z {n}',
+  blkPrev: 'Předchozích {n}',
+  blkNext: 'Dalších {n}',
   mpHist: 'Mempool podle výše poplatku',
   mpNote:
     'Kolik čekalo na vytěžení, rozděleno podle výše poplatku: zelená pro nízké poplatky, červená pro vysoké. Čárkovaná čára je jeden blok.',

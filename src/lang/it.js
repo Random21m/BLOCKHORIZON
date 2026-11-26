@@ -538,6 +538,14 @@ export default {
   privTypes:
     'Tipi di indirizzo: solo un output ha lo stesso tipo di indirizzo degli input, il che fa pensare che sia il resto.',
   privNone: 'Nessuna fuga di privacy comune trovata.',
+  blkPicture: 'Cosa conteneva',
+  blkPicNote:
+    'Ogni quadrato è una parte del blocco, colorata in base al tasso di commissione, con le commissioni più alte in basso. Toccane uno per aprire la sua transazione.',
+  blkPicAria: 'Immagine del blocco: {n} transazioni, tassi di commissione da {lo} a {hi} sat/vB',
+  blkPicNone: 'L’immagine arriva da mempool.space, che al momento non risponde.',
+  blkTxRange: 'Transazioni {a}–{b} di {n}',
+  blkPrev: '{n} precedenti',
+  blkNext: '{n} successive',
   mpHist: 'Mempool per tasso di commissione',
   mpNote:
     'Quanto era in attesa di essere minato, diviso per il tasso di commissione pagato: verde per commissioni basse, rosso per alte. La linea tratteggiata è un blocco.',

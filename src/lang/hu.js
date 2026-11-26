@@ -536,6 +536,14 @@ export default {
   privTypes:
     'Címtípusok: csak egy kimenetnek van a bemenetekkel azonos típusú címe, ami arra utal, hogy az a visszajáró.',
   privNone: 'Nem található szokásos adatszivárgás.',
+  blkPicture: 'Mi volt benne',
+  blkPicNote:
+    'Minden négyzet a blokk egy szelete, díjszint szerint színezve, a legmagasabb díjak alul. Koppints egyre a tranzakciója megnyitásához.',
+  blkPicAria: 'A blokk képe: {n} tranzakció, díjszintek {lo} és {hi} sat/vB között',
+  blkPicNone: 'A kép a mempool.space oldalról jön, amely most nem válaszol.',
+  blkTxRange: 'Tranzakciók: {a}–{b} / {n}',
+  blkPrev: 'Előző {n}',
+  blkNext: 'Következő {n}',
   mpHist: 'Mempool díjszint szerint',
   mpNote:
     'Mennyi várt bányászatra, a fizetett díjszint szerint bontva: zöld az alacsony, piros a magas díj. A szaggatott vonal egy blokk.',

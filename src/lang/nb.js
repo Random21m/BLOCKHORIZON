@@ -535,6 +535,14 @@ export default {
   privTypes:
     'Adressetyper: bare én utdata har samme type adresse som inndataene, noe som tyder på at den er vekslepengene.',
   privNone: 'Fant ingen vanlige personvernlekkasjer.',
+  blkPicture: 'Hva den inneholdt',
+  blkPicNote:
+    'Hver rute er en del av blokken, farget etter gebyrsats, med de høyeste gebyrene nederst. Trykk på en for å åpne transaksjonen.',
+  blkPicAria: 'Bilde av blokken: {n} transaksjoner, gebyrsatser fra {lo} til {hi} sat/vB',
+  blkPicNone: 'Bildet kommer fra mempool.space, som ikke svarer akkurat nå.',
+  blkTxRange: 'Transaksjoner {a}–{b} av {n}',
+  blkPrev: 'Forrige {n}',
+  blkNext: 'Neste {n}',
   mpHist: 'Mempool etter gebyrsats',
   mpNote:
     'Hvor mye som ventet på å bli utvunnet, fordelt etter gebyrsatsen det betaler: grønt for lave gebyrer, rødt for høye. Den stiplede linjen er én blokk.',

@@ -532,6 +532,14 @@ export default {
   privTypes:
     'Adres türleri: girdilerle aynı tür adrese sahip tek bir çıktı var, bu da onun para üstü olduğuna işaret ediyor.',
   privNone: 'Yaygın bir gizlilik sızıntısı bulunmadı.',
+  blkPicture: 'İçinde neler vardı',
+  blkPicNote:
+    'Her kare bloğun bir dilimidir, ücret oranına göre renklenir, en yüksek ücretler en altta. İşlemini açmak için birine dokun.',
+  blkPicAria: 'Bloğun resmi: {n} işlem, ücret oranları {lo} ile {hi} sat/vB arasında',
+  blkPicNone: "Resim mempool.space'ten geliyor, o da şu anda yanıt vermiyor.",
+  blkTxRange: 'İşlemler {a}–{b} / {n}',
+  blkPrev: 'Önceki {n}',
+  blkNext: 'Sonraki {n}',
   mpHist: 'Ücret oranına göre mempool',
   mpNote:
     'Ne kadarının madencilik için beklediği, ödediği ücret oranına göre ayrılmış: düşük ücretler yeşil, yüksekler kırmızı. Kesikli çizgi bir bloktur.',

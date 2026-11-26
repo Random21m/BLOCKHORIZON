@@ -508,6 +508,32 @@ test('transactions: inputs and outputs, and the privacy hints anyone can read fr
   assert.ok(L.isRoundSats(5e6) && !L.isRoundSats(5e6 + 1) && !L.isRoundSats(0));
 });
 
+test('a past block as a picture: slices of its space by fee rate, highest at the bottom', () => {
+  const sum = [
+    { txid: 'cb', fee: 0, vsize: 300, rate: 0 }, // the coinbase: left out
+    { txid: 'lo', fee: 2e5, vsize: 2e5, rate: 1 },
+    { txid: 'hi', fee: 3e6, vsize: 3e5, rate: 10 },
+  ];
+  const p = L.blockCells(sum, 4, 4); // 16 cells of 62,500 vB (the block's room is 1,000,000 vB)
+  assert.deepEqual(
+    p.list.map((x) => x.txid),
+    ['hi', 'lo']
+  );
+  assert.equal(p.unit, 62500);
+  // 500,000 vB used: the 8 bottom cells; 'hi' (300,000 vB) covers the middles of the first 5 (the 5th's is at
+  // 4.5 x 62,500 = 281,250 vB), counted from the bottom left
+  const row = (r) => p.cells.slice(r * 4, r * 4 + 4);
+  assert.deepEqual(row(3), [0, 0, 0, 0]);
+  assert.deepEqual(row(2), [0, 1, 1, 1]);
+  assert.deepEqual(row(1), [-1, -1, -1, -1]);
+  assert.deepEqual(row(0), [-1, -1, -1, -1]);
+  // a full block uses every cell; an empty one (only the coinbase) none
+  const full = L.blockCells([{ txid: 'a', fee: 1, vsize: 2e6, rate: 5 }], 3, 3);
+  assert.ok(full.cells.every((c) => c === 0) && full.unit === 2e6 / 9);
+  assert.ok(L.blockCells([{ txid: 'cb', fee: 0, vsize: 200, rate: 0 }], 3, 3).cells.every((c) => c === -1));
+  assert.deepEqual(L.blockCells(null, 2, 2).cells, [-1, -1, -1, -1]);
+});
+
 test('transactions: place in the queue of projected blocks', () => {
   const proj = [{ feeRange: [5, 10] }, { feeRange: [2, 4] }, { medianFee: 1 }];
   assert.equal(L.txQueuePos(6, proj), 0);
@@ -939,6 +965,10 @@ test('backup source: only the essentials map to blockstream.info, and its fee es
   assert.equal(esploraFor('/v1/fees/recommended').path, '/fee-estimates');
   assert.equal(esploraFor('/v1/difficulty-adjustment'), null);
   assert.equal(esploraFor('/v1/mining/pools/1w'), null);
+  // a past block's list of transactions has a backup; its picture (mempool.space's summary) does not
+  const h = '0'.repeat(64);
+  assert.deepEqual(esploraFor('/block/' + h + '/txs/25'), { path: '/block/' + h + '/txs/25' });
+  assert.equal(esploraFor('/v1/block/' + h + '/summary'), null);
   assert.equal(esploraFor('/v1/statistics/24h'), null, 'the mempool history is mempool.space only');
   assert.deepEqual(esploraFees({ 1: 12.34, 3: 8, 6: 5.06, 144: 0.4 }), {
     fastestFee: 12.3,

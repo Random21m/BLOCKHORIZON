@@ -540,6 +540,14 @@ export default {
   privTypes:
     'Adresstypen: Nur ein Ausgang hat denselben Adresstyp wie die Eingänge, was darauf hindeutet, dass er das Wechselgeld ist.',
   privNone: 'Keine üblichen Datenlecks gefunden.',
+  blkPicture: 'Was darin war',
+  blkPicNote:
+    'Jedes Quadrat ist ein Teil des Blocks, gefärbt nach Gebührensatz, die höchsten Gebühren unten. Tippe eines an, um seine Transaktion zu öffnen.',
+  blkPicAria: 'Bild des Blocks: {n} Transaktionen, Gebührensätze von {lo} bis {hi} sat/vB',
+  blkPicNone: 'Das Bild kommt von mempool.space, das gerade nicht antwortet.',
+  blkTxRange: 'Transaktionen {a}–{b} von {n}',
+  blkPrev: 'Vorherige {n}',
+  blkNext: 'Nächste {n}',
   mpHist: 'Mempool nach Gebührensatz',
   mpNote:
     'Wie viel darauf wartete, gemined zu werden, aufgeteilt nach Gebührensatz: grün für niedrige Gebühren, rot für hohe. Die gestrichelte Linie ist ein Block.',

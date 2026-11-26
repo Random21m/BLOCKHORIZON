@@ -83,6 +83,11 @@ await ctx.route(/mempool\.space/, (route) => {
     (u.pathname.startsWith('/api/v1/mining/blocks/timestamp/')
       ? MOCK['/api/v1/mining/blocks/timestamp/1700000000']
       : null);
+  // a past block: its summary (the picture), its transactions 25 at a time (the list), and its header
+  if (/^\/api\/v1\/block\/\w+\/summary$/.test(u.pathname))
+    return route.fulfill({ contentType: 'application/json', body: fx('block-summary.json') });
+  if (/^\/api\/block\/\w+\/txs\/\d+$/.test(u.pathname))
+    return route.fulfill({ contentType: 'application/json', body: fx('block-txs.json') });
   if (u.pathname.startsWith('/api/v1/block/'))
     return route.fulfill({ contentType: 'application/json', body: JSON.stringify(JSON.parse(fx('blocks.json'))[0]) });
   if (!m) return route.fulfill({ status: 404, body: '' });
@@ -322,10 +327,43 @@ await ok(
 await ok('no horizontal scroll at 360 px', async () => {
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
 });
-await ok('block page', async () => {
+await ok('block page: details, a picture of what was in it, and its transactions 25 at a time', async () => {
   await page.goto(base + '#/block/840000');
   await page.waitForSelector('.panel dl', { timeout: 6000 });
   assert.ok((await page.locator('main').innerText()).includes('Transactions'));
+  // the picture: drawn, described for screen readers, and a square opens its transaction
+  await page.waitForSelector('#blk-pic canvas.blkpic', { timeout: 6000 });
+  assert.match(
+    await page.locator('#blk-pic canvas').getAttribute('aria-label'),
+    /^Picture of the block: 39 transactions, fee rates from [\d.,]+ to 3,604,819 sat\/vB$/
+  );
+  // the list: the first 25, the coinbase first, each linked
+  await until(page, () => document.querySelectorAll('#blk-txs tbody tr').length === 25);
+  assert.equal(
+    await page.locator('#blk-txs tbody tr a').first().getAttribute('href'),
+    '#/tx/a0db149ace545beabbd87a8d6b20ffd6aa3b5a50e58add49a3d435f898c272cf'
+  );
+  assert.ok(await page.isDisabled('#blk-prev'));
+  const r = await page.locator('#blk-txs p.dim').innerText();
+  assert.match(r, /^Transactions 1–25 of [\d,]+$/);
+  if (!(await page.isDisabled('#blk-next'))) {
+    await page.click('#blk-next');
+    await until(page, () => /^Transactions 26–/.test(document.querySelector('#blk-txs p.dim').textContent));
+    assert.ok(!(await page.isDisabled('#blk-prev')));
+  }
+  // squares fill from the bottom left by fee rate, each a 400 vB slice here (a full block's 1,000,000 vB / 2,500): the
+  // first slice's middle (200 vB) lies past the top payer (187 vB), in the next one, which tapping it opens
+  await page.locator('#blk-pic canvas').scrollIntoViewIfNeeded();
+  const bx = await page.locator('#blk-pic canvas').boundingBox();
+  await page.mouse.click(bx.x + 2, bx.y + bx.height - 2);
+  await until(page, () => location.hash.startsWith('#/tx/'));
+  assert.equal(
+    await page.evaluate(() => location.hash),
+    '#/tx/152b928e97bb9e874da1bd4abdf766ae0cdc7a2f260dad5542967cb414c58489'
+  );
+  await page.goto(base + '#/block/840000'); // the next test starts from the block page
+  await page.waitForSelector('.panel dl', { timeout: 6000 });
+  await page.evaluate(() => scrollTo(0, 0));
 });
 await ok('block page has a visible way back to the dashboard on a phone', async () => {
   const back = page.locator('main a.back');

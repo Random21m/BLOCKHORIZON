@@ -533,6 +533,14 @@ export default {
   privRound: 'Apvali suma: vienas išėjimas yra apvalus skaičius, todėl kitas tikriausiai yra grįžtanti grąža.',
   privTypes: 'Adresų tipai: tik vieno išėjimo adreso tipas toks pat kaip įėjimų, o tai rodo, kad jis yra grąža.',
   privNone: 'Įprastų privatumo nutekėjimų nerasta.',
+  blkPicture: 'Kas jame buvo',
+  blkPicNote:
+    'Kiekvienas kvadratas yra bloko dalis, nuspalvinta pagal mokesčio normą, didžiausi mokesčiai apačioje. Bakstelėkite vieną, kad atvertumėte jo transakciją.',
+  blkPicAria: 'Bloko vaizdas: transakcijų: {n}, mokesčio normos nuo {lo} iki {hi} sat/vB',
+  blkPicNone: 'Vaizdas gaunamas iš mempool.space, kuri dabar neatsako.',
+  blkTxRange: 'Transakcijos {a}–{b} iš {n}',
+  blkPrev: 'Ankstesnės {n}',
+  blkNext: 'Kitos {n}',
   mpHist: 'Mempool pagal mokesčio normą',
   mpNote:
     'Kiek laukė iškasimo, suskirstyta pagal mokamą mokesčio normą: žalia – maži mokesčiai, raudona – dideli. Brūkšninė linija – vienas blokas.',

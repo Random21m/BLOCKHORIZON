@@ -541,6 +541,14 @@ export default {
   privTypes:
     'Types d’adresse : une seule sortie a le même type d’adresse que les entrées, ce qui suggère que c’est la monnaie.',
   privNone: 'Aucune fuite de confidentialité courante trouvée.',
+  blkPicture: 'Ce qu’il contenait',
+  blkPicNote:
+    'Chaque carré est une part du bloc, colorée selon le taux de frais, les frais les plus élevés en bas. Touchez-en un pour ouvrir sa transaction.',
+  blkPicAria: 'Image du bloc : {n} transactions, taux de frais de {lo} à {hi} sat/vB',
+  blkPicNone: 'L’image vient de mempool.space, qui ne répond pas pour le moment.',
+  blkTxRange: 'Transactions {a}–{b} sur {n}',
+  blkPrev: '{n} précédentes',
+  blkNext: '{n} suivantes',
   mpHist: 'Mempool par taux de frais',
   mpNote:
     "Ce qui attendait d'être miné, réparti selon le taux de frais payé : vert pour les frais bas, rouge pour les élevés. La ligne pointillée correspond à un bloc.",

@@ -533,6 +533,14 @@ export default {
   privRound: 'Okrugli iznos: jedan izlaz je okrugao broj, pa je drugi vjerojatno ostatak koji se vraća.',
   privTypes: 'Vrste adresa: samo jedan izlaz ima istu vrstu adrese kao ulazi, što upućuje na to da je on ostatak.',
   privNone: 'Nisu pronađena uobičajena curenja privatnosti.',
+  blkPicture: 'Što je bilo u njemu',
+  blkPicNote:
+    'Svaki kvadratić dio je bloka, obojen prema stopi naknade, s najvišim naknadama na dnu. Dodirnite jedan da otvorite njegovu transakciju.',
+  blkPicAria: 'Slika bloka: transakcija: {n}, stope naknade od {lo} do {hi} sat/vB',
+  blkPicNone: 'Slika dolazi s mempool.space, koji trenutačno ne odgovara.',
+  blkTxRange: 'Transakcije {a}–{b} od {n}',
+  blkPrev: 'Prethodnih {n}',
+  blkNext: 'Sljedećih {n}',
   mpHist: 'Mempool po stopi naknade',
   mpNote:
     'Koliko je čekalo na rudarenje, podijeljeno po stopi naknade: zeleno za niske naknade, crveno za visoke. Isprekidana linija je jedan blok.',
