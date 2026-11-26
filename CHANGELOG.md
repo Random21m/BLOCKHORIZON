@@ -4,6 +4,9 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
 
 ## Unreleased
 
+- **What miners earn per block, and how full blocks are.** Three more history charts on the Charts page, with the same
+  1 month, 1 year and all time buttons: the fees per block (in BTC), the fees' share of what miners earn (block reward
+  plus fees, in %) and the average block size (in MB).
 - **Three more long-term charts.** The **Puell Multiple** (the value of the bitcoins mined each day against its
   average over the past year), **hash ribbons** (the hashrate's 30- and 60-day averages, saying since when miners have
   been switching off or adding machines) and the **difficulty ribbon** (difficulty with its 9- to 200-day averages,
