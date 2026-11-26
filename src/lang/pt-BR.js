@@ -521,4 +521,21 @@ export default {
   stuckAccLink: 'Acelerar no mempool.space',
   stuckWait:
     'Ou espere: ela passa quando as taxas caírem. Se nunca for minerada, os nós a esquecem depois de cerca de duas semanas e as moedas voltam para a carteira.',
+  txIns: 'Entradas ({n})',
+  txOuts: 'Saídas ({n})',
+  txMore: 'e mais {n}',
+  txNewCoins: 'Moedas novas (recompensa por bloco e taxas)',
+  txData: 'Dados (OP_RETURN)',
+  txNoAddr: 'Sem endereço ({t})',
+  privTitle: 'Privacidade',
+  privIntro:
+    'O que qualquer pessoa que olhe esta transação consegue saber. Calculado neste dispositivo; nada é enviado para lugar nenhum.',
+  privReuse:
+    'Reutilização de endereço: as moedas voltam para um endereço que também gasta aqui, então os pagamentos dele são fáceis de ligar.',
+  privMerge:
+    'Entradas juntas: moedas de {n} endereços são gastas juntas, o que sugere que pertencem a uma só carteira.',
+  privRound: 'Valor redondo: uma saída é um número redondo, então a outra provavelmente é o troco voltando.',
+  privTypes:
+    'Tipos de endereço: só uma saída tem o mesmo tipo de endereço que as entradas, o que indica que é o troco.',
+  privNone: 'Nenhum vazamento de privacidade comum encontrado.',
 };

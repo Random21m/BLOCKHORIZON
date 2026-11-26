@@ -515,4 +515,19 @@ export default {
   stuckAccLink: 'Urychlit na mempool.space',
   stuckWait:
     'Nebo počkejte: projde, až poplatky klesnou. Pokud se nikdy nevytěží, uzly ji zhruba po dvou týdnech zapomenou a mince se vrátí do peněženky.',
+  txIns: 'Vstupy ({n})',
+  txOuts: 'Výstupy ({n})',
+  txMore: 'a ještě {n}',
+  txNewCoins: 'Nové mince (odměna za blok a poplatky)',
+  txData: 'Data (OP_RETURN)',
+  txNoAddr: 'Bez adresy ({t})',
+  privTitle: 'Soukromí',
+  privIntro:
+    'Co může zjistit každý, kdo se na tuto transakci podívá. Spočítáno v tomto zařízení; nic se nikam neposílá.',
+  privReuse:
+    'Opakovaná adresa: mince se vracejí na adresu, která zde také utrácí, takže její platby lze snadno propojit.',
+  privMerge: 'Sloučené vstupy: mince z {n} adres se utrácejí společně, což naznačuje, že patří jedné peněžence.',
+  privRound: 'Kulatá částka: jeden výstup je kulaté číslo, takže druhý je nejspíš vracející se drobné.',
+  privTypes: 'Typy adres: jen jeden výstup má stejný typ adresy jako vstupy, což naznačuje, že jde o drobné.',
+  privNone: 'Nenalezeny žádné běžné úniky soukromí.',
 };

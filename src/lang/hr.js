@@ -518,4 +518,19 @@ export default {
   stuckAccLink: 'Ubrzaj na mempool.space',
   stuckWait:
     'Ili pričekajte: proći će kad naknade padnu. Ako nikad ne bude iskopana, čvorovi je zaborave nakon otprilike dva tjedna i novčići se vraćaju u novčanik.',
+  txIns: 'Ulazi ({n})',
+  txOuts: 'Izlazi ({n})',
+  txMore: 'i još {n}',
+  txNewCoins: 'Novi novčići (nagrada za blok i naknade)',
+  txData: 'Podaci (OP_RETURN)',
+  txNoAddr: 'Nema adrese ({t})',
+  privTitle: 'Privatnost',
+  privIntro:
+    'Što svatko tko pogleda ovu transakciju može zaključiti. Izračunano na ovom uređaju; ništa se nikamo ne šalje.',
+  privReuse:
+    'Ponovna upotreba adrese: novčići se vraćaju na adresu koja ovdje i troši, pa je njezina plaćanja lako povezati.',
+  privMerge: 'Spojeni ulazi: novčići s {n} adresa troše se zajedno, što upućuje na to da pripadaju jednom novčaniku.',
+  privRound: 'Okrugli iznos: jedan izlaz je okrugao broj, pa je drugi vjerojatno ostatak koji se vraća.',
+  privTypes: 'Vrste adresa: samo jedan izlaz ima istu vrstu adrese kao ulazi, što upućuje na to da je on ostatak.',
+  privNone: 'Nisu pronađena uobičajena curenja privatnosti.',
 };

@@ -516,4 +516,20 @@ export default {
   stuckAccLink: 'Snabba på via mempool.space',
   stuckWait:
     'Eller vänta: den går igenom när avgifterna sjunker. Om den aldrig minas glömmer noderna den efter ungefär två veckor och mynten är tillbaka i plånboken.',
+  txIns: 'Inputs ({n})',
+  txOuts: 'Outputs ({n})',
+  txMore: 'och {n} till',
+  txNewCoins: 'Nya mynt (blockbelöning och avgifter)',
+  txData: 'Data (OP_RETURN)',
+  txNoAddr: 'Ingen adress ({t})',
+  privTitle: 'Integritet',
+  privIntro:
+    'Vad alla som tittar på den här transaktionen kan se. Beräknat på den här enheten; inget skickas någonstans.',
+  privReuse:
+    'Återanvänd adress: mynt går tillbaka till en adress som också spenderar här, så dess betalningar är lätta att koppla ihop.',
+  privMerge:
+    'Sammanslagna inputs: mynt från {n} adresser spenderas tillsammans, vilket tyder på att de hör till en och samma plånbok.',
+  privRound: 'Jämnt belopp: en output är ett jämnt tal, så den andra är troligen växeln som kommer tillbaka.',
+  privTypes: 'Adresstyper: bara en output har samma sorts adress som inputsen, vilket tyder på att den är växeln.',
+  privNone: 'Inga vanliga integritetsläckor hittades.',
 };

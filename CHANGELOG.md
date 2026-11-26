@@ -4,6 +4,12 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
 
 ## Unreleased
 
+- **Where a transaction's coins came from and went.** A transaction's page lists every input and output, with its
+  address (a link to the address page) and amount; each input links to the transaction that made it. Below, a
+  **Privacy** box says in plain words what anyone looking at it can tell: an address used again, coins from several
+  addresses spent together, a round amount or an address type that gives away which output is the change. It is
+  worked out on your device; nothing is sent anywhere.
+- A transaction link opened before the app had loaded counted its confirmations as 1; it now counts them right.
 - **Five more languages: Bahasa Indonesia, Tiếng Việt, हिन्दी, Polski and Українська.** 18 languages in all,
   glossary and calendar included. A browser set to one of them gets its language on its own. These are machine
   translations for now; corrections from native speakers are welcome.

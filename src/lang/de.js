@@ -523,4 +523,21 @@ export default {
   stuckAccLink: 'Auf mempool.space beschleunigen',
   stuckWait:
     'Oder warten: Sie geht durch, wenn die Gebühren fallen. Wird sie nie gemined, vergessen die Nodes sie nach etwa zwei Wochen und die Coins sind wieder in der Wallet.',
+  txIns: 'Eingänge ({n})',
+  txOuts: 'Ausgänge ({n})',
+  txMore: 'und {n} weitere',
+  txNewCoins: 'Neue Coins (Blockbelohnung und Gebühren)',
+  txData: 'Daten (OP_RETURN)',
+  txNoAddr: 'Keine Adresse ({t})',
+  privTitle: 'Privatsphäre',
+  privIntro:
+    'Was jeder erkennen kann, der diese Transaktion ansieht. Auf diesem Gerät ermittelt; nichts wird irgendwohin gesendet.',
+  privReuse:
+    'Adresswiederverwendung: Coins gehen an eine Adresse zurück, die hier auch ausgibt, daher lassen sich ihre Zahlungen leicht verknüpfen.',
+  privMerge:
+    'Eingänge zusammengeführt: Coins von {n} Adressen werden gemeinsam ausgegeben, was auf eine einzige Wallet hindeutet.',
+  privRound: 'Runder Betrag: Ein Ausgang ist eine runde Zahl, daher ist der andere wohl das Wechselgeld.',
+  privTypes:
+    'Adresstypen: Nur ein Ausgang hat denselben Adresstyp wie die Eingänge, was darauf hindeutet, dass er das Wechselgeld ist.',
+  privNone: 'Keine üblichen Datenlecks gefunden.',
 };

@@ -517,4 +517,18 @@ export default {
   stuckAccLink: 'Przyspiesz na mempool.space',
   stuckWait:
     'Albo poczekaj: przejdzie, gdy opłaty spadną. Jeśli nigdy nie zostanie wykopana, węzły zapomną o niej po około dwóch tygodniach, a monety wrócą do portfela.',
+  txIns: 'Wejścia ({n})',
+  txOuts: 'Wyjścia ({n})',
+  txMore: 'i jeszcze {n}',
+  txNewCoins: 'Nowe monety (nagroda za blok i opłaty)',
+  txData: 'Dane (OP_RETURN)',
+  txNoAddr: 'Brak adresu ({t})',
+  privTitle: 'Prywatność',
+  privIntro:
+    'Co może odczytać każdy, kto patrzy na tę transakcję. Obliczone na tym urządzeniu; nic nie jest nigdzie wysyłane.',
+  privReuse: 'Ponowne użycie adresu: monety wracają na adres, który też tu wydaje, więc jego płatności łatwo powiązać.',
+  privMerge: 'Połączone wejścia: monety z {n} adresów są wydawane razem, co sugeruje, że należą do jednego portfela.',
+  privRound: 'Okrągła kwota: jedno wyjście to okrągła liczba, więc drugie to zapewne reszta, która wraca.',
+  privTypes: 'Typy adresów: tylko jedno wyjście ma ten sam typ adresu co wejścia, co wskazuje, że to reszta.',
+  privNone: 'Nie znaleziono typowych wycieków prywatności.',
 };

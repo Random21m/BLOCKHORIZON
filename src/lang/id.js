@@ -520,4 +520,19 @@ export default {
   stuckAccLink: 'Percepat di mempool.space',
   stuckWait:
     'Atau tunggu: transaksi akan masuk saat biaya turun. Jika tidak pernah ditambang, node akan melupakannya setelah sekitar dua minggu dan koinnya kembali ke dompet.',
+  txIns: 'Input ({n})',
+  txOuts: 'Output ({n})',
+  txMore: 'dan {n} lainnya',
+  txNewCoins: 'Koin baru (imbalan blok dan biaya)',
+  txData: 'Data (OP_RETURN)',
+  txNoAddr: 'Tanpa alamat ({t})',
+  privTitle: 'Privasi',
+  privIntro:
+    'Hal yang bisa diketahui siapa pun yang melihat transaksi ini. Dihitung di perangkat ini; tidak ada yang dikirim ke mana pun.',
+  privReuse:
+    'Penggunaan ulang alamat: koin kembali ke alamat yang juga membelanjakan di sini, jadi pembayarannya mudah dikaitkan.',
+  privMerge: 'Input digabung: koin dari {n} alamat dibelanjakan bersama, yang menandakan semuanya milik satu dompet.',
+  privRound: 'Jumlah bulat: satu output berupa angka bulat, jadi output lainnya kemungkinan kembalian.',
+  privTypes: 'Jenis alamat: hanya satu output yang jenis alamatnya sama dengan input, yang menandakan itu kembalian.',
+  privNone: 'Tidak ditemukan kebocoran privasi yang umum.',
 };

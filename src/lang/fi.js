@@ -517,4 +517,21 @@ export default {
   stuckAccLink: 'Nopeuta mempool.spacessa',
   stuckWait:
     'Tai odota: se menee läpi, kun maksut laskevat. Jos sitä ei koskaan louhita, solmut unohtavat sen noin kahden viikon kuluttua ja kolikot palaavat lompakkoon.',
+  txIns: 'Syötteet ({n})',
+  txOuts: 'Tulosteet ({n})',
+  txMore: 'ja {n} muuta',
+  txNewCoins: 'Uudet kolikot (lohkopalkkio ja maksut)',
+  txData: 'Dataa (OP_RETURN)',
+  txNoAddr: 'Ei osoitetta ({t})',
+  privTitle: 'Yksityisyys',
+  privIntro:
+    'Mitä kuka tahansa tätä siirtoa katsova voi päätellä. Laskettu tällä laitteella; mitään ei lähetetä minnekään.',
+  privReuse:
+    'Osoitteen uudelleenkäyttö: kolikoita palaa osoitteeseen, josta myös maksetaan tässä, joten sen maksut on helppo yhdistää.',
+  privMerge:
+    'Yhdistetyt syötteet: {n} osoitteen kolikot käytetään yhdessä, mikä viittaa siihen, että ne kuuluvat yhteen lompakkoon.',
+  privRound: 'Tasasumma: yksi tuloste on tasaluku, joten toinen on luultavasti takaisin palaava vaihtoraha.',
+  privTypes:
+    'Osoitetyypit: vain yhdellä tulosteella on samanlainen osoite kuin syötteillä, mikä viittaa siihen, että se on vaihtoraha.',
+  privNone: 'Tavallisia yksityisyysvuotoja ei löytynyt.',
 };

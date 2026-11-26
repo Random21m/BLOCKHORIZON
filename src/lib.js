@@ -345,6 +345,54 @@ export function parseTx(x, tip) {
     coinbase,
   };
 }
+// Where a transaction's coins came from and where they went, for its page. An input is the output of an earlier
+// transaction (txid, vout); new coins in a block (coinbase) have none. An output without an address is data (op_return)
+// or an old script type.
+export function txFlow(x) {
+  const ins = (x.vin || []).map((i) => {
+    const p = i.prevout || {};
+    return i.is_coinbase
+      ? { coinbase: true }
+      : {
+          addr: p.scriptpubkey_address || null,
+          value: Number.isFinite(p.value) ? p.value : null,
+          type: p.scriptpubkey_type || '',
+          txid: i.txid,
+          vout: i.vout,
+        };
+  });
+  const outs = (x.vout || []).map((o, n) => ({
+    n,
+    addr: o.scriptpubkey_address || null,
+    value: o.value || 0,
+    type: o.scriptpubkey_type || '',
+  }));
+  return { ins, outs };
+}
+// A round amount, in steps of 0.001 BTC: what people usually pay, unlike the odd change that comes back.
+export const isRoundSats = (v) => v > 0 && v % 100000 === 0;
+// Privacy hints anyone looking at a transaction can read from it, worked out here in the browser (nothing is sent):
+// 'reuse'  coins go back to an address that also spends in it,
+// 'merge'  coins from several addresses spent together (they likely belong to one wallet),
+// 'round'  one output is round and another is not (the odd one is likely the change),
+// 'types'  only one output has the inputs' address type (likely the change).
+export function txPrivacy(x) {
+  const f = txFlow(x);
+  if (!f.ins.length || f.ins.some((i) => i.coinbase)) return [];
+  const hints = [],
+    from = new Set(f.ins.map((i) => i.addr).filter(Boolean)),
+    pay = f.outs.filter((o) => o.type !== 'op_return' && o.value > 0);
+  if (pay.some((o) => o.addr && from.has(o.addr))) hints.push('reuse');
+  if (from.size > 1) hints.push('merge');
+  if (pay.length >= 2 && pay.some((o) => isRoundSats(o.value)) && pay.some((o) => !isRoundSats(o.value)))
+    hints.push('round');
+  const types = new Set(f.ins.map((i) => i.type).filter(Boolean));
+  if (pay.length >= 2 && types.size === 1) {
+    const same = pay.filter((o) => types.has(o.type)).length;
+    if (same === 1) hints.push('types');
+  }
+  return hints;
+}
 // Which projected block an unconfirmed fee rate falls into (0 = the next block), or -1 if below every projected block.
 export function txQueuePos(feeRate, projected) {
   const p = projected || [];

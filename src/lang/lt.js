@@ -517,4 +517,20 @@ export default {
   stuckAccLink: 'Paspartinti per mempool.space',
   stuckWait:
     'Arba palaukite: ji praeis, kai mokesčiai nukris. Jei ji niekada nebus iškasta, mazgai ją pamirš maždaug po dviejų savaičių, ir monetos grįš į piniginę.',
+  txIns: 'Įėjimai ({n})',
+  txOuts: 'Išėjimai ({n})',
+  txMore: 'ir dar {n}',
+  txNewCoins: 'Naujos monetos (bloko atlygis ir mokesčiai)',
+  txData: 'Duomenys (OP_RETURN)',
+  txNoAddr: 'Be adreso ({t})',
+  privTitle: 'Privatumas',
+  privIntro:
+    'Ką gali suprasti kiekvienas, kas žiūri į šią transakciją. Apskaičiuota šiame įrenginyje; niekur nieko nesiunčiama.',
+  privReuse:
+    'Pakartotinai naudojamas adresas: monetos grįžta į adresą, kuris čia ir išleidžia, todėl jo mokėjimus lengva susieti.',
+  privMerge:
+    'Sujungti įėjimai: kartu išleidžiamos monetos iš kelių adresų ({n}), o tai rodo, kad jie priklauso vienai piniginei.',
+  privRound: 'Apvali suma: vienas išėjimas yra apvalus skaičius, todėl kitas tikriausiai yra grįžtanti grąža.',
+  privTypes: 'Adresų tipai: tik vieno išėjimo adreso tipas toks pat kaip įėjimų, o tai rodo, kad jis yra grąža.',
+  privNone: 'Įprastų privatumo nutekėjimų nerasta.',
 };

@@ -518,4 +518,19 @@ export default {
   stuckAccLink: 'Accelerér på mempool.space',
   stuckWait:
     'Eller vent: den går igennem, når gebyrerne falder. Bliver den aldrig udvundet, glemmer noderne den efter cirka to uger, og mønterne er tilbage i wallet’en.',
+  txIns: 'Input ({n})',
+  txOuts: 'Output ({n})',
+  txMore: 'og {n} mere',
+  txNewCoins: 'Nye mønter (blokbelønning og gebyrer)',
+  txData: 'Data (OP_RETURN)',
+  txNoAddr: 'Ingen adresse ({t})',
+  privTitle: 'Privatliv',
+  privIntro: 'Hvad alle, der ser på denne transaktion, kan se. Udregnet på denne enhed; intet sendes nogen steder hen.',
+  privReuse:
+    'Genbrug af adresse: mønter går tilbage til en adresse, der også bruger her, så dens betalinger er nemme at forbinde.',
+  privMerge: 'Samlede input: mønter fra {n} adresser bruges sammen, hvilket tyder på, at de hører til én wallet.',
+  privRound: 'Rundt beløb: ét output er et rundt tal, så det andet er sandsynligvis byttepengene, der kommer tilbage.',
+  privTypes:
+    'Adressetyper: kun ét output har samme slags adresse som inputtene, hvilket tyder på, at det er byttepengene.',
+  privNone: 'Ingen almindelige lækager af privatliv fundet.',
 };

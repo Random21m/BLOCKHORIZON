@@ -516,4 +516,20 @@ export default {
   stuckAccLink: "mempool.space'te hızlandır",
   stuckWait:
     'Ya da bekleyin: ücretler düşünce geçer. Hiç kazılmazsa düğümler onu yaklaşık iki hafta sonra unutur ve coinler cüzdana geri döner.',
+  txIns: 'Girdiler ({n})',
+  txOuts: 'Çıktılar ({n})',
+  txMore: 've {n} tane daha',
+  txNewCoins: 'Yeni coinler (blok ödülü ve ücretler)',
+  txData: 'Veri (OP_RETURN)',
+  txNoAddr: 'Adres yok ({t})',
+  privTitle: 'Gizlilik',
+  privIntro: 'Bu işleme bakan herkesin anlayabileceği şeyler. Bu cihazda hesaplanır; hiçbir yere bir şey gönderilmez.',
+  privReuse:
+    'Adres yeniden kullanımı: coinler burada harcama da yapan bir adrese geri dönüyor, bu yüzden ödemeleri kolayca ilişkilendirilebilir.',
+  privMerge:
+    'Birleştirilmiş girdiler: {n} adresten gelen coinler birlikte harcanıyor, bu da hepsinin tek bir cüzdana ait olduğunu düşündürüyor.',
+  privRound: 'Yuvarlak tutar: çıktılardan biri yuvarlak bir sayı, bu yüzden diğeri muhtemelen geri dönen para üstü.',
+  privTypes:
+    'Adres türleri: girdilerle aynı tür adrese sahip tek bir çıktı var, bu da onun para üstü olduğuna işaret ediyor.',
+  privNone: 'Yaygın bir gizlilik sızıntısı bulunmadı.',
 };

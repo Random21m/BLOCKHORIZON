@@ -521,4 +521,21 @@ export default {
   stuckAccLink: 'Percepatkan di mempool.space',
   stuckWait:
     'Atau tunggu: ia akan berjaya apabila yuran turun. Jika ia tidak pernah dilombong, nod akan melupakannya selepas kira-kira dua minggu dan syiling kembali ke dalam dompet.',
+  txIns: 'Input ({n})',
+  txOuts: 'Output ({n})',
+  txMore: 'dan {n} lagi',
+  txNewCoins: 'Syiling baharu (ganjaran blok dan yuran)',
+  txData: 'Data (OP_RETURN)',
+  txNoAddr: 'Tiada alamat ({t})',
+  privTitle: 'Privasi',
+  privIntro:
+    'Perkara yang boleh diketahui oleh sesiapa yang melihat transaksi ini. Dikira pada peranti ini; tiada apa-apa dihantar ke mana-mana.',
+  privReuse:
+    'Guna semula alamat: syiling kembali ke alamat yang turut berbelanja di sini, jadi pembayarannya mudah dikaitkan.',
+  privMerge:
+    'Input digabungkan: syiling daripada {n} alamat dibelanjakan bersama, yang menunjukkan semuanya milik satu dompet.',
+  privRound: 'Jumlah bulat: satu output ialah nombor bulat, jadi output yang satu lagi mungkin baki yang dikembalikan.',
+  privTypes:
+    'Jenis alamat: hanya satu output mempunyai jenis alamat yang sama dengan input, yang membayangkan ia ialah baki.',
+  privNone: 'Tiada kebocoran privasi biasa ditemui.',
 };

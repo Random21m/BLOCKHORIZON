@@ -520,4 +520,19 @@ export default {
   stuckAccLink: 'Akselerer på mempool.space',
   stuckWait:
     'Eller vent: den går gjennom når gebyrene faller. Hvis den aldri blir utvunnet, glemmer nodene den etter omtrent to uker, og myntene er tilbake i lommeboken.',
+  txIns: 'Inndata ({n})',
+  txOuts: 'Utdata ({n})',
+  txMore: 'og {n} til',
+  txNewCoins: 'Nye mynter (blokkbelønning og gebyrer)',
+  txData: 'Data (OP_RETURN)',
+  txNoAddr: 'Ingen adresse ({t})',
+  privTitle: 'Personvern',
+  privIntro: 'Hva alle som ser på denne transaksjonen kan se. Regnet ut på denne enheten; ingenting sendes noe sted.',
+  privReuse:
+    'Gjenbruk av adresse: mynter går tilbake til en adresse som også bruker her, så betalingene dens er lette å koble sammen.',
+  privMerge: 'Samlet inndata: mynter fra {n} adresser brukes sammen, noe som tyder på at de hører til én lommebok.',
+  privRound: 'Rundt beløp: én utdata er et rundt tall, så den andre er trolig vekslepengene som kommer tilbake.',
+  privTypes:
+    'Adressetyper: bare én utdata har samme type adresse som inndataene, noe som tyder på at den er vekslepengene.',
+  privNone: 'Fant ingen vanlige personvernlekkasjer.',
 };

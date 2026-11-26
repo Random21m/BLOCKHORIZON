@@ -514,4 +514,19 @@ export default {
   stuckAccLink: 'Tăng tốc trên mempool.space',
   stuckWait:
     'Hoặc chờ: nó sẽ được xử lý khi phí giảm. Nếu không bao giờ được đào, các node sẽ quên nó sau khoảng hai tuần và coin quay về ví.',
+  txIns: 'Đầu vào ({n})',
+  txOuts: 'Đầu ra ({n})',
+  txMore: 'và {n} mục khác',
+  txNewCoins: 'Coin mới (phần thưởng khối và phí)',
+  txData: 'Dữ liệu (OP_RETURN)',
+  txNoAddr: 'Không có địa chỉ ({t})',
+  privTitle: 'Quyền riêng tư',
+  privIntro:
+    'Những gì bất kỳ ai xem giao dịch này đều có thể biết. Được tính trên thiết bị này; không có gì được gửi đi đâu cả.',
+  privReuse:
+    'Dùng lại địa chỉ: coin quay về một địa chỉ cũng đang chi tiêu ở đây, nên các khoản thanh toán của nó dễ bị liên kết.',
+  privMerge: 'Gộp đầu vào: coin từ {n} địa chỉ được chi cùng nhau, cho thấy chúng thuộc về cùng một ví.',
+  privRound: 'Số tiền tròn: một đầu ra là số tròn, nên đầu ra còn lại có lẽ là tiền thừa quay về.',
+  privTypes: 'Loại địa chỉ: chỉ một đầu ra có cùng loại địa chỉ với các đầu vào, gợi ý đó là tiền thừa.',
+  privNone: 'Không tìm thấy rò rỉ quyền riêng tư phổ biến nào.',
 };
