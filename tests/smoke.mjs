@@ -426,7 +426,7 @@ await ok('app shortcuts: each opens its page; the Search shortcut opens the sear
     if (s.short_name === 'Search') { await page.waitForSelector('#s-h'); assert.equal(new URL(page.url()).hash, '#/'); await page.keyboard.press('Escape'); }
     else assert.equal(await page.locator('#nav a[aria-current=page]').getAttribute('href'), '#/' + s.short_name.toLowerCase()); } });
 await ok('tile titles stay on one line on phones and tablets (short titles), in the longest languages', async () => {
-  for (const [w, lang] of [[360, 'fr'], [360, 'it'], [360, 'es'], [360, 'en'], [700, 'it'], [1280, 'fr']]) {
+  for (const [w, lang] of [[360, 'fr'], [360, 'it'], [360, 'es'], [360, 'en'], [360, 'ja'], [700, 'it'], [1280, 'fr']]) {
     const c = await b.newContext({ viewport: { width: w, height: 800 } }); await c.routeWebSocket(/./, (ws) => ws.close()); await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
     await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
     await c.addInitScript((l) => localStorage.setItem('bh.settings', JSON.stringify({ lang: l, _v: 2 })), lang); const p = await c.newPage(); await p.goto(base); await until(p, () => document.querySelectorAll('.tile').length >= 10);
@@ -606,6 +606,14 @@ await ok('French: glossary and anniversaries are translated', async () => {
   await page.goto(base + '#/glossary'); await until(page, () => document.querySelector('main').innerText.includes('chaîne'), null, { timeout: 5000 }); const g = await page.locator('main').innerText(); assert.ok(g.includes('Hauteur de bloc') && g.includes('chaîne'), g.slice(0, 200));
   await page.goto(base + '#/events'); assert.ok((await page.locator('main').innerText()).includes('Quatrième halving'));
   await page.goto(base); await page.click('#btn-settings'); await page.click('[data-k=format]'); await page.selectOption('#st-lang', 'en'); await page.keyboard.press('Escape'); });
+await ok('Japanese: menu, dashboard and glossary are translated', async () => {
+  const c = await b.newContext({ viewport: { width: 1280, height: 800 } }); await c.routeWebSocket(/./, (ws) => ws.close()); await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
+  await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+  await c.addInitScript(() => localStorage.setItem('bh.settings', JSON.stringify({ lang: 'ja', _v: 2 }))); const p = await c.newPage(); await p.goto(base);
+  await until(p, () => document.querySelectorAll('.tile').length >= 10 && document.documentElement.lang === 'ja');
+  const d = await p.locator('main').innerText(); for (const w of ['blocks deep', 'channels', 'Since last', 'of epoch']) assert.ok(!d.includes(w), 'English left: ' + w);
+  assert.ok(/[\u3040-\u30ff\u4e00-\u9fff]/.test(await p.locator('#nav').innerText()), 'menu in Japanese');
+  await p.goto(base + '#/glossary'); assert.ok(/[\u3040-\u30ff]/.test(await p.locator('main').innerText())); await c.close(); });
 await ok('accessibility: no axe-core violations on the main pages and dialogs, dark and light', async () => {
   let AXE; try { AXE = fs.readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8'); } catch { console.log('      (skipped: axe-core not installed; CI installs it)'); return; }
   const found = [];
