@@ -40,6 +40,8 @@ const MOCK = {
   '/api/v1/mining/hashrate/1y': ['application/json', 'hashrate.json'],
   '/api/v1/lightning/statistics/latest': ['application/json', 'lightning.json'],
   '/api/v1/mining/pools/1w': ['application/json', 'pools-1w.json'],
+  '/api/v1/mining/pools/24h': ['application/json', 'pools-24h.json'],
+  '/api/v1/mining/difficulty-adjustments': ['application/json', 'difficulty-adjustments.json'],
   '/api/block-height/840000': ['text/plain', 'h840000.txt'],
   '/api/v1/mining/reward-stats/144': ['application/json', 'reward-stats.json'],
   '/api/v1/historical-price': ['application/json', 'price-history.json'],
@@ -2311,6 +2313,80 @@ await ok("mining: miners' last day shows revenue, the fee share and the hashpric
   const txt = await page.locator('.mgrid').innerText();
   for (const w of ['earned over the last 144 blocks', 'From fees', '0.63%', 'Average per block', 'sats'])
     assert.ok(txt.includes(w), w + ' in ' + txt);
+});
+await ok('mining: pools ranked over a chosen range, and past difficulty adjustments with a summary', async () => {
+  const c = await b.newContext({ viewport: { width: 360, height: 800 } });
+  await c.clock.install({ time: new Date('2026-11-20T12:00:00Z') }); // a week after the newest recorded adjustment
+  await c.routeWebSocket(/./, (ws) => ws.close());
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
+    r.request().url().includes('mempool.space') ? r.fallback() : r.abort()
+  );
+  await c.route(/mempool\.space/, (route) => {
+    const m = MOCK[new URL(route.request().url()).pathname];
+    if (!m) return route.fulfill({ status: 404, body: '' });
+    route.fulfill({ contentType: m[0], body: fx(m[1]) });
+  });
+  const p = await c.newPage();
+  const perr = [];
+  p.on('pageerror', (e) => perr.push(e.message));
+  await p.goto(base + '#/mining');
+  await until(
+    p,
+    () => document.querySelector('#pool-rank table') && document.querySelector('#adjustments table'),
+    null,
+    {
+      timeout: 15000,
+    }
+  );
+  // the week (the default): 16 pools, the first 10 shown; the estimated hashrate column is left out on a phone
+  const rank = () => p.locator('#pool-rank > p').first().innerText();
+  assert.match(await rank(), /^1,086 blocks found by 16 pools\. The largest 3 found more than half/);
+  assert.equal(await p.getAttribute('#pool-rank [data-pr="1w"]', 'aria-pressed'), 'true');
+  assert.equal(await p.locator('#pool-rank tbody tr').count(), 10);
+  assert.match(await p.locator('#pool-rank tbody tr').first().innerText(), /1\s+Foundry USA\s+247\s+22\.7%/);
+  assert.equal(await p.locator('#pool-rank thead .opt').isVisible(), false);
+  await p.click('#pool-rank .morebtn');
+  await until(p, () => document.querySelectorAll('#pool-rank tbody tr').length === 16);
+  assert.equal(await p.getAttribute('#pool-rank .morebtn', 'aria-expanded'), 'true');
+  assert.equal(await p.locator('#pool-rank .morebtn').innerText(), 'Show fewer');
+  // another range: fetched, ranked again, back to 10 rows
+  await p.click('#pool-rank [data-pr="24h"]');
+  await until(p, () => /^170 blocks found by 13 pools/.test(document.querySelector('#pool-rank > p')?.textContent));
+  assert.equal(await p.locator('#pool-rank tbody tr').count(), 10);
+  assert.equal(await p.locator('#pool-rank .morebtn').innerText(), 'Show all 13 pools');
+  assert.equal(await p.evaluate(() => JSON.parse(localStorage.getItem('bh.settings')).poolRange), '24h');
+  await p.click('#pool-rank [data-pr="1m"]'); // not offered by this server
+  await until(p, () => /Not available from this data server/.test(document.querySelector('#pool-rank').textContent));
+  // past adjustments: newest first, 10 at a time, each linked to its block
+  const adj = await p.locator('#adjustments > p').first().innerText();
+  assert.match(
+    adj,
+    /^In the past year: 26 adjustments, \d+ up and \d+ down\. Largest rise ▲ \+14\.73%, largest drop ▼ -11\.16%\./
+  );
+  assert.equal(await p.locator('#adjustments tbody tr').count(), 10);
+  assert.match(
+    await p.locator('#adjustments tbody tr').first().innerText(),
+    /11\/14\/2026\s+975,744\s+134\.82 T\s+▼ -9\.13%/
+  );
+  await p.click('#adjustments .morebtn');
+  await until(p, () => document.querySelectorAll('#adjustments tbody tr').length === 30);
+  assert.equal(await p.locator('#adjustments .morebtn').innerText(), 'Show 12 earlier');
+  await p.click('#adjustments .morebtn');
+  await until(p, () => document.querySelectorAll('#adjustments tbody tr').length === 42);
+  assert.equal(await p.locator('#adjustments .morebtn').count(), 0, 'nothing more to show');
+  assert.match(await p.locator('#adjustments tbody tr').last().innerText(), /32,256\s+1\.18\s+▲ \+18\.29%/);
+  assert.ok(
+    await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+    'no sideways scroll on a phone'
+  );
+  assert.ok(
+    await p.evaluate(() => [...document.querySelectorAll('.tscroll')].every((e) => e.scrollWidth <= e.clientWidth + 1)),
+    'the tables fit a phone'
+  );
+  await p.click('#adjustments tbody a >> nth=0');
+  await until(p, () => location.hash === '#/block/975744');
+  assert.deepEqual(perr, []);
+  await c.close();
 });
 await ok('your block: shares to Nostr through a browser signer (or copies the note without one)', async () => {
   const c = await b.newContext({
