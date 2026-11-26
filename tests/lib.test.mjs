@@ -1139,3 +1139,33 @@ test('more long-term charts: Puell Multiple, hash ribbons and the difficulty rib
   assert.equal(two.length, 731);
   assert.deepEqual(L.lastDays([], 5), []);
 });
+
+test('block history: fees per block, fees as a share of miner income, block size', () => {
+  const fxj = (n) => JSON.parse(fs.readFileSync(new URL('./fixtures/' + n, import.meta.url), 'utf8'));
+  const fees = fxj('blockfees-1m.json'),
+    rewards = fxj('blockrewards-1m.json'),
+    sizes = fxj('blocksizes-1m.json');
+  const bf = L.SERIES.blockFees(fees);
+  assert.equal(bf.length, fees.length);
+  assert.ok(bf.every((p, i) => !i || p.t >= bf[i - 1].t));
+  assert.equal(bf[0].v, fees[0].avgFees / 1e8);
+  assert.deepEqual(L.SERIES.blockFees([{ timestamp: 1, avgFees: 0 }]), [{ t: 1000, v: 0 }], 'no fees is a real value');
+  assert.deepEqual(L.SERIES.blockFees(null), []);
+  const bs = L.SERIES.blockSizes(sizes);
+  assert.equal(bs.length, sizes.sizes.length);
+  assert.ok(bs.every((p) => p.v > 0.5 && p.v < 4.1), 'blocks weigh at most 4 MWU, so stay under 4 MB');
+  assert.deepEqual(L.SERIES.blockSizes({}), []);
+  // the share: fees / (subsidy + fees), matched by height
+  const sh = L.feeShareSeries(fees, rewards);
+  assert.equal(sh.length, fees.length);
+  const r0 = rewards.reduce((a, q) =>
+    Math.abs(q.avgHeight - fees[0].avgHeight) < Math.abs(a.avgHeight - fees[0].avgHeight) ? q : a
+  );
+  assert.ok(Math.abs(sh[0].v - (fees[0].avgFees / r0.avgRewards) * 100) < 1e-9);
+  assert.ok(sh.every((p) => p.v >= 0 && p.v < 5), 'fees are a few % of 3.125 BTC blocks now');
+  assert.deepEqual(
+    L.feeShareSeries([{ avgHeight: 10, timestamp: 2, avgFees: 50 }], [{ avgHeight: 11, avgRewards: 200 }]),
+    [{ t: 2000, v: 25 }]
+  );
+  assert.deepEqual(L.feeShareSeries(fees, []), []);
+});
