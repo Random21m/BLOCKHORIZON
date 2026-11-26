@@ -1,0 +1,11 @@
+# Formatted: the JavaScript, CSS, the tests and the workflows. Left as written: pages whose exact markup matters,
+# recorded API responses, generated pictures and the Umbrel copy (kept identical to the submitted folder).
+*.html
+*.md
+tests/fixtures/
+docs/
+icons/
+packaging/umbrel/
+node_modules/
+manifest.webmanifest
+config.json
