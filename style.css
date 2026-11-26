@@ -101,7 +101,8 @@ button:hover {
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
-select:focus-visible {
+select:focus-visible,
+textarea:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
@@ -524,7 +525,8 @@ form.row,
   margin: 10px 0;
 }
 input,
-select {
+select,
+textarea {
   font: inherit;
   background: var(--bg);
   color: var(--text);
@@ -3351,4 +3353,38 @@ body.eink .clock-h {
 /* Block strips run in time order, oldest to newest, left to right, whatever the language. */
 [dir='rtl'] .strip2 {
   direction: ltr;
+}
+/* Send a signed transaction: a full-width paste box, then what it does and the Send button */
+.sendform label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--dim);
+}
+.sendform textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 7.5em;
+  font-size: 12px;
+  word-break: break-all;
+  resize: vertical;
+}
+.sendform .row {
+  margin-top: 8px;
+}
+.sendview .panel + .panel,
+.sendview #snd-out .panel {
+  margin-top: 14px;
+}
+.sendview .txid {
+  word-break: break-all;
+}
+.sendview .err,
+.warnline {
+  color: var(--warn);
+}
+.sendstatus {
+  margin-top: 12px;
+}
+.sendstatus .btn-go {
+  margin-top: 4px;
 }

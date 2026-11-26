@@ -590,6 +590,52 @@ export default {
   blkFeesChart: 'Kosten per blok',
   feeShareChart: 'Kosten in miner-inkomsten',
   blkSizeChart: 'Blokgrootte',
+  lnAsOf: 'Cijfers van {d}',
+  lnAsOfShort: 'Stand {d}',
+  sendTitle: 'Een transactie versturen',
+  sendLink: 'Een ondertekende transactie versturen',
+  sendIntro:
+    'Plak een ondertekende transactie: de ruwe hex die je wallet exporteert. Die wordt eerst hier op je apparaat gelezen; er wordt niets verstuurd tot je op Versturen drukt.',
+  sendPaste: 'Ondertekende transactie (hex)',
+  sendCheck: 'Controleren',
+  sendBadHex:
+    'Dit is geen ruwe transactie. Plak de lange hex die je wallet bij het ondertekenen exporteert (een transactie-ID is niet genoeg).',
+  sendBadTx: 'Deze hex is geen volledige transactie. Controleer of hij helemaal is gekopieerd.',
+  sendWhat: 'Wat ze doet',
+  sendSize: '{v} vB ({w} gewichtseenheden)',
+  sendFeeVal: '{s} sats · {r} sat/vB',
+  sendFeeUnknown: 'onbekend tot de munten die ze uitgeeft zijn gevonden',
+  sendRbf: 'Ze kan later worden vervangen met hogere kosten.',
+  sendFinal: 'Ze kan later niet worden vervangen met hogere kosten.',
+  sendMissing:
+    'Sommige munten die ze uitgeeft zijn niet gevonden: ze zijn misschien al uitgegeven, of horen bij een ander netwerk. Ze zou waarschijnlijk worden geweigerd.',
+  sendSpent:
+    'Munten die ze uitgeeft zijn al uitgegeven door een andere transactie in een blok, dus ze zou worden geweigerd.',
+  sendReplaces:
+    'Munten die ze uitgeeft worden al gebruikt door een transactie die nog wacht. Deze gaat alleen door als ze die vervangt met hogere kosten.',
+  sendNegative: 'Ze betaalt meer uit dan ze uitgeeft, dus ze zou worden geweigerd.',
+  sendHigh:
+    'Deze kosten zijn ongewoon hoog: het volgende blok vraagt ongeveer {r} sat/vB. Controleer ze voor je verstuurt.',
+  sendLow: 'Deze kosten liggen onder de {m} sat/vB die nodes nu accepteren, dus ze zou worden geweigerd.',
+  sendSlow:
+    'Deze kosten liggen onder wat de blokken van het komende uur vragen ({r} sat/vB), dus ze kan een tijdje wachten.',
+  sendKnown: 'Deze transactie is al verstuurd.',
+  sendOpen: 'Haar pagina openen',
+  sendTo: 'Versturen naar {h}',
+  sendNote:
+    'Eenmaal verstuurd kan ze niet worden teruggehaald. {h} geeft haar door aan het netwerk en ziet dat ze van jouw verbinding komt, zoals de server van elke wallet.',
+  sending: 'Versturen…',
+  sendDone: 'Verstuurd: het netwerk heeft haar.',
+  sendFail: 'Niet geaccepteerd: {m}',
+  factsTitle: 'Feiten over prijs en aanbod',
+  athL: 'Recordhoogte',
+  belowAth: 'Onder de top',
+  atAthNow: 'Nu op recordhoogte',
+  daysSinceAth: 'Dagen sinds de top',
+  inflNow: 'Jaarlijkse inflatie nu',
+  inflNext: 'Na de halving bij blok {h}',
+  factsNote:
+    'De top is de hoogste dagprijs ooit (of de live prijs, als die hoger is). Inflatie zijn de munten die het volgende jaar aan blokken toevoegt, als deel van wat tot nu toe is uitgegeven.',
   blkHealth: 'Blokgezondheid',
   blkMatch: 'Overeenkomst met het verwachte blok',
   blkFeesL: 'Kosten',

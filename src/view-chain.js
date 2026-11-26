@@ -291,7 +291,7 @@ export function viewTx(id) {
 // output, with its address (linked to the address page) and amount. Long lists show the first FLOW_MAX of each.
 const FLOW_MAX = 50;
 const shortAddr = (a) => (a.length > 20 ? a.slice(0, 10) + '…' + a.slice(-6) : a);
-function flowBox(raw) {
+export function flowBox(raw) {
   const f = L.txFlow(raw),
     btc = (v) => (Number.isFinite(v) ? L.fmtBtc(v) + ' BTC' : '–');
   const who = (o) =>
@@ -341,7 +341,7 @@ function flowBox(raw) {
   );
 }
 // What anyone looking at this transaction can tell about who sent it, worked out on this device (nothing is sent).
-function privacyBox(raw) {
+export function privacyBox(raw) {
   const hints = L.txPrivacy(raw),
     from = new Set(
       L.txFlow(raw)

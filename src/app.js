@@ -24,6 +24,7 @@ import { viewAlarm, viewCalc, paintFeeNow } from './view-tools.js';
 import { viewCharts } from './view-charts.js';
 import { viewMy, paintMySince } from './view-my.js';
 import { viewMining, paintMining } from './view-mining.js';
+import { viewSend } from './view-send.js';
 import { measure, arrive } from './arrival.js';
 import { viewReplay, viewEvents, viewGlossary, viewWatch, viewAbout } from './view-info.js';
 import { closeModal, openModal, searchModal, settingsModal, trapFocus } from './modals.js';
@@ -36,6 +37,7 @@ const VIEWS = {
   '/mining': viewMining,
   '/alarm': viewAlarm,
   '/calc': viewCalc,
+  '/send': viewSend,
   '/charts': viewCharts,
   '/replay': viewReplay,
   '/events': viewEvents,

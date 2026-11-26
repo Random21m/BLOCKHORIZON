@@ -7,6 +7,17 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
 - **What miners earn per block, and how full blocks are.** Three more history charts on the Charts page, with the same
   1 month, 1 year and all time buttons: the fees per block (in BTC), the fees' share of what miners earn (block reward
   plus fees, in %) and the average block size (in MB).
+- The Lightning tile showed mempool.space's figures as if they were current, but they can be months old: they stopped
+  updating at the end of August 2026, and some answers even carry figures from 2024. Figures older than a week now show
+  their date ("32,518 channels · Figures from 08/30/2026"; "As of 08/30/2026" on a phone).
+- **Send a signed transaction.** Paste the raw hex your wallet exports (in Search, or on the new Send page linked from
+  Search and the Calculator) and see what it does before anything leaves your device: its ID, size, fee and fee rate,
+  every input and output with its address, and the privacy hints of the transaction page. It warns when the fee is
+  unusually high or too low, when coins it spends are already spent or missing, and when the network already has it.
+  Only when you press "Send to mempool.space" (or your own node) is it sent; never to the backup server.
+- **Price and supply facts.** The "Long term" section of the Charts page opens with the all-time high (in your
+  currency, with its date), how far below it the price is and for how many days, and the supply's yearly inflation now
+  and after the next halving.
 - **Block health.** A block's page shows how closely it matched the block mempool.space expected from its own
   mempool: the match in %, the fees it paid against the fees expected, how many expected transactions were left out,
   and how many it held that were not expected (and how many of those had been seen only moments before).

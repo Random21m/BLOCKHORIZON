@@ -1352,6 +1352,267 @@ export function adjustSummary(rows, from) {
   };
 }
 
+// When the Lightning statistics were taken (mempool.space /v1/lightning/statistics/latest has `added`, an ISO date or
+// unix seconds): ms, or NaN. They are shown with their date once they are more than LN_STALE_DAYS old.
+export const LN_STALE_DAYS = 7;
+export function lnTakenAt(l) {
+  const a = l && l.added;
+  const ms = typeof a === 'number' ? a * 1000 : Date.parse(a);
+  return Number.isFinite(ms) ? ms : NaN;
+}
+export const lnStale = (l, now = Date.now()) => now - lnTakenAt(l) > LN_STALE_DAYS * 864e5;
+// ---- Sending a signed transaction: it is read on the device first, so the person sees what they are about to send ----
+// SHA-256 (FIPS 180-4), synchronous, for the transaction ID and legacy address checksums.
+const K256 = new Uint32Array([
+  0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5, 0xd807aa98,
+  0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786,
+  0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da, 0x983e5152, 0xa831c66d, 0xb00327c8,
+  0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
+  0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819,
+  0xd6990624, 0xf40e3585, 0x106aa070, 0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a,
+  0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7,
+  0xc67178f2,
+]);
+export function sha256(bytes) {
+  const n = bytes.length,
+    len = Math.ceil((n + 9) / 64) * 64,
+    m = new Uint8Array(len);
+  m.set(bytes);
+  m[n] = 0x80;
+  const bits = n * 8;
+  m[len - 4] = bits >>> 24;
+  m[len - 3] = bits >>> 16;
+  m[len - 2] = bits >>> 8;
+  m[len - 1] = bits;
+  m[len - 5] = Math.floor(bits / 2 ** 32);
+  const h = new Uint32Array([
+      0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19,
+    ]),
+    w = new Uint32Array(64),
+    r = (x, k) => (x >>> k) | (x << (32 - k));
+  for (let o = 0; o < len; o += 64) {
+    for (let i = 0; i < 16; i++)
+      w[i] = (m[o + i * 4] << 24) | (m[o + i * 4 + 1] << 16) | (m[o + i * 4 + 2] << 8) | m[o + i * 4 + 3];
+    for (let i = 16; i < 64; i++) {
+      const a = w[i - 15],
+        b = w[i - 2];
+      w[i] = w[i - 16] + (r(a, 7) ^ r(a, 18) ^ (a >>> 3)) + w[i - 7] + (r(b, 17) ^ r(b, 19) ^ (b >>> 10));
+    }
+    let [a, b, c, d, e, f, g, hh] = h;
+    for (let i = 0; i < 64; i++) {
+      const t1 = (hh + (r(e, 6) ^ r(e, 11) ^ r(e, 25)) + ((e & f) ^ (~e & g)) + K256[i] + w[i]) >>> 0,
+        t2 = ((r(a, 2) ^ r(a, 13) ^ r(a, 22)) + ((a & b) ^ (a & c) ^ (b & c))) >>> 0;
+      hh = g;
+      g = f;
+      f = e;
+      e = (d + t1) >>> 0;
+      d = c;
+      c = b;
+      b = a;
+      a = (t1 + t2) >>> 0;
+    }
+    h[0] += a;
+    h[1] += b;
+    h[2] += c;
+    h[3] += d;
+    h[4] += e;
+    h[5] += f;
+    h[6] += g;
+    h[7] += hh;
+  }
+  const out = new Uint8Array(32);
+  for (let i = 0; i < 8; i++) {
+    out[i * 4] = h[i] >>> 24;
+    out[i * 4 + 1] = h[i] >>> 16;
+    out[i * 4 + 2] = h[i] >>> 8;
+    out[i * 4 + 3] = h[i];
+  }
+  return out;
+}
+export const toHex = (b) => [...b].map((x) => x.toString(16).padStart(2, '0')).join('');
+export const fromHex = (s) => Uint8Array.from(s.match(/../g) || [], (x) => parseInt(x, 16));
+// Mainnet addresses from an output script: base58check for legacy (P2PKH 1…, P2SH 3…), bech32 for SegWit v0 (bc1q…)
+// and bech32m for v1 and up (Taproot, bc1p…).
+const B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+function base58check(version, payload) {
+  const b = Uint8Array.from([version, ...payload]),
+    all = Uint8Array.from([...b, ...sha256(sha256(b)).slice(0, 4)]);
+  let n = BigInt('0x' + toHex(all)),
+    s = '';
+  while (n > 0n) {
+    s = B58[Number(n % 58n)] + s;
+    n /= 58n;
+  }
+  for (const x of all) {
+    if (x) break;
+    s = '1' + s;
+  }
+  return s;
+}
+function bech32Encode(hrp, ver, prog) {
+  const data = [ver],
+    G = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3];
+  let acc = 0,
+    bits = 0;
+  for (const x of prog) {
+    acc = (acc << 8) | x;
+    bits += 8;
+    while (bits >= 5) data.push((acc >>> (bits -= 5)) & 31);
+  }
+  if (bits) data.push((acc << (5 - bits)) & 31);
+  let chk = 1;
+  const step = (v) => {
+    const top = chk >>> 25;
+    chk = ((chk & 0x1ffffff) << 5) ^ v;
+    for (let k = 0; k < 5; k++) if ((top >>> k) & 1) chk ^= G[k];
+  };
+  for (const c of hrp) step(c.charCodeAt(0) >> 5);
+  step(0);
+  for (const c of hrp) step(c.charCodeAt(0) & 31);
+  for (const d of data) step(d);
+  for (let i = 0; i < 6; i++) step(0);
+  chk ^= ver === 0 ? 1 : 0x2bc830a3;
+  const sum = [0, 1, 2, 3, 4, 5].map((i) => (chk >>> (5 * (5 - i))) & 31);
+  return hrp + '1' + [...data, ...sum].map((d) => B32[d]).join('');
+}
+// An output script (bytes) -> { type, address } (address '' for data and unknown scripts). Types are named as
+// mempool.space names them, so a transaction read here and one fetched from the server look the same.
+export function scriptInfo(s) {
+  const h = toHex(s);
+  if (s.length === 25 && /^76a914[0-9a-f]{40}88ac$/.test(h))
+    return { type: 'p2pkh', address: base58check(0, s.slice(3, 23)) };
+  if (s.length === 23 && /^a914[0-9a-f]{40}87$/.test(h))
+    return { type: 'p2sh', address: base58check(5, s.slice(2, 22)) };
+  if (s.length === 22 && h.startsWith('0014')) return { type: 'v0_p2wpkh', address: bech32Encode('bc', 0, s.slice(2)) };
+  if (s.length === 34 && h.startsWith('0020')) return { type: 'v0_p2wsh', address: bech32Encode('bc', 0, s.slice(2)) };
+  if (s.length === 34 && h.startsWith('5120')) return { type: 'v1_p2tr', address: bech32Encode('bc', 1, s.slice(2)) };
+  if (s[0] === 0x6a) return { type: 'op_return', address: '' };
+  return { type: 'unknown', address: '' };
+}
+// Raw transaction hex (as a wallet exports it) -> what it does, read on the device: { txid, version, segwit, size,
+// weight, vsize, locktime, rbf, vin: [{ txid, vout, sequence }], vout: [{ value (sats), type, address }] }.
+// Not a transaction -> { error: 'hex' | 'parse' }. Signatures are not checked: the network does that when it is sent.
+export function parseRawTx(hex) {
+  const s = String(hex || '').replace(/\s+/g, '');
+  if (!/^[0-9a-fA-F]+$/.test(s) || s.length % 2 || s.length < 120) return { error: 'hex' };
+  const b = fromHex(s.toLowerCase());
+  let p = 0;
+  const need = (n) => {
+    if (p + n > b.length) throw new Error('short');
+  };
+  const u32 = () => {
+    need(4);
+    const v = (b[p] | (b[p + 1] << 8) | (b[p + 2] << 16)) + b[p + 3] * 2 ** 24;
+    p += 4;
+    return v;
+  };
+  const varint = () => {
+    need(1);
+    const f = b[p++];
+    if (f < 0xfd) return f;
+    const k = f === 0xfd ? 2 : f === 0xfe ? 4 : 8;
+    need(k);
+    let v = 0;
+    for (let i = k - 1; i >= 0; i--) v = v * 256 + b[p + i];
+    p += k;
+    return v;
+  };
+  const take = (n) => {
+    need(n);
+    p += n;
+    return b.subarray(p - n, p);
+  };
+  try {
+    const version = u32();
+    const segwit = b[p] === 0 && b[p + 1] === 1;
+    if (segwit) p += 2;
+    const bodyStart = p,
+      nin = varint();
+    if (!nin || nin > 100000) throw new Error('inputs');
+    const vin = [];
+    for (let i = 0; i < nin; i++) {
+      const prev = toHex(take(32).slice().reverse()),
+        vout = u32();
+      take(varint());
+      vin.push({ txid: prev, vout, sequence: u32() });
+    }
+    const nout = varint();
+    if (!nout || nout > 100000) throw new Error('outputs');
+    const vout = [];
+    for (let i = 0; i < nout; i++) {
+      need(8);
+      let v = 0;
+      for (let k = 7; k >= 0; k--) v = v * 256 + b[p + k];
+      p += 8;
+      vout.push(Object.assign({ value: v }, scriptInfo(take(varint()))));
+    }
+    const bodyEnd = p;
+    if (segwit) for (let i = 0; i < nin; i++) for (let k = varint(); k > 0; k--) take(varint());
+    const lockAt = p,
+      locktime = u32();
+    if (p !== b.length) throw new Error('trailing');
+    const base = Uint8Array.from([...b.subarray(0, 4), ...b.subarray(bodyStart, bodyEnd), ...b.subarray(lockAt)]),
+      weight = base.length * 3 + b.length;
+    return {
+      txid: toHex(sha256(sha256(base)).reverse()),
+      version,
+      segwit,
+      size: b.length,
+      weight,
+      vsize: Math.ceil(weight / 4),
+      locktime,
+      rbf: vin.some((x) => x.sequence < 0xfffffffe),
+      vin,
+      vout,
+    };
+  } catch {
+    return { error: 'parse' };
+  }
+}
+// The fee, once the coins each input spends are known (prev: Map 'txid:vout' -> sats). NaN while one is missing.
+export function txFee(tx, prev) {
+  let sin = 0;
+  for (const x of tx.vin) {
+    const v = prev.get(x.txid + ':' + x.vout);
+    if (!Number.isFinite(v)) return NaN;
+    sin += v;
+  }
+  return sin - tx.vout.reduce((a, o) => a + o.value, 0);
+}
+// A transaction read here, in mempool.space's shape (for the input/output lists and privacy hints of the transaction
+// page), with each input's coins filled in from the transactions they came from (prevTx: Map txid -> server answer).
+export function asServerTx(tx, prevTx = new Map()) {
+  return {
+    vin: tx.vin.map((i) => {
+      const p = prevTx.get(i.txid),
+        o = p && p.vout && p.vout[i.vout];
+      return { txid: i.txid, vout: i.vout, prevout: o || null };
+    }),
+    vout: tx.vout.map((o) => ({
+      value: o.value,
+      scriptpubkey_type: o.type,
+      scriptpubkey_address: o.address || undefined,
+    })),
+  };
+// ---- Price and supply facts (the Charts page's long-term section) ----
+// The all-time high of a price series (ascending [{ t, v }], daily or weekly closes) and the live price, if that is
+// higher: { ath, at (ms), below (% under the high, 0 at it), days (since the high), now (true when the live price is it) }.
+export function athFacts(pts, live, nowMs = Date.now()) {
+  let ath = NaN,
+    at = NaN;
+  for (const p of pts || []) if (!(p.v <= ath)) [ath, at] = [p.v, p.t];
+  const cur = Number.isFinite(live) && live > 0 ? live : pts && pts.length ? pts[pts.length - 1].v : NaN;
+  if (!Number.isFinite(ath) && !Number.isFinite(cur)) return null;
+  if (!(cur < ath)) return { ath: cur, at: nowMs, below: 0, days: 0, now: true };
+  return { ath, at, below: (1 - cur / ath) * 100, days: Math.floor((nowMs - at) / 864e5), now: false };
+}
+// Yearly inflation of the supply at a height: the coins the next 52,560 blocks (a year at 10 minutes) add, as a % of
+// those issued so far. A halving inside that year is counted.
+export const BLOCKS_YEAR = 52560;
+export function inflationAt(h) {
+  if (!(h >= 0)) return NaN;
+  const s = supplyAt(h);
+  return s > 0 ? ((supplyAt(h + BLOCKS_YEAR) - s) / s) * 100 : NaN;
 // ---- Block health: how closely a mined block matched the block mempool.space expected from its own mempool ----
 // From the block (extras.matchRate, expectedFees) and, when there is one, its audit summary (lists of txids):
 // { match (%), fees, expected (sats), missing (expected but left out), added (in it but not expected), fresh (of
