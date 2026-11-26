@@ -62,6 +62,7 @@ export const st = {
   ln: null,
   last: 0,
   conn: 'off',
+  dataAt: 0,
 };
 export const alarms = () => store('alarms') || [];
 export const feeAlerts = () => store('feeAlerts') || [];

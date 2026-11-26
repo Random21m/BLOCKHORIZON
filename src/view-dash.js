@@ -309,24 +309,57 @@ export function viewDash() {
   return root;
 }
 // Clock mode: the block height, time since the last block and the price, large, for a spare screen. The screen is kept awake.
-export function viewClock() {
+// Clock mode's display options, from the link (#/clock?kiosk&eink), for a screen that stays on:
+// kiosk: no close button or mouse pointer, says so when no new data has come for a while, and reloads every few hours;
+// eink: black on white, nothing animated, and text that only changes when it must (whole minutes, a minute's price).
+let opts = { kiosk: false, eink: false };
+export function clockOpts(arg) {
+  const q = new URLSearchParams(arg || '');
+  return { kiosk: q.has('kiosk'), eink: q.has('eink') };
+}
+const STALE_SEC = 30 * 60;
+// '12 min' on e-ink (no seconds), as usual otherwise.
+export const clockSince = (now) =>
+  opts.eink && st.blocks[0]
+    ? t('minutes', { n: Math.floor(Math.max(0, now / 1000 - st.blocks[0].timestamp) / 60) })
+    : sinceText(now);
+// Shown on a screen left alone once nothing new has arrived for half an hour (connection lost, node down).
+export const staleText = (now) =>
+  (opts.kiosk || opts.eink) && st.dataAt && now - st.dataAt > STALE_SEC * 1000
+    ? t('staleFor', { m: Math.floor((now - st.dataAt) / 60000) })
+    : '';
+// The price, read at most once a minute on e-ink.
+let einkPrice = { at: 0, v: NaN };
+function clockPrice() {
+  if (!opts.eink) return priceLine();
+  const p = price(),
+    now = Date.now();
+  if (Number.isFinite(p) && (now - einkPrice.at > 60000 || !Number.isFinite(einkPrice.v)))
+    einkPrice = { at: now, v: p };
+  return Number.isFinite(einkPrice.v)
+    ? el('div', { class: 'btc' }, el('b', { id: 'btc' }, L.fmtNum(Math.round(einkPrice.v)) + ' ' + S.cur))
+    : null;
+}
+export function viewClock(arg) {
+  opts = clockOpts(arg);
   const now = Date.now();
   return el(
     'div',
     { class: 'clockview' },
     el('h1', { class: 'sr-only' }, 'BLOCKHORIZON · ' + t('clock')),
-    el('a', { class: 'clock-x', href: '#/', 'aria-label': t('close'), title: t('close') }, '✕'),
+    opts.kiosk ? null : el('a', { class: 'clock-x', href: '#/', 'aria-label': t('close'), title: t('close') }, '✕'),
     el('div', { class: 'eyebrow' }, t('height')),
     el('div', { class: 'clock-h', id: 'h' }, L.fmtNum(st.tip)),
-    el('div', { class: 'since' }, t('since') + ': ', el('b', { id: 'since' }, sinceText(now))),
-    priceLine(),
-    finalBlock(now)
+    el('div', { class: 'since' }, t('since') + ': ', el('b', { id: 'since' }, clockSince(now))),
+    clockPrice(),
+    finalBlock(now),
+    el('p', { class: 'stale', id: 'stale', role: 'status' }, staleText(now))
   );
 }
 // Countdown to the last block that creates new bitcoin (ticks every second with the 'since' line).
 export const finalText = (now) => {
   const c = L.finalCountdown(st.tip, st.blocks[0] && st.blocks[0].timestamp, now);
-  return c.done ? '' : L.fmtLong(c.sec);
+  return c.done ? '' : opts.eink ? L.fmtLong(c.sec).replace(/\s*\d+\S*\s+\d+\S*\s+\d+\S*$/, '') : L.fmtLong(c.sec);
 };
 function finalBlock(now) {
   if (!Number.isFinite(st.tip)) return null;
@@ -338,7 +371,7 @@ function finalBlock(now) {
     c.done
       ? el('p', null, t('finalDone'))
       : [
-          el('div', { class: 'final-t', id: 'final' }, L.fmtLong(c.sec)),
+          el('div', { class: 'final-t', id: 'final' }, finalText(now)),
           el('p', { class: 'dim' }, t('finalNote', { n: L.fmtNum(c.blocks), y: new Date(c.estMs).getUTCFullYear() })),
         ]
   );

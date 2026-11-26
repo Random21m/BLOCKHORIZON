@@ -17,7 +17,7 @@ import {
 } from './data.js';
 import { sinceText, srcHost } from './ui.js';
 import { initPush } from './push.js';
-import { viewDash, viewClock, finalText } from './view-dash.js';
+import { viewDash, viewClock, finalText, clockOpts, clockSince, staleText } from './view-dash.js';
 import { viewBlock, viewTx } from './view-chain.js';
 import { viewAlarm, viewCalc, paintFeeNow } from './view-tools.js';
 import { viewCharts } from './view-charts.js';
@@ -51,6 +51,8 @@ function parseRoute() {
   if (m) return { path: '/tx', arg: m[1].toLowerCase() };
   m = h.match(/^\/my(?:\?(.*))?$/);
   if (m) return { path: '/my', arg: m[1] || '' };
+  m = h.match(/^\/clock\?(.*)$/);
+  if (m) return { path: '/clock', arg: m[1] }; // display options: #/clock?kiosk&eink
   m = h.match(/^\/mining(?:\?(.*))?$/);
   if (m) return { path: '/mining', arg: m[1] || '' }; // a transaction to follow travels in the link // 'Your block': the date travels in the link
   return { path: VIEWS[h] ? h : '/' };
@@ -237,6 +239,9 @@ function renderView() {
   if (wasMining && r.path !== '/mining') dropLive(); // its live list stops updating once the page is left
   document.body.classList.toggle('fit', r.path === '/');
   document.body.classList.toggle('clockmode', r.path === '/clock');
+  const co = clockOpts(r.path === '/clock' ? r.arg : '');
+  document.body.classList.toggle('kiosk', co.kiosk);
+  document.body.classList.toggle('eink', co.eink);
   keepAwake(r.path === '/clock');
   const hadFocus = m.contains(document.activeElement) && document.activeElement !== m; // a link inside the page was used: keep keyboard focus in the new page, not lost to <body>
   const v =
@@ -384,11 +389,20 @@ function tickClock() {
   const now = Date.now(),
     s = $('#since'),
     f = $('#final');
-  if (s && st.blocks[0]) s.textContent = sinceText(now);
-  if (f) f.textContent = finalText(now);
+  const set = (e, v) => {
+    if (e && e.textContent !== v) e.textContent = v; // unchanged text is left alone (an e-ink screen redraws on every change)
+  };
+  if (st.blocks[0]) set(s, clockSince(now));
+  set(f, finalText(now));
+  set($('#stale'), staleText(now));
   paintMining();
 }
+// A screen in kiosk mode runs for months: reload every 6 hours (fresh code after an update, no slow build-up).
+function kioskReload() {
+  setTimeout(() => (/^#\/clock\?(.*&)?kiosk\b/.test(location.hash) ? location.reload() : kioskReload()), 6 * 3600e3);
+}
 export async function boot() {
+  kioskReload();
   hooks.render = render;
   hooks.renderView = renderView;
   // Settings changed the data server: forget the old server's saved values and start over at the new one.

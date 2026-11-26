@@ -461,4 +461,6 @@ export default {
   txConfirmedMsg: 'İşlemin {id} onaylandı, blok {h} içinde',
   txAlertsTitle: 'İşlemler',
   txAlertsIntro: 'Her biri bir bloğa girdiğinde bir ses ve bir mesaj. Bekleyen bir işlemin sayfasından kurulur.',
+  minutes: '{n} dk',
+  staleFor: '{m} dakikadır yeni veri yok: bağlantını veya düğümünü kontrol et.',
 };

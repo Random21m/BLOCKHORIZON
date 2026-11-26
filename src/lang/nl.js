@@ -465,4 +465,6 @@ export default {
   txAlertsTitle: 'Transacties',
   txAlertsIntro:
     'Een geluid en een bericht zodra elk ervan in een blok staat. In te stellen op de pagina van een wachtende transactie.',
+  minutes: '{n} min',
+  staleFor: 'Al {m} minuten geen nieuwe gegevens: controleer de verbinding of je node.',
 };

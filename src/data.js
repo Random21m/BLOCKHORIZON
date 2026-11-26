@@ -36,6 +36,7 @@ export async function refreshAll() {
       if (!cur()) return v;
       const h = L.parseTipHeight(v);
       if (Number.isFinite(h) && !(h < st.tip)) st.tip = h;
+      if (Number.isFinite(h) && !(v && v.__stale)) st.dataAt = Date.now(); // fresh from the network (Clock mode's 'no new data' note)
       return v;
     }),
     blocks: api.blocks().then((b) => {
@@ -93,6 +94,7 @@ export function onNewBlock(b) {
   if (!b || !Number.isFinite(b.height)) return;
   const fresh = !(b.height <= st.tip); // also when no height is known yet (first start, or just after switching servers)
   st.blocks = L.mergeBlocks(st.blocks, [b]); // newest first even when a reorg resends a lower block
+  st.dataAt = Date.now();
   if (fresh) {
     st.tip = b.height;
     if (S.sound) play(S.bsound);

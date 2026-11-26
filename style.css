@@ -3081,3 +3081,34 @@ a.mini:focus-visible small {
   max-width: 560px;
   box-sizing: border-box;
 }
+
+/* Clock mode on a screen that stays on (#/clock?kiosk, #/clock?eink) */
+body.kiosk,
+body.kiosk * {
+  cursor: none;
+}
+.clockview .stale {
+  margin: 0;
+  min-height: 1.4em;
+  font-size: clamp(12px, 1.6vw, 16px);
+  color: var(--accent);
+}
+body.eink {
+  --bg: #fff;
+  --card: #fff;
+  --text: #000;
+  --dim: #000;
+  --accent: #000;
+  --line: #000;
+  background: #fff;
+  color: #000;
+}
+body.eink *,
+body.eink *::before,
+body.eink *::after {
+  transition: none !important;
+  animation: none !important;
+}
+body.eink .clock-h {
+  letter-spacing: 0;
+}

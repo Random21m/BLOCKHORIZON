@@ -4,6 +4,9 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
 
 ## Unreleased
 
+- **A block clock for a spare screen.** `#/clock?kiosk` turns Clock mode into a display for a screen that stays on (no
+  close button or pointer, a note when data stops, a reload every 6 hours), and `#/clock?kiosk&eink` suits e-ink
+  displays (black on white, changes only by the minute). The README has a Raspberry Pi guide.
 - **Know when your payment confirms.** On a waiting transaction's page, "Tell me when it is confirmed" gives a sound and
   a message once it is in a block. On your own node with "On your phone" turned on, your phone gets it too, even
   with no browser open. The Alarm page lists the transactions you are waiting for.

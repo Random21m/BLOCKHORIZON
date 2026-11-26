@@ -465,4 +465,6 @@ export default {
   txAlertsTitle: 'Transazioni',
   txAlertsIntro:
     'Un suono e un messaggio quando ognuna è in un blocco. Si imposta dalla pagina di una transazione in attesa.',
+  minutes: '{n} min',
+  staleFor: 'Nessun dato nuovo da {m} minuti: controlla la connessione o il tuo nodo.',
 };
