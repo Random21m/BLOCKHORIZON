@@ -538,4 +538,12 @@ export default {
   privTypes:
     'Jenis alamat: hanya satu output mempunyai jenis alamat yang sama dengan input, yang membayangkan ia ialah baki.',
   privNone: 'Tiada kebocoran privasi biasa ditemui.',
+  blkPicture: 'Apa isinya',
+  blkPicNote:
+    'Setiap petak ialah sebahagian daripada blok, diwarnakan mengikut kadar yuran, yuran tertinggi di bawah. Ketik satu untuk membuka transaksinya.',
+  blkPicAria: 'Gambar blok: {n} transaksi, kadar yuran dari {lo} hingga {hi} sat/vB',
+  blkPicNone: 'Gambar ini datang dari mempool.space, yang tidak menjawab buat masa ini.',
+  blkTxRange: 'Transaksi {a}–{b} daripada {n}',
+  blkPrev: '{n} sebelumnya',
+  blkNext: '{n} seterusnya',
 };

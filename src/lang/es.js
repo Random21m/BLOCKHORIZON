@@ -539,4 +539,12 @@ export default {
   privTypes:
     'Tipos de dirección: solo una salida tiene el mismo tipo de dirección que las entradas, lo que indica que es el cambio.',
   privNone: 'No se han encontrado fugas de privacidad habituales.',
+  blkPicture: 'Qué contenía',
+  blkPicNote:
+    'Cada cuadrado es una parte del bloque, coloreada según la tasa de comisión, con las comisiones más altas abajo. Toca uno para abrir su transacción.',
+  blkPicAria: 'Imagen del bloque: {n} transacciones, tasas de comisión de {lo} a {hi} sat/vB',
+  blkPicNone: 'La imagen viene de mempool.space, que no responde ahora mismo.',
+  blkTxRange: 'Transacciones {a}–{b} de {n}',
+  blkPrev: '{n} anteriores',
+  blkNext: '{n} siguientes',
 };

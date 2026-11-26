@@ -529,4 +529,12 @@ export default {
   privRound: 'Số tiền tròn: một đầu ra là số tròn, nên đầu ra còn lại có lẽ là tiền thừa quay về.',
   privTypes: 'Loại địa chỉ: chỉ một đầu ra có cùng loại địa chỉ với các đầu vào, gợi ý đó là tiền thừa.',
   privNone: 'Không tìm thấy rò rỉ quyền riêng tư phổ biến nào.',
+  blkPicture: 'Bên trong có gì',
+  blkPicNote:
+    'Mỗi ô vuông là một phần của khối, tô màu theo mức phí, phí cao nhất ở dưới cùng. Chạm vào một ô để mở giao dịch của nó.',
+  blkPicAria: 'Hình ảnh khối: {n} giao dịch, mức phí từ {lo} đến {hi} sat/vB',
+  blkPicNone: 'Hình ảnh lấy từ mempool.space, hiện trang này chưa phản hồi.',
+  blkTxRange: 'Giao dịch {a}–{b} trong {n}',
+  blkPrev: '{n} trước',
+  blkNext: '{n} tiếp theo',
 };

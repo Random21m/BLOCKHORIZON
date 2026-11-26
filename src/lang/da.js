@@ -533,4 +533,12 @@ export default {
   privTypes:
     'Adressetyper: kun ét output har samme slags adresse som inputtene, hvilket tyder på, at det er byttepengene.',
   privNone: 'Ingen almindelige lækager af privatliv fundet.',
+  blkPicture: 'Hvad den indeholdt',
+  blkPicNote:
+    'Hver firkant er en del af blokken, farvet efter gebyrsats, med de højeste gebyrer nederst. Tryk på en for at åbne dens transaktion.',
+  blkPicAria: 'Billede af blokken: {n} transaktioner, gebyrsatser fra {lo} til {hi} sat/vB',
+  blkPicNone: 'Billedet kommer fra mempool.space, som ikke svarer lige nu.',
+  blkTxRange: 'Transaktioner {a}–{b} af {n}',
+  blkPrev: 'Forrige {n}',
+  blkNext: 'Næste {n}',
 };

@@ -1,7 +1,7 @@
 // Block, transaction and address pages.
 import * as L from './lib.js';
 import { api, store, lookupHost } from './api.js';
-import { t } from './i18n.js';
+import { t, getLang, isRtl } from './i18n.js';
 import { S, st, fmtD, el, price, txAlerts } from './state.js';
 import { askNotify } from './data.js';
 import { pushAvailable } from './push.js';
@@ -58,11 +58,127 @@ export function viewBlock(hStr) {
         ),
         shareRow('/block/' + n, 'BLOCKHORIZON · ' + t('blockH') + ' ' + L.fmtNum(n))
       );
+      root.append(blockPicture(hash, tok), blockList(hash, b.txs, tok));
     } catch {
       if (tok === blockToken) body.textContent = t('notFound');
     }
   })();
   return root;
+}
+// What was in a past block: every transaction as a slice of the block's space, coloured by fee rate (highest at the
+// bottom). Tapping a square opens its transaction. The picture needs mempool.space's block summary (the backup server
+// has none); the list below works with either.
+const PIC = 50; // cells across and down
+function blockPicture(hash, tok) {
+  const canvas = el('canvas', { class: 'blkpic', width: '500', height: '500', role: 'img' }),
+    note = el('p', { class: 'dim' }, t('loading')),
+    box = el('section', { class: 'panel', id: 'blk-pic' }, el('h2', { class: 'sec' }, t('blkPicture')), note);
+  api.blockSummary(hash).then(
+    (sum) => {
+      if (tok !== blockToken) return;
+      const p = L.blockCells(sum, PIC, PIC),
+        rates = p.list.map((x) => x.rate).filter(Number.isFinite);
+      canvas.setAttribute(
+        'aria-label',
+        t('blkPicAria', {
+          n: L.fmtNum(p.list.length),
+          lo: L.fmtFee(rates.length ? rates[rates.length - 1] : 0),
+          hi: L.fmtFee(rates.length ? rates[0] : 0),
+        })
+      );
+      const cx = canvas.getContext('2d'),
+        sz = canvas.width / PIC,
+        empty = getComputedStyle(document.documentElement).getPropertyValue('--line').trim() || '#333';
+      p.cells.forEach((c, i) => {
+        cx.fillStyle = c < 0 ? empty : L.feeColor(p.list[c].rate);
+        cx.fillRect((i % PIC) * sz, Math.floor(i / PIC) * sz, sz - 1, sz - 1);
+      });
+      const at = (e) => {
+        const r = canvas.getBoundingClientRect(),
+          col = Math.floor(((e.clientX - r.left) / r.width) * PIC),
+          row = Math.floor(((e.clientY - r.top) / r.height) * PIC),
+          c = p.cells[row * PIC + col];
+        return c >= 0 ? p.list[c] : null;
+      };
+      canvas.addEventListener('mousemove', (e) => {
+        const x = at(e);
+        canvas.title = x ? `${L.fmtFee(x.rate)} sat/vB · ${L.fmtNum(x.vsize)} vB` : '';
+        canvas.style.cursor = x ? 'pointer' : '';
+      });
+      canvas.addEventListener('click', (e) => {
+        const x = at(e);
+        if (x) location.hash = '#/tx/' + x.txid;
+      });
+      note.textContent = t('blkPicNote');
+      note.before(canvas);
+    },
+    () => {
+      if (tok === blockToken) note.textContent = t('blkPicNone');
+    }
+  );
+  return box;
+}
+// The block's transactions, 25 at a time (the data server's pages), each linked, with its fee rate and amount sent.
+const PAGE = 25;
+function blockList(hash, total, tok) {
+  const tbody = el('tbody'),
+    range = el('p', { class: 'dim', role: 'status' }),
+    [back, fwd] = isRtl(getLang()) ? ['→', '←'] : ['←', '→'], // the arrows point the way the page reads
+    prev = el('button', { id: 'blk-prev' }, back + ' ' + t('blkPrev', { n: PAGE })),
+    next = el('button', { id: 'blk-next' }, t('blkNext', { n: PAGE }) + ' ' + fwd);
+  let start = 0;
+  const show = async () => {
+    prev.disabled = next.disabled = true;
+    try {
+      const txs = await api.blockTxs(hash, start);
+      if (tok !== blockToken) return;
+      tbody.replaceChildren(
+        ...txs.map((x) => {
+          const vsize = Math.ceil((x.weight || 0) / 4),
+            cb = x.vin && x.vin[0] && x.vin[0].is_coinbase,
+            out = (x.vout || []).reduce((a, o) => a + (o.value || 0), 0);
+          return el(
+            'tr',
+            null,
+            el(
+              'td',
+              { class: 'mono' },
+              el('a', { href: '#/tx/' + x.txid }, x.txid.slice(0, 8) + '…' + x.txid.slice(-6))
+            ),
+            el('td', { class: 'num' }, !cb && vsize ? L.fmtFee(x.fee / vsize) + ' sat/vB' : '–'),
+            el('td', { class: 'num' }, L.fmtBtc(out) + ' BTC')
+          );
+        })
+      );
+      range.textContent = t('blkTxRange', {
+        a: L.fmtNum(start + 1),
+        b: L.fmtNum(Math.min(start + PAGE, total)),
+        n: L.fmtNum(total),
+      });
+      prev.disabled = start === 0;
+      next.disabled = start + PAGE >= total;
+    } catch {
+      if (tok === blockToken) range.textContent = t('notFound');
+      prev.disabled = start === 0;
+    }
+  };
+  prev.onclick = () => {
+    start = Math.max(0, start - PAGE);
+    show();
+  };
+  next.onclick = () => {
+    start += PAGE;
+    show();
+  };
+  show();
+  return el(
+    'section',
+    { class: 'panel', id: 'blk-txs' },
+    el('h2', { class: 'sec' }, t('txs')),
+    range,
+    el('table', { class: 'addrtxs' }, tbody),
+    el('p', { class: 'row' }, prev, next)
+  );
 }
 export let txToken = 0;
 export function viewTx(id) {
