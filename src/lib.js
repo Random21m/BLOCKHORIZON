@@ -1180,3 +1180,40 @@ export function fmtBtc(sats, loc) {
   const d = (Math.abs(sats) / 1e8).toFixed(8).replace(/0+$/, '').split('.')[1] || '';
   return fmtNum(sats / 1e8, d.length, loc);
 }
+
+// ---- Mempool history by fee rate (mempool.space /api/v1/statistics/{range}; the backup server has no such call) ----
+// Each record has `added` (unix seconds) and `vsizes`: vsizes[i] is the vbytes waiting at FEE_BREAKS[i] up to
+// FEE_BREAKS[i + 1] sat/vB (the last band: 2000 and more). -> ascending [{ t (ms), v (total vB), b (vB per band) }].
+// With `from` > 0 the lowest bands are left out of the total (and of the drawing, see bandLayers); b keeps them all.
+export function mempoolHistory(raw, from = 0) {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter((r) => r && Number.isFinite(r.added) && Array.isArray(r.vsizes))
+    .map((r) => {
+      const b = FEE_BREAKS.map((_, i) => Math.max(0, Number(r.vsizes[i]) || 0));
+      return { t: r.added * 1000, v: b.reduce((a, x, i) => (i >= from ? a + x : a), 0), b };
+    })
+    .sort((a, c) => a.t - c.t);
+}
+// The band where the next block would end if it were filled from the highest fee rates down (`room` vB, a full block):
+// paying above it gets in, inside it maybe. -1 when everything waiting fits.
+export function nextBlockBand(b, room = 1e6) {
+  let sum = 0;
+  for (let i = (b || []).length - 1; i >= 0; i--) {
+    sum += b[i];
+    if (sum >= room) return i;
+  }
+  return -1;
+}
+// For drawing stacked areas: the bands that hold anything, lowest fee first, each with the running total at every point
+// (its top edge; the band below's top is its bottom edge).
+export function bandLayers(pts, from = 0) {
+  const used = FEE_BREAKS.map((_, i) => i).filter((i) => i >= from && pts.some((p) => p.b[i] > 0)),
+    run = pts.map(() => 0);
+  return used.map((i) => ({ band: i, top: pts.map((p, k) => (run[k] += p.b[i])) }));
+}
+// Share (0-100) of the points whose value is above v: how often the mempool was fuller than it is now.
+export function shareAbove(pts, v) {
+  if (!pts.length) return NaN;
+  return (pts.filter((p) => p.v > v).length / pts.length) * 100;
+}

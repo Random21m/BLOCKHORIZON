@@ -544,4 +544,20 @@ export default {
   blkTxRange: 'Tranzacțiile {a}–{b} din {n}',
   blkPrev: '{n} anterioare',
   blkNext: 'Următoarele {n}',
+  mpHist: 'Mempool după rata comisionului',
+  mpNote:
+    'Cât aștepta să fie minat, împărțit după rata comisionului plătit: verde pentru comisioane mici, roșu pentru mari. Linia punctată este un bloc.',
+  mpBlocks: 'aproximativ {n} blocuri',
+  mpNext: 'Următorul bloc: aproximativ {a}–{b} sat/vB',
+  mpNextTop: 'Următorul bloc: {a} sat/vB sau mai mult',
+  mpNextLow: 'Următorul bloc: sub {b} sat/vB',
+  mpNextAll: 'Următorul bloc: încape tot ce așteaptă',
+  mpNextL: 'Următorul bloc (sat/vB)',
+  mpEmptier: 'Acum mai goală decât în {p}% din timp ({r})',
+  mpFuller: 'Acum mai plină decât în {p}% din timp ({r})',
+  mpNone:
+    'Acest grafic are nevoie de mempool.space sau de propriul tău server mempool; serverul de rezervă nu îl are. Încearcă mai târziu.',
+  mpLow: 'Include sub 1 sat/vB',
+  r24h: '24 de ore',
+  r1w: '1 săptămână',
 };

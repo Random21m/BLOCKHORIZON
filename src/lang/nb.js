@@ -543,4 +543,20 @@ export default {
   blkTxRange: 'Transaksjoner {a}–{b} av {n}',
   blkPrev: 'Forrige {n}',
   blkNext: 'Neste {n}',
+  mpHist: 'Mempool etter gebyrsats',
+  mpNote:
+    'Hvor mye som ventet på å bli utvunnet, fordelt etter gebyrsatsen det betaler: grønt for lave gebyrer, rødt for høye. Den stiplede linjen er én blokk.',
+  mpBlocks: 'omtrent {n} blokker',
+  mpNext: 'Neste blokk: omtrent {a}–{b} sat/vB',
+  mpNextTop: 'Neste blokk: {a} sat/vB eller mer',
+  mpNextLow: 'Neste blokk: under {b} sat/vB',
+  mpNextAll: 'Neste blokk: alt som venter, får plass',
+  mpNextL: 'Neste blokk (sat/vB)',
+  mpEmptier: 'Tommere nå enn {p} % av tiden ({r})',
+  mpFuller: 'Fullere nå enn {p} % av tiden ({r})',
+  mpNone:
+    'Denne grafen trenger mempool.space eller din egen mempool-server; reserveserveren har den ikke. Prøv igjen senere.',
+  mpLow: 'Ta med under 1 sat/vB',
+  r24h: '24 timer',
+  r1w: '1 uke',
 };

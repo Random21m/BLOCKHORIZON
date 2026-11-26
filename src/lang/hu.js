@@ -544,4 +544,20 @@ export default {
   blkTxRange: 'Tranzakciók: {a}–{b} / {n}',
   blkPrev: 'Előző {n}',
   blkNext: 'Következő {n}',
+  mpHist: 'Mempool díjszint szerint',
+  mpNote:
+    'Mennyi várt bányászatra, a fizetett díjszint szerint bontva: zöld az alacsony, piros a magas díj. A szaggatott vonal egy blokk.',
+  mpBlocks: 'kb. {n} blokk',
+  mpNext: 'Következő blokk: kb. {a}–{b} sat/vB',
+  mpNextTop: 'Következő blokk: {a} sat/vB vagy több',
+  mpNextLow: 'Következő blokk: {b} sat/vB alatt',
+  mpNextAll: 'Következő blokk: minden várakozó belefér',
+  mpNextL: 'Következő blokk (sat/vB)',
+  mpEmptier: 'Most üresebb, mint az idő {p}%-ában ({r})',
+  mpFuller: 'Most telítettebb, mint az idő {p}%-ában ({r})',
+  mpNone:
+    'Ehhez a grafikonhoz a mempool.space vagy saját mempool szerver kell; a tartalék szerveren nincs meg. Próbáld újra később.',
+  mpLow: '1 sat/vB alattiak is',
+  r24h: '24 óra',
+  r1w: '1 hét',
 };

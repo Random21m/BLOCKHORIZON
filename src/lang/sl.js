@@ -542,4 +542,20 @@ export default {
   blkTxRange: 'Transakcije {a}–{b} od {n}',
   blkPrev: 'Prejšnjih {n}',
   blkNext: 'Naslednjih {n}',
+  mpHist: 'Mempool po stopnji provizije',
+  mpNote:
+    'Koliko je čakalo na rudarjenje, razdeljeno po stopnji provizije: zeleno za nizke provizije, rdeče za visoke. Črtkana črta je en blok.',
+  mpBlocks: 'približno blokov: {n}',
+  mpNext: 'Naslednji blok: približno {a}–{b} sat/vB',
+  mpNextTop: 'Naslednji blok: {a} sat/vB ali več',
+  mpNextLow: 'Naslednji blok: pod {b} sat/vB',
+  mpNextAll: 'Naslednji blok: vse, kar čaka, gre noter',
+  mpNextL: 'Naslednji blok (sat/vB)',
+  mpEmptier: 'Zdaj bolj prazen kot {p} % časa ({r})',
+  mpFuller: 'Zdaj bolj poln kot {p} % časa ({r})',
+  mpNone:
+    'Ta graf potrebuje mempool.space ali vaš lastni strežnik mempool; rezervni strežnik ga nima. Poskusite znova pozneje.',
+  mpLow: 'Vključi pod 1 sat/vB',
+  r24h: '24 ur',
+  r1w: '1 teden',
 };

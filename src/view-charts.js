@@ -175,6 +175,171 @@ function longBody(c, d) {
   ].filter(Boolean);
 }
 
+// The mempool over time, split by fee rate (mempool.space's statistics): its own range buttons, since its ranges are
+// shorter than the history charts' (a day or a week says most about whether now is a good time to send).
+const MP_RANGES = { '24h': 'r24h', '1w': 'r1w', '1m': 'r1m', '1y': 'r1y', all: 'rAll' };
+const mvb = (v) => L.trimZeros(L.fmtNum(v / 1e6, v < 1e7 ? 1 : 0)) + ' MvB';
+const bandText = (i) =>
+  i < 0
+    ? t('mpNextAll')
+    : i === 0
+      ? t('mpNextLow', { b: L.fmtNum(L.FEE_BREAKS[1]) })
+      : i >= L.FEE_BREAKS.length - 1
+        ? t('mpNextTop', { a: L.fmtNum(L.FEE_BREAKS[i]) })
+        : t('mpNext', { a: L.fmtNum(L.FEE_BREAKS[i]), b: L.fmtNum(L.FEE_BREAKS[i + 1]) });
+function mempoolPanel() {
+  let range = MP_RANGES[S.mpRange] ? S.mpRange : '24h';
+  const body = el('div', { class: 'cbody' }, el('p', { class: 'dim' }, t('loading'))),
+    panel = el('section', { class: 'panel cpanel', id: 'ch-mempool' });
+  const buttons = Object.keys(MP_RANGES).map((r) =>
+    el(
+      'button',
+      {
+        'data-m': r,
+        'aria-pressed': String(r === range),
+        onclick: () => {
+          range = r;
+          S.mpRange = r;
+          save();
+          buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.m === r)));
+          load();
+        },
+      },
+      t(MP_RANGES[r])
+    )
+  );
+  // almost everything waiting can pay under 1 sat/vB (it may never be mined): leaving it out shows what competes for the
+  // next blocks
+  const low = el(
+    'button',
+    {
+      class: 'mplow',
+      'aria-pressed': String(!!S.mpLow),
+      onclick: () => {
+        S.mpLow = !S.mpLow;
+        save();
+        low.setAttribute('aria-pressed', String(S.mpLow));
+        load();
+      },
+    },
+    t('mpLow')
+  );
+  const load = () => {
+    const r = range;
+    panel.classList.add('busy');
+    fetchOnce('mp:' + r, () => api.mempoolStats(r))
+      .then((raw) => {
+        if (r !== range) return;
+        body.replaceChildren(...mempoolBody(L.mempoolHistory(raw, S.mpLow ? 0 : 1), r, S.mpLow ? 0 : 1));
+        panel.classList.remove('busy');
+      })
+      .catch(() => {
+        if (r !== range) return;
+        body.replaceChildren(el('p', { class: 'dim' }, t('mpNone')));
+        panel.classList.remove('busy');
+      });
+  };
+  queueMicrotask(load);
+  panel.append(
+    el('h2', null, t('mpHist')),
+    el(
+      'div',
+      { class: 'mpbar' },
+      el('div', { class: 'tabs mprange', role: 'group', 'aria-label': t('rangeL') }, buttons),
+      low
+    ),
+    body
+  );
+  return panel;
+}
+function mempoolBody(all, range, from) {
+  const pts = L.thin(all, 300),
+    layers = L.bandLayers(pts, from);
+  if (pts.length < 2 || !layers.length) return [el('p', { class: 'dim' }, t('noData'))];
+  const last = all[all.length - 1],
+    rl = t(MP_RANGES[range]),
+    timeFmt = (ms) => fmtD(ms, range === '24h' || range === '1w' ? {} : { dateOnly: true }),
+    above = L.shareAbove(all, last.v);
+  const head = el(
+    'div',
+    { class: 'chead' },
+    el('b', { class: 'cval' }, mvb(last.v)),
+    last.v > 1e6 ? el('span', { class: 'dim' }, t('mpBlocks', { n: L.fmtNum(Math.ceil(last.v / 1e6)) })) : null,
+    el('span', { class: 'dim' }, bandText(L.nextBlockBand(last.b))),
+    Number.isFinite(above)
+      ? el(
+          'span',
+          { class: 'dim' },
+          above >= 50
+            ? t('mpEmptier', { p: L.fmtNum(Math.round(above)), r: rl })
+            : t('mpFuller', { p: L.fmtNum(Math.round(100 - above)), r: rl })
+        )
+      : null
+  );
+  // the colours in use, lowest fee rate first, with the fee rates at both ends
+  const lo = layers[0].band,
+    hi = layers[layers.length - 1].band;
+  const legend = el(
+    'div',
+    { class: 'mplegend', 'aria-hidden': 'true' },
+    el('span', null, L.fmtNum(L.FEE_BREAKS[lo])),
+    el(
+      'span',
+      { class: 'mpramp' },
+      layers.map((ly) => el('i', { style: 'background:' + L.feeColor(L.FEE_BREAKS[ly.band]) }))
+    ),
+    el('span', null, L.fmtNum(L.FEE_BREAKS[hi]) + (hi >= L.FEE_BREAKS.length - 1 ? '+' : '') + ' sat/vB')
+  );
+  const table = el(
+    'details',
+    { class: 'ctable' },
+    el('summary', null, t('showTable')),
+    el(
+      'table',
+      null,
+      el(
+        'thead',
+        null,
+        el('tr', null, el('th', null, t('dateL')), el('th', null, t('valueL')), el('th', null, t('mpNextL')))
+      ),
+      el(
+        'tbody',
+        null,
+        L.thin(all, 13)
+          .slice()
+          .reverse()
+          .map((p) => {
+            const i = L.nextBlockBand(p.b);
+            return el(
+              'tr',
+              null,
+              el('td', null, timeFmt(p.t)),
+              el('td', { class: 'num' }, mvb(p.v)),
+              el('td', { class: 'num' }, i < 0 ? '–' : L.fmtNum(L.FEE_BREAKS[i]) + '+')
+            );
+          })
+      )
+    )
+  );
+  return [
+    head,
+    el('p', { class: 'dim mpnote' }, t('mpNote')),
+    legend,
+    lineChart(pts, {
+      zero: true,
+      fmt: mvb,
+      axis: mvb,
+      timeFmt,
+      guides: [1e6],
+      cls: 'mptotal',
+      layers: layers.map((ly) => ({ top: ly.top, fill: L.feeColor(L.FEE_BREAKS[ly.band]) })),
+      more: (i) => [bandText(L.nextBlockBand(pts[i].b))],
+      label: t('chartAria', { n: t('mpHist'), r: rl, a: mvb(pts[0].v), b: mvb(last.v) }),
+    }),
+    table,
+  ];
+}
+
 export function viewCharts() {
   let range = RANGE_KEYS[S.chartRange] ? S.chartRange : '1y';
   const panels = CHARTS.map((c) =>
@@ -242,6 +407,7 @@ export function viewCharts() {
     el('h2', { class: 'hist' }, t('historyL')),
     el('div', { class: 'tabs range', role: 'group', 'aria-label': t('rangeL') }, buttons),
     el('div', { class: 'chartgrid' }, panels),
+    mempoolPanel(),
     el('h2', { class: 'hist' }, t('longTermL')),
     el('p', { class: 'dim' }, t('longTermIntro')),
     el('div', { class: 'chartgrid long' }, longPanels)
@@ -303,7 +469,21 @@ function chartBody(c, pts, range) {
 // tooltip by name, and `guides` are values marked with a dashed line (such as 1 for a ratio).
 function lineChart(
   pts,
-  { log, step, fmt, axis, timeFmt, label, name: label0 = '', extra = [], guides = [], cls = '' }
+  {
+    log,
+    step,
+    fmt,
+    axis,
+    timeFmt,
+    label,
+    name: label0 = '',
+    extra = [],
+    guides = [],
+    cls = '',
+    zero,
+    layers = [],
+    more,
+  }
 ) {
   const vs = pts.map((p) => p.v).concat(...extra.map((x) => x.pts.map((p) => p.v)), guides),
     lo0 = Math.min(...vs),
@@ -313,7 +493,7 @@ function lineChart(
     hi = hi0;
   if (!useLog) {
     const pad = (hi0 - lo0) * 0.08 || Math.abs(hi0) * 0.1 || 1;
-    lo = lo0 >= 0 ? Math.max(0, lo0 - pad) : lo0 - pad;
+    lo = zero ? 0 : lo0 >= 0 ? Math.max(0, lo0 - pad) : lo0 - pad;
     hi = hi0 + pad;
   }
   const f = useLog ? Math.log10 : (x) => x,
@@ -349,6 +529,20 @@ function lineChart(
           `<line class="guide" x1="0" x2="100" y1="${Y(v).toFixed(2)}" y2="${Y(v).toFixed(2)}" vector-effect="non-scaling-stroke"/>`
       )
       .join('') +
+    // stacked areas (their top edges, aligned with pts): each filled down to the one below
+    layers
+      .map((ly, k) => {
+        const below = k ? layers[k - 1].top : pts.map(() => 0),
+          d =
+            pts.map((p, i) => (i ? 'L' : 'M') + X(p.t).toFixed(2) + ' ' + Y(ly.top[i]).toFixed(2)).join('') +
+            pts
+              .map((p, i) => pts.length - 1 - i)
+              .map((i) => 'L' + X(pts[i].t).toFixed(2) + ' ' + Y(below[i]).toFixed(2))
+              .join('') +
+            'Z';
+        return `<path class="area" fill="${ly.fill}" d="${d}"/>`;
+      })
+      .join('') +
     extra.map((x) => `<path class="ln ${x.cls}" vector-effect="non-scaling-stroke" d="${path(x.pts)}"/>`).join('') +
     `<path class="ln ${cls}" vector-effect="non-scaling-stroke" d="${path(pts)}"/>`;
   const xh = el('div', { class: 'xh', hidden: true }),
@@ -381,7 +575,8 @@ function lineChart(
         const q = x.pts[L.nearest(x.pts, p.t)];
         return q && Math.abs(q.t - p.t) <= 8 * 864e5 ? x.name + ': ' + fmt(q.v) : '';
       })
-      .filter(Boolean);
+      .filter(Boolean)
+      .concat(more ? more(cur) : []);
     tip.replaceChildren(
       el('b', null, (extra.length && label0 ? label0 + ': ' : '') + fmt(p.v)),
       ...others.map((o) => el('span', null, o)),

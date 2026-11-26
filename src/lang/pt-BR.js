@@ -546,4 +546,20 @@ export default {
   blkTxRange: 'Transações {a}–{b} de {n}',
   blkPrev: '{n} anteriores',
   blkNext: 'Próximas {n}',
+  mpHist: 'Mempool por taxa',
+  mpNote:
+    'Quanto estava aguardando para ser minerado, dividido pela taxa que paga: verde para taxas baixas, vermelho para altas. A linha tracejada é um bloco.',
+  mpBlocks: 'cerca de {n} blocos',
+  mpNext: 'Próximo bloco: cerca de {a}–{b} sat/vB',
+  mpNextTop: 'Próximo bloco: {a} sat/vB ou mais',
+  mpNextLow: 'Próximo bloco: abaixo de {b} sat/vB',
+  mpNextAll: 'Próximo bloco: cabe tudo o que está aguardando',
+  mpNextL: 'Próximo bloco (sat/vB)',
+  mpEmptier: 'Agora mais vazia do que em {p}% do tempo ({r})',
+  mpFuller: 'Agora mais cheia do que em {p}% do tempo ({r})',
+  mpNone:
+    'Este gráfico precisa do mempool.space ou do seu próprio servidor mempool; o servidor reserva não tem esses dados. Tente mais tarde.',
+  mpLow: 'Incluir abaixo de 1 sat/vB',
+  r24h: '24 horas',
+  r1w: '1 semana',
 };

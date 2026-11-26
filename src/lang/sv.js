@@ -540,4 +540,20 @@ export default {
   blkTxRange: 'Transaktioner {a}–{b} av {n}',
   blkPrev: 'Föregående {n}',
   blkNext: 'Nästa {n}',
+  mpHist: 'Mempool efter avgiftsnivå',
+  mpNote:
+    'Hur mycket som väntade på att minas, uppdelat efter avgiftsnivån det betalar: grönt för låga avgifter, rött för höga. Den streckade linjen är ett block.',
+  mpBlocks: 'ungefär {n} block',
+  mpNext: 'Nästa block: ungefär {a}–{b} sat/vB',
+  mpNextTop: 'Nästa block: {a} sat/vB eller mer',
+  mpNextLow: 'Nästa block: under {b} sat/vB',
+  mpNextAll: 'Nästa block: allt som väntar får plats',
+  mpNextL: 'Nästa block (sat/vB)',
+  mpEmptier: 'Tommare nu än {p} % av tiden ({r})',
+  mpFuller: 'Fullare nu än {p} % av tiden ({r})',
+  mpNone:
+    'Diagrammet kräver mempool.space eller en egen mempool-server; reservservern har det inte. Försök igen senare.',
+  mpLow: 'Ta med under 1 sat/vB',
+  r24h: '24 timmar',
+  r1w: '1 vecka',
 };

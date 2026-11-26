@@ -542,4 +542,20 @@ export default {
   blkTxRange: 'Siirrot {a}–{b} / {n}',
   blkPrev: 'Edelliset {n}',
   blkNext: 'Seuraavat {n}',
+  mpHist: 'Mempool maksutasoittain',
+  mpNote:
+    'Kuinka paljon odotti louhintaa, jaettuna maksutason mukaan: vihreä matalille maksuille, punainen korkeille. Katkoviiva on yksi lohko.',
+  mpBlocks: 'noin {n} lohkoa',
+  mpNext: 'Seuraava lohko: noin {a}–{b} sat/vB',
+  mpNextTop: 'Seuraava lohko: {a} sat/vB tai enemmän',
+  mpNextLow: 'Seuraava lohko: alle {b} sat/vB',
+  mpNextAll: 'Seuraava lohko: kaikki odottavat mahtuvat',
+  mpNextL: 'Seuraava lohko (sat/vB)',
+  mpEmptier: 'Nyt tyhjempi kuin {p} % ajasta ({r})',
+  mpFuller: 'Nyt täydempi kuin {p} % ajasta ({r})',
+  mpNone:
+    'Tämä kaavio tarvitsee mempool.spacen tai oman mempool-palvelimen; varapalvelimella sitä ei ole. Yritä myöhemmin uudelleen.',
+  mpLow: 'Näytä myös alle 1 sat/vB',
+  r24h: '24 tuntia',
+  r1w: '1 viikko',
 };

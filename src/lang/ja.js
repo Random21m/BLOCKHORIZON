@@ -542,4 +542,20 @@ export default {
   blkTxRange: 'トランザクション {a}–{b} / {n}',
   blkPrev: '前の {n} 件',
   blkNext: '次の {n} 件',
+  mpHist: '手数料率別のメモリプール',
+  mpNote:
+    'マイニング待ちの量を、支払う手数料率ごとに分けて表示：緑は低い手数料、赤は高い手数料。破線は1ブロック分です。',
+  mpBlocks: '約 {n} ブロック',
+  mpNext: '次のブロック：約 {a}–{b} sat/vB',
+  mpNextTop: '次のブロック：{a} sat/vB 以上',
+  mpNextLow: '次のブロック：{b} sat/vB 未満',
+  mpNextAll: '次のブロック：待機中のすべてが収まります',
+  mpNextL: '次のブロック (sat/vB)',
+  mpEmptier: '{r}の {p}% の時間より今のほうが空いています',
+  mpFuller: '{r}の {p}% の時間より今のほうが混んでいます',
+  mpNone:
+    'このチャートには mempool.space か自分の mempool サーバーが必要です。バックアップサーバーにはこのデータがありません。後でもう一度お試しください。',
+  mpLow: '1 sat/vB 未満も含める',
+  r24h: '24時間',
+  r1w: '1週間',
 };

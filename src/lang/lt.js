@@ -541,4 +541,20 @@ export default {
   blkTxRange: 'Transakcijos {a}–{b} iš {n}',
   blkPrev: 'Ankstesnės {n}',
   blkNext: 'Kitos {n}',
+  mpHist: 'Mempool pagal mokesčio normą',
+  mpNote:
+    'Kiek laukė iškasimo, suskirstyta pagal mokamą mokesčio normą: žalia – maži mokesčiai, raudona – dideli. Brūkšninė linija – vienas blokas.',
+  mpBlocks: 'apie {n} blokų',
+  mpNext: 'Kitas blokas: apie {a}–{b} sat/vB',
+  mpNextTop: 'Kitas blokas: {a} sat/vB ar daugiau',
+  mpNextLow: 'Kitas blokas: mažiau nei {b} sat/vB',
+  mpNextAll: 'Kitas blokas: telpa viskas, kas laukia',
+  mpNextL: 'Kitas blokas (sat/vB)',
+  mpEmptier: 'Dabar tuštesnis nei {p} % laiko ({r})',
+  mpFuller: 'Dabar pilnesnis nei {p} % laiko ({r})',
+  mpNone:
+    'Šiam grafikui reikia mempool.space arba jūsų mempool serverio; atsarginis serveris jo neturi. Bandykite vėliau.',
+  mpLow: 'Įtraukti mažiau nei 1 sat/vB',
+  r24h: '24 valandos',
+  r1w: '1 savaitė',
 };

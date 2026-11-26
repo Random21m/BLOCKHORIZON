@@ -537,4 +537,20 @@ export default {
   blkTxRange: 'Giao dịch {a}–{b} trong {n}',
   blkPrev: '{n} trước',
   blkNext: '{n} tiếp theo',
+  mpHist: 'Mempool theo mức phí',
+  mpNote:
+    'Lượng giao dịch đang chờ được đào, chia theo mức phí trả: xanh lá là phí thấp, đỏ là phí cao. Đường nét đứt là một khối.',
+  mpBlocks: 'khoảng {n} khối',
+  mpNext: 'Khối tiếp theo: khoảng {a}–{b} sat/vB',
+  mpNextTop: 'Khối tiếp theo: từ {a} sat/vB trở lên',
+  mpNextLow: 'Khối tiếp theo: dưới {b} sat/vB',
+  mpNextAll: 'Khối tiếp theo: chứa vừa mọi giao dịch đang chờ',
+  mpNextL: 'Khối tiếp theo (sat/vB)',
+  mpEmptier: 'Hiện vắng hơn {p}% thời gian trong {r}',
+  mpFuller: 'Hiện đầy hơn {p}% thời gian trong {r}',
+  mpNone:
+    'Biểu đồ này cần mempool.space hoặc máy chủ mempool của riêng bạn; máy chủ dự phòng không có dữ liệu này. Hãy thử lại sau.',
+  mpLow: 'Gồm cả dưới 1 sat/vB',
+  r24h: '24 giờ',
+  r1w: '1 tuần',
 };

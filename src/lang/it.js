@@ -546,4 +546,20 @@ export default {
   blkTxRange: 'Transazioni {a}–{b} di {n}',
   blkPrev: '{n} precedenti',
   blkNext: '{n} successive',
+  mpHist: 'Mempool per tasso di commissione',
+  mpNote:
+    'Quanto era in attesa di essere minato, diviso per il tasso di commissione pagato: verde per commissioni basse, rosso per alte. La linea tratteggiata è un blocco.',
+  mpBlocks: 'circa {n} blocchi',
+  mpNext: 'Prossimo blocco: circa {a}–{b} sat/vB',
+  mpNextTop: 'Prossimo blocco: {a} sat/vB o più',
+  mpNextLow: 'Prossimo blocco: sotto {b} sat/vB',
+  mpNextAll: 'Prossimo blocco: ci sta tutto ciò che è in attesa',
+  mpNextL: 'Prossimo blocco (sat/vB)',
+  mpEmptier: 'Ora più vuota che nel {p}% del tempo ({r})',
+  mpFuller: 'Ora più piena che nel {p}% del tempo ({r})',
+  mpNone:
+    'Questo grafico richiede mempool.space o un tuo server mempool; il server di riserva non lo ha. Riprova più tardi.',
+  mpLow: 'Includi sotto 1 sat/vB',
+  r24h: '24 ore',
+  r1w: '1 settimana',
 };

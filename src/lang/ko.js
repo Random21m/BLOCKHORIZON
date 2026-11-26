@@ -531,4 +531,20 @@ export default {
   blkTxRange: '거래 {a}–{b} / {n}',
   blkPrev: '이전 {n}개',
   blkNext: '다음 {n}개',
+  mpHist: '수수료율별 멤풀',
+  mpNote:
+    '채굴을 기다리던 양을 지불한 수수료율별로 나눴어요. 초록은 낮은 수수료, 빨강은 높은 수수료예요. 점선은 블록 하나예요.',
+  mpBlocks: '약 {n}블록',
+  mpNext: '다음 블록: 약 {a}–{b} sat/vB',
+  mpNextTop: '다음 블록: {a} sat/vB 이상',
+  mpNextLow: '다음 블록: {b} sat/vB 미만',
+  mpNextAll: '다음 블록: 대기 중인 것이 모두 들어가요',
+  mpNextL: '다음 블록 (sat/vB)',
+  mpEmptier: '지금은 {r} 중 {p}%의 시간보다 한산해요',
+  mpFuller: '지금은 {r} 중 {p}%의 시간보다 붐벼요',
+  mpNone:
+    '이 차트에는 mempool.space 또는 직접 운영하는 mempool 서버가 필요해요. 백업 서버에는 이 데이터가 없어요. 나중에 다시 시도하세요.',
+  mpLow: '1 sat/vB 미만 포함',
+  r24h: '24시간',
+  r1w: '1주',
 };

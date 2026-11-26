@@ -549,4 +549,20 @@ export default {
   blkTxRange: 'Transactions {a}–{b} sur {n}',
   blkPrev: '{n} précédentes',
   blkNext: '{n} suivantes',
+  mpHist: 'Mempool par taux de frais',
+  mpNote:
+    "Ce qui attendait d'être miné, réparti selon le taux de frais payé : vert pour les frais bas, rouge pour les élevés. La ligne pointillée correspond à un bloc.",
+  mpBlocks: 'environ {n} blocs',
+  mpNext: 'Prochain bloc : environ {a}–{b} sat/vB',
+  mpNextTop: 'Prochain bloc : {a} sat/vB ou plus',
+  mpNextLow: 'Prochain bloc : moins de {b} sat/vB',
+  mpNextAll: 'Prochain bloc : tout ce qui attend y tient',
+  mpNextL: 'Prochain bloc (sat/vB)',
+  mpEmptier: 'Plus vide maintenant que {p} % du temps ({r})',
+  mpFuller: 'Plus pleine maintenant que {p} % du temps ({r})',
+  mpNone:
+    "Ce graphique nécessite mempool.space ou votre propre serveur mempool ; le serveur de secours ne l'a pas. Réessayez plus tard.",
+  mpLow: 'Inclure moins de 1 sat/vB',
+  r24h: '24 heures',
+  r1w: '1 semaine',
 };
