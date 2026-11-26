@@ -2,7 +2,7 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
-## Unreleased
+## 0.18.0
 
 - **A block clock for a spare screen.** `#/clock?kiosk` turns Clock mode into a display for a screen that stays on (no
   close button or pointer, a note when data stops, a reload every 6 hours), and `#/clock?kiosk&eink` suits e-ink
