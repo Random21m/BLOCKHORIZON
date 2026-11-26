@@ -589,4 +589,13 @@ export default {
   diffRibbonNote:
     'Apabila purata-purata berhimpit, kesukaran telah berhenti meningkat dan pelombong berada di bawah tekanan. Kini jaraknya {p}%.',
   last2y: '2 tahun lalu',
+  factsTitle: 'Fakta harga dan bekalan',
+  athL: 'Tertinggi sepanjang masa',
+  belowAth: 'Di bawah puncak',
+  atAthNow: 'Di paras tertinggi sepanjang masa',
+  daysSinceAth: 'Hari sejak puncak',
+  inflNow: 'Inflasi tahunan kini',
+  inflNext: 'Selepas halving di blok {h}',
+  factsNote:
+    'Puncak ialah harga harian tertinggi dalam sejarah (atau harga langsung, jika lebih tinggi). Inflasi ialah syiling yang ditambah oleh blok setahun akan datang, sebagai bahagian daripada yang dikeluarkan setakat ini.',
 };

@@ -585,4 +585,13 @@ export default {
   diffRibbonNote:
     'Når gennemsnittene samler sig, er sværhedsgraden holdt op med at stige, og minerne er pressede. Nu er de {p} % fra hinanden.',
   last2y: 'Seneste 2 år',
+  factsTitle: 'Fakta om pris og udbud',
+  athL: 'Rekordhøjde',
+  belowAth: 'Under toppen',
+  atAthNow: 'I rekordhøjde nu',
+  daysSinceAth: 'Dage siden toppen',
+  inflNow: 'Årlig inflation nu',
+  inflNext: 'Efter halveringen ved blok {h}',
+  factsNote:
+    'Toppen er den højeste dagspris nogensinde (eller liveprisen, hvis den er højere). Inflation er de mønter, det næste års blokke tilføjer, som andel af dem, der er udstedt indtil nu.',
 };

@@ -588,4 +588,13 @@ export default {
   diffRibbonNote:
     'Când mediile se strâng laolaltă, dificultatea a încetat să crească și minerii sunt sub presiune. Acum sunt la {p}% distanță.',
   last2y: 'Ultimii 2 ani',
+  factsTitle: 'Date despre preț și ofertă',
+  athL: 'Maxim istoric',
+  belowAth: 'Sub maxim',
+  atAthNow: 'La maximul istoric acum',
+  daysSinceAth: 'Zile de la maxim',
+  inflNow: 'Inflația anuală acum',
+  inflNext: 'După halvingul de la blocul {h}',
+  factsNote:
+    'Maximul este cel mai mare preț zilnic din istorie (sau prețul live, dacă e mai mare). Inflația sunt monedele adăugate de următorul an de blocuri, ca parte din cele emise până acum.',
 };

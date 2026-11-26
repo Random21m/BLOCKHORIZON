@@ -587,4 +587,13 @@ export default {
   diffRibbonNote:
     'Als de gemiddelden samenkomen, stijgt de moeilijkheid niet meer en staan miners onder druk. Nu liggen ze {p}% uit elkaar.',
   last2y: 'Laatste 2 jaar',
+  factsTitle: 'Feiten over prijs en aanbod',
+  athL: 'Recordhoogte',
+  belowAth: 'Onder de top',
+  atAthNow: 'Nu op recordhoogte',
+  daysSinceAth: 'Dagen sinds de top',
+  inflNow: 'Jaarlijkse inflatie nu',
+  inflNext: 'Na de halving bij blok {h}',
+  factsNote:
+    'De top is de hoogste dagprijs ooit (of de live prijs, als die hoger is). Inflatie zijn de munten die het volgende jaar aan blokken toevoegt, als deel van wat tot nu toe is uitgegeven.',
 };

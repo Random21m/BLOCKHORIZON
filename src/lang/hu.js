@@ -588,4 +588,13 @@ export default {
   diffRibbonNote:
     'Ha az átlagok összetömörülnek, a nehézség már nem nő, és a bányászok nyomás alatt vannak. Most {p}% a különbség köztük.',
   last2y: 'Utolsó 2 év',
+  factsTitle: 'Tények az árról és a kínálatról',
+  athL: 'Történelmi csúcs',
+  belowAth: 'A csúcs alatt',
+  atAthNow: 'Most a történelmi csúcson',
+  daysSinceAth: 'Napok a csúcs óta',
+  inflNow: 'Éves infláció most',
+  inflNext: 'Halving után ({h}. blokk)',
+  factsNote:
+    'A csúcs a történelem legmagasabb napi ára (vagy az élő ár, ha az magasabb). Az infláció a következő év blokkjai által hozzáadott érmék aránya az eddig kibocsátottakhoz képest.',
 };

@@ -583,4 +583,13 @@ export default {
   diffRibbonNote:
     'När snitten klumpar ihop sig har svårighetsgraden slutat stiga och miners är pressade. Nu skiljer de {p} %.',
   last2y: 'Senaste 2 åren',
+  factsTitle: 'Fakta om pris och utbud',
+  athL: 'Rekordnivå',
+  belowAth: 'Under toppen',
+  atAthNow: 'På rekordnivå nu',
+  daysSinceAth: 'Dagar sedan toppen',
+  inflNow: 'Årlig inflation nu',
+  inflNext: 'Efter halveringen vid block {h}',
+  factsNote:
+    'Toppen är det högsta dagspriset någonsin (eller livepriset, om det är högre). Inflation är de mynt som nästa års block lägger till, som andel av dem som getts ut hittills.',
 };

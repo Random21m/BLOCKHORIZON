@@ -592,4 +592,13 @@ export default {
   diffRibbonNote:
     'Rücken die Mittel zusammen, steigt die Schwierigkeit nicht mehr und Miner stehen unter Druck. Jetzt liegen sie {p} % auseinander.',
   last2y: 'Letzte 2 Jahre',
+  factsTitle: 'Fakten zu Preis und Angebot',
+  athL: 'Allzeithoch',
+  belowAth: 'Unter dem Hoch',
+  atAthNow: 'Gerade auf dem Allzeithoch',
+  daysSinceAth: 'Tage seit dem Hoch',
+  inflNow: 'Jährliche Inflation jetzt',
+  inflNext: 'Nach dem Halving bei Block {h}',
+  factsNote:
+    'Das Hoch ist der höchste Tagespreis der Geschichte (oder der Live-Preis, falls höher). Inflation sind die Coins, die das nächste Jahr an Blöcken hinzufügt, als Anteil der bisher ausgegebenen.',
 };

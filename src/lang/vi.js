@@ -579,4 +579,13 @@ export default {
   diffRibbonNote:
     'Khi các đường trung bình dồn sát nhau, độ khó đã ngừng tăng và thợ đào đang chịu áp lực. Hiện chúng cách nhau {p}%.',
   last2y: '2 năm qua',
+  factsTitle: 'Dữ kiện về giá và nguồn cung',
+  athL: 'Đỉnh mọi thời đại',
+  belowAth: 'Dưới đỉnh',
+  atAthNow: 'Đang ở đỉnh mọi thời đại',
+  daysSinceAth: 'Số ngày từ đỉnh',
+  inflNow: 'Lạm phát năm hiện tại',
+  inflNext: 'Sau halving ở khối {h}',
+  factsNote:
+    'Đỉnh là giá ngày cao nhất trong lịch sử (hoặc giá trực tiếp, nếu cao hơn). Lạm phát là số coin mà các khối trong năm tới thêm vào, tính theo tỷ lệ so với lượng đã phát hành.',
 };

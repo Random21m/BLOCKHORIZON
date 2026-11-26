@@ -587,4 +587,13 @@ export default {
   diffRibbonNote:
     'Saat rata-rata saling merapat, kesulitan berhenti naik dan penambang sedang tertekan. Saat ini selisihnya {p}%.',
   last2y: '2 tahun terakhir',
+  factsTitle: 'Fakta harga dan pasokan',
+  athL: 'Tertinggi sepanjang masa',
+  belowAth: 'Di bawah puncak',
+  atAthNow: 'Di titik tertinggi sepanjang masa',
+  daysSinceAth: 'Hari sejak puncak',
+  inflNow: 'Inflasi tahunan kini',
+  inflNext: 'Setelah halving di blok {h}',
+  factsNote:
+    'Puncak adalah harga harian tertinggi dalam sejarah (atau harga langsung, jika lebih tinggi). Inflasi adalah koin yang ditambahkan blok setahun ke depan, sebagai bagian dari yang sudah diterbitkan.',
 };

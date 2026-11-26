@@ -589,4 +589,13 @@ export default {
   diffRibbonNote:
     'Quando as médias se juntam, a dificuldade parou de subir e os mineradores estão sob pressão. Agora estão a {p}% de distância.',
   last2y: 'Últimos 2 anos',
+  factsTitle: 'Fatos sobre preço e oferta',
+  athL: 'Máxima histórica',
+  belowAth: 'Abaixo da máxima',
+  atAthNow: 'Na máxima histórica agora',
+  daysSinceAth: 'Dias desde a máxima',
+  inflNow: 'Inflação anual atual',
+  inflNext: 'Após o halving no bloco {h}',
+  factsNote:
+    'A máxima é o maior preço diário da história (ou o preço ao vivo, se for maior). A inflação são as moedas que o próximo ano de blocos adiciona, em proporção às emitidas até agora.',
 };

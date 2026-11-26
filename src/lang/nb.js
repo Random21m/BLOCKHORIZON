@@ -586,4 +586,13 @@ export default {
   diffRibbonNote:
     'Når snittene samler seg, har vanskelighetsgraden sluttet å stige og utvinnerne er presset. Nå er de {p} % fra hverandre.',
   last2y: 'Siste 2 år',
+  factsTitle: 'Fakta om pris og mengde',
+  athL: 'Rekordhøy',
+  belowAth: 'Under toppen',
+  atAthNow: 'På rekordhøy nå',
+  daysSinceAth: 'Dager siden toppen',
+  inflNow: 'Årlig inflasjon nå',
+  inflNext: 'Etter halveringen ved blokk {h}',
+  factsNote:
+    'Toppen er den høyeste dagsprisen noensinne (eller sanntidsprisen, hvis den er høyere). Inflasjon er myntene neste års blokker legger til, som andel av dem som er utstedt så langt.',
 };

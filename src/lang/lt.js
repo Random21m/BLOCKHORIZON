@@ -584,4 +584,13 @@ export default {
   ribbonAvgs: 'Vidurkiai per 9–200 dienų',
   diffRibbonNote: 'Kai vidurkiai susiglaudžia, sudėtingumas nebeauga ir kasėjams sunku. Dabar jie skiriasi {p} %.',
   last2y: 'Paskutiniai 2 metai',
+  factsTitle: 'Kainos ir pasiūlos faktai',
+  athL: 'Visų laikų rekordas',
+  belowAth: 'Žemiau rekordo',
+  atAthNow: 'Dabar ties visų laikų rekordu',
+  daysSinceAth: 'Dienų nuo rekordo',
+  inflNow: 'Metinė infliacija dabar',
+  inflNext: 'Po halvingo ties bloku {h}',
+  factsNote:
+    'Rekordas – aukščiausia dienos kaina istorijoje (arba dabartinė kaina, jei ji aukštesnė). Infliacija – monetos, kurias prideda kitų metų blokai, kaip dalis iki šiol išleistųjų.',
 };

@@ -585,4 +585,13 @@ export default {
   diffRibbonNote:
     'Ko se povprečja zbližajo, težavnost ne raste več in rudarji so pod pritiskom. Zdaj so {p} % narazen.',
   last2y: 'Zadnji 2 leti',
+  factsTitle: 'Dejstva o ceni in ponudbi',
+  athL: 'Rekordna cena',
+  belowAth: 'Pod rekordom',
+  atAthNow: 'Zdaj na rekordni ceni',
+  daysSinceAth: 'Dni od rekorda',
+  inflNow: 'Letna inflacija zdaj',
+  inflNext: 'Po halvingu pri bloku {h}',
+  factsNote:
+    'Rekord je najvišja dnevna cena v zgodovini (ali trenutna cena, če je višja). Inflacija so kovanci, ki jih doda naslednje leto blokov, kot delež doslej izdanih.',
 };
