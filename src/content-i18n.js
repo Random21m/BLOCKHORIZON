@@ -699,6 +699,64 @@ export const GLOSSARY_TR = {
     ['लाइटनिंग नेटवर्क', 'बिटकॉइन के ऊपर एक परत, ऑन-चेन भरे गए चैनलों के ज़रिए तेज़ और छोटे पेमेंट के लिए।'],
     ['कॉइनबेस', 'किसी ब्लॉक का पहला ट्रांज़ैक्शन, जिसमें माइनर सब्सिडी और फ़ीस लेता है।'],
   ],
+  id: [
+    [
+      'Timechain',
+      'Rantai blok Bitcoin yang berurutan. Setiap blok menunjuk ke blok sebelumnya, sehingga urutan peristiwa tidak bisa diam-diam ditulis ulang.',
+    ],
+    [
+      'Blok',
+      'Sekumpulan transaksi yang disepakati penambang dan ditambahkan ke rantai, sekitar sekali setiap sepuluh menit.',
+    ],
+    [
+      'Tinggi blok',
+      'Jumlah blok sebelum blok ini. Blok pertama (genesis) memiliki tinggi 0, jadi tinggi blok berfungsi seperti jam yang hanya menghitung maju.',
+    ],
+    ['Epoch', 'Rentang 210.000 blok (sekitar empat tahun) di mana imbalan blok tetap sama.'],
+    ['Halving', 'Peristiwa di akhir epoch ketika imbalan koin baru per blok dipotong setengah.'],
+    ['Subsidi', 'Bitcoin baru yang boleh diklaim penambang di setiap blok, belum termasuk biaya.'],
+    ['Pasokan', 'Seluruh bitcoin yang sudah tercipta. Jumlahnya tidak akan pernah melebihi 21 juta.'],
+    [
+      'Kesulitan',
+      'Seberapa sulit teka-teki yang dipecahkan penambang. Disesuaikan ulang setiap 2.016 blok agar waktu antarblok tetap sekitar sepuluh menit.',
+    ],
+    [
+      'Penyesuaian kesulitan',
+      'Penyesuaian itu sendiri: jika 2.016 blok terakhir datang lebih cepat dari sepuluh menit per blok, kesulitan naik; jika lebih lambat, kesulitan turun.',
+    ],
+    [
+      'Hashrate',
+      'Berapa banyak tebakan per detik yang dibuat semua penambang bersama-sama. Hashrate yang lebih tinggi berarti lebih banyak energi melindungi rantai.',
+    ],
+    [
+      'Proof of work',
+      'Bukti bahwa upaya komputasi nyata telah dikeluarkan untuk membuat blok, sehingga curang menjadi mahal.',
+    ],
+    ['Mempool', 'Ruang tunggu bagi transaksi sah yang belum dimasukkan ke dalam blok.'],
+    [
+      'Kedalaman mempool',
+      'Perkiraan kasar berapa blok penuh yang dibutuhkan untuk menampung semua transaksi yang menunggu.',
+    ],
+    [
+      'Tarif biaya',
+      'Yang dibayar transaksi per satuan ukuran (sat/vB). Penambang cenderung memilih tarif tertinggi lebih dulu.',
+    ],
+    [
+      'vByte (vB)',
+      'Satuan ukuran transaksi yang memperhitungkan potongan SegWit. Satu blok memuat sekitar satu juta vB.',
+    ],
+    ['Sat', 'Seperseratus juta bitcoin, satuan terkecil.'],
+    [
+      'Waktu Moskow',
+      'Pembacaan jam yang jenaka: berapa sats yang bisa dibeli satu unit mata uang, ditampilkan seperti jam.',
+    ],
+    ['Node', 'Komputer yang memeriksa sendiri setiap aturan dan meneruskan blok serta transaksi.'],
+    [
+      'Jaringan Lightning',
+      'Lapisan di atas Bitcoin untuk pembayaran kecil yang cepat lewat kanal yang didanai on-chain.',
+    ],
+    ['Coinbase', 'Transaksi pertama dalam blok, tempat penambang mengambil subsidi dan biaya.'],
+  ],
 };
 export const ANNIV_TR = {
   de: [
@@ -840,5 +898,15 @@ export const ANNIV_TR = {
     'दूसरी हॉल्विंग (ब्लॉक 420,000)',
     'तीसरी हॉल्विंग (ब्लॉक 630,000)',
     'चौथी हॉल्विंग (ब्लॉक 840,000)',
+  ],
+  id: [
+    'Blok genesis ditambang',
+    'Transaksi Bitcoin pertama (blok 170)',
+    'Bitcoin Pizza Day: pembelian pertama yang diketahui dengan bitcoin',
+    'Whitepaper diterbitkan',
+    'Halving pertama (blok 210.000)',
+    'Halving kedua (blok 420.000)',
+    'Halving ketiga (blok 630.000)',
+    'Halving keempat (blok 840.000)',
   ],
 };

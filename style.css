@@ -3185,3 +3185,8 @@ body.eink *::after {
 body.eink .clock-h {
   letter-spacing: 0;
 }
+
+/* Devanagari letters join up, so letter spacing pulls them apart: Hindi gets none (the Latin brand name keeps it). */
+[lang='hi'] :not(.brand, .brand *) {
+  letter-spacing: normal !important;
+}
