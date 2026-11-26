@@ -231,6 +231,50 @@ test('watched addresses: shapes and bech32 checksums; payments net of spends; on
   assert.equal(L.fmtBtc(1), '0.00000001');
 });
 
+test('long-term charts: daily grid, moving averages, Mayer Multiple, halving cycles, supply over time', () => {
+  const D = 864e5;
+  // a weekly series becomes one point per day, each day carrying the last price known by then
+  const d = L.daily([
+    { t: 0, v: 1 },
+    { t: 7 * D, v: 2 },
+    { t: 7 * D + 3600e3, v: 3 },
+  ]);
+  assert.equal(d.length, 8);
+  assert.deepEqual([d[0].v, d[6].v, d[7].v], [1, 1, 3]);
+  assert.deepEqual(
+    L.movingAvg(
+      [1, 2, 3, 4].map((v, i) => ({ t: i, v })),
+      2
+    ),
+    [
+      { t: 1, v: 1.5 },
+      { t: 2, v: 2.5 },
+      { t: 3, v: 3.5 },
+    ]
+  );
+  // a flat price: the multiple is 1 everywhere
+  const flat = Array.from({ length: 400 }, (_, i) => ({ t: i * D, v: 50 }));
+  assert.ok(L.mayer(flat).every((p) => p.v === 1));
+  assert.equal(L.mayer(flat).length, 201);
+  // recorded weekly prices (mempool.space, one per week): every halving since 2012 has a cycle, starting at x1
+  const pr = L.SERIES.price(fx('price-history-weekly.json'), 'USD');
+  const w = L.ma200w(pr);
+  assert.ok(w.length > 2000 && w.every((p) => p.v > 0));
+  const cs = L.halvingCycles(pr, undefined, Date.UTC(2026, 10, 26));
+  assert.deepEqual(
+    cs.map((c) => c.year),
+    [2012, 2016, 2020, 2024]
+  );
+  assert.ok(cs.every((c) => c.pts[0].t === 0 && c.pts[0].v === 1));
+  assert.ok(cs[0].pts.length > 1300 && cs[0].pts.length < 1400, 'the 2012 cycle ends at the 2016 halving');
+  assert.ok(cs[2].pts.at(-1).v > 3, 'the 2020 cycle ended well above its start');
+  // supply from the difficulty adjustments: 50 BTC at the genesis block, never above 21 million
+  const s = L.supplySeries(fx('hashrate-all-difficulty.json'));
+  assert.equal(s[0].v, 50);
+  assert.ok(s.every((p, i) => p.v <= 21e6 && (i === 0 || p.v >= s[i - 1].v)));
+  assert.ok(s.at(-1).v > 19.9e6);
+});
+
 test('block colours follow the mempool.space fee ramp', () => {
   assert.equal(L.FEE_BREAKS.length, L.FEE_COLORS.length);
   assert.equal(L.feeColor(0), '#007d3d');

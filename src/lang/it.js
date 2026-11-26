@@ -483,4 +483,17 @@ export default {
   addrActive: 'Indirizzi osservati',
   addrIncoming: '{a} sta ricevendo {amt} BTC (non ancora confermati)',
   addrConfirmed: '{a} ha ricevuto {amt} BTC, confermati nel blocco {h}',
+  longTermL: 'Lungo periodo',
+  longTermIntro:
+    "Dall'inizio, calcolato dallo stesso storico dei prezzi e dalla blockchain stessa. Per farsi un'idea del lungo periodo, non è un consiglio.",
+  ch200w: 'Media su 200 settimane',
+  ma200wNote: 'il prezzo è {x} la sua media su 200 settimane',
+  chMayer: 'Multiplo di Mayer',
+  mayerNote: 'il prezzo diviso per la sua media su 200 giorni: sopra 1, è sopra quella media',
+  chCycles: 'Cicli di halving',
+  cyclesNote: "il prezzo come multiplo del suo valore nel giorno di ogni halving; {x} dall'halving del {y}",
+  cycleName: 'Halving del {y}',
+  dayN: 'giorno {n}',
+  chSupply: 'Offerta nel tempo',
+  supplyNote: 'il {p}% dei 21 milioni che esisteranno in tutto',
 };

@@ -479,4 +479,17 @@ export default {
   addrActive: 'Watched addresses',
   addrIncoming: '{a} is receiving {amt} BTC (not confirmed yet)',
   addrConfirmed: '{a} received {amt} BTC, confirmed in block {h}',
+  longTermL: 'Long term',
+  longTermIntro:
+    'All time, worked out from the same price history and the chain itself. For a sense of the long run, not advice.',
+  ch200w: '200-week average',
+  ma200wNote: 'the price is {x} its 200-week average',
+  chMayer: 'Mayer Multiple',
+  mayerNote: 'the price divided by its 200-day average: above 1, it is above that average',
+  chCycles: 'Halving cycles',
+  cyclesNote: 'the price as a multiple of its value on each halving day; {x} since the {y} halving',
+  cycleName: '{y} halving',
+  dayN: 'day {n}',
+  chSupply: 'Supply over time',
+  supplyNote: '{p}% of the 21 million there will ever be',
 };

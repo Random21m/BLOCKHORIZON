@@ -2,6 +2,12 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
+## Unreleased
+
+- **Four long-term charts.** Below the history charts, a "Long term" section shows the price with its 200-week
+  average, the Mayer Multiple (the price against its 200-day average), the halving cycles laid over each other (the
+  price as a multiple of its value on each halving day) and the supply issued over time, all time, in your currency.
+
 ## 0.19.0
 
 - **Four more languages: 简体中文, 한국어, Русский and Português (Brasil).** 13 languages in all, glossary and

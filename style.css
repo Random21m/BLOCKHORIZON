@@ -1909,6 +1909,54 @@ html {
   stroke: var(--line2);
   stroke-width: 1;
 }
+/* long-term charts: more lines (a second series, or one per halving cycle) and a dashed guide such as 1x */
+.lchart .ln.c1 {
+  stroke: var(--violet);
+  stroke-width: 1.5;
+}
+.lchart .ln.c2 {
+  stroke: var(--teal);
+  stroke-width: 1.5;
+}
+.lchart .ln.c3 {
+  stroke: var(--blue);
+  stroke-width: 1.5;
+}
+.lchart .ln.c4 {
+  stroke: var(--accent);
+}
+.lchart .guide {
+  stroke: var(--dim);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+.clegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 12px;
+  color: var(--dim);
+  margin-bottom: 6px;
+}
+.clegend span::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 3px;
+  margin-right: 6px;
+  vertical-align: middle;
+  border-radius: 2px;
+  background: var(--accent);
+}
+.clegend .c1::before {
+  background: var(--violet);
+}
+.clegend .c2::before {
+  background: var(--teal);
+}
+.clegend .c3::before {
+  background: var(--blue);
+}
 .lchart .ylab {
   position: absolute;
   right: 100%;

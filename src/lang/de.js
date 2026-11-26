@@ -484,4 +484,17 @@ export default {
   addrActive: 'Beobachtete Adressen',
   addrIncoming: '{a} empfängt {amt} BTC (noch nicht bestätigt)',
   addrConfirmed: '{a} hat {amt} BTC empfangen, bestätigt in Block {h}',
+  longTermL: 'Langfristig',
+  longTermIntro:
+    'Gesamter Zeitraum, berechnet aus demselben Preisverlauf und der Blockchain selbst. Für ein Gefühl für die lange Sicht, keine Beratung.',
+  ch200w: '200-Wochen-Mittel',
+  ma200wNote: 'der Preis liegt bei {x} seines 200-Wochen-Mittels',
+  chMayer: 'Mayer-Multiple',
+  mayerNote: 'der Preis geteilt durch sein 200-Tage-Mittel: über 1 liegt er über diesem Mittel',
+  chCycles: 'Halving-Zyklen',
+  cyclesNote: 'der Preis als Vielfaches seines Werts am Tag des jeweiligen Halvings; {x} seit dem Halving {y}',
+  cycleName: 'Halving {y}',
+  dayN: 'Tag {n}',
+  chSupply: 'Angebot im Verlauf',
+  supplyNote: '{p} % der 21 Millionen, die es je geben wird',
 };

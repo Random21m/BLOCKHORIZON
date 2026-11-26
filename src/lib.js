@@ -725,6 +725,65 @@ export function smoothDays(pts, days) {
   return out;
 }
 
+// ---- Long-term charts (all time, from the price history and the difficulty adjustments) ----
+const DAY = 864e5;
+// An ascending series -> one point per UTC day, each day carrying the last value known by then (the price history is
+// weekly in its early years and finer later, so averages over days need an even grid).
+export function daily(pts) {
+  if (!pts || !pts.length) return [];
+  const out = [],
+    end = Math.floor(pts[pts.length - 1].t / DAY) * DAY;
+  let j = 0;
+  for (let d = Math.floor(pts[0].t / DAY) * DAY; d <= end; d += DAY) {
+    while (j + 1 < pts.length && pts[j + 1].t < d + DAY) j++;
+    out.push({ t: d, v: pts[j].v });
+  }
+  return out;
+}
+// Trailing mean of a daily series over `days` days, from the first day with a full window.
+export function movingAvg(day, days) {
+  const out = [];
+  let sum = 0;
+  for (let i = 0; i < day.length; i++) {
+    sum += day[i].v;
+    if (i >= days) sum -= day[i - days].v;
+    if (i >= days - 1) out.push({ t: day[i].t, v: sum / days });
+  }
+  return out;
+}
+// The 200-week moving average of the price (1,400 days).
+export const ma200w = (price) => movingAvg(daily(price), 1400);
+// Mayer Multiple: the price divided by its 200-day moving average.
+export function mayer(price) {
+  const d = daily(price),
+    ma = movingAvg(d, 200),
+    off = d.length - ma.length;
+  return ma.map((m, i) => ({ t: m.t, v: d[i + off].v / m.v }));
+}
+// Price after each halving as a multiple of the price on the halving day, by days since it (t = days in ms, so the
+// charts' time axis works). Halvings before the price history starts are left out.
+export function halvingCycles(price, halvings = HALVINGS.slice(1), now = Date.now()) {
+  const d = daily(price);
+  if (!d.length) return [];
+  return halvings
+    .map((h, i) => {
+      const start = Math.floor(h / DAY) * DAY,
+        end = Math.min(halvings[i + 1] || Infinity, now);
+      const k = d.findIndex((p) => p.t >= start);
+      if (k < 0 || d[k].t - start > 7 * DAY) return null;
+      const base = d[k].v,
+        pts = [];
+      for (let j = k; j < d.length && d[j].t < end; j++) pts.push({ t: d[j].t - d[k].t, v: d[j].v / base });
+      return { year: new Date(h).getUTCFullYear(), pts };
+    })
+    .filter((c) => c && c.pts.length > 1);
+}
+// Bitcoins issued over time, from the difficulty adjustments (each has a time and a block height).
+export const supplySeries = (r) =>
+  asc(
+    ((r && r.difficulty) || []).map((p) => ({ t: p.time * 1000, v: p.height >= 0 ? supplyAt(p.height) / 1e8 : NaN }))
+  );
+
 // ---- "Your block": a personal date on the chain ----
 export const GENESIS_TS = 1231006505; // 2009-01-03 18:15:05 UTC
 // 'YYYY-MM-DD' -> unix seconds at 12:00 UTC that day (the middle of the day in most time zones), or NaN.

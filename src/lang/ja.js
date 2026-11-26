@@ -481,4 +481,17 @@ export default {
   addrActive: '見守っているアドレス',
   addrIncoming: '{a} が {amt} BTC を受け取り中（まだ承認されていません）',
   addrConfirmed: '{a} が {amt} BTC を受け取りました。ブロック {h} で承認済み',
+  longTermL: '長期',
+  longTermIntro:
+    '全期間を、同じ価格履歴とブロックチェーン自体から算出しています。長期の目安としてご覧ください。投資助言ではありません。',
+  ch200w: '200週平均',
+  ma200wNote: '価格は200週平均の{x}です',
+  chMayer: 'メイヤー・マルチプル',
+  mayerNote: '価格を200日平均で割った値です。1を超えると、価格はその平均を上回っています',
+  chCycles: '半減期サイクル',
+  cyclesNote: '各半減期当日の価格を基準とした倍率です。{y}年の半減期から{x}',
+  cycleName: '{y}年の半減期',
+  dayN: '{n}日目',
+  chSupply: '供給量の推移',
+  supplyNote: '最終的な2,100万枚の{p}%',
 };

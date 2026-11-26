@@ -475,4 +475,17 @@ export default {
   addrActive: '지켜보는 주소',
   addrIncoming: '{a}에 {amt} BTC가 들어오는 중이에요 (아직 확인되지 않음)',
   addrConfirmed: '{a}에 {amt} BTC가 들어왔어요. 블록 {h}에서 확인됨',
+  longTermL: '장기',
+  longTermIntro:
+    '전체 기간을 같은 가격 기록과 블록체인 자체에서 계산했어요. 장기 흐름을 가늠하기 위한 것이며, 투자 조언이 아니에요.',
+  ch200w: '200주 평균',
+  ma200wNote: '가격이 200주 평균의 {x}예요',
+  chMayer: '메이어 멀티플',
+  mayerNote: '가격을 200일 평균으로 나눈 값이에요. 1보다 크면 가격이 그 평균보다 높아요',
+  chCycles: '반감기 주기',
+  cyclesNote: '각 반감기 당일 가격 대비 배수예요. {y}년 반감기 이후 {x}',
+  cycleName: '{y}년 반감기',
+  dayN: '{n}일째',
+  chSupply: '공급량 추이',
+  supplyNote: '앞으로 존재할 2,100만 개 중 {p}%',
 };

@@ -1046,9 +1046,12 @@ await ok(
     p.on('pageerror', (e) => perr.push(e.message));
     await p.goto(base);
     await p.click('#nav a[href="#/charts"]');
-    await until(p, () => document.querySelectorAll('.lchart').length === 4, null, { timeout: 10000 });
+    // the four history charts (the long-term ones below have their own test)
+    await until(p, () => document.querySelectorAll('.chartgrid:not(.long) .lchart').length === 4, null, {
+      timeout: 10000,
+    });
     assert.equal(await p.getAttribute('.range [data-r="1y"]', 'aria-pressed'), 'true');
-    const heads = await p.$$eval('.cpanel', (ps) =>
+    const heads = await p.$$eval('.chartgrid:not(.long) .cpanel', (ps) =>
       ps.map((x) => x.querySelector('h2').textContent + ' | ' + x.querySelector('.cval').textContent)
     );
     assert.ok(
@@ -1083,7 +1086,12 @@ await ok(
     assert.deepEqual(perr, []);
     await p.setViewportSize({ width: 360, height: 800 });
     await p.click('.range [data-r="1y"]');
-    await until(p, () => document.querySelectorAll('.lchart').length === 4 && !document.querySelector('.cpanel.busy'));
+    await until(
+      p,
+      () =>
+        document.querySelectorAll('.chartgrid:not(.long) .lchart').length === 4 &&
+        !document.querySelector('.cpanel.busy')
+    );
     assert.ok(
       await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
       'no sideways scroll on a phone'
@@ -2489,6 +2497,48 @@ await ok(
     await c.close();
   }
 );
+await ok('long-term charts: 200-week average, Mayer Multiple, halving cycles and supply, always all time', async () => {
+  const c = await b.newContext({ viewport: { width: 1280, height: 900 } });
+  await c.routeWebSocket(/./, (ws) => ws.close());
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
+    r.request().url().includes('mempool.space') ? r.fallback() : r.abort()
+  );
+  await c.route(/mempool\.space/, (route) => {
+    const u = new URL(route.request().url()).pathname;
+    const m =
+      u === '/api/v1/mining/hashrate/all'
+        ? ['application/json', 'hashrate-all-difficulty.json']
+        : u === '/api/v1/historical-price'
+          ? ['application/json', 'price-history-weekly.json']
+          : MOCK[u];
+    if (!m) return route.fulfill({ status: 404, body: '' });
+    route.fulfill({ contentType: m[0], body: fx(m[1]) });
+  });
+  await c.addInitScript(() => localStorage.setItem('bh.settings', JSON.stringify({ cur: 'USD', _v: 2 })));
+  const p = await c.newPage();
+  await p.goto(base + '#/charts');
+  await p.waitForSelector('#ch-supply .lchart', { timeout: 15000 });
+  await p.waitForSelector('#ch-cycles .lchart');
+  const head = (id) => p.locator('#ch-' + id + ' .chead').innerText();
+  assert.match(await head('ma200w'), /[\d,]+ USD[\s\S]*×0\.\d+ its 200-week average/);
+  assert.match(await head('mayer'), /×\d\.\d\d/);
+  assert.match(await head('cycles'), /since the 2024 halving/);
+  assert.match(await head('supply'), /20,\d{3},\d{3} BTC[\s\S]*% of the 21 million/);
+  assert.equal(await p.locator('#ch-cycles .ln').count(), 4, 'one line per halving');
+  assert.equal(await p.locator('#ch-ma200w .ln').count(), 2, 'price and its average');
+  // the crosshair names every cycle at that day
+  await p.locator('#ch-cycles .lchart').focus();
+  await p.keyboard.press('Home'); // day 0: every cycle has a value
+  const tip = await p.locator('#ch-cycles .tip').innerText();
+  for (const y of ['2012', '2016', '2020', '2024']) assert.ok(tip.includes(y + ' halving'), tip);
+  // the range buttons change the history charts, not these
+  const before = await p.locator('#ch-ma200w .cval').innerText();
+  await p.click('[data-r="1m"]');
+  await p.waitForTimeout(300);
+  assert.equal(await p.locator('#ch-ma200w .cval').innerText(), before);
+  assert.match(await p.locator('#ch-ma200w .xlabs').innerText(), /2014/);
+  await c.close();
+});
 await ok('accessibility: no axe-core violations on the main pages and dialogs, dark and light', async () => {
   let AXE;
   try {
