@@ -77,7 +77,9 @@ export function viewTx(id) {
   root.append(body);
   (async () => {
     try {
-      const x = L.parseTx(await api.tx(id), st.tip);
+      // the fee estimate too, for a waiting transaction opened from a link before the app has fetched it
+      const [raw, fees] = await Promise.all([api.tx(id), st.fees || api.fees().catch(() => null)]);
+      const x = L.parseTx(raw, st.tip);
       if (tok !== txToken) return;
       const p = price(),
         fiat = (sats) => (Number.isFinite(p) ? ` (${L.fmtNum((sats / 1e8) * p, 2)} ${S.cur})` : '');
@@ -107,6 +109,7 @@ export function viewTx(id) {
             ? null
             : el('p', null, el('a', { href: '#/mining?tx=' + id, class: 'watchlink' }, t('watchTx') + ' →')),
           x.confirmed ? null : txAlertRow(id),
+          x.confirmed || x.coinbase ? null : stuckBox(x, fees),
           shareRow('/tx/' + id, 'BLOCKHORIZON · ' + t('txTitle')),
         ].filter(Boolean)
       );
@@ -193,4 +196,37 @@ export function viewAddress(a) {
     }
   })();
   return root;
+}
+// A waiting transaction whose fee is below what the next block needs: what can be done, in plain words, with what each
+// way would cost now (from the fee estimate for the next block). Only a link to mempool.space's Accelerator: nothing
+// is sent anywhere unless it is followed.
+function stuckBox(x, fees) {
+  const rate = fees && fees.fastestFee,
+    s = L.speedUp(x, rate);
+  if (!s || !s.stuck) return null;
+  const sats = (n) => L.fmtNum(n);
+  return el(
+    'section',
+    { class: 'stuck', id: 'tx-stuck' },
+    el('h2', null, t('stuckTitle')),
+    el('p', { class: 'dim' }, t('stuckIntro')),
+    el('p', null, t('stuckNow', { r: L.fmtFee(rate), f: sats(s.rbf), p: sats(x.fee) })),
+    el(
+      'ul',
+      null,
+      el('li', null, t('stuckRbf', { f: sats(s.rbf) })),
+      el('li', null, t('stuckCpfp', { f: sats(s.cpfp) })),
+      el(
+        'li',
+        null,
+        t('stuckAcc') + ' ',
+        el(
+          'a',
+          { href: 'https://mempool.space/tx/' + x.id, target: '_blank', rel: 'noopener noreferrer' },
+          t('stuckAccLink') + ' ↗'
+        )
+      ),
+      el('li', null, t('stuckWait'))
+    )
+  );
 }

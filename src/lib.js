@@ -354,6 +354,19 @@ export function txQueuePos(feeRate, projected) {
   }
   return -1;
 }
+// A waiting transaction below the next block's fee rate: what speeding it up would cost, in sats, at `rate` sat/vB.
+// Replacing it (RBF) means paying the whole transaction at that rate, and at least 1 sat/vB more than it paid (the
+// network's minimum step). A follow-up that spends one of its outputs (CPFP, about CHILD_VB) pays for both together.
+export const CHILD_VB = 110;
+export function speedUp(tx, rate) {
+  if (!tx || !(tx.vsize > 0) || !(rate > 0)) return null;
+  const fee = tx.fee || 0;
+  return {
+    stuck: fee / tx.vsize < rate,
+    rbf: Math.max(Math.ceil(rate * tx.vsize), fee + tx.vsize),
+    cpfp: Math.max(0, Math.ceil(rate * (tx.vsize + CHILD_VB) - fee)),
+  };
+}
 // Approximate virtual size of a payment (vB) for the common address types: inputs, outputs and the fixed overhead.
 export const TX_SIZES = {
   segwit: { base: 10.5, in: 68, out: 31 },

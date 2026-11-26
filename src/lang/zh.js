@@ -477,4 +477,13 @@ export default {
   addrRecent: '最近交易',
   addrNoTx: '暂无交易。',
   addrLookedUp: '通过 {s} 查询，它可能把这个地址与你的 IP 地址关联起来。在你自己的节点上查询，地址只留在你的节点上。',
+  stuckTitle: '等太久了？',
+  stuckIntro: '它的手续费低于矿工现在接受的水平。等手续费降下来它就会确认，你也可以给它加速。',
+  stuckNow: '下一个区块大约需要 {r} sat/vB：这笔交易约需 {f} 聪，而它付了 {p} 聪。',
+  stuckRbf:
+    '替换它：在发出它的钱包里找“Bump fee”“Speed up”或“Replace”。这会以更高的手续费（约 {f} 聪）重新发送同一笔付款。',
+  stuckCpfp: '用后续交易补付：如果这笔付款是转给你的，把这些币再转给自己，手续费约 {f} 聪，矿工就会把两笔一起打包。',
+  stuckAcc: '付钱给矿工：mempool.space 的 Accelerator 会收取费用，请合作矿池打包它。',
+  stuckAccLink: '在 mempool.space 上加速',
+  stuckWait: '或者等待：手续费降下来它就会确认。如果一直没被打包，节点会在大约两周后忘掉它，币会回到钱包里。',
 };

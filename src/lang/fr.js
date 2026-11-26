@@ -497,4 +497,18 @@ export default {
   addrNoTx: 'Aucune transaction pour l’instant.',
   addrLookedUp:
     'Recherchée sur {s}, qui pourrait relier cette adresse à votre adresse IP. Sur votre propre nœud, elle reste sur votre nœud.',
+  stuckTitle: 'Ça prend trop de temps ?',
+  stuckIntro:
+    'Ses frais sont inférieurs à ce que les mineurs prennent en ce moment. Elle passera quand les frais baisseront, ou vous pouvez l’accélérer.',
+  stuckNow:
+    'Le prochain bloc demande environ {r} sat/vB : environ {f} sats pour cette transaction, qui a payé {p} sats.',
+  stuckRbf:
+    'La remplacer : dans le portefeuille qui l’a envoyée, cherchez « Bump fee », « Speed up » ou « Replace ». Le même paiement est renvoyé avec des frais plus élevés, environ {f} sats.',
+  stuckCpfp:
+    'La payer avec une suite : si ce paiement vous était destiné, renvoyez ces pièces à vous-même avec des frais d’environ {f} sats, pour que les mineurs prennent les deux ensemble.',
+  stuckAcc:
+    'Payer un mineur : l’Accelerator de mempool.space demande à des pools de minage partenaires de l’inclure, contre des frais.',
+  stuckAccLink: 'Accélérer sur mempool.space',
+  stuckWait:
+    'Ou attendre : elle passe quand les frais baissent. Si elle n’est jamais minée, les nœuds l’oublient au bout d’environ deux semaines et les pièces reviennent dans le portefeuille.',
 };

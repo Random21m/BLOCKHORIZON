@@ -486,4 +486,15 @@ export default {
   addrNoTx: '아직 거래가 없어요.',
   addrLookedUp:
     '{s}에서 조회했어요. 이 주소가 내 IP 주소와 연결될 수 있어요. 내 노드에서 조회하면 노드 밖으로 나가지 않아요.',
+  stuckTitle: '너무 오래 걸리나요?',
+  stuckIntro: '수수료가 지금 채굴자들이 받는 수준보다 낮아요. 수수료가 내려가면 처리되고, 속도를 높일 수도 있어요.',
+  stuckNow: '다음 블록에는 약 {r} sat/vB가 필요해요: 이 거래에는 약 {f} sats인데, 지불한 금액은 {p} sats예요.',
+  stuckRbf:
+    "교체하기: 보낸 지갑에서 'Bump fee', 'Speed up' 또는 'Replace'를 찾아보세요. 같은 결제를 더 높은 수수료(약 {f} sats)로 다시 보내요.",
+  stuckCpfp:
+    '후속 거래로 지불하기: 이 결제를 받은 쪽이라면 그 코인을 약 {f} sats 수수료로 자신에게 다시 보내세요. 그러면 채굴자가 두 거래를 함께 처리해요.',
+  stuckAcc: '채굴자에게 지불하기: mempool.space의 Accelerator가 수수료를 받고 제휴 채굴 풀에 포함을 요청해요.',
+  stuckAccLink: 'mempool.space에서 가속하기',
+  stuckWait:
+    '또는 기다리기: 수수료가 내려가면 처리돼요. 끝내 채굴되지 않으면 약 2주 뒤 노드에서 잊히고 코인은 지갑으로 돌아와요.',
 };

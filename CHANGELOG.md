@@ -8,6 +8,9 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
   confirm, everything received, and the recent payments in and out. The search box and the page both say that the
   address is sent to the data server (mempool.space, unless you use your own node); it is never sent to the backup
   server.
+- **Help when a payment is stuck.** On a waiting transaction whose fee is below what the next block needs, "Taking too
+  long?" explains the ways out in plain words (replace it with a higher fee, a follow-up payment that pays for both,
+  mempool.space's paid Accelerator, or wait), with what each would cost right now.
 
 ## 0.19.0
 

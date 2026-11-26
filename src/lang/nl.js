@@ -494,4 +494,17 @@ export default {
   addrRecent: 'Recente transacties',
   addrNoTx: 'Nog geen transacties.',
   addrLookedUp: 'Opgezocht op {s}, dat dit adres aan je IP-adres kan koppelen. Op je eigen node blijft het op je node.',
+  stuckTitle: 'Duurt het te lang?',
+  stuckIntro:
+    'De kosten liggen onder wat miners nu nemen. Ze gaat door zodra de kosten dalen, of je kunt haar versnellen.',
+  stuckNow: 'Het volgende blok vraagt ongeveer {r} sat/vB: zo’n {f} sats voor deze transactie, die {p} sats betaalde.',
+  stuckRbf:
+    'Vervang haar: zoek in de wallet die haar verstuurde naar ‘Bump fee’, ‘Speed up’ of ‘Replace’. Dat verstuurt dezelfde betaling opnieuw met hogere kosten, ongeveer {f} sats.',
+  stuckCpfp:
+    'Betaal met een vervolgtransactie: kwam deze betaling naar jou, stuur die munten dan door naar jezelf met kosten van ongeveer {f} sats, zodat miners ze samen meenemen.',
+  stuckAcc:
+    'Betaal een miner: de Accelerator van mempool.space vraagt partner-miningpools om haar op te nemen, tegen betaling.',
+  stuckAccLink: 'Versnellen op mempool.space',
+  stuckWait:
+    'Of wacht: ze gaat door als de kosten dalen. Wordt ze nooit gemined, dan vergeten nodes haar na ongeveer twee weken en staan de munten weer in de wallet.',
 };

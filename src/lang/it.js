@@ -495,4 +495,17 @@ export default {
   addrNoTx: 'Ancora nessuna transazione.',
   addrLookedUp:
     'Cercato su {s}, che potrebbe collegare questo indirizzo al tuo indirizzo IP. Sul tuo nodo, resta sul tuo nodo.',
+  stuckTitle: 'Ci vuole troppo?',
+  stuckIntro:
+    'La sua commissione è sotto quella che i miner accettano ora. Passerà quando le commissioni scendono, oppure puoi accelerarla.',
+  stuckNow:
+    'Il prossimo blocco richiede circa {r} sat/vB: circa {f} sats per questa transazione, che ha pagato {p} sats.',
+  stuckRbf:
+    'Sostituiscila: nel wallet che l’ha inviata, cerca «Bump fee», «Speed up» o «Replace». Invia di nuovo lo stesso pagamento con una commissione più alta, circa {f} sats.',
+  stuckCpfp:
+    'Pagala con una transazione successiva: se questo pagamento era per te, rimanda quelle monete a te stesso con una commissione di circa {f} sats, così i miner le prendono insieme.',
+  stuckAcc: 'Paga un miner: l’Accelerator di mempool.space chiede ai mining pool partner di includerla, a pagamento.',
+  stuckAccLink: 'Accelera su mempool.space',
+  stuckWait:
+    'Oppure aspetta: passa quando le commissioni scendono. Se non viene mai minata, i nodi la dimenticano dopo circa due settimane e le monete tornano nel wallet.',
 };

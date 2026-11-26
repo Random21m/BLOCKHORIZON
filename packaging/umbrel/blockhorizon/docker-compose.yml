@@ -7,7 +7,7 @@ services:
       APP_PORT: 80
 
   web:
-    image: ghcr.io/random21m/blockhorizon:v0.18.0@sha256:69a7b9f5c7392bf0a6f715dd1da49194ac58ab325757c3edbf2c058c8238ed9b
+    image: ghcr.io/random21m/blockhorizon:v0.19.0@sha256:079ffa7bd4fa0129f83d4e39722dd262351a2061abe4855e5123ef1491a7abc0
     init: true
     restart: on-failure
     stop_grace_period: 30s

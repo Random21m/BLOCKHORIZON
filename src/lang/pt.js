@@ -495,4 +495,17 @@ export default {
   addrNoTx: 'Ainda sem transações.',
   addrLookedUp:
     'Pesquisado em {s}, que pode associar este endereço ao seu endereço IP. No seu próprio nó, fica no seu nó.',
+  stuckTitle: 'Está a demorar muito?',
+  stuckIntro:
+    'A taxa está abaixo do que os mineradores aceitam agora. Vai passar quando as taxas descerem, ou pode acelerá-la.',
+  stuckNow: 'O próximo bloco pede cerca de {r} sat/vB: cerca de {f} sats para esta transação, que pagou {p} sats.',
+  stuckRbf:
+    'Substitua-a: na carteira que a enviou, procure «Bump fee», «Speed up» ou «Replace». Isso envia o mesmo pagamento outra vez com uma taxa mais alta, cerca de {f} sats.',
+  stuckCpfp:
+    'Pague-a com uma transação seguinte: se este pagamento era para si, envie essas moedas para si próprio com uma taxa de cerca de {f} sats, para que os mineradores incluam as duas juntas.',
+  stuckAcc:
+    'Pague a um minerador: o Accelerator do mempool.space pede a pools de mineração parceiros que a incluam, mediante uma taxa.',
+  stuckAccLink: 'Acelerar no mempool.space',
+  stuckWait:
+    'Ou espere: passa quando as taxas descerem. Se nunca for minerada, os nós esquecem-na após cerca de duas semanas e as moedas voltam à carteira.',
 };
