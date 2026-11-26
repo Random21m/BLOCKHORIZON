@@ -2368,6 +2368,7 @@ await ok(
       ['nb', /Ordliste|Kalkulator/, /Blokkhøyde|Vanskelighetsgrad/],
       ['ro', /Glosar|Despre/, /Înălțimea blocului|Dificultate/],
       ['ms', /Penggera|Glosari/, /Ketinggian blok|Kesukaran/],
+      ['fi', /Laskin|Sanasto/, /Lohkokorkeus|Vaikeus/],
       ['pl', /Słowniczek|Kalendarz/, /Wysokość bloku|Trudność/],
     ]) {
       const c = await b.newContext({ viewport: { width: 1280, height: 800 } });

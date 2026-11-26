@@ -30,7 +30,7 @@ export default {
   blocksToGo: 'lohkoa jäljellä',
   priority: 'Kiireellinen',
   soon: 'Pian',
-  anytime: 'Joskus',
+  anytime: 'Milloin vain',
   economy: 'Edullinen',
   byHeight: 'Lohkokorkeuden mukaan',
   byDate: 'Päivämäärän mukaan',
