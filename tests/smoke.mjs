@@ -133,8 +133,13 @@ await ok('clock: reached from More on a phone, big height and price, no header, 
   await page.keyboard.press('Escape'); await until(page, () => location.hash === '#/' && !!document.querySelector('.dashgrid')); });
 await ok('clock: counts down to the final bitcoin block, every second', async () => {
   await page.goto(base + '#/clock'); await until(page, () => /\d+y \d+d/.test(document.querySelector('#final')?.textContent || ''));
-  const a = await page.locator('#final').textContent(); await new Promise((r) => setTimeout(r, 1300)); const b = await page.locator('#final').textContent();
-  assert.notEqual(a, b); const txt = await page.locator('.clockview .final').innerText(); assert.ok(txt.includes('6,929,999') && txt.includes('5,952,588') && /21[34]\d/.test(txt), txt);
+  // Sample it for a few seconds: it must keep counting down, one second at a time. Timings and visibility are reported on a failure.
+  const seen = await page.evaluate(() => new Promise((done) => { const t0 = performance.now(), out = [];
+    const sec = (s) => { const m = s.match(/(?:(\d+)y )?(?:(\d+)d )?(\d+)h (\d+)m (\d+)s/); return m ? (((+m[1] || 0) * 365.25 + (+m[2] || 0)) * 86400) + m[3] * 3600 + m[4] * 60 + +m[5] : NaN; };
+    const look = () => { const v = sec(document.querySelector('#final')?.textContent || ''); if (!out.length || out[out.length - 1].v !== v) out.push({ ms: Math.round(performance.now() - t0), v, vis: document.visibilityState }); if (performance.now() - t0 < 3500) setTimeout(look, 50); else done(out); };
+    look(); }));
+  const steps = seen.slice(1).map((x, i) => seen[i].v - x.v);
+  assert.ok(seen.length >= 3 && steps.every((d) => d >= 1 && d <= 2), JSON.stringify(seen)); const txt = await page.locator('.clockview .final').innerText(); assert.ok(txt.includes('6,929,999') && txt.includes('5,952,588') && /21[34]\d/.test(txt), txt);
   await page.goto(base); });
 await ok('clock keeps the screen awake while open and lets go when you leave', async () => {
   const c = await b.newContext({ viewport: { width: 1280, height: 720 } }); await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.abort());
