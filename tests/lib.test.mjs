@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import * as L from '../src/lib.js';
 import { parseTicker, parseBackupTicker, BACKUP_CURRENCIES, CURRENCIES } from '../src/price.js';
 import { normServer, esploraFor, esploraFees } from '../src/api.js';
-import { LANGS, loadLang, setLang, t, getLang, detectLang } from '../src/i18n.js';
+import { LANGS, loadLang, setLang, t, getLang, detectLang, isRtl } from '../src/i18n.js';
 // every language's texts, as the app would load them one at a time
 const TABLES = Object.fromEntries(
   await Promise.all(Object.keys(LANGS).map(async (l) => [l, (await import(`../src/lang/${l}.js`)).default]))
@@ -342,6 +342,7 @@ test('browser language: an exact region first, then the language alone, else Eng
   assert.equal(detectLang('hi-IN'), 'hi');
   assert.equal(detectLang('pl-PL'), 'pl');
   assert.equal(detectLang('uk-UA'), 'uk');
+  assert.equal(detectLang('ar-EG'), 'ar');
   assert.equal(detectLang('de_AT'), 'de');
   assert.equal(detectLang('xx-YY'), 'en');
 });
@@ -358,6 +359,17 @@ test('languages load one at a time: English until another is fetched, unknown on
   setLang('xx');
   assert.equal(getLang(), 'en');
   setLang('en');
+});
+
+test('Arabic reads right to left: texts start with a right-to-left mark and filled-in values are isolated', async () => {
+  assert.ok(isRtl('ar') && !isRtl('en') && !isRtl('he-xx'));
+  await loadLang('ar');
+  setLang('ar');
+  assert.equal(t('calc'), '\u200f' + TABLES.ar.calc);
+  const s = t('est', { d: '11/27/2026' });
+  assert.ok(s.startsWith('\u200f') && s.includes('\u206811/27/2026\u2069'), JSON.stringify(s));
+  setLang('en');
+  assert.equal(t('est', { d: '11/27/2026' }), TABLES.en.est.replace('{d}', '11/27/2026')); // left-to-right languages unchanged
 });
 
 test('alarms: reached at or below the tip, waiting above it, nothing before the tip is known', () => {

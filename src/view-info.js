@@ -1,6 +1,6 @@
 // Halving replay, chain calendar, glossary, watch list, about.
 import * as L from './lib.js';
-import { t, getLang } from './i18n.js';
+import { t, getLang, rtlText } from './i18n.js';
 import { GLOSSARY, ANNIVERSARIES, CHANNELS, SITES } from './content.js';
 import { GLOSSARY_TR, ANNIV_TR } from './content-i18n.js';
 import { VERSION, TIP_ADDR, S, st, fmtD, el, toast } from './state.js';
@@ -118,7 +118,7 @@ export function viewEvents() {
   const d = new Date(now),
     key = (d.getMonth() + 1) * 100 + d.getDate();
   const tr = ANNIV_TR[getLang()],
-    ann = ANNIVERSARIES.map((a, i) => Object.assign({}, a, { text: (tr && tr[i]) || a.text })).sort(
+    ann = ANNIVERSARIES.map((a, i) => Object.assign({}, a, { text: rtlText((tr && tr[i]) || a.text) })).sort(
       (a, b) => ((a.m * 100 + a.d - key + 1300) % 1300) - ((b.m * 100 + b.d - key + 1300) % 1300)
     );
   root.append(
@@ -154,7 +154,9 @@ export function viewGlossary() {
     el(
       'dl',
       { class: 'glossary panel' },
-      (GLOSSARY_TR[getLang()] || GLOSSARY).map(([k, v]) => el('div', null, el('dt', null, k), el('dd', null, v)))
+      (GLOSSARY_TR[getLang()] || GLOSSARY).map(([k, v]) =>
+        el('div', null, el('dt', null, rtlText(k)), el('dd', null, rtlText(v)))
+      )
     )
   );
   return root;

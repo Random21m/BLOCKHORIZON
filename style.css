@@ -68,10 +68,10 @@ body {
 }
 .skip {
   position: absolute;
-  left: -999px;
+  inset-inline-start: -999px;
 }
 .skip:focus {
-  left: 8px;
+  inset-inline-start: 8px;
   top: 8px;
   background: var(--accent);
   color: var(--bg);
@@ -3189,4 +3189,18 @@ body.eink .clock-h {
 /* Devanagari letters join up, so letter spacing pulls them apart: Hindi gets none (the Latin brand name keeps it). */
 [lang='hi'] :not(.brand, .brand *) {
   letter-spacing: normal !important;
+}
+
+/* Right-to-left languages: a value takes its direction from its own text, so numbers with Latin units keep reading
+   left to right ("+9.11%", "60,405 USD") while one with an Arabic word stays right to left. */
+[dir='rtl'] :where(b, small, span:not(.more, .less), a, div, p, li, dd, td, th, label, output):not(:has(*)),
+[dir='rtl'] .ts {
+  unicode-bidi: plaintext;
+  /* line up with the parent's side, not with the text's own direction (prefixed form for Chromium and Safari) */
+  text-align: -webkit-match-parent;
+  text-align: match-parent;
+}
+/* Block strips run in time order, oldest to newest, left to right, whatever the language. */
+[dir='rtl'] .strip2 {
+  direction: ltr;
 }

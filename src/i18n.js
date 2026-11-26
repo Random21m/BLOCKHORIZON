@@ -54,9 +54,15 @@ export function setLang(l) {
   setUnits({ y, d, h, m, s });
 }
 // t('key') or t('key', { n: 5 }): {name} placeholders are filled from the second argument.
+// In a right-to-left language a translated text starts with a right-to-left mark (RLM), so it reads right to left even
+// when its first word is Latin ("Bitcoin ..."); bare numbers and units on the page keep left to right (see style.css).
+export const rtlText = (s) => (isRtl(cur) ? '\u200f' + s : s);
+// In a right-to-left language each filled-in value is also wrapped in Unicode isolate marks (FSI ... PDI), so a date,
+// amount or unit inside a sentence keeps its own reading order ("متوقع 11/27/2026 1:10 AM").
 export function t(k, v) {
-  const s = T[cur][k] || T.en[k] || k;
-  return v ? s.replace(/\{(\w+)\}/g, (m, x) => (v[x] != null ? String(v[x]) : m)) : s;
+  const s = T[cur][k] || T.en[k] || k,
+    [a, b] = isRtl(cur) ? ['\u2068', '\u2069'] : ['', ''];
+  return rtlText(v ? s.replace(/\{(\w+)\}/g, (m, x) => (v[x] != null ? a + String(v[x]) + b : m)) : s);
 }
 export const getLang = () => cur;
 // The browser's language: an exact match first (pt-BR), then the language alone (de-AT -> de, zh-TW -> zh, pt-PT -> pt).
