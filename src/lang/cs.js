@@ -121,8 +121,7 @@ export default {
   inBlock: 'Co je uvnitř',
   mineFees: 'Poplatky v bloku',
   rewardIf: 'Odměna pro vítěze',
-  inBlockNote:
-    'Vybráno právě teď z mempoolu, nejvyšší poplatky jako první. Mění se až do chvíle, kdy je blok nalezen.',
+  inBlockNote: 'Vybráno právě teď z mempoolu, nejvyšší poplatky jako první. Mění se až do chvíle, kdy je blok nalezen.',
   mineWhen: 'Kdy bude nalezen?',
   meanEvery: 'v průměru při dnešním hashrate',
   withinMin: 'do {n} min',
@@ -293,8 +292,8 @@ export default {
   eta30: '~30 min',
   eta60: '~1 hodina',
   etaLater: 'později',
-  deep: '{n} bloků hloubka',
-  inflow: ' · {n} vB/s příliv',
+  deep: 'hloubka {n} bloků',
+  inflow: ' · příliv {n} vB/s',
   byFee: 'podle poplatku: nízký → vysoký',
   perCur: 'za {c}',
   moscow: 'Moskva',
@@ -372,7 +371,8 @@ export default {
   legacy: 'Legacy (1…)',
   paySize: 'Asi {n} vB',
   feesMissing: 'Poplatky ještě nejsou načtené',
-  payNote: 'Typické velikosti pro běžné peněženky s jedním podpisem. Přesný poplatek vám ukáže peněženka před odesláním.',
+  payNote:
+    'Typické velikosti pro běžné peněženky s jedním podpisem. Přesný poplatek vám ukáže peněženka před odesláním.',
   replayIntro: 'Projděte všechny halvingy: odměna za blok se každých 210 000 bloků sníží na polovinu.',
   halvingStep: 'Krok halvingu',
   genesisEpoch: 'Genesis epocha',
@@ -482,7 +482,7 @@ export default {
   longTermIntro:
     'Celá historie, spočítaná ze stejné historie cen a ze samotného řetězce. Pro představu o dlouhém běhu, ne jako rada.',
   ch200w: '200týdenní průměr',
-  ma200wNote: 'cena je {x} svého 200týdenního průměru',
+  ma200wNote: 'cena je {x} oproti 200týdennímu průměru',
   chMayer: 'Mayer Multiple',
   mayerNote: 'cena dělená svým 200denním průměrem: nad 1 je nad tímto průměrem',
   chCycles: 'Cykly halvingů',
@@ -505,8 +505,7 @@ export default {
   addrLookedUp:
     'Vyhledáno na {s}, který může tuto adresu spojit s vaší IP adresou. Na vlastním uzlu zůstane na vašem uzlu.',
   stuckTitle: 'Trvá to moc dlouho?',
-  stuckIntro:
-    'Její poplatek je nižší, než co teď těžaři berou. Projde, až poplatky klesnou, nebo ji můžete urychlit.',
+  stuckIntro: 'Její poplatek je nižší, než co teď těžaři berou. Projde, až poplatky klesnou, nebo ji můžete urychlit.',
   stuckNow: 'Další blok potřebuje asi {r} sat/vB: asi {f} satů za tuto transakci, která zaplatila {p} satů.',
   stuckRbf:
     'Nahraďte ji: v peněžence, která ji odeslala, hledejte „Bump fee“, „Urychlit“ nebo „Nahradit“. Odešle stejnou platbu znovu s vyšším poplatkem, asi {f} satů.',
