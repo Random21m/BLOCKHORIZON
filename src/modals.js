@@ -4,6 +4,7 @@ import { api, normServer, DEFAULT_SERVER, FALLBACK, getServer } from './api.js';
 import { CURRENCIES } from './price.js';
 import { t, LANGS, loadLang } from './i18n.js';
 import { play, BLOCK_SOUNDS } from './sound.js';
+import { syncPush } from './push.js';
 import { hooks, $, S, save, st, el, applyLook, dashTiles, tileOn, TILES, STRIPS } from './state.js';
 
 // ---------- modals ----------
@@ -38,7 +39,7 @@ export function searchModal() {
 }
 export function settingsModal() {
   const sel = (key, opts, onchg) => el('select', { id: 'st-' + key, onchange: async (e) => { const v = e.target.value === 'true' ? true : e.target.value === 'false' ? false : e.target.value;
-    S[key] = v; save(); if (key === 'lang') await loadLang(v); // a language is downloaded the first time it is chosen
+    S[key] = v; save(); if (key === 'lang') { await loadLang(v); if (S.pushOn) syncPush().catch(() => {}); } // a language is downloaded the first time it is chosen; the phone gets alarms in it
     applyLook(); if (onchg) onchg(); hooks.renderView(); } },
     opts.map(([v, l]) => el('option', { value: String(v), selected: String(S[key]) === String(v) }, l)));
   const chk = (key, label) => el('label', { class: 'chk' }, el('input', { type: 'checkbox', id: 'st-' + key, checked: !!S[key], onchange: (e) => { S[key] = e.target.checked; save(); applyLook(); hooks.renderView(); } }), label);

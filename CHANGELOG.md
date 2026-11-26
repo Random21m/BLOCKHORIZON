@@ -12,6 +12,9 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
   the mouse wheel scrolls it sideways.
 - **Moscow time explained.** Hovering over it (or a screen reader) explains the clock-like number, and it links to
   the glossary.
+- **Alarms on your phone, on your node.** On Umbrel, StartOS or the container with your own mempool, the Alarm page
+  can send your block, fee and price alarms to your phone through [ntfy](https://ntfy.sh), even when no browser has
+  BLOCKHORIZON open: your node watches them and sends each once, in your language.
 - On narrow phones the Settings tabs wrap onto a second row instead of being cut off.
 
 Earlier versions: see the [commit history](https://github.com/Random21m/BLOCKHORIZON/commits/main).

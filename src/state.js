@@ -8,7 +8,7 @@ export const TIP_ADDR = 'npub1vj8zjhnmkhekv93e2xmrz7kfwuxq25vrzw53u4dqhwd2lp5smv
 export const $ = (s, r = document) => r.querySelector(s);
 export const US = /^en-US/i.test((typeof navigator !== 'undefined' && navigator.language) || '');
 export const DEF = { theme: 'dark', lang: detectLang(), cur: 'USD', h12: US, dateFmt: US ? 'mdy' : 'iso', utc: false, feesRtl: false, showPool: true, showMoscow: true, showCap: true,
-  hr: 'd14', ripple: true, pulse: true, reduced: false, sound: false, bsound: 'drop', asound: 'clock', satsSym: 'sats', server: '', tileOrder: null, tileOff: null };
+  hr: 'd14', ripple: true, pulse: true, reduced: false, sound: false, bsound: 'drop', asound: 'clock', satsSym: 'sats', server: '', tileOrder: null, tileOff: null, pushOn: false, pushUrl: '', pushId: '' };
 export const saved = store('settings') || {};
 if (saved._v !== 2) { delete saved.h12; delete saved.dateFmt; saved._v = 2; } // older versions saved the then-default formats
 if (saved.showFees === false && !saved.tileOff) saved.tileOff = ['fees', 'mem', 'proj']; // the old 'Show fees and mempool' switch, now part of the tile list
