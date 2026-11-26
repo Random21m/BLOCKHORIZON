@@ -2338,9 +2338,9 @@ await ok('price: Coinbase takes over while Kraken is silent, and closes once Kra
   await c.addInitScript(() => localStorage.setItem('bh.settings', JSON.stringify({ cur: 'USD', _v: 2 })));
   const p = await c.newPage();
   await p.goto(base);
-  await p.waitForFunction(() => document.querySelectorAll('.tile').length >= 10);
+  await until(p, () => document.querySelectorAll('.tile').length >= 10);
   assert.equal(backupConns, 0, 'backup opened at once');
-  await p.waitForFunction(() => /Coinbase/.test(document.querySelector('.btc .src')?.textContent || ''), null, {
+  await until(p, () => /Coinbase/.test(document.querySelector('.btc .src')?.textContent || ''), null, {
     timeout: 30000,
   });
   assert.deepEqual(subscribed, {
@@ -2353,9 +2353,7 @@ await ok('price: Coinbase takes over while Kraken is silent, and closes once Kra
   // Kraken answers again: it takes back over and the backup closes
   krakenUp = true;
   await p.evaluate(() => dispatchEvent(new Event('online')));
-  await p.waitForFunction(() => /Kraken/.test(document.querySelector('.btc .src')?.textContent || ''), null, {
-    timeout: 15000,
-  });
+  await until(p, () => /Kraken/.test(document.querySelector('.btc .src')?.textContent || ''), null, { timeout: 15000 });
   await p.waitForTimeout(300);
   assert.ok(backupClosed, 'backup still open');
   await c.close();
