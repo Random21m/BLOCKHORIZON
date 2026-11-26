@@ -886,6 +886,58 @@ export const GLOSSARY_TR = {
     ['شبكة Lightning', 'طبقة فوق Bitcoin للمدفوعات السريعة والصغيرة عبر قنوات ممولة على السلسلة.'],
     ['Coinbase', 'أول معاملة في الكتلة، حيث يجمع المعدّن الإعانة والرسوم.'],
   ],
+  sv: [
+    [
+      'Timechain',
+      'Den ordnade kedjan av Bitcoin-block. Varje block pekar på det före, så ordningen kan inte skrivas om i smyg.',
+    ],
+    [
+      'Block',
+      'En samling transaktioner som miners kommer överens om och lägger till i kedjan, ungefär var tionde minut.',
+    ],
+    [
+      'Blockhöjd',
+      'Hur många block som ligger före det här. Det första blocket (genesis) har höjd 0, så höjden fungerar som en klocka som bara räknar uppåt.',
+    ],
+    ['Epok', 'En period på 210 000 block (ungefär fyra år) då blockbelöningen är densamma.'],
+    ['Halvering', 'Händelsen i slutet av en epok då belöningen i nya mynt per block halveras.'],
+    ['Subvention', 'De nyskapade bitcoin som en miner får ta ut i varje block, avgifter oräknade.'],
+    ['Utbud', 'Alla bitcoin som skapats hittills. Det kan aldrig gå över 21 miljoner.'],
+    [
+      'Svårighetsgrad',
+      'Hur svårt pusslet är som miners löser. Den justeras var 2 016:e block så att blocken håller sig nära tio minuter.',
+    ],
+    [
+      'Svårighetsjustering',
+      'Själva justeringen: kom de senaste 2 016 blocken snabbare än tio minuter vardera stiger svårighetsgraden, kom de långsammare sjunker den.',
+    ],
+    [
+      'Hashrate',
+      'Hur många gissningar per sekund miners gör tillsammans. Högre hashrate betyder att mer energi skyddar kedjan.',
+    ],
+    ['Proof of work', 'Bevis på att verklig beräkningsinsats lagts på att skapa ett block, vilket gör fusk dyrt.'],
+    ['Mempool', 'Väntrummet för giltiga transaktioner som inte har hamnat i ett block än.'],
+    [
+      'Mempooldjup',
+      'En grov uppskattning av hur många fulla block som behövs för att beta av de väntande transaktionerna.',
+    ],
+    [
+      'Avgiftsnivå',
+      'Vad en transaktion betalar per storleksenhet (sat/vB). Miners väljer oftast de högsta nivåerna först.',
+    ],
+    [
+      'vByte (vB)',
+      'En enhet för transaktionsstorlek som tar hänsyn till SegWit-rabatten. Ett block rymmer ungefär en miljon vB.',
+    ],
+    ['Sat', 'En hundramiljondel av en bitcoin, den minsta enheten.'],
+    ['Moskvatid', 'En lekfull klockvisning: hur många sats en enhet av en valuta köper, visat som en tid.'],
+    ['Nod', 'En dator som själv kontrollerar varje regel och skickar vidare block och transaktioner.'],
+    [
+      'Lightning-nätverket',
+      'Ett lager ovanpå Bitcoin för snabba, små betalningar genom kanaler som finansieras på kedjan.',
+    ],
+    ['Coinbase', 'Den första transaktionen i ett block, där minern tar ut subventionen och avgifterna.'],
+  ],
 };
 export const ANNIV_TR = {
   de: [
@@ -1067,5 +1119,15 @@ export const ANNIV_TR = {
     'التنصيف الثاني (الكتلة 420,000)',
     'التنصيف الثالث (الكتلة 630,000)',
     'التنصيف الرابع (الكتلة 840,000)',
+  ],
+  sv: [
+    'Genesisblocket minas',
+    'Första Bitcoin-transaktionen (block 170)',
+    'Bitcoin Pizza Day: första kända köpet med bitcoin',
+    'Whitepapret publiceras',
+    'Första halveringen (block 210 000)',
+    'Andra halveringen (block 420 000)',
+    'Tredje halveringen (block 630 000)',
+    'Fjärde halveringen (block 840 000)',
   ],
 };

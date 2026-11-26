@@ -121,8 +121,7 @@ export default {
   inBlock: 'Vad som finns i det',
   mineFees: 'Avgifter i det',
   rewardIf: 'Belöning till vinnaren',
-  inBlockNote:
-    'Valda ur mempoolen just nu, högsta avgifterna först. Det ändras hela tiden tills blocket hittas.',
+  inBlockNote: 'Valda ur mempoolen just nu, högsta avgifterna först. Det ändras hela tiden tills blocket hittas.',
   mineWhen: 'När hittas det?',
   meanEvery: 'i snitt med dagens hashrate',
   withinMin: 'inom {n} min',
@@ -483,12 +482,12 @@ export default {
   longTermIntro:
     'Hela historiken, beräknad från samma prishistorik och själva kedjan. För en känsla för det långa loppet, inte rådgivning.',
   ch200w: '200-veckorssnitt',
-  ma200wNote: 'priset är {x} sitt 200-veckorssnitt',
+  ma200wNote: 'priset ligger på {x} av sitt 200-veckorssnitt',
   chMayer: 'Mayer Multiple',
   mayerNote: 'priset delat med sitt 200-dagarssnitt: över 1 ligger det över snittet',
   chCycles: 'Halveringscykler',
   cyclesNote: 'priset som en multipel av värdet på varje halveringsdag; {x} sedan halveringen {y}',
-  cycleName: 'Halveringen {y}',
+  cycleName: 'Halvering {y}',
   dayN: 'dag {n}',
   chSupply: 'Utbud över tid',
   supplyNote: '{p}% av de 21 miljoner som någonsin kommer att finnas',
@@ -504,8 +503,7 @@ export default {
   addrTxCount: 'Transaktioner',
   addrRecent: 'Senaste transaktioner',
   addrNoTx: 'Inga transaktioner än.',
-  addrLookedUp:
-    'Uppslagen på {s}, som kan koppla adressen till din IP-adress. På din egen nod stannar den på din nod.',
+  addrLookedUp: 'Uppslagen på {s}, som kan koppla adressen till din IP-adress. På din egen nod stannar den på din nod.',
   stuckTitle: 'Tar det för lång tid?',
   stuckIntro:
     'Avgiften är lägre än vad miners tar just nu. Den går igenom när avgifterna sjunker, eller så kan du snabba på den.',

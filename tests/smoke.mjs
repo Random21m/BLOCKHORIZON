@@ -2353,7 +2353,7 @@ await ok(
       ['he', /[\u05d0-\u05ea]/],
       ['th', /[\u0e00-\u0e7f]/],
       ['cs', /CSMENU/, /CSGLOSS/],
-      ['sv', /SVMENU/, /SVGLOSS/],
+      ['sv', /Ordlista|Kalkylator/, /Blockhöjd|Svårighetsgrad/],
       ['pl', /Słowniczek|Kalendarz/, /Wysokość bloku|Trudność/],
     ]) {
       const c = await b.newContext({ viewport: { width: 1280, height: 800 } });
