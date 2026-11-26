@@ -2484,6 +2484,12 @@ canvas.scene {
   text-align: end;
   white-space: nowrap;
 }
+.ranktable thead th,
+.ranktable thead .num {
+  white-space: normal;
+  hyphens: auto;
+  overflow-wrap: anywhere;
+} /* a long header word may break on a phone (Moeilijkheid); the numbers below stay on one line */
 .morebtn {
   margin-top: 10px;
 }

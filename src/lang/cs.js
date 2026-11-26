@@ -545,4 +545,20 @@ export default {
   mpLow: 'Zahrnout pod 1 sat/vB',
   r24h: '24 hodin',
   r1w: '1 týden',
+  poolRank: 'Těžební pooly',
+  poolRankSum: 'Bloky: {b}, pooly: {n}. Největší pooly ({k}) našly více než polovinu z nich.',
+  poolRankNote:
+    'U každého bloku je uveden pool, který ho našel. Hashrate poolu se odhaduje z jeho podílu na blocích, takže za krátké období je jen hrubý.',
+  poolL: 'Pool',
+  blocksL: 'Bloky',
+  shareL: 'Podíl',
+  hashrateEst: 'Hashrate (odhad)',
+  showAllPools: 'Zobrazit všechny pooly ({n})',
+  showFewer: 'Zobrazit méně',
+  adjTitle: 'Minulé změny obtížnosti',
+  adjSum: 'Za poslední rok: změny: {n}, nahoru: {u}, dolů: {d}. Největší nárůst {a}, největší pokles {b}.',
+  adjNote:
+    'Každých 2 016 bloků se obtížnost změní, aby bloky dál přicházely zhruba každých 10 minut, i když hashrate roste nebo klesá.',
+  changeL: 'Změna',
+  showEarlier: 'Zobrazit starší ({n})',
 };

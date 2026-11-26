@@ -551,4 +551,20 @@ export default {
   mpLow: 'Ta med under 1 sat/vB',
   r24h: '24 timer',
   r1w: '1 uke',
+  poolRank: 'Utvinningspooler',
+  poolRankSum: '{b} blokker funnet av {n} pooler. De {k} største fant mer enn halvparten.',
+  poolRankNote:
+    'Hver blokk oppgir poolen som fant den. En pools hashrate anslås ut fra dens andel av blokkene, så over en kort periode er den grov.',
+  poolL: 'Pool',
+  blocksL: 'Blokker',
+  shareL: 'Andel',
+  hashrateEst: 'Hashrate (anslått)',
+  showAllPools: 'Vis alle {n} pooler',
+  showFewer: 'Vis færre',
+  adjTitle: 'Tidligere justeringer av vanskelighetsgrad',
+  adjSum: 'Siste år: {n} justeringer, {u} opp og {d} ned. Største økning {a}, største nedgang {b}.',
+  adjNote:
+    'Hver 2016. blokk endres vanskelighetsgraden, slik at det fortsatt kommer en blokk omtrent hvert 10. minutt, når hashraten stiger eller faller.',
+  changeL: 'Endring',
+  showEarlier: 'Vis {n} tidligere',
 };

@@ -550,4 +550,20 @@ export default {
   mpLow: 'Vključi pod 1 sat/vB',
   r24h: '24 ur',
   r1w: '1 teden',
+  poolRank: 'Rudarski bazeni',
+  poolRankSum: 'Bloki: {b}, bazeni: {n}. Največji bazeni ({k}) so našli več kot polovico blokov.',
+  poolRankNote:
+    'Pri vsakem bloku je naveden bazen, ki ga je našel. Hashrate bazena je ocenjen iz njegovega deleža blokov, zato je za kratko obdobje le približen.',
+  poolL: 'Bazen',
+  blocksL: 'Bloki',
+  shareL: 'Delež',
+  hashrateEst: 'Hashrate (ocena)',
+  showAllPools: 'Prikaži vse bazene ({n})',
+  showFewer: 'Prikaži manj',
+  adjTitle: 'Pretekle prilagoditve težavnosti',
+  adjSum: 'V zadnjem letu: prilagoditve: {n}, navzgor: {u}, navzdol: {d}. Največji dvig {a}, največji padec {b}.',
+  adjNote:
+    'Vsakih 2016 blokov se težavnost spremeni, da bloki še naprej prihajajo približno vsakih 10 minut, ko hashrate raste ali pada.',
+  changeL: 'Sprememba',
+  showEarlier: 'Prikaži starejše ({n})',
 };

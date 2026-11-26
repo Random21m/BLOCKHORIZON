@@ -552,4 +552,21 @@ export default {
   mpLow: 'Include sub 1 sat/vB',
   r24h: '24 de ore',
   r1w: '1 săptămână',
+  poolRank: 'Pool-uri de minare',
+  poolRankSum: 'Blocuri: {b}, pool-uri: {n}. Cele mai mari {k} au găsit peste jumătate din ele.',
+  poolRankNote:
+    'Fiecare bloc indică pool-ul care l-a găsit. Hashrate-ul unui pool este estimat din partea lui de blocuri, deci pe un interval scurt este aproximativ.',
+  poolL: 'Pool',
+  blocksL: 'Blocuri',
+  shareL: 'Parte',
+  hashrateEst: 'Hashrate (est.)',
+  showAllPools: 'Arată toate pool-urile ({n})',
+  showFewer: 'Arată mai puține',
+  adjTitle: 'Ajustări anterioare ale dificultății',
+  adjSum:
+    'În ultimul an: ajustări: {n}, în sus: {u}, în jos: {d}. Cea mai mare creștere {a}, cea mai mare scădere {b}.',
+  adjNote:
+    'La fiecare 2.016 blocuri dificultatea se schimbă, ca blocurile să vină în continuare cam la fiecare 10 minute, pe măsură ce hashrate-ul crește sau scade.',
+  changeL: 'Schimbare',
+  showEarlier: 'Arată mai vechi ({n})',
 };

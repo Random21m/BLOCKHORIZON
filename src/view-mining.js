@@ -3,7 +3,7 @@
 // be found and who is likely to find it (each pool's share of last week's blocks). Repainted on every live update.
 import * as L from './lib.js';
 import { api } from './api.js';
-import { t } from './i18n.js';
+import { t, isRtl, getLang } from './i18n.js';
 import { S, st, el, price, hooks, save, toast, fmtD } from './state.js';
 import { kv, sinceText } from './ui.js';
 import { sceneStats, setMark, sceneHas } from './block-scene.js';
@@ -236,7 +236,11 @@ function loadAdj() {
   );
 }
 const pct = (x, d = 1) => (x * 100).toFixed(d) + '%';
-const signed = (c) => (c > 0 ? '▲ +' : c < 0 ? '▼ ' : '') + c.toFixed(2) + '%';
+// '▲ +5.54%', kept left to right as a whole inside a right-to-left sentence (the arrow stays before the number)
+const signed = (c) => {
+  const s = (c > 0 ? '▲ +' : c < 0 ? '▼ ' : '') + c.toFixed(2) + '%';
+  return isRtl(getLang()) ? '\u2066' + s + '\u2069' : s;
+};
 function rankPanel() {
   const r = rankRange();
   loadRank(r);
