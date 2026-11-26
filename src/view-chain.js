@@ -1,8 +1,11 @@
 // Block and transaction pages.
 import * as L from './lib.js';
-import { api } from './api.js';
+import { api, store } from './api.js';
 import { t } from './i18n.js';
-import { S, st, fmtD, el, price } from './state.js';
+import { S, st, fmtD, el, price, txAlerts } from './state.js';
+import { askNotify } from './data.js';
+import { pushAvailable } from './push.js';
+const pushOn = () => pushAvailable() && S.pushOn;
 import { kv, shareRow } from './ui.js';
 
 export let blockToken = 0;
@@ -103,6 +106,7 @@ export function viewTx(id) {
           x.confirmed
             ? null
             : el('p', null, el('a', { href: '#/mining?tx=' + id, class: 'watchlink' }, t('watchTx') + ' →')),
+          x.confirmed ? null : txAlertRow(id),
           shareRow('/tx/' + id, 'BLOCKHORIZON · ' + t('txTitle')),
         ].filter(Boolean)
       );
@@ -111,4 +115,30 @@ export function viewTx(id) {
     }
   })();
   return root;
+}
+// "Tell me when it is confirmed": a sound and a message when it is in a block (and, on a node with phone
+// notifications on, a message on the phone too). Toggles; the Alarm page lists them.
+function txAlertRow(id) {
+  const on = () => txAlerts().some((a) => a.txid === id),
+    msg = el('span', { class: 'dim', role: 'status' });
+  const btn = el('button', {
+    id: 'tx-alert',
+    'aria-pressed': String(on()),
+    onclick: () => {
+      const list = txAlerts().filter((a) => a.txid !== id);
+      if (!on()) {
+        list.push({ txid: id, sound: S.asound });
+        askNotify();
+      }
+      store('txAlerts', list);
+      paint();
+      msg.textContent = on() ? t(pushOn() ? 'txAlertSetPhone' : 'txAlertSet') : '';
+    },
+  });
+  const paint = () => {
+    btn.textContent = on() ? '🔔 ' + t('txAlertOff') : '🔔 ' + t('txAlertOn');
+    btn.setAttribute('aria-pressed', String(on()));
+  };
+  paint();
+  return el('p', { class: 'row' }, btn, msg);
 }

@@ -454,4 +454,11 @@ export default {
   pushBadTopic: 'Konunun tam adresini gir, örneğin https://ntfy.sh/senin-konun.',
   pushNote:
     'Mesajları ntfy.sh iletir ve bir konunun adını bilen herkes onu okuyabilir: rastgele adı koru ya da kendi ntfy sunucunun adresini kullan. Bu tarayıcıda kurulan alarmlar gönderilir; diğer cihazlar kendi alarmları için bunu ayrıca açar.',
+  txAlertOn: 'Onaylanınca bana haber ver',
+  txAlertOff: 'Onay uyarısını kapat',
+  txAlertSet: 'BLOCKHORIZON açıkken, bir bloğa girdiğinde bir ses ve bir mesaj alacaksın.',
+  txAlertSetPhone: 'Bir bloğa girdiğinde bir ses ve bir mesaj alacaksın, düğümün de telefonuna haber verecek.',
+  txConfirmedMsg: 'İşlemin {id} onaylandı, blok {h} içinde',
+  txAlertsTitle: 'İşlemler',
+  txAlertsIntro: 'Her biri bir bloğa girdiğinde bir ses ve bir mesaj. Bekleyen bir işlemin sayfasından kurulur.',
 };

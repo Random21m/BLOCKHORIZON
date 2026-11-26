@@ -2,6 +2,12 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
+## Unreleased
+
+- **Know when your payment confirms.** On a waiting transaction's page, "Tell me when it is confirmed" gives a sound and
+  a message once it is in a block. On your own node with "On your phone" turned on, your phone gets it too, even
+  with no browser open. The Alarm page lists the transactions you are waiting for.
+
 ## 0.17.0
 
 - **Choose your dashboard.** A new Dashboard tab in Settings lets you hide the tiles you do not need and put the rest

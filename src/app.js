@@ -5,7 +5,16 @@ import { mountScene, dropLive } from './block-scene.js';
 import { livePrice } from './price.js';
 import { t, getLang, loadLang } from './i18n.js';
 import { VERSION, $, S, st, el, toast, applyLook, NAVS, PHONE_TABS, NAV_ICONS, hooks } from './state.js';
-import { refreshAll, newGeneration, onLive, onPriceTick, checkAlarms, checkFeeAlerts, resetAlarmTip } from './data.js';
+import {
+  refreshAll,
+  newGeneration,
+  onLive,
+  onPriceTick,
+  checkAlarms,
+  checkFeeAlerts,
+  checkTxAlerts,
+  resetAlarmTip,
+} from './data.js';
 import { sinceText, srcHost } from './ui.js';
 import { initPush } from './push.js';
 import { viewDash, viewClock, finalText } from './view-dash.js';
@@ -301,6 +310,7 @@ function render() {
   if (route === '/mining') mountScene();
   checkAlarms();
   checkFeeAlerts();
+  checkTxAlerts();
   paintFeeNow();
   paintMySince();
   paintFoot();

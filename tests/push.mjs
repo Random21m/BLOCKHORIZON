@@ -32,6 +32,7 @@ const chain = {
   tip: 900000,
   fees: { fastestFee: 12, halfHourFee: 8, hourFee: 5, economyFee: 2, minimumFee: 1 },
   prices: { time: 1, USD: 60000, EUR: 55000 },
+  txs: {}, // txid -> block height (0 while waiting)
 };
 const mempool = await listen((q, r) => {
   const u = q.url.replace(/^\/api/, '');
@@ -39,6 +40,15 @@ const mempool = await listen((q, r) => {
   if (u === '/v1/fees/recommended') {
     r.setHeader('content-type', 'application/json');
     return r.end(JSON.stringify(chain.fees));
+  }
+  if (/^\/tx\/[0-9a-f]{64}\/status$/.test(u)) {
+    const h = chain.txs[u.split('/')[2]];
+    if (h === undefined) {
+      r.statusCode = 404;
+      return r.end();
+    }
+    r.setHeader('content-type', 'application/json');
+    return r.end(JSON.stringify(h ? { confirmed: true, block_height: h } : { confirmed: false }));
   }
   if (u === '/v1/prices') {
     r.setHeader('content-type', 'application/json');
@@ -200,6 +210,34 @@ try {
       [['/bh-test', 'one']]
     );
   });
+  await ok('a watched transaction is sent once it is in a block, with that block; a dropped one waits', async () => {
+    const T1 = 'a'.repeat(64),
+      T2 = 'b'.repeat(64);
+    chain.txs[T1] = 0; // waiting; T2 unknown to the node
+    const r = await sync({
+      id: 'browser0003',
+      url: topic,
+      alerts: [
+        { kind: 'tx', txid: T1, msg: 'Your transaction aaaa is confirmed, in block {now}' },
+        { kind: 'tx', txid: T2, msg: 'never' },
+        { kind: 'tx', txid: 'not-a-txid', msg: 'bad' },
+      ],
+    });
+    assert.equal(r.json.watching, 2);
+    const n = got.length;
+    await wait(2500);
+    assert.equal(got.length, n, 'nothing while it waits');
+    chain.txs[T1] = 900011;
+    await until(() => got.length === n + 1);
+    assert.equal(got[n].body, 'Your transaction aaaa is confirmed, in block 900,011');
+    await wait(2000);
+    assert.equal(got.length, n + 1, 'once');
+    const saved = JSON.parse(fs.readFileSync(path.join(data, 'push.json'), 'utf8'));
+    assert.deepEqual(
+      saved.clients.browser0003.alerts.map((a) => a.txid),
+      [T2]
+    );
+  });
 } finally {
   ng.kill();
   mempool.close();
@@ -210,7 +248,7 @@ if (failed) {
     fs
       .readFileSync(path.join(dir, 'error.log'), 'utf8')
       .split('\n')
-      .filter((l) => /js|push/.test(l))
+      .filter((l) => /js|push|warn|error/i.test(l))
       .slice(-20)
       .join('\n')
   );

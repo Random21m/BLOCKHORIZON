@@ -12,6 +12,7 @@ import {
   alarms,
   feeAlerts,
   priceAlerts,
+  txAlerts,
   fmtPrice,
   FEE_LVL_KEYS,
   fmtD,
@@ -27,7 +28,7 @@ const without = (list, a) => {
   if (i >= 0) list.splice(i, 1);
   return list;
 };
-import { askNotify } from './data.js';
+import { askNotify, shortTx } from './data.js';
 import { pushAvailable, syncPush, sendTest, newTopic, okTopic } from './push.js';
 
 export function viewAlarm() {
@@ -147,6 +148,7 @@ export function viewAlarm() {
       : el('p', { class: 'dim' }, t('noneYet'))
   );
   root.append(pricePanel(), feePanel());
+  if (txAlerts().length) root.append(txPanel());
   if (pushAvailable()) root.append(pushPanel());
   preview();
   return root;
@@ -553,5 +555,46 @@ function pushPanel() {
     el('div', { class: 'row' }, test),
     msg,
     el('p', { class: 'dim', id: 'pu-note' }, t('pushNote'))
+  );
+}
+// Waiting transactions to report once confirmed (set on a transaction's page).
+function txPanel() {
+  return el(
+    'section',
+    { class: 'panel txalerts' },
+    el('h2', null, t('txAlertsTitle')),
+    el('p', { class: 'dim' }, t('txAlertsIntro')),
+    el(
+      'table',
+      { id: 'tx-list' },
+      el(
+        'tbody',
+        null,
+        txAlerts().map((a) =>
+          el(
+            'tr',
+            null,
+            el('td', { class: 'mono' }, el('a', { href: '#/tx/' + a.txid }, shortTx(a.txid))),
+            el(
+              'td',
+              null,
+              el(
+                'button',
+                {
+                  onclick: () => {
+                    store(
+                      'txAlerts',
+                      txAlerts().filter((x) => x.txid !== a.txid)
+                    );
+                    hooks.renderView();
+                  },
+                },
+                t('remove')
+              )
+            )
+          )
+        )
+      )
+    )
   );
 }
