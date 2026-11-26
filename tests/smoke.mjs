@@ -1707,6 +1707,12 @@ await ok('tile titles stay on one line on phones and tablets (short titles), in 
     [360, 'el'],
     [360, 'bn'],
     [360, 'ms'],
+    [360, 'hr'],
+    [360, 'ne'],
+    [360, 'ka'],
+    [360, 'lt'],
+    [360, 'mk'],
+    [360, 'sl'],
     [700, 'it'],
     [700, 'ru'],
     [1280, 'fr'],
@@ -2343,7 +2349,7 @@ await ok('French: glossary and anniversaries are translated', async () => {
   await page.keyboard.press('Escape');
 });
 await ok(
-  'Japanese, Chinese, Korean, Russian, Ukrainian, Hindi, Arabic, Persian, Hebrew, Thai, Bengali, Greek, Indonesian, Vietnamese, Malay, Polish, Czech, Swedish, Danish, Norwegian, Finnish, Hungarian and Romanian: menu, dashboard and glossary are translated',
+  'Japanese, Chinese, Korean, Russian, Ukrainian, Hindi, Arabic, Persian, Hebrew, Thai, Bengali, Greek, Indonesian, Vietnamese, Malay, Polish, Czech, Swedish, Danish, Norwegian, Finnish, Hungarian, Romanian, Croatian, Slovenian, Lithuanian, Macedonian, Georgian and Nepali: menu, dashboard and glossary are translated',
   async () => {
     // one script per language, or (for languages in Latin letters) a few words only the translation has, for the menu
     // and for the glossary; menu words come from its first items, which never fold into More, whatever the font's width
@@ -2364,12 +2370,18 @@ await ok(
       ['sv', /Horisont|Larm/, /Blockhöjd|Svårighetsgrad/],
       ['el', /[\u0370-\u03ff]/],
       ['bn', /[\u0980-\u09ff]/],
+      ['ka', /[\u10d0-\u10ff]/],
+      ['mk', /[\u0400-\u04ff]/],
+      ['ne', /[\u0900-\u097f]/],
       ['da', /Horisont/, /Blokhøjde|Sværhedsgrad/],
       ['nb', /Horisont|Utvinning/, /Blokkhøyde|Vanskelighetsgrad/],
       ['ro', /Orizont|Alarmă/, /Înălțimea blocului|Dificultate/],
       ['ms', /Penggera|Lombong/, /Ketinggian blok|Kesukaran/],
       ['fi', /Horisontti|Hälytys|Louhinta/, /Lohkokorkeus|Vaikeus/],
       ['hu', /Riasztás|Bányászat/, /Blokkmagasság|Nehézség/],
+      ['hr', /Horizont|Rudarenje/, /Visina bloka|Težina/],
+      ['lt', /Horizontas|Žadintuvas|Kasyba/, /Bloko aukštis|Sudėtingumas/],
+      ['sl', /Rudarjenje/, /Višina bloka|Težavnost/],
       ['pl', /Horyzont|Kopanie/, /Wysokość bloku|Trudność/],
     ]) {
       const c = await b.newContext({ viewport: { width: 1280, height: 800 } });

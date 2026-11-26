@@ -3187,8 +3187,8 @@ body.eink .clock-h {
 }
 
 /* Devanagari and Bengali letters join up and Thai stacks its vowel marks, so letter spacing pulls them apart:
-   Hindi, Bengali and Thai get none (the Latin brand name keeps it). */
-:is([lang='hi'], [lang='bn'], [lang='th']) :not(.brand, .brand *) {
+   Hindi, Nepali, Bengali and Thai get none (the Latin brand name keeps it). */
+:is([lang='hi'], [lang='ne'], [lang='bn'], [lang='th']) :not(.brand, .brand *) {
   letter-spacing: normal !important;
 }
 
