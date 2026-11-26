@@ -479,4 +479,16 @@ export default {
   addrActive: 'İzlenen adresler',
   addrIncoming: '{a} {amt} BTC alıyor (henüz onaylanmadı)',
   addrConfirmed: '{a} {amt} BTC aldı, blok {h} içinde onaylandı',
+  stuckTitle: 'Çok mu uzun sürüyor?',
+  stuckIntro: 'Ücreti, madencilerin şu an aldığı seviyenin altında. Ücretler düşünce geçer ya da hızlandırabilirsiniz.',
+  stuckNow: 'Sonraki blok yaklaşık {r} sat/vB istiyor: bu işlem için yaklaşık {f} sats; işlem {p} sats ödedi.',
+  stuckRbf:
+    'Değiştirin: gönderen cüzdanda "Bump fee", "Speed up" veya "Replace" seçeneğini arayın. Aynı ödemeyi daha yüksek bir ücretle, yaklaşık {f} sats ile yeniden gönderir.',
+  stuckCpfp:
+    'Ardından gelen bir işlemle ödeyin: bu ödeme size geldiyse, o coinleri yaklaşık {f} sats ücretle kendinize gönderin; madenciler ikisini birlikte alır.',
+  stuckAcc:
+    "Bir madenciye ödeyin: mempool.space'in Accelerator'ı, ücret karşılığında ortak madencilik havuzlarından işlemi eklemelerini ister.",
+  stuckAccLink: "mempool.space'te hızlandır",
+  stuckWait:
+    'Ya da bekleyin: ücretler düşünce geçer. Hiç kazılmazsa düğümler onu yaklaşık iki hafta sonra unutur ve coinler cüzdana geri döner.',
 };

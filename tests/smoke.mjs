@@ -691,6 +691,41 @@ await ok('transaction lookup: one waiting in the mempool, with its place in the 
       tx.includes('6.0 sat/vB'),
     tx
   );
+  assert.equal(await page.locator('#tx-stuck').count(), 0, 'its fee is enough for the next block: no help shown');
+});
+await ok('a stuck transaction: what can be done, with what each way costs now', async () => {
+  const c = await b.newContext({ viewport: { width: 1280, height: 900 } });
+  await c.routeWebSocket(/./, (ws) => ws.close());
+  await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
+    r.request().url().includes('mempool.space') ? r.fallback() : r.abort()
+  );
+  await c.route(/mempool\.space/, (route) => {
+    const u = new URL(route.request().url()).pathname;
+    if (u === '/api/v1/fees/recommended') {
+      const f = JSON.parse(fx('fees.json'));
+      f.fastestFee = 20; // fees went up: 6 sat/vB is no longer enough
+      return route.fulfill({ contentType: 'application/json', body: JSON.stringify(f) });
+    }
+    const m = MOCK[u] || (u === '/api/tx/' + TXM ? ['application/json', 'tx-mempool.json'] : null);
+    if (!m) return route.fulfill({ status: 404, body: '' });
+    route.fulfill({ contentType: m[0], body: fx(m[1]) });
+  });
+  const p = await c.newPage();
+  await p.goto(base + '#/tx/' + TXM);
+  await p.waitForSelector('#tx-stuck', { timeout: 8000 });
+  const s = await p.locator('#tx-stuck').innerText();
+  // 189 vB at 20 sat/vB = 3,780 sats to replace it; a ~110 vB follow-up pays for both: 20 x 299 - 1,128 = 4,852
+  for (const w of [
+    'Taking too long?',
+    'about 20 sat/vB',
+    'about 3,780 sats',
+    'paid 1,128 sats',
+    'about 4,852 sats',
+    'two weeks',
+  ])
+    assert.ok(s.toLowerCase().includes(w.toLowerCase()), w + ' in: ' + s); // headings are shown in capitals
+  assert.equal(await p.locator('#tx-stuck a').getAttribute('href'), 'https://mempool.space/tx/' + TXM);
+  await c.close();
 });
 await ok(
   'transaction alert: set on a waiting transaction, listed on the Alarm page, fires once it is in a block',

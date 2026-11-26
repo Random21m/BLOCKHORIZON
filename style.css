@@ -1803,6 +1803,19 @@ html {
 .share {
   margin-top: 12px;
 }
+/* a waiting transaction whose fee is too low: what can be done */
+.stuck {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.stuck ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+.stuck li {
+  margin-bottom: 6px;
+}
 .paytable {
   width: 100%;
   margin-top: 6px;
