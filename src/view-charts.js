@@ -4,7 +4,8 @@
 import * as L from './lib.js';
 import { api } from './api.js';
 import { t } from './i18n.js';
-import { S, save, fmtD, el } from './state.js';
+import { S, st, save, fmtD, el, price } from './state.js';
+import { kv } from './ui.js';
 import { tradeChart } from './trade-chart.js';
 
 const NS = 'http://www.w3.org/2000/svg';
@@ -200,6 +201,42 @@ const LONG = [
     },
   },
 ];
+// Price and supply facts, first in the long-term section: the all-time high (in the chosen currency), how far below it
+// the price is and since when, and the yearly inflation of the supply now and after the next halving.
+function factsPanel() {
+  const body = el('div', { class: 'cbody' }, el('p', { class: 'dim' }, t('loading')));
+  // the height too: on a first visit the page can open before the app has it
+  Promise.all([priceAll(), Number.isFinite(st.tip) ? st.tip : api.tip().then(Number, () => NaN)]).then(
+    ([pts, tip]) => {
+      const a = L.athFacts(pts, price()),
+        h = Number.isFinite(st.tip) ? st.tip : tip,
+        next = (Math.floor(h / L.EPOCH) + 1) * L.EPOCH,
+        pct = (v) => (Number.isFinite(v) ? L.fmtNum(v, v < 10 ? 2 : 1) + '%' : '–');
+      if (!a) return body.replaceChildren(el('p', { class: 'dim' }, t('noData')));
+      body.replaceChildren(
+        kv([
+          [
+            t('athL'),
+            el(
+              'span',
+              null,
+              el('b', null, money(a.ath)),
+              ' ',
+              el('span', { class: 'dim' }, fmtD(a.at, { dateOnly: true }))
+            ),
+          ],
+          [t('belowAth'), a.now ? t('atAthNow') : '−' + pct(a.below)],
+          [t('daysSinceAth'), a.now ? '0' : L.fmtNum(a.days)],
+          [t('inflNow'), pct(L.inflationAt(h))],
+          [t('inflNext', { h: L.fmtNum(next) }), pct(L.inflationAt(next))],
+        ]),
+        el('p', { class: 'dim note' }, t('factsNote'))
+      );
+    },
+    () => body.replaceChildren(el('p', { class: 'dim' }, t('chartError')))
+  );
+  return el('section', { class: 'panel cpanel', id: 'ch-facts' }, el('h2', null, t('factsTitle')), body);
+}
 function longBody(c, d) {
   const pts = L.thin(d.pts || [], 400);
   if (pts.length < 2) return [el('p', { class: 'dim' }, t('noData'))];
@@ -474,7 +511,7 @@ export function viewCharts() {
     mempoolPanel(),
     el('h2', { class: 'hist' }, t('longTermL')),
     el('p', { class: 'dim' }, t('longTermIntro')),
-    el('div', { class: 'chartgrid long' }, longPanels)
+    el('div', { class: 'chartgrid long' }, factsPanel(), longPanels)
   );
 }
 

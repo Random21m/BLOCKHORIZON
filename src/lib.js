@@ -1325,3 +1325,24 @@ export function adjustSummary(rows, from) {
     maxDown: Math.min(...ch),
   };
 }
+
+// ---- Price and supply facts (the Charts page's long-term section) ----
+// The all-time high of a price series (ascending [{ t, v }], daily or weekly closes) and the live price, if that is
+// higher: { ath, at (ms), below (% under the high, 0 at it), days (since the high), now (true when the live price is it) }.
+export function athFacts(pts, live, nowMs = Date.now()) {
+  let ath = NaN,
+    at = NaN;
+  for (const p of pts || []) if (!(p.v <= ath)) [ath, at] = [p.v, p.t];
+  const cur = Number.isFinite(live) && live > 0 ? live : pts && pts.length ? pts[pts.length - 1].v : NaN;
+  if (!Number.isFinite(ath) && !Number.isFinite(cur)) return null;
+  if (!(cur < ath)) return { ath: cur, at: nowMs, below: 0, days: 0, now: true };
+  return { ath, at, below: (1 - cur / ath) * 100, days: Math.floor((nowMs - at) / 864e5), now: false };
+}
+// Yearly inflation of the supply at a height: the coins the next 52,560 blocks (a year at 10 minutes) add, as a % of
+// those issued so far. A halving inside that year is counted.
+export const BLOCKS_YEAR = 52560;
+export function inflationAt(h) {
+  if (!(h >= 0)) return NaN;
+  const s = supplyAt(h);
+  return s > 0 ? ((supplyAt(h + BLOCKS_YEAR) - s) / s) * 100 : NaN;
+}

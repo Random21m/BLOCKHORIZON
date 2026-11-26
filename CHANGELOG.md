@@ -2,6 +2,12 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
+## Unreleased
+
+- **Price and supply facts.** The "Long term" section of the Charts page opens with the all-time high (in your
+  currency, with its date), how far below it the price is and for how many days, and the supply's yearly inflation now
+  and after the next halving.
+
 ## 0.21.0
 
 - **Three more long-term charts.** The **Puell Multiple** (the value of the bitcoins mined each day against its

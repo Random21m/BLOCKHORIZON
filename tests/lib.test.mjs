@@ -1139,3 +1139,30 @@ test('more long-term charts: Puell Multiple, hash ribbons and the difficulty rib
   assert.equal(two.length, 731);
   assert.deepEqual(L.lastDays([], 5), []);
 });
+
+test('price and supply facts: all-time high, how far below and since when, yearly inflation', () => {
+  const day = 864e5,
+    pts = [
+      { t: 0, v: 100 },
+      { t: day, v: 300 },
+      { t: 2 * day, v: 150 },
+    ];
+  const a = L.athFacts(pts, 240, 12 * day);
+  assert.deepEqual([a.ath, a.at, a.days, a.now], [300, day, 11, false]);
+  assert.ok(Math.abs(a.below - 20) < 1e-9);
+  assert.deepEqual(L.athFacts(pts, 310, 12 * day), { ath: 310, at: 12 * day, below: 0, days: 0, now: true });
+  assert.equal(L.athFacts(pts, NaN, 3 * day).below, 50, 'without a live price, the last close');
+  assert.equal(L.athFacts([], NaN), null);
+  // 3.125 BTC a block since 2024: about 0.8% a year now, half that after the 2028 halving
+  const h = 977000,
+    inf = L.inflationAt(h);
+  assert.ok(Math.abs(inf - (3.125 * 52560 * 1e8 * 100) / L.supplyAt(h)) < 1e-9);
+  assert.ok(inf > 0.75 && inf < 0.85, String(inf));
+  assert.ok(Math.abs(L.inflationAt(1050000) - inf / 2) < 0.05, 'the next era is about half');
+  assert.ok(
+    L.inflationAt(1040000) < inf && L.inflationAt(1040000) > L.inflationAt(1050000),
+    'a halving inside the year'
+  );
+  assert.ok(Number.isNaN(L.inflationAt(NaN)));
+  assert.equal(L.inflationAt(6929999), 0);
+});
