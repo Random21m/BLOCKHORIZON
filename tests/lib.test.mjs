@@ -1174,6 +1174,7 @@ test('block history: fees per block, fees as a share of miner income, block size
     [{ t: 2000, v: 25 }]
   );
   assert.deepEqual(L.feeShareSeries(fees, []), []);
+});
 test('price and supply facts: all-time high, how far below and since when, yearly inflation', () => {
   const day = 864e5,
     pts = [
