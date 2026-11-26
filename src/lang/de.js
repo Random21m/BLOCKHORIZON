@@ -592,6 +592,9 @@ export default {
   diffRibbonNote:
     'Rücken die Mittel zusammen, steigt die Schwierigkeit nicht mehr und Miner stehen unter Druck. Jetzt liegen sie {p} % auseinander.',
   last2y: 'Letzte 2 Jahre',
+  blkFeesChart: 'Gebühren pro Block',
+  feeShareChart: 'Gebühren im Miner-Ertrag',
+  blkSizeChart: 'Blockgröße',
   blkHealth: 'Blockgesundheit',
   blkMatch: 'Übereinstimmung mit dem erwarteten Block',
   blkFeesL: 'Gebühren',

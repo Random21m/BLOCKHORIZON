@@ -588,6 +588,9 @@ export default {
   diffRibbonNote:
     'Când mediile se strâng laolaltă, dificultatea a încetat să crească și minerii sunt sub presiune. Acum sunt la {p}% distanță.',
   last2y: 'Ultimii 2 ani',
+  blkFeesChart: 'Comisioane pe bloc',
+  feeShareChart: 'Comisioane în venitul minerilor',
+  blkSizeChart: 'Dimensiunea blocului',
   blkHealth: 'Sănătatea blocului',
   blkMatch: 'Potrivire cu blocul așteptat',
   blkFeesL: 'Comisioane',

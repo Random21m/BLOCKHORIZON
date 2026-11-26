@@ -49,6 +49,12 @@ const MOCK = {
   '/api/v1/mining/hashrate/1y': ['application/json', 'hashrate-1y.json'],
   '/api/v1/mining/blocks/fee-rates/1m': ['application/json', 'feerates-1m.json'],
   '/api/v1/mining/blocks/fee-rates/1y': ['application/json', 'feerates-1y.json'],
+  '/api/v1/mining/blocks/fees/1m': ['application/json', 'blockfees-1m.json'],
+  '/api/v1/mining/blocks/fees/1y': ['application/json', 'blockfees-1y.json'],
+  '/api/v1/mining/blocks/rewards/1m': ['application/json', 'blockrewards-1m.json'],
+  '/api/v1/mining/blocks/rewards/1y': ['application/json', 'blockrewards-1y.json'],
+  '/api/v1/mining/blocks/sizes-weights/1m': ['application/json', 'blocksizes-1m.json'],
+  '/api/v1/mining/blocks/sizes-weights/1y': ['application/json', 'blocksizes-1y.json'],
   '/api/tx/2bb85f4b004be6da54f766c17c1e855187327112c231ef2ff35ebad0ea67c69e': ['application/json', 'tx-confirmed.json'],
   '/api/tx/213b7d2f946122a8c9add976cc6689d71bf567ffbe4212cfb571255ae8d3ff19': ['application/json', 'tx-mempool.json'],
   '/api/v1/mining/blocks/timestamp/1700000000': ['application/json', 'bytime.json'],
@@ -1148,7 +1154,7 @@ await ok(
   }
 );
 await ok(
-  'charts: four history charts, range selector, crosshair, keyboard reading, table, and a clear message when data is missing',
+  'charts: seven history charts, range selector, crosshair, keyboard reading, table, and a clear message when data is missing',
   async () => {
     const c = await b.newContext({ viewport: { width: 1280, height: 900 } });
     await c.clock.install({ time: JSON.parse(fx('price-history.json')).prices[0].time * 1000 + 60000 });
@@ -1166,8 +1172,8 @@ await ok(
     p.on('pageerror', (e) => perr.push(e.message));
     await p.goto(base);
     await p.click('#nav a[href="#/charts"]');
-    // the four history charts (the long-term ones below have their own test)
-    await until(p, () => document.querySelectorAll('.chartgrid:not(.long) .lchart').length === 4, null, {
+    // the seven history charts (the long-term ones below have their own test)
+    await until(p, () => document.querySelectorAll('.chartgrid:not(.long) .lchart').length === 7, null, {
       timeout: 10000,
     });
     assert.equal(await p.getAttribute('.range [data-r="1y"]', 'aria-pressed'), 'true');
@@ -1178,9 +1184,16 @@ await ok(
       /Price \(USD\) \| [\d,]+ USD/.test(heads[0]) &&
         /Hashrate \| [\d.]+ [EZ]H\/s/.test(heads[1]) &&
         /Difficulty/.test(heads[2]) &&
-        /sat\/vB/.test(heads[3]),
+        /sat\/vB/.test(heads[3]) &&
+        /^Fees per block \| 0\.\d{4} BTC$/.test(heads[4]) &&
+        /^Fees in miner income \| \d\.\d\d%$/.test(heads[5]) &&
+        /^Block size \| \d\.\d\d MB$/.test(heads[6]),
       heads.join(' / ')
     );
+    // the share and the size say no "% over the range" (a % of a % and a 2009 start would mislead)
+    assert.ok(/over 1 year/.test(await p.locator('#ch-blockfees .chead').innerText()));
+    for (const id of ['feeshare', 'blocksize'])
+      assert.ok(!/over 1 year/.test(await p.locator('#ch-' + id + ' .chead').innerText()), id);
     await p.locator('#ch-hashrate .plot').scrollIntoViewIfNeeded();
     const box = await p.locator('#ch-hashrate .plot').boundingBox();
     await p.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.5);
@@ -1209,7 +1222,7 @@ await ok(
     await until(
       p,
       () =>
-        document.querySelectorAll('.chartgrid:not(.long) .lchart').length === 4 &&
+        document.querySelectorAll('.chartgrid:not(.long) .lchart').length === 7 &&
         !document.querySelector('.cpanel.busy')
     );
     assert.ok(
