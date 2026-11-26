@@ -2,6 +2,12 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
+## Unreleased
+
+- **Help when a payment is stuck.** On a waiting transaction whose fee is below what the next block needs, "Taking too
+  long?" explains the ways out in plain words (replace it with a higher fee, a follow-up payment that pays for both,
+  mempool.space's paid Accelerator, or wait), with what each would cost right now.
+
 ## 0.19.0
 
 - **Four more languages: 简体中文, 한국어, Русский and Português (Brasil).** 13 languages in all, glossary and

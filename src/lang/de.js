@@ -484,4 +484,17 @@ export default {
   addrActive: 'Beobachtete Adressen',
   addrIncoming: '{a} empfängt {amt} BTC (noch nicht bestätigt)',
   addrConfirmed: '{a} hat {amt} BTC empfangen, bestätigt in Block {h}',
+  stuckTitle: 'Dauert es zu lange?',
+  stuckIntro:
+    'Die Gebühr liegt unter dem, was Miner gerade nehmen. Die Transaktion geht durch, sobald die Gebühren fallen, oder du beschleunigst sie.',
+  stuckNow: 'Der nächste Block braucht etwa {r} sat/vB: rund {f} Sats für diese Transaktion, die {p} Sats bezahlt hat.',
+  stuckRbf:
+    'Ersetzen: Such in der Wallet, die sie gesendet hat, nach „Bump fee“, „Speed up“ oder „Replace“. Das sendet dieselbe Zahlung noch einmal mit höherer Gebühr, etwa {f} Sats.',
+  stuckCpfp:
+    'Mit einer Folgezahlung bezahlen: Ging diese Zahlung an dich, schick die Coins an dich selbst weiter, mit einer Gebühr von etwa {f} Sats, damit Miner beide zusammen nehmen.',
+  stuckAcc:
+    'Einen Miner bezahlen: Der Accelerator von mempool.space bittet Partner-Mining-Pools gegen eine Gebühr, sie aufzunehmen.',
+  stuckAccLink: 'Auf mempool.space beschleunigen',
+  stuckWait:
+    'Oder warten: Sie geht durch, wenn die Gebühren fallen. Wird sie nie gemined, vergessen die Nodes sie nach etwa zwei Wochen und die Coins sind wieder in der Wallet.',
 };

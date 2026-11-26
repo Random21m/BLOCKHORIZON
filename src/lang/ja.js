@@ -481,4 +481,18 @@ export default {
   addrActive: '見守っているアドレス',
   addrIncoming: '{a} が {amt} BTC を受け取り中（まだ承認されていません）',
   addrConfirmed: '{a} が {amt} BTC を受け取りました。ブロック {h} で承認済み',
+  stuckTitle: '時間がかかっていますか？',
+  stuckIntro:
+    '手数料が、いまマイナーが取り込んでいる水準より低くなっています。手数料が下がれば承認されますが、早めることもできます。',
+  stuckNow:
+    '次のブロックには約 {r} sat/vB が必要です。このトランザクションでは約 {f} sats で、支払われたのは {p} sats です。',
+  stuckRbf:
+    '置き換える：送金したウォレットで「Bump fee」「Speed up」「Replace」を探してください。同じ支払いを、より高い手数料（約 {f} sats）でもう一度送ります。',
+  stuckCpfp:
+    '後続のトランザクションで払う：この支払いを受け取った側なら、そのコインを手数料約 {f} sats で自分宛てに送ってください。マイナーが両方をまとめて取り込みます。',
+  stuckAcc:
+    'マイナーに支払う：mempool.space の Accelerator が、手数料と引き換えに提携マイニングプールへ取り込みを依頼します。',
+  stuckAccLink: 'mempool.space で加速する',
+  stuckWait:
+    'または待つ：手数料が下がれば承認されます。採掘されないままなら、約2週間でノードから忘れられ、コインはウォレットに戻ります。',
 };

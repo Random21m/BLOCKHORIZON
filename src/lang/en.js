@@ -479,4 +479,15 @@ export default {
   addrActive: 'Watched addresses',
   addrIncoming: '{a} is receiving {amt} BTC (not confirmed yet)',
   addrConfirmed: '{a} received {amt} BTC, confirmed in block {h}',
+  stuckTitle: 'Taking too long?',
+  stuckIntro: 'Its fee is below what miners are taking now. It will go through once fees drop, or you can speed it up.',
+  stuckNow: 'The next block needs about {r} sat/vB: about {f} sats for this transaction, which paid {p} sats.',
+  stuckRbf:
+    'Replace it: in the wallet that sent it, look for "Bump fee", "Speed up" or "Replace". It sends the same payment again with a higher fee, about {f} sats.',
+  stuckCpfp:
+    'Pay for it with a follow-up: if this payment came to you, send those coins on to yourself with a fee of about {f} sats, so miners take both together.',
+  stuckAcc: "Pay a miner: mempool.space's Accelerator asks partner mining pools to include it, for a fee.",
+  stuckAccLink: 'Accelerate on mempool.space',
+  stuckWait:
+    'Or wait: it goes through when fees drop. If it is never mined, nodes forget it after about two weeks and the coins are back in the wallet.',
 };
