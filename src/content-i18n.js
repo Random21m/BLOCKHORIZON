@@ -1738,6 +1738,52 @@ export const GLOSSARY_TR = {
     ['Lightning ქსელი', 'ფენა ბიტკოინის ზემოთ სწრაფი, მცირე გადახდებისთვის არხებით, რომლებიც ჯაჭვზეა დაფინანსებული.'],
     ['Coinbase', 'ბლოკის პირველი ტრანზაქცია, რომლითაც მაინერი სუბსიდიას და საკომისიოს იღებს.'],
   ],
+  sl: [
+    [
+      'Timechain',
+      'Urejena veriga blokov Bitcoin. Vsak blok kaže na prejšnjega, zato vrstnega reda dogodkov ni mogoče skrivaj prepisati.',
+    ],
+    ['Blok', 'Skupek transakcij, o katerem se rudarji strinjajo in ga dodajo verigi, približno vsakih deset minut.'],
+    [
+      'Višina bloka',
+      'Koliko blokov je pred tem blokom. Prvi blok (geneza) ima višino 0, zato višina deluje kot ura, ki šteje samo navzgor.',
+    ],
+    ['Epoha', 'Obdobje 210.000 blokov (približno štiri leta), v katerem nagrada za blok ostaja enaka.'],
+    ['Halving', 'Dogodek ob koncu epohe, ko se nagrada v novih kovancih na blok prepolovi.'],
+    ['Subvencija', 'Novo ustvarjeni bitcoini, ki jih rudar lahko prejme v vsakem bloku, brez provizij.'],
+    ['Ponudba', 'Vsi doslej ustvarjeni bitcoini. Ponudba nikoli ne more preseči 21 milijonov.'],
+    [
+      'Težavnost',
+      'Kako težka je uganka, ki jo rešujejo rudarji. Na vsakih 2.016 blokov se na novo nastavi, da bloki ostanejo pri približno desetih minutah.',
+    ],
+    [
+      'Prilagoditev težavnosti',
+      'Sama nova nastavitev: če je zadnjih 2.016 blokov prišlo hitreje kot na deset minut, se težavnost zviša; če počasneje, se zniža.',
+    ],
+    [
+      'Hashrate',
+      'Koliko poskusov na sekundo naredijo vsi rudarji skupaj. Višji hashrate pomeni, da verigo varuje več energije.',
+    ],
+    [
+      'Dokaz o delu',
+      'Dokaz, da je bil za nastanek bloka porabljen resničen računski napor, zaradi česar je goljufanje drago.',
+    ],
+    ['Mempool', 'Čakalnica veljavnih transakcij, ki še niso v nobenem bloku.'],
+    [
+      'Globina mempoola',
+      'Groba ocena, koliko polnih blokov bi bilo potrebnih, da se počistijo vse čakajoče transakcije.',
+    ],
+    [
+      'Stopnja provizije',
+      'Koliko transakcija plača na enoto velikosti (sat/vB). Rudarji običajno najprej izberejo najvišje stopnje.',
+    ],
+    ['vBajt (vB)', 'Enota za velikost transakcije, ki upošteva popust SegWit. V blok gre približno milijon vB.'],
+    ['Sat', 'Stomilijoninka bitcoina, najmanjša enota.'],
+    ['Moskovski čas', 'Igriv prikaz ure: koliko satov dobite za eno enoto valute, zapisano kot čas.'],
+    ['Vozlišče', 'Računalnik, ki sam preveri vsako pravilo ter posreduje bloke in transakcije.'],
+    ['Omrežje Lightning', 'Plast nad Bitcoinom za hitra, majhna plačila prek kanalov, financiranih na verigi.'],
+    ['Coinbase', 'Prva transakcija v bloku, v kateri rudar prejme subvencijo in provizije.'],
+  ],
 };
 export const ANNIV_TR = {
   de: [
@@ -2099,5 +2145,15 @@ export const ANNIV_TR = {
     'მეორე ჰალვინგი (ბლოკი 420 000)',
     'მესამე ჰალვინგი (ბლოკი 630 000)',
     'მეოთხე ჰალვინგი (ბლოკი 840 000)',
+  ],
+  sl: [
+    'Izkopan blok geneze',
+    'Prva transakcija Bitcoin (blok 170)',
+    'Bitcoin Pizza Day: prvi znani nakup z bitcoinom',
+    'Objavljena bela knjiga (whitepaper)',
+    'Prvi halving (blok 210.000)',
+    'Drugi halving (blok 420.000)',
+    'Tretji halving (blok 630.000)',
+    'Četrti halving (blok 840.000)',
   ],
 };
