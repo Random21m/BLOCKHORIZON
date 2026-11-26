@@ -7,6 +7,10 @@
 // restart without a data volume loses nothing that matters. Alarms already reached when they arrive are not sent: the
 // open browser shows those itself. An alarm sent once is not sent again for 30 days, even if a browser sends it back.
 //
+// Watched addresses (kind 'addr') work differently: they are never removed. For each one the node keeps the payments it
+// has already seen (per browser, in `seen`), and sends a message for each new payment to it: one when it is first seen
+// waiting, and one when it is confirmed. What is at an address when it is first watched is only recorded, not sent.
+//
 // Written for njs 0.8 (no destructuring, no spread, no `await` inside a call's arguments, no for...of).
 import fs from 'fs';
 
@@ -32,6 +36,11 @@ function save(d) {
   fs.renameSync(tmp, FILE);
 }
 
+// The shapes of Bitcoin addresses (mainnet, testnet, signet, regtest); the browser also checks bech32 checksums.
+const okAddr = (s) =>
+  typeof s === 'string' &&
+  (/^[13mn2][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(s) || /^(bc|tb|bcrt)1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{8,87}$/.test(s));
+const MAX_ADDR = 10;
 const okUrl = (u) => typeof u === 'string' && u.length < 300 && /^https?:\/\/[^\s/?#]+(\/[^\s?#]*)?$/.test(u);
 const str = (s, n) => String(s == null ? '' : s).slice(0, n);
 
@@ -42,12 +51,14 @@ function clean(a) {
   if (!msg) return null;
   if (a.kind === 'height' && a.height > 0) return { kind: 'height', height: Math.floor(a.height), msg: msg };
   if (a.kind === 'tx' && /^[0-9a-f]{64}$/.test(a.txid)) return { kind: 'tx', txid: a.txid, msg: msg };
+  if (a.kind === 'addr' && okAddr(a.addr) && str(a.msg2, 300))
+    return { kind: 'addr', addr: a.addr, msg: msg, msg2: str(a.msg2, 300) };
   if (a.kind === 'fee' && FIELDS[a.level] && a.max > 0) return { kind: 'fee', level: a.level, max: +a.max, msg: msg };
   if (a.kind === 'price' && /^[A-Z]{3}$/.test(a.cur) && a.price > 0 && (a.dir === 'up' || a.dir === 'down'))
     return { kind: 'price', cur: a.cur, price: +a.price, dir: a.dir, msg: msg };
   return null;
 }
-const keyOf = (a) => [a.kind, a.height, a.level, a.max, a.cur, a.price, a.dir, a.txid].join('|');
+const keyOf = (a) => [a.kind, a.height, a.level, a.max, a.cur, a.price, a.dir, a.txid, a.addr].join('|');
 
 // The value an alarm watches, from the latest data: its height, fee level or price, or the block a watched
 // transaction is in ({now} in its message).
@@ -58,6 +69,7 @@ function valueFor(a, last) {
   return last.prices ? last.prices[a.cur] : undefined;
 }
 function reached(a, last) {
+  if (a.kind === 'addr') return false; // watched for good; see addrEvents()
   const v = valueFor(a, last);
   if (typeof v !== 'number' || !isFinite(v)) return false;
   if (a.kind === 'height') return v >= a.height;
@@ -69,10 +81,49 @@ function reached(a, last) {
 // The value for {now}, written the way the app writes it, with the browser's own number separators.
 function fmtNow(a, v, c) {
   const d = a.kind === 'fee' ? (v < 10 ? 1 : 0) : a.kind === 'price' ? (v >= 1e5 ? 0 : v >= 100 ? 1 : 2) : 0;
+  return fmtNum(v, d, c);
+}
+// Satoshis -> BTC without trailing zeros, as the app's fmtBtc writes it.
+function fmtBtc(sats, c) {
+  const s = (sats / 1e8).toFixed(8).replace(/0+$/, '').split('.');
+  return fmtNum(sats / 1e8, s[1] ? s[1].length : 0, c);
+}
+function fmtNum(v, d, c) {
   const p = v.toFixed(d).split('.'),
     grp = typeof c.grp === 'string' ? c.grp : ',',
     dec = typeof c.dec === 'string' ? c.dec : '.';
   return p[0].replace(/\B(?=(\d{3})+(?!\d))/g, grp) + (p[1] ? dec + p[1] : '');
+}
+// An address's recent transactions (the node's mempool API), as the payments to it: [{ t: txid, s: sats, c: 1 if
+// confirmed, h: block height }]. A payment is what the transaction pays the address minus what it spends from it.
+async function addrPayments(addr) {
+  const txs = await getJSON('/address/' + addr + '/txs');
+  const out = [];
+  (Array.isArray(txs) ? txs : []).forEach((tx) => {
+    if (!tx || typeof tx.txid !== 'string') return;
+    let n = 0;
+    (tx.vout || []).forEach((o) => {
+      if (o && o.scriptpubkey_address === addr) n += o.value || 0;
+    });
+    (tx.vin || []).forEach((i) => {
+      if (i && i.prevout && i.prevout.scriptpubkey_address === addr) n -= i.prevout.value || 0;
+    });
+    const conf = !!(tx.status && tx.status.confirmed);
+    if (n > 0) out.push({ t: tx.txid, s: n, c: conf ? 1 : 0, h: conf ? tx.status.block_height : 0 });
+  });
+  return out;
+}
+// What is new since `seen` (txid -> 'm' waiting or 'c' confirmed; none yet = only record what is there now).
+function addrEvents(seen, pays) {
+  const next = {},
+    events = [];
+  pays.forEach((p) => {
+    next[p.t] = p.c ? 'c' : 'm';
+    if (!seen) return;
+    const was = seen[p.t];
+    if (!was || (was === 'm' && p.c)) events.push({ kind: p.c ? 'conf' : 'in', t: p.t, s: p.s, h: p.h });
+  });
+  return { seen: next, events: events };
 }
 async function getJSON(path) {
   const r = await ngx.fetch(API + path, { headers: { Accept: 'application/json' } });
@@ -111,6 +162,20 @@ async function fetchLast(alerts) {
       }
     }
   }
+  if (need.addr) {
+    last.addrs = {};
+    const as = [];
+    alerts.forEach((a) => {
+      if (a.kind === 'addr' && as.indexOf(a.addr) < 0 && as.length < 50) as.push(a.addr);
+    });
+    for (let i = 0; i < as.length; i++) {
+      try {
+        last.addrs[as[i]] = await addrPayments(as[i]);
+      } catch (e) {
+        /* unknown to the node, or it did not answer: checked again next time */
+      }
+    }
+  }
   return last;
 }
 
@@ -141,7 +206,8 @@ async function check() {
     ngx.log(ngx.WARN, 'blockhorizon push: ' + e.message);
     return;
   }
-  const done = [];
+  const done = [],
+    seenNow = {}; // 'client address' -> the payments seen at that address now
   const ids = Object.keys(d.clients);
   for (let i = 0; i < ids.length; i++) {
     const id = ids[i],
@@ -149,6 +215,27 @@ async function check() {
       list = c.alerts || [];
     for (let j = 0; j < list.length; j++) {
       const a = list[j];
+      if (a.kind === 'addr') {
+        const pays = last.addrs ? last.addrs[a.addr] : undefined;
+        if (!pays) continue;
+        const before = c.seen ? c.seen[a.addr] : undefined;
+        const r = addrEvents(before, pays);
+        for (let k = 0; k < r.events.length; k++) {
+          const e = r.events[k];
+          const text = (e.kind === 'in' ? a.msg : a.msg2)
+            .replace(/\{amt\}/g, fmtBtc(e.s, c))
+            .replace(/\{now\}/g, fmtNum(e.h, 0, c));
+          try {
+            await send(c.url, text, c.click);
+          } catch (err) {
+            ngx.log(ngx.WARN, 'blockhorizon push: ' + err.message);
+            if (before && before[e.t]) r.seen[e.t] = before[e.t];
+            else delete r.seen[e.t]; // tried again next minute
+          }
+        }
+        seenNow[id + ' ' + a.addr] = r.seen;
+        continue;
+      }
       if (!reached(a, last)) continue;
       const now = fmtNow(a, valueFor(a, last), c);
       try {
@@ -165,6 +252,13 @@ async function check() {
   Object.keys(d.clients).forEach((id) => {
     const c = d.clients[id];
     c.alerts = (c.alerts || []).filter((a) => done.indexOf(id + ' ' + keyOf(a)) < 0);
+    c.alerts.forEach((a) => {
+      const s = seenNow[id + ' ' + a.addr];
+      if (a.kind === 'addr' && s) {
+        if (!c.seen) c.seen = {};
+        c.seen[a.addr] = s;
+      }
+    });
   });
   done.forEach((k) => {
     d.sent[k] = t;
@@ -212,12 +306,32 @@ async function sync(r) {
     }
   }
   list = list.filter((a) => !d.sent[b.id + ' ' + keyOf(a)] && !reached(a, last));
+  // watched addresses: at most MAX_ADDR; keep what was seen at the ones already watched, and note what is at a new one
+  // now, so only payments from here on are sent
+  let nAddr = 0;
+  list = list.filter((a) => a.kind !== 'addr' || ++nAddr <= MAX_ADDR);
+  const prev = d.clients[b.id],
+    seen = {};
+  for (let i = 0; i < list.length; i++) {
+    const a = list[i];
+    if (a.kind !== 'addr' || seen[a.addr]) continue;
+    if (prev && prev.seen && prev.seen[a.addr]) seen[a.addr] = prev.seen[a.addr];
+    else {
+      try {
+        const pays = await addrPayments(a.addr);
+        seen[a.addr] = addrEvents(null, pays).seen;
+      } catch (e) {
+        /* recorded at the next check instead */
+      }
+    }
+  }
   d.clients[b.id] = {
     url: b.url,
     click: okUrl(b.click) ? b.click : '',
     grp: typeof b.grp === 'string' ? b.grp.slice(0, 2) : ',',
     dec: str(b.dec, 1) || '.',
     alerts: list,
+    seen: seen,
     at: Date.now(),
   };
   save(d);

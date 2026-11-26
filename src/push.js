@@ -3,13 +3,28 @@
 // (packaging/push.js). This browser stays the owner of its alarms: it sends its whole list whenever it changes and on
 // every start. The messages are written here, in the chosen language; the node fills in the value at that moment ({now}).
 import * as L from './lib.js';
-import { onStore } from './api.js';
+import { onStore, getServer, normServer } from './api.js';
 import { t } from './i18n.js';
-import { S, save, hooks, alarms, feeAlerts, priceAlerts, txAlerts, fmtPrice, FEE_LVL_KEYS } from './state.js';
+import {
+  S,
+  save,
+  hooks,
+  alarms,
+  feeAlerts,
+  priceAlerts,
+  txAlerts,
+  addrAlerts,
+  fmtPrice,
+  FEE_LVL_KEYS,
+} from './state.js';
+import { addrMsg } from './data.js';
 
 let available = false,
   timer = 0;
 export const pushAvailable = () => available;
+// On a node and reading its data from that node (not another server picked in Settings, Data): only then may this
+// browser ask about an address, because the question stays on the node.
+export const ownNode = () => available && getServer() === normServer('self');
 // A topic name nobody can guess: on ntfy.sh, anyone who knows a topic's name can read it.
 export const newTopic = () =>
   'https://ntfy.sh/blockhorizon-' +
@@ -60,6 +75,13 @@ export function pushList() {
       txid: a.txid,
       msg: '✅ ' + t('txConfirmedMsg', { id: a.txid.slice(0, 8) + '…' + a.txid.slice(-6), h: '{now}' }),
     });
+  for (const a of addrAlerts())
+    out.push({
+      kind: 'addr',
+      addr: a.addr,
+      msg: addrMsg('in', a, '{amt}', ''),
+      msg2: addrMsg('conf', a, '{amt}', '{now}'),
+    });
   return out;
 }
 // Send the list now. Resolves to how many alarms the node is watching for this browser (0 when turned off), or throws.
@@ -92,7 +114,7 @@ export async function sendTest() {
 export function initPush(cfg) {
   available = !!(cfg && cfg.push);
   if (!available) return;
-  for (const k of ['alarms', 'feeAlerts', 'priceAlerts', 'txAlerts']) onStore[k] = later;
+  for (const k of ['alarms', 'feeAlerts', 'priceAlerts', 'txAlerts', 'addrAlerts']) onStore[k] = later;
   if (S.pushOn) later();
   hooks.alerts(); // the Alarm page, if it was drawn before the config arrived, gains its panel
 }

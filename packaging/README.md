@@ -27,6 +27,12 @@ njs module that ships with the official image, so nothing else is installed) and
 mempool through the container's own `/api` proxy, only while alarms are waiting. Each alarm that is reached is posted
 to the browser's ntfy topic once, then removed. Alarms already reached when they arrive are left to the open browser.
 
+Watched addresses (Alarm page, **Watch an address**, up to 10 per browser) are the exception: they stay. For each one the
+node reads `/api/address/<address>/txs` once a minute and posts a message for each new incoming payment: one when it is
+first seen waiting, one when it is confirmed. What is at an address when it is first watched is only noted. Addresses
+are only looked up on the node; the browser also looks them up itself while it is open, but only through this node's
+`/api` (never another data server).
+
 Waiting alarms are kept in `/var/lib/blockhorizon` (a volume: on Umbrel `${APP_DATA_DIR}/data`). Without a volume
 nothing important is lost on a restart: the browsers send their alarms again the next time they open. The container
 needs to reach the ntfy server (ntfy.sh, or yours) for this; nothing is sent anywhere while it is turned off.

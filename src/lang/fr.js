@@ -469,4 +469,20 @@ export default {
     "Un son et un message dès que chacune est dans un bloc. À activer sur la page d'une transaction en attente.",
   minutes: '{n} min',
   staleFor: 'Aucune donnée nouvelle depuis {m} minutes : vérifiez la connexion ou votre nœud.',
+  addrTitle: 'Surveiller une adresse',
+  addrIntro:
+    'Un son et un message quand des bitcoins arrivent sur l’une de vos adresses : une fois quand le paiement est vu, puis quand il est confirmé. Seul votre nœud est interrogé ; l’adresse n’est envoyée nulle part ailleurs.',
+  addrNeedsNode:
+    'Il faut que votre nœud soit le serveur de données (Réglages, Données), pour que vos adresses ne soient consultées que sur votre nœud.',
+  addrPh: 'bc1q…, 1… ou 3…',
+  addrL: 'Adresse Bitcoin',
+  addrAdd: 'Surveiller',
+  addrBad: 'Ce n’est pas une adresse Bitcoin. Vérifiez qu’il n’y a pas de faute de frappe.',
+  addrDup: 'Cette adresse est déjà surveillée.',
+  addrMax: 'Vous pouvez surveiller jusqu’à 10 adresses.',
+  addrPhone:
+    'Avec « Sur votre téléphone » activé, votre téléphone reçoit aussi ces messages. Ils montrent le début et la fin de l’adresse et le montant, et passent par votre serveur ntfy.',
+  addrActive: 'Adresses surveillées',
+  addrIncoming: '{a} reçoit {amt} BTC (pas encore confirmé)',
+  addrConfirmed: '{a} a reçu {amt} BTC, confirmé dans le bloc {h}',
 };

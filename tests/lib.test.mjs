@@ -164,6 +164,73 @@ test('backup price feed (Coinbase) parsing: string numbers, 24 h change from the
   assert.ok(BACKUP_CURRENCIES.every((c) => CURRENCIES.includes(c)));
 });
 
+test('watched addresses: shapes and bech32 checksums; payments net of spends; only new ones reported', () => {
+  const A = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq';
+  assert.equal(L.normAddress(' ' + A.toUpperCase() + ' '), A);
+  assert.equal(L.normAddress(A.slice(0, -1) + 'x'), '', 'a typo fails the checksum');
+  assert.equal(L.normAddress('bc1Qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq'), '', 'mixed case');
+  assert.equal(
+    L.normAddress('bc1p5d7rjq7g6rdk2yhzks9smlaqtedr4dekq08ge8ztwac72sfr9rusxg3297'),
+    'bc1p5d7rjq7g6rdk2yhzks9smlaqtedr4dekq08ge8ztwac72sfr9rusxg3297'
+  ); // taproot (bech32m)
+  assert.equal(
+    L.normAddress('tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx'),
+    'tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx'
+  );
+  assert.equal(L.normAddress('1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa'), '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa');
+  assert.equal(L.normAddress('3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy'), '3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy');
+  for (const bad of ['', 'hello', '0A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa', 'a'.repeat(64)])
+    assert.equal(L.normAddress(bad), '');
+  assert.equal(L.shortAddr(A), 'bc1qar0s…wf5mdq');
+  const o = '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa';
+  const tx = (id, outs, ins, h) => ({
+    txid: id,
+    vin: ins.map(([a, value]) => ({ prevout: { scriptpubkey_address: a, value } })),
+    vout: outs.map(([a, value]) => ({ scriptpubkey_address: a, value })),
+    status: h ? { confirmed: true, block_height: h } : { confirmed: false },
+  });
+  assert.equal(
+    L.addrReceived(
+      tx(
+        'x',
+        [
+          [A, 5],
+          [A, 7],
+          [o, 1],
+        ],
+        [[o, 20]]
+      ),
+      A
+    ),
+    12
+  );
+  assert.equal(L.addrReceived(tx('x', [[A, 5]], [[A, 50]]), A), -45);
+  const old = tx('a', [[A, 1000]], [[o, 2000]], 10),
+    spend = tx(
+      'b',
+      [
+        [o, 900],
+        [A, 50],
+      ],
+      [[A, 1000]]
+    ),
+    pay = tx('c', [[A, 12345000]], [[o, 20000000]]);
+  let r = L.addrEvents(null, [old], A);
+  assert.deepEqual(r, { seen: { a: 'c' }, events: [] }, 'first look: only noted');
+  r = L.addrEvents(r.seen, [spend, pay, old], A);
+  assert.deepEqual(r.events, [{ kind: 'in', txid: 'c', sats: 12345000, height: 0 }]);
+  r = L.addrEvents(r.seen, [spend, pay, old], A);
+  assert.deepEqual(r.events, [], 'once');
+  r = L.addrEvents(r.seen, [tx('c', [[A, 12345000]], [[o, 20000000]], 12), old], A);
+  assert.deepEqual(r.events, [{ kind: 'conf', txid: 'c', sats: 12345000, height: 12 }]);
+  assert.deepEqual(L.addrEvents({}, [tx('d', [[A, 1]], [], 13)], A).events, [
+    { kind: 'conf', txid: 'd', sats: 1, height: 13 },
+  ]);
+  assert.equal(L.fmtBtc(12345000), '0.12345');
+  assert.equal(L.fmtBtc(100000000), '1');
+  assert.equal(L.fmtBtc(1), '0.00000001');
+});
+
 test('block colours follow the mempool.space fee ramp', () => {
   assert.equal(L.FEE_BREAKS.length, L.FEE_COLORS.length);
   assert.equal(L.feeColor(0), '#007d3d');

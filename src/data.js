@@ -12,6 +12,7 @@ import {
   feeAlerts,
   priceAlerts,
   txAlerts,
+  addrAlerts,
   fmtPrice,
   FEE_LVL_KEYS,
   toast,
@@ -216,6 +217,38 @@ export function checkTxAlerts() {
         toast(msg);
         play(a.sound || S.asound);
         notify(msg);
+      },
+      () => {}
+    );
+}
+// Watched addresses (on your own node only): every minute and at each new block, ask the node for each address's
+// recent transactions; a payment to it gives a sound and a message when it is first seen and again when it is confirmed.
+// The address is never asked of any other server (ownNode() in push.js), so it does not leave your node.
+let addrAt = 0,
+  addrTip = NaN;
+export function addrMsg(kind, a, amt, h) {
+  const who = L.shortAddr(a.addr) + (a.label ? ' (' + a.label + ')' : '');
+  return kind === 'in' ? '₿ ' + t('addrIncoming', { a: who, amt }) : '✅ ' + t('addrConfirmed', { a: who, amt, h });
+}
+export function checkAddrAlerts(own, now = false) {
+  if (!own || !addrAlerts().length) return;
+  if (!now && Date.now() - addrAt < 55000 && !(st.tip > addrTip)) return;
+  addrAt = Date.now();
+  addrTip = st.tip;
+  for (const a of addrAlerts())
+    api.addrTxs(a.addr).then(
+      (txs) => {
+        if (!Array.isArray(txs) || !addrAlerts().some((x) => x.addr === a.addr)) return;
+        const all = store('addrSeen') || {},
+          r = L.addrEvents(all[a.addr] || null, txs, a.addr);
+        all[a.addr] = r.seen;
+        store('addrSeen', all);
+        for (const e of r.events) {
+          const msg = addrMsg(e.kind, a, L.fmtBtc(e.sats), L.fmtNum(e.height));
+          toast(msg);
+          play(S.asound);
+          notify(msg);
+        }
       },
       () => {}
     );

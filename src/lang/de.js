@@ -468,4 +468,20 @@ export default {
     'Ein Ton und eine Nachricht, sobald jede davon in einem Block ist. Gesetzt auf der Seite einer wartenden Transaktion.',
   minutes: '{n} Min.',
   staleFor: 'Seit {m} Minuten keine neuen Daten: Prüfe die Verbindung oder deinen Node.',
+  addrTitle: 'Eine Adresse beobachten',
+  addrIntro:
+    'Ein Ton und eine Nachricht, wenn Coins auf einer deiner Adressen ankommen: einmal, wenn die Zahlung gesehen wird, und noch einmal, wenn sie bestätigt ist. Gefragt wird nur dein Node; die Adresse wird nirgendwo sonst hingeschickt.',
+  addrNeedsNode:
+    'Dafür muss dein Node der Datenserver sein (Einstellungen, Daten), damit deine Adressen nur auf deinem Node nachgeschlagen werden.',
+  addrPh: 'bc1q…, 1… oder 3…',
+  addrL: 'Bitcoin-Adresse',
+  addrAdd: 'Beobachten',
+  addrBad: 'Das ist keine Bitcoin-Adresse. Prüfe sie auf Tippfehler.',
+  addrDup: 'Diese Adresse wird schon beobachtet.',
+  addrMax: 'Du kannst bis zu 10 Adressen beobachten.',
+  addrPhone:
+    'Ist „Auf dem Handy“ an, bekommt dein Handy diese Nachrichten auch. Sie zeigen Anfang und Ende der Adresse und den Betrag und laufen über deinen ntfy-Server.',
+  addrActive: 'Beobachtete Adressen',
+  addrIncoming: '{a} empfängt {amt} BTC (noch nicht bestätigt)',
+  addrConfirmed: '{a} hat {amt} BTC empfangen, bestätigt in Block {h}',
 };

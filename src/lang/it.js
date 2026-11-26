@@ -467,4 +467,20 @@ export default {
     'Un suono e un messaggio quando ognuna è in un blocco. Si imposta dalla pagina di una transazione in attesa.',
   minutes: '{n} min',
   staleFor: 'Nessun dato nuovo da {m} minuti: controlla la connessione o il tuo nodo.',
+  addrTitle: 'Osserva un indirizzo',
+  addrIntro:
+    'Un suono e un messaggio quando arrivano monete a uno dei tuoi indirizzi: una volta quando il pagamento viene visto e di nuovo quando è confermato. Viene interpellato solo il tuo nodo; l’indirizzo non viene mai inviato altrove.',
+  addrNeedsNode:
+    'Serve il tuo nodo come server dati (Impostazioni, Dati), così i tuoi indirizzi vengono cercati solo sul tuo nodo.',
+  addrPh: 'bc1q…, 1… o 3…',
+  addrL: 'Indirizzo Bitcoin',
+  addrAdd: 'Osserva',
+  addrBad: 'Non è un indirizzo Bitcoin. Controlla che non ci siano errori di battitura.',
+  addrDup: 'Questo indirizzo è già osservato.',
+  addrMax: 'Puoi osservare fino a 10 indirizzi.',
+  addrPhone:
+    'Con «Sul telefono» attivo, anche il telefono riceve questi messaggi. Mostrano l’inizio e la fine dell’indirizzo e l’importo, e passano dal tuo server ntfy.',
+  addrActive: 'Indirizzi osservati',
+  addrIncoming: '{a} sta ricevendo {amt} BTC (non ancora confermati)',
+  addrConfirmed: '{a} ha ricevuto {amt} BTC, confermati nel blocco {h}',
 };

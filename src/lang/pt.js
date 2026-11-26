@@ -467,4 +467,20 @@ export default {
     'Um som e uma mensagem quando cada uma estiver num bloco. Ativa-se na página de uma transação em espera.',
   minutes: '{n} min',
   staleFor: 'Sem dados novos há {m} minutos: verifique a ligação ou o seu nó.',
+  addrTitle: 'Vigiar um endereço',
+  addrIntro:
+    'Um som e uma mensagem quando chegam moedas a um dos seus endereços: uma vez quando o pagamento é visto e outra quando é confirmado. Só o seu nó é consultado; o endereço nunca é enviado para mais lado nenhum.',
+  addrNeedsNode:
+    'Isto precisa do seu nó como servidor de dados (Configurações, Dados), para que os seus endereços só sejam consultados no seu nó.',
+  addrPh: 'bc1q…, 1… ou 3…',
+  addrL: 'Endereço Bitcoin',
+  addrAdd: 'Vigiar',
+  addrBad: 'Isso não é um endereço Bitcoin. Verifique se há erros de escrita.',
+  addrDup: 'Este endereço já está a ser vigiado.',
+  addrMax: 'Pode vigiar até 10 endereços.',
+  addrPhone:
+    'Com «No seu telemóvel» ativado, o seu telemóvel também recebe estas mensagens. Mostram o início e o fim do endereço e o valor, e passam pelo seu servidor ntfy.',
+  addrActive: 'Endereços vigiados',
+  addrIncoming: '{a} está a receber {amt} BTC (ainda não confirmado)',
+  addrConfirmed: '{a} recebeu {amt} BTC, confirmado no bloco {h}',
 };

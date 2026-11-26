@@ -13,6 +13,7 @@ import {
   feeAlerts,
   priceAlerts,
   txAlerts,
+  addrAlerts,
   fmtPrice,
   FEE_LVL_KEYS,
   fmtD,
@@ -28,8 +29,8 @@ const without = (list, a) => {
   if (i >= 0) list.splice(i, 1);
   return list;
 };
-import { askNotify, shortTx } from './data.js';
-import { pushAvailable, syncPush, sendTest, newTopic, okTopic } from './push.js';
+import { askNotify, shortTx, checkAddrAlerts } from './data.js';
+import { pushAvailable, ownNode, syncPush, sendTest, newTopic, okTopic } from './push.js';
 
 export function viewAlarm() {
   const root = el('div', { class: 'alarms' }),
@@ -149,7 +150,7 @@ export function viewAlarm() {
   );
   root.append(pricePanel(), feePanel());
   if (txAlerts().length) root.append(txPanel());
-  if (pushAvailable()) root.append(pushPanel());
+  if (pushAvailable()) root.append(addrPanel(), pushPanel());
   preview();
   return root;
 }
@@ -596,5 +597,79 @@ function txPanel() {
         )
       )
     )
+  );
+}
+// Addresses to watch for incoming payments. Only on a node, and only while this browser reads its data from that node:
+// the public site never offers it, because it would have to send your address to mempool.space.
+function addrPanel() {
+  const head = [el('h2', null, t('addrTitle')), el('p', { class: 'dim' }, t('addrIntro'))];
+  if (!ownNode())
+    return el('section', { class: 'panel addralerts' }, ...head, el('p', { class: 'dim' }, t('addrNeedsNode')));
+  const inA = el('input', {
+    id: 'ad-a',
+    type: 'text',
+    autocomplete: 'off',
+    spellcheck: 'false',
+    placeholder: t('addrPh'),
+    'aria-label': t('addrL'),
+    size: 34,
+  });
+  const inL = el('input', { id: 'ad-l', type: 'text', placeholder: t('phLabel'), 'aria-label': t('label'), size: 14 });
+  const add = () => {
+    const a = L.normAddress(inA.value);
+    if (!a) return toast(t('addrBad'));
+    if (addrAlerts().some((x) => x.addr === a)) return toast(t('addrDup'));
+    if (addrAlerts().length >= 10) return toast(t('addrMax'));
+    store('addrAlerts', [...addrAlerts(), { addr: a, label: inL.value.trim().slice(0, 40) }]);
+    checkAddrAlerts(true, true); // note what is at the address now, so only payments from here on are reported
+    askNotify();
+    hooks.renderView();
+  };
+  const list = addrAlerts();
+  return el(
+    'section',
+    { class: 'panel addralerts' },
+    ...head,
+    el('div', { class: 'row' }, inA, inL, el('button', { class: 'btn-go', id: 'ad-go', onclick: add }, t('addrAdd'))),
+    el('p', { class: 'dim' }, t('addrPhone')),
+    el('h3', { class: 'sec' }, t('addrActive')),
+    list.length
+      ? el(
+          'table',
+          { id: 'ad-list' },
+          el(
+            'tbody',
+            null,
+            list.map((a) =>
+              el(
+                'tr',
+                null,
+                el('td', { class: 'mono', title: a.addr }, L.shortAddr(a.addr)),
+                el('td', null, a.label || ''),
+                el(
+                  'td',
+                  null,
+                  el(
+                    'button',
+                    {
+                      onclick: () => {
+                        store(
+                          'addrAlerts',
+                          addrAlerts().filter((x) => x.addr !== a.addr)
+                        );
+                        const seen = store('addrSeen') || {};
+                        delete seen[a.addr];
+                        store('addrSeen', seen);
+                        hooks.renderView();
+                      },
+                    },
+                    t('remove')
+                  )
+                )
+              )
+            )
+          )
+        )
+      : el('p', { class: 'dim' }, t('noneYet'))
   );
 }

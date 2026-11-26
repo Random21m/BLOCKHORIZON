@@ -463,4 +463,20 @@ export default {
   txAlertsIntro: 'Her biri bir bloğa girdiğinde bir ses ve bir mesaj. Bekleyen bir işlemin sayfasından kurulur.',
   minutes: '{n} dk',
   staleFor: '{m} dakikadır yeni veri yok: bağlantını veya düğümünü kontrol et.',
+  addrTitle: 'Bir adresi izle',
+  addrIntro:
+    'Adreslerinden birine coin geldiğinde bir ses ve bir mesaj: ödeme görüldüğünde bir kez, onaylandığında bir kez daha. Yalnızca düğümüne sorulur; adres başka hiçbir yere gönderilmez.',
+  addrNeedsNode:
+    'Bunun için düğümünün veri sunucusu olması gerekir (Ayarlar, Veri); böylece adreslerin yalnızca kendi düğümünde sorgulanır.',
+  addrPh: 'bc1q…, 1… veya 3…',
+  addrL: 'Bitcoin adresi',
+  addrAdd: 'İzle',
+  addrBad: 'Bu bir Bitcoin adresi değil. Yazım hatası olup olmadığını kontrol et.',
+  addrDup: 'Bu adres zaten izleniyor.',
+  addrMax: 'En fazla 10 adres izleyebilirsin.',
+  addrPhone:
+    '"Telefonunda" açıkken bu mesajlar telefonuna da gelir. Adresin başını ve sonunu ve tutarı gösterir, ntfy sunucun üzerinden geçer.',
+  addrActive: 'İzlenen adresler',
+  addrIncoming: '{a} {amt} BTC alıyor (henüz onaylanmadı)',
+  addrConfirmed: '{a} {amt} BTC aldı, blok {h} içinde onaylandı',
 };

@@ -11,6 +11,10 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
   US dollars, euros and pounds streams from Coinbase's public feed instead, and switches back as soon as Kraken
   answers again. The label under the price says which one you are seeing. Other currencies update from mempool.space
   every minute meanwhile, as before.
+- **Watch your own addresses, on your node.** On Umbrel, StartOS or the container, the Alarm page can watch up to 10
+  Bitcoin addresses: a sound and a message when a payment to one of them is seen, and again once it is confirmed, and
+  with "On your phone" on, your phone gets them too. Addresses are only ever looked up on your node; the public site
+  does not offer this, because it would have to send them to mempool.space.
 
 ## 0.18.0
 
