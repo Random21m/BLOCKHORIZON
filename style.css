@@ -382,3 +382,4 @@ main:focus{outline:none} /* focus lands here after following a link inside the p
   .strip2.more-l{-webkit-mask-image:linear-gradient(to left,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to left,#000 calc(100% - 40px),transparent)}
   .strip2.more-l.more-r{-webkit-mask-image:linear-gradient(to right,transparent,#000 40px,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to right,transparent,#000 40px,#000 calc(100% - 40px),transparent)}}
 a.mini{color:inherit;text-decoration:none;display:block}a.mini:hover small,a.mini:focus-visible small{text-decoration:underline}
+.pushpanel .pu-l{display:block;margin:10px 0 4px}.pushpanel #pu-url{width:100%;max-width:560px;box-sizing:border-box}

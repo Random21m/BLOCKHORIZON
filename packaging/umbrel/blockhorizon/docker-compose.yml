@@ -15,3 +15,6 @@ services:
       # The Mempool app's web container (exported by the Mempool app, as its own widget server uses it):
       # it serves the mempool REST API and live feed at /api, which this container proxies.
       MEMPOOL_URL: http://${APP_MEMPOOL_IP}:${APP_MEMPOOL_PORT}
+    volumes:
+      # alarms waiting to be sent to your phone (Alarm page, On your phone)
+      - ${APP_DATA_DIR}/data:/var/lib/blockhorizon

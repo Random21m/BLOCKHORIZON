@@ -20,7 +20,10 @@ export const wsUrl = () => server.replace(/^http/, 'ws') + '/api/v1/ws';
 // Which host answered last ('' until something did): shown beside the connection dot, so a fallback is never silent.
 export let source = '';
 
-export function store(key, val) { try { if (val === undefined) { const s = localStorage.getItem('bh.' + key); return s ? JSON.parse(s) : null; } localStorage.setItem('bh.' + key, JSON.stringify(val)); } catch { /* storage may be blocked */ } return val === undefined ? null : val; }
+// Called after a key is saved (push.js sends the alarms to the node whenever they change).
+export const onStore = {};
+export function store(key, val) { try { if (val === undefined) { const s = localStorage.getItem('bh.' + key); return s ? JSON.parse(s) : null; } localStorage.setItem('bh.' + key, JSON.stringify(val)); } catch { /* storage may be blocked */ }
+  if (val !== undefined && onStore[key]) onStore[key](val); return val === undefined ? null : val; }
 
 async function fetchFrom(base, path, text) {
   const r = await fetch(base + '/api' + path, { cache: 'no-store' });

@@ -7,6 +7,7 @@ import { t, getLang, loadLang } from './i18n.js';
 import { VERSION, $, S, st, el, toast, applyLook, NAVS, PHONE_TABS, NAV_ICONS, hooks } from './state.js';
 import { refreshAll, newGeneration, onLive, onPriceTick, checkAlarms, checkFeeAlerts, resetAlarmTip } from './data.js';
 import { sinceText, srcHost } from './ui.js';
+import { initPush } from './push.js';
 import { viewDash, viewClock, finalText } from './view-dash.js';
 import { viewBlock, viewTx } from './view-chain.js';
 import { viewAlarm, viewCalc, paintFeeNow } from './view-tools.js';
@@ -168,7 +169,7 @@ export async function boot() {
   addEventListener('hashchange', renderView); matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyLook);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) keepAwake(route === '/clock'); });
   renderView(); paintFoot(); livePrice(onPriceTick, (on) => { if (st.priceLive !== on) { st.priceLive = on; render(); } }); // the price does not depend on the data server
-  await loadConfig(S.server); refreshAll();
+  initPush(await loadConfig(S.server)); refreshAll();
   live(onLive, (s) => { st.conn = s; if (s !== 'on') dropLive(); render(); });
   setInterval(tickClock, 1000); setInterval(refreshAll, 60000);
   pullToRefresh();

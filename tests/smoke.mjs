@@ -212,6 +212,33 @@ await ok('fee alert: the "Now" line fills in when the Alarm page is the first pa
   const p = await c.newPage(); await p.goto(base + '#/alarm'); await p.waitForSelector('#fa-m');
   await until(p, () => document.querySelector('#fa-now')?.textContent === 'Now: 5.0 sat/vB', null, { timeout: 8000 });
   await p.fill('#fa-m', '3'); await until(p, () => document.querySelector('#fa-m').value === '3'); await c.close(); });
+await ok('phone notifications: on a node the Alarm page sends its alarms to the node, in the chosen language; nowhere else is there a panel', async () => {
+  assert.equal(await page.evaluate(async () => { location.hash = '#/alarm'; await new Promise((r) => setTimeout(r, 300)); return !!document.querySelector('#pu-url'); }), false); // the public site
+  const c = await b.newContext(); await c.routeWebSocket(/mempool\.space/, (ws) => ws.close()); await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());
+  await c.route(/mempool\.space/, (route) => { const m = MOCK[new URL(route.request().url()).pathname]; if (!m) return route.fulfill({ status: 404, body: '' }); route.fulfill({ contentType: m[0], body: fx(m[1]) }); });
+  const synced = [], tests = [], json = (o) => ({ contentType: 'application/json', body: JSON.stringify(o) });
+  await c.route(/127\.0\.0\.1:\d+\/config\.json/, (r) => r.fulfill(json({ server: '', push: true })));
+  await c.route(/127\.0\.0\.1:\d+\/push\/sync$/, (r) => { const j = JSON.parse(r.request().postData()); synced.push(j); r.fulfill(json({ ok: true, watching: j.alerts.length })); });
+  await c.route(/127\.0\.0\.1:\d+\/push\/test$/, (r) => { tests.push(JSON.parse(r.request().postData())); r.fulfill(json({ ok: true })); });
+  const p = await c.newPage(); const msg = () => p.evaluate(() => document.querySelector('#pu-msg').textContent);
+  await p.goto(base + '#/alarm'); await p.waitForSelector('#pu-url'); await until(p, () => /\d/.test(document.querySelector('#fa-now')?.textContent || '')); // the chain data is in
+  const topic = await p.inputValue('#pu-url'); assert.match(topic, /^https:\/\/ntfy\.sh\/blockhorizon-[a-z2-9]{12}$/);
+  assert.equal(synced.length, 0, 'off until turned on');
+  await p.click('#pu-test'); await until(p, () => /Test sent/.test(document.querySelector('#pu-msg').textContent)); assert.equal(tests[0].url, topic); assert.ok(tests[0].click.endsWith('#/alarm'));
+  await p.check('#pu-on'); await until(p, () => /watching 0/.test(document.querySelector('#pu-msg').textContent));
+  await p.fill('#al-b', '5'); await p.fill('#al-l', 'Coffee'); await p.click('text=Set alarm');
+  await p.fill('#fa-m', '2'); await p.click('#fa-go');
+  await until(p, () => /watching 2/.test(document.querySelector('#pu-msg')?.textContent || ''));
+  let last = synced[synced.length - 1]; assert.equal(last.url, topic); assert.match(last.id, /^[a-z0-9]{10}$/);
+  assert.deepEqual(last.alerts.map((a) => [a.kind, a.msg]), [['height', '⏰ Block 977,416 reached: Coffee'], ['fee', '⏰ Fees dropped: Next block is {now} sat/vB (your limit 2.0)']]);
+  assert.deepEqual([last.grp, last.dec], [',', '.']);
+  await p.fill('#pu-url', 'not a topic'); await p.dispatchEvent('#pu-url', 'change'); assert.match(await msg(), /full address/);
+  // another language: the messages follow it
+  const n = synced.length; await p.click('#btn-settings'); await p.click('[data-k=format]'); await p.selectOption('#st-lang', 'de'); await p.keyboard.press('Escape');
+  await new Promise((r) => setTimeout(r, 1500)); last = synced[synced.length - 1];
+  assert.ok(synced.length > n && last.alerts[0].msg === '⏰ Block 977,416 erreicht: Coffee', JSON.stringify(last.alerts[0])); // numbers follow the browser's format, as everywhere in the app
+  await p.goto(base + '#/alarm'); await p.waitForSelector('#pu-on'); await p.uncheck('#pu-on'); await until(p, () => /Aus\./.test(document.querySelector('#pu-msg').textContent));
+  assert.equal(synced[synced.length - 1].url, ''); assert.deepEqual(synced[synced.length - 1].alerts, []); await c.close(); });
 await ok('charts: four history charts, range selector, crosshair, keyboard reading, table, and a clear message when data is missing', async () => {
   const c = await b.newContext({ viewport: { width: 1280, height: 900 } }); await c.clock.install({ time: JSON.parse(fx('price-history.json')).prices[0].time * 1000 + 60000 });
   await c.routeWebSocket(/./, (ws) => ws.close()); await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.request().url().includes('mempool.space') ? r.fallback() : r.abort());

@@ -10,6 +10,10 @@ jobs:
         with: { node-version: 22 }
       - name: Unit tests (recorded API responses)
         run: node --test tests/lib.test.mjs
+      - name: Phone notifications server (nginx with njs)
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq nginx libnginx-mod-http-js
+          sudo env "PATH=$PATH" node tests/push.mjs  # nginx runs as root in the test
       - name: Browser smoke test
         run: |
           npm install --no-save --no-audit --no-fund playwright@1.48.0 axe-core@4.10.2

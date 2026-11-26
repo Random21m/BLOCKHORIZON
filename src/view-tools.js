@@ -3,11 +3,12 @@ import * as L from './lib.js';
 import { store } from './api.js';
 import { t } from './i18n.js';
 import { play, ALARM_SOUNDS } from './sound.js';
-import { hooks, $, S, st, alarms, feeAlerts, priceAlerts, fmtPrice, FEE_LVL_KEYS, fmtD, el, toast, price } from './state.js';
+import { hooks, $, S, save, st, alarms, feeAlerts, priceAlerts, fmtPrice, FEE_LVL_KEYS, fmtD, el, toast, price } from './state.js';
 import { CURRENCIES } from './price.js';
 // Remove this entry from the saved list as it is now (not by its row number: another may have fired since the page was drawn).
 const without = (list, a) => { const k = JSON.stringify(a), i = list.findIndex((x) => JSON.stringify(x) === k); if (i >= 0) list.splice(i, 1); return list; };
 import { askNotify } from './data.js';
+import { pushAvailable, syncPush, sendTest, newTopic, okTopic } from './push.js';
 
 export function viewAlarm() {
   const root = el('div', { class: 'alarms' }), blk = el('section', { class: 'panel' }, el('h2', null, t('alarmTitle')), el('p', { class: 'dim' }, t('alarmIntro'))); root.append(el('h1', null, t('alarm')), blk);
@@ -21,7 +22,7 @@ export function viewAlarm() {
   inH.addEventListener('input', preview); inB.addEventListener('input', preview);
   blk.append(el('div', { class: 'row' }, inH, inB, inL, sel, el('button', { class: 'btn-go', onclick: () => { const hh = preview(); if (hh == null) return toast(t('notFound')); const a = alarms(); a.push({ height: hh, label: inL.value.trim(), sound: sel.value }); store('alarms', a); play(sel.value); askNotify(); hooks.renderView(); } }, t('setAlarm')), el('button', { onclick: () => play(sel.value) }, '▶ ' + t('test'))), out);
   const list = alarms(); blk.append(el('h3', { class: 'sec' }, t('active')), list.length ? el('table', null, el('tbody', null, list.map((a, i) => el('tr', null, el('td', null, L.fmtNum(a.height)), el('td', null, a.label || ''), el('td', null, t('nBlocks', { n: L.fmtNum(a.height - st.tip) })), el('td', null, el('button', { onclick: () => { store('alarms', without(alarms(), a)); hooks.renderView(); } }, t('remove'))))))) : el('p', { class: 'dim' }, t('noneYet')));
-  root.append(pricePanel(), feePanel());
+  root.append(pricePanel(), feePanel()); if (pushAvailable()) root.append(pushPanel());
   preview(); return root;
 }
 // The "Now: x sat/vB" line under the fee alert. Called on every data update too (from app.js), so it fills in even when
@@ -110,4 +111,20 @@ export function payPanel(p) {
   upd();
   return el('div', { class: 'panel', id: 'pay' }, el('h2', null, t('payTitle')),
     el('div', { class: 'row' }, el('label', { for: 'p-in' }, t('inputs')), ins, el('label', { for: 'p-out' }, t('outputs')), outs, type), size, table, el('p', { class: 'dim' }, t('payNote')));
+}
+// On a node: the alarms above also go to the phone through ntfy, sent by the node even with no browser open.
+function pushPanel() {
+  if (!S.pushUrl) { S.pushUrl = newTopic(); save(); }
+  const msg = el('p', { class: 'dim', id: 'pu-msg', role: 'status' });
+  const say = (p) => p.then((n) => { msg.textContent = S.pushOn ? t('pushWatching', { n }) : t('pushOff'); }, () => { msg.textContent = t('pushFail'); });
+  const url = el('input', { id: 'pu-url', type: 'url', value: S.pushUrl, spellcheck: 'false', autocomplete: 'off', 'aria-describedby': 'pu-note',
+    onchange: () => { if (!okTopic(url.value)) { msg.textContent = t('pushBadTopic'); return; } S.pushUrl = url.value.trim(); save(); say(syncPush()); } });
+  const on = el('input', { type: 'checkbox', id: 'pu-on', checked: S.pushOn, onchange: () => { S.pushOn = on.checked; save(); if (S.pushOn && !okTopic(url.value)) { msg.textContent = t('pushBadTopic'); return; } say(syncPush()); } });
+  const test = el('button', { id: 'pu-test', onclick: () => { if (!okTopic(url.value)) { msg.textContent = t('pushBadTopic'); return; } S.pushUrl = url.value.trim(); save(); msg.textContent = '…';
+    sendTest().then(() => { msg.textContent = t('pushTestSent'); }, () => { msg.textContent = t('pushFail'); }); } }, t('pushTest'));
+  queueMicrotask(() => { if (S.pushOn) say(syncPush()); });
+  return el('section', { class: 'panel pushpanel' }, el('h2', null, t('pushTitle')), el('p', { class: 'dim' }, t('pushIntro')),
+    el('label', { for: 'pu-url', class: 'pu-l' }, t('pushTopic')), url,
+    el('label', { class: 'chk' }, on, t('pushOn')), el('div', { class: 'row' }, test), msg,
+    el('p', { class: 'dim', id: 'pu-note' }, t('pushNote')));
 }

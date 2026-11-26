@@ -15,6 +15,25 @@ Leave out `MEMPOOL_URL` to use mempool.space. Published images (amd64 and arm64)
 `.github/workflows/docker.yml` when a `v*` tag is pushed: `ghcr.io/random21m/blockhorizon:<tag>`.
 After the first publish, make the package public under the repository's **Packages** settings so nodes can pull it.
 
+## Phone notifications
+
+With `MEMPOOL_URL` set, the container can also send alarms to a phone while no browser is open. The Alarm page then
+shows **On your phone**: you install the free [ntfy](https://ntfy.sh) app, subscribe to the topic it suggests (a random
+name, since anyone who knows an ntfy.sh topic's name can read it; your own ntfy server works too) and turn it on.
+
+How it works: each browser that turns it on sends its alarms to `PUT /push/sync` (its whole list, whenever it changes
+and on every start, with the messages already written in its language). `packaging/push.js` runs inside nginx (the
+njs module that ships with the official image, so nothing else is installed) and once a minute reads the node's
+mempool through the container's own `/api` proxy, only while alarms are waiting. Each alarm that is reached is posted
+to the browser's ntfy topic once, then removed. Alarms already reached when they arrive are left to the open browser.
+
+Waiting alarms are kept in `/var/lib/blockhorizon` (a volume: on Umbrel `${APP_DATA_DIR}/data`). Without a volume
+nothing important is lost on a restart: the browsers send their alarms again the next time they open. The container
+needs to reach the ntfy server (ntfy.sh, or yours) for this; nothing is sent anywhere while it is turned off.
+
+`node tests/push.mjs` tests it in a real nginx with njs (`apt install nginx libnginx-mod-http-js`) against a fake
+mempool and a fake ntfy server, as CI does.
+
 ## Without the container
 
 Any copy of the site can use your node: open **Settings, Data** and enter your mempool's address (it must allow
