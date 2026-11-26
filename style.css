@@ -1815,6 +1815,22 @@ html {
   text-align: right;
   white-space: nowrap;
 }
+/* a transaction's inputs and outputs, and what they tell about its privacy */
+.txflow,
+.txpriv {
+  margin-top: 16px;
+  padding-top: 4px;
+  border-top: 1px solid var(--line);
+}
+.flow .prev {
+  text-decoration: none;
+}
+.txpriv ul {
+  margin: 8px 0 0;
+  padding-inline-start: 20px;
+  display: grid;
+  gap: 6px;
+}
 /* a waiting transaction whose fee is too low: what can be done */
 .stuck {
   margin-top: 16px;

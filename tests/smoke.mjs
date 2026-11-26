@@ -673,6 +673,22 @@ await ok('transaction lookup: a confirmed transaction', async () => {
   const tx = await page.locator('main').innerText();
   for (const w of ['Confirmed', '137,412', '#840,000', '673,200,000 sats', '187 vB', '1 / 2'])
     assert.ok(tx.includes(w), w);
+  // where the coins came from and went: the input links to the transaction that made it and to its address, the
+  // second output is data; nothing stands out about its privacy
+  await page.waitForSelector('#tx-ins tr');
+  assert.equal(await page.locator('#tx-ins tr').count(), 1);
+  assert.equal(await page.locator('#tx-outs tr').count(), 2);
+  assert.ok(
+    (await page.locator('#tx-ins a.prev').getAttribute('href')).startsWith('#/tx/ec40eb'),
+    'input links to the earlier transaction'
+  );
+  assert.equal(
+    await page.locator('#tx-ins a.mono').getAttribute('href'),
+    '#/address/bc1pkqndh95dkulevlc2xmamqs2smgz75mzd2nkat4h8vcr72pfyx4pqq7x4tl'
+  );
+  const outs = await page.locator('#tx-outs').innerText();
+  assert.ok(outs.includes('Data (OP_RETURN)') && outs.includes('17.97928002 BTC'), outs);
+  assert.ok((await page.locator('#tx-privacy').innerText()).includes('No common privacy leaks found.'));
   await page.click('main dd a[href="#/block/840000"]');
   await until(page, () => location.hash === '#/block/840000');
 });
@@ -725,6 +741,8 @@ await ok('a stuck transaction: what can be done, with what each way costs now', 
   ])
     assert.ok(s.toLowerCase().includes(w.toLowerCase()), w + ' in: ' + s); // headings are shown in capitals
   assert.equal(await p.locator('#tx-stuck a').getAttribute('href'), 'https://mempool.space/tx/' + TXM);
+  // the output with the same kind of address as the input gives away which one is the change
+  assert.equal(await p.locator('#tx-privacy li').getAttribute('data-hint'), 'types');
   await c.close();
 });
 await ok(

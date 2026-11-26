@@ -110,6 +110,8 @@ export function viewTx(id) {
             : el('p', null, el('a', { href: '#/mining?tx=' + id, class: 'watchlink' }, t('watchTx') + ' →')),
           x.confirmed ? null : txAlertRow(id),
           x.confirmed || x.coinbase ? null : stuckBox(x, fees),
+          flowBox(raw),
+          x.coinbase ? null : privacyBox(raw),
           shareRow('/tx/' + id, 'BLOCKHORIZON · ' + t('txTitle')),
         ].filter(Boolean)
       );
@@ -118,6 +120,87 @@ export function viewTx(id) {
     }
   })();
   return root;
+}
+// Where the coins came from and where they went: each input (an output of an earlier transaction, linked) and each
+// output, with its address (linked to the address page) and amount. Long lists show the first FLOW_MAX of each.
+const FLOW_MAX = 50;
+const shortAddr = (a) => (a.length > 24 ? a.slice(0, 12) + '…' + a.slice(-8) : a);
+function flowBox(raw) {
+  const f = L.txFlow(raw),
+    btc = (v) => (Number.isFinite(v) ? L.fmtBtc(v) + ' BTC' : '–');
+  const who = (o) =>
+    o.addr
+      ? el('a', { href: '#/address/' + o.addr, class: 'mono', title: o.addr }, shortAddr(o.addr))
+      : el('span', { class: 'dim' }, o.type === 'op_return' ? t('txData') : t('txNoAddr', { t: o.type || '?' }));
+  const list = (items, row, id) =>
+    el(
+      'table',
+      { class: 'addrtxs flow', id },
+      el(
+        'tbody',
+        null,
+        items.slice(0, FLOW_MAX).map(row),
+        items.length > FLOW_MAX
+          ? el(
+              'tr',
+              null,
+              el('td', { class: 'dim', colspan: '2' }, t('txMore', { n: L.fmtNum(items.length - FLOW_MAX) }))
+            )
+          : null
+      )
+    );
+  const inRow = (i) =>
+    i.coinbase
+      ? el('tr', null, el('td', { class: 'dim' }, t('txNewCoins')), el('td', { class: 'num' }, ''))
+      : el(
+          'tr',
+          null,
+          el(
+            'td',
+            null,
+            i.addr ? who(i) : el('span', { class: 'dim' }, t('txNoAddr', { t: i.type || '?' })),
+            ' ',
+            el('a', { href: '#/tx/' + i.txid, class: 'dim prev', title: i.txid + ':' + i.vout }, '↩')
+          ),
+          el('td', { class: 'num' }, btc(i.value))
+        );
+  const outRow = (o) => el('tr', null, el('td', null, who(o)), el('td', { class: 'num' }, btc(o.value)));
+  return el(
+    'section',
+    { class: 'txflow' },
+    el('h3', { class: 'sec' }, t('txIns', { n: L.fmtNum(f.ins.length) })),
+    list(f.ins, inRow, 'tx-ins'),
+    el('h3', { class: 'sec' }, t('txOuts', { n: L.fmtNum(f.outs.length) })),
+    list(f.outs, outRow, 'tx-outs')
+  );
+}
+// What anyone looking at this transaction can tell about who sent it, worked out on this device (nothing is sent).
+function privacyBox(raw) {
+  const hints = L.txPrivacy(raw),
+    from = new Set(
+      L.txFlow(raw)
+        .ins.map((i) => i.addr)
+        .filter(Boolean)
+    ).size;
+  const text = {
+    reuse: t('privReuse'),
+    merge: t('privMerge', { n: L.fmtNum(from) }),
+    round: t('privRound'),
+    types: t('privTypes'),
+  };
+  return el(
+    'section',
+    { class: 'txpriv', id: 'tx-privacy' },
+    el('h3', { class: 'sec' }, t('privTitle')),
+    el('p', { class: 'dim' }, t('privIntro')),
+    hints.length
+      ? el(
+          'ul',
+          null,
+          hints.map((h) => el('li', { 'data-hint': h }, text[h]))
+        )
+      : el('p', null, t('privNone'))
+  );
 }
 // "Tell me when it is confirmed": a sound and a message when it is in a block (and, on a node with phone
 // notifications on, a message on the phone too). Toggles; the Alarm page lists them.

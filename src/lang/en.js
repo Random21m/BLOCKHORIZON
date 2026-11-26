@@ -514,4 +514,17 @@ export default {
   stuckAccLink: 'Accelerate on mempool.space',
   stuckWait:
     'Or wait: it goes through when fees drop. If it is never mined, nodes forget it after about two weeks and the coins are back in the wallet.',
+  txIns: 'Inputs ({n})',
+  txOuts: 'Outputs ({n})',
+  txMore: 'and {n} more',
+  txNewCoins: 'New coins (block reward and fees)',
+  txData: 'Data (OP_RETURN)',
+  txNoAddr: 'No address ({t})',
+  privTitle: 'Privacy',
+  privIntro: 'What anyone looking at this transaction can tell. Worked out on this device; nothing is sent anywhere.',
+  privReuse: 'Address reuse: coins go back to an address that also spends here, so its payments are easy to link.',
+  privMerge: 'Inputs merged: coins from {n} addresses are spent together, which suggests they belong to one wallet.',
+  privRound: 'Round amount: one output is a round number, so the other is probably the change coming back.',
+  privTypes: 'Address types: only one output has the same kind of address as the inputs, which hints it is the change.',
+  privNone: 'No common privacy leaks found.',
 };
