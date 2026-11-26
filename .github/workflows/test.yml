@@ -8,6 +8,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
+      - name: Code style (Prettier; run `npx prettier@3.3.3 --write .` to fix)
+        run: npx --yes prettier@3.3.3 --check .
       - name: Unit tests (recorded API responses)
         run: node --test tests/lib.test.mjs
       - name: Phone notifications server (nginx with njs)

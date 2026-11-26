@@ -93,6 +93,8 @@ node --test tests/lib.test.mjs     # unit tests on recorded API responses (tests
 node tests/smoke.mjs               # Playwright browser checks with the API mocked
 python3 -m http.server 8080        # then open http://localhost:8080
 node tests/screenshots.mjs         # remake the pictures in docs/ from live data
+node tests/push.mjs                # phone notifications server in nginx (needs nginx + libnginx-mod-http-js)
+npx prettier@3.3.3 --write .       # format the code (CI checks it)
 ```
 
 No build step and no dependencies. The accessibility check in the browser tests runs when `axe-core` is installed (`npm install --no-save axe-core`), as it is in CI.
