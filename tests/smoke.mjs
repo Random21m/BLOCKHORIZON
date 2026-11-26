@@ -563,6 +563,57 @@ await ok('clock: counts down to the final bitcoin block, every second', async ()
   assert.ok(txt.includes('6,929,999') && txt.includes('5,952,588') && /21[34]\d/.test(txt), txt);
   await page.goto(base);
 });
+await ok(
+  'clock on a screen that stays on: kiosk hides the close button and says when data stops; e-ink changes only by the minute',
+  async () => {
+    const c = await b.newContext({ viewport: { width: 800, height: 480 } });
+    await c.routeWebSocket(/./, (ws) => ws.close());
+    await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
+      r.request().url().includes('mempool.space') ? r.fallback() : r.abort()
+    );
+    let down = false;
+    await c.route(/mempool\.space/, (route) => {
+      const m = MOCK[new URL(route.request().url()).pathname];
+      if (down || !m) return route.fulfill({ status: down ? 503 : 404, body: '' });
+      route.fulfill({ contentType: m[0], body: fx(m[1]) });
+    });
+    const p = await c.newPage();
+    await p.clock.install();
+    await p.goto(base + '#/clock?kiosk&eink');
+    await until(p, () => /\d+ min/.test(document.querySelector('#since')?.textContent || ''));
+    assert.equal(await p.$('.clock-x'), null, 'no close button in kiosk mode');
+    assert.deepEqual(
+      await p.evaluate(() => [document.body.classList.contains('kiosk'), document.body.classList.contains('eink')]),
+      [true, true]
+    );
+    assert.match(await p.locator('#final').textContent(), /^\d+y \d+d$/); // years and days only
+    const before = await p.evaluate(() => [
+      document.querySelector('#since').textContent,
+      document.querySelector('#final').textContent,
+    ]);
+    await p.clock.runFor(5000);
+    assert.deepEqual(
+      await p.evaluate(() => [
+        document.querySelector('#since').textContent,
+        document.querySelector('#final').textContent,
+      ]),
+      before,
+      'nothing changes within the minute'
+    );
+    assert.equal(await p.locator('#stale').textContent(), '');
+    down = true; // the data stops
+    await p.clock.runFor(31 * 60 * 1000);
+    await until(
+      p,
+      () => /No new data for 3\d minutes/.test(document.querySelector('#stale')?.textContent || ''),
+      null,
+      { timeout: 8000 }
+    );
+    await p.goto(base + '#/clock');
+    await until(p, () => !!document.querySelector('.clock-x') && !document.body.classList.contains('eink'));
+    await c.close();
+  }
+);
 await ok('clock keeps the screen awake while open and lets go when you leave', async () => {
   const c = await b.newContext({ viewport: { width: 1280, height: 720 } });
   await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) => r.abort());

@@ -33,7 +33,7 @@ BLOCKHORIZON is built around one idea: in Bitcoin, time is measured in blocks. T
 **More pages**
 - **Mining:** watch the next block being built and mined, live. Every waiting transaction in it is a square, sized by its size and coloured by its fee rate; new ones drop in as they arrive, and when the block is found it turns purple and slides away while the next one starts to fill. Beside it: hashes tried so far, a stream of tries against the target, the chance it is found in the next minutes, what is in it (fees, reward) and which pool is likely to find it. Follow your own transaction: paste its ID (or tap its square, or use the link on its transaction page) and it is outlined in the block, with where it stands, until the moment it is mined. A bell button turns on the sound for each block found. Below: who is likely to find it, and what miners earned over the last day (revenue, the part from fees, and the hashprice: what one PH/s earns a day)
 - **Your block:** pick a day that matters (a birthday, your first bitcoin) and see the block mined that day, how many blocks have passed since, the next milestone, the reward and price back then, and save it as an image or share it on Nostr (signed by your Nostr browser extension, or copied for your Nostr app)
-- **Clock:** just the height, time since the last block and the price, as large as the screen allows, plus a live countdown to the final bitcoin block (6,929,999, around 2140), with the screen kept awake (for a spare screen or an old tablet)
+- **Clock:** just the height, time since the last block and the price, as large as the screen allows, plus a live countdown to the final bitcoin block (6,929,999, around 2140), with the screen kept awake (for a spare screen or an old tablet; see [On a spare screen](#on-a-spare-screen) for kiosk and e-ink displays)
 - **Charts:** a live trading chart: BTC candlesticks from Kraken in your currency, 1 minute to 1 week candles, the newest moving with every trade. Volume, EMA 20, SMA 50, SMA 200, Bollinger Bands, RSI and MACD; a crosshair with open, high, low and close; horizontal and trend lines (kept per currency, moved by dragging or with the arrow keys); price alerts set by clicking the chart; the live order book (checked against Kraken's checksum) and recent trades beside it; zoom and scroll by mouse, touch or keyboard; full screen. Below it: price, hashrate, difficulty and median fee over 1 month, 1 year or all time
 - **Alarm:** a sound and a message when the chain reaches a block height, when bitcoin reaches a price, or when fees drop to your limit (with a system notification in the background, if you allow it). On your own node it can also send them to your phone through ntfy while no browser has the app open
 - **Calculator:** sats ⇄ fiat, block height ⇄ date, and what a payment costs right now at each fee level
@@ -60,6 +60,30 @@ Open https://random21m.github.io/BLOCKHORIZON/ and you are already using it. Ins
 | **Firefox on desktop** | Firefox cannot install web apps. Bookmark the page instead; everything else works. |
 
 Settings (currency, language, time format, theme, sounds) are kept only in your own browser. To remove the app, uninstall it like any other app or clear the site data.
+
+## On a spare screen
+
+Clock mode makes any screen a block clock: an old tablet, a monitor on the wall, or a Raspberry Pi with a small
+display. Two options in the link set it up for a screen that stays on:
+
+| Link | For |
+|---|---|
+| `…/#/clock?kiosk` | A screen nobody touches: no close button or mouse pointer, a note if no new data has arrived for 30 minutes, and a fresh reload every 6 hours. |
+| `…/#/clock?kiosk&eink` | An e-ink display: black on white, nothing animated, and text that changes only by the minute (e-ink redraws slowly). |
+
+On your own node, use its address (for example `http://umbrel.local:3027/#/clock?kiosk`) so the clock reads your node.
+Open the app once in the same browser first to choose your currency and language; the clock keeps them.
+
+**Raspberry Pi, step by step** (Raspberry Pi OS with desktop):
+1. In **Raspberry Pi Configuration**, under **Display**, turn **Screen Blanking** off.
+2. Make the browser open the clock full screen at start-up. On the current desktop (labwc), add this line to
+   `~/.config/labwc/autostart` (create the file if needed), with your link:
+   ```
+   chromium --kiosk --noerrdialogs --disable-infobars "https://random21m.github.io/BLOCKHORIZON/#/clock?kiosk" &
+   ```
+   On older systems the command is `chromium-browser`, and the desktop may be Wayfire: there, the same command goes
+   in `~/.config/wayfire.ini` under `[autostart]`, as `bh = chromium-browser --kiosk …`.
+3. Restart. To leave the clock, press Escape or switch window with Alt+Tab.
 
 ## Put it on your site
 

@@ -461,4 +461,6 @@ export default {
   txConfirmedMsg: 'Your transaction {id} is confirmed, in block {h}',
   txAlertsTitle: 'Transactions',
   txAlertsIntro: "A sound and a message when each of these is in a block. Set on a waiting transaction's page.",
+  minutes: '{n} min',
+  staleFor: 'No new data for {m} minutes: check the connection or your node.',
 };
