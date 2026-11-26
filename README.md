@@ -6,6 +6,9 @@
 
 No accounts, no ads, no tracking, nothing to install (though you can). Free public data, in 13 languages, and it works offline.
 
+[![GitHub stars](https://img.shields.io/github/stars/Random21m/BLOCKHORIZON?style=flat&label=GitHub%20stars)](https://github.com/Random21m/BLOCKHORIZON/stargazers)
+[![Container image](https://img.shields.io/badge/container-ghcr.io%2Frandom21m%2Fblockhorizon-blue)](https://github.com/users/Random21m/packages/container/package/blockhorizon) ([how many use it](#how-many-use-it))
+
 ![The BLOCKHORIZON dashboard: block height, next halving, difficulty adjustment, hashrate, supply, last block, block production, fees, mempool, price and Lightning, with the projected and recent blocks along the bottom](docs/dashboard.png)
 
 When a block is mined, you see it happen: the blocks glide one slot along and the new one slides in.
@@ -126,6 +129,21 @@ No build step and no dependencies. The accessibility check in the browser tests 
 Code layout (`src/`): `app.js` routing, live repaint and start-up · `state.js` settings and shared state · `data.js` data feeds, block alarms and fee alerts · `ui.js` tiles, charts and other building blocks · `view-dash.js` dashboard and clock · `view-chain.js` block and transaction pages · `view-tools.js` alarm and calculator · `view-info.js` replay, calendar, glossary, watch, about · `view-charts.js` history charts · `trade-chart.js`, `trade-side.js` the live trading chart, order book and trades · `view-my.js` Your block · `view-mining.js`, `block-scene.js` the Mining page and its live block picture · `arrival.js` the block arrival animation · `embed.js` the embeddable widget · `modals.js` search and settings · `lib.js` pure helpers (unit-tested) · `api.js`, `price.js` network (data server, backup source, Kraken and the backup price feed) · `nostr.js` sharing to Nostr · `i18n.js` and `lang/` (one file per language; only the chosen one is downloaded), `content.js`, `content-i18n.js` texts.
 
 Version 0.18.0. What changed in each version: [CHANGELOG.md](CHANGELOG.md). Not built yet: an art gallery, conference listings and chain-state totals (addresses, UTXOs, disk size), for lack of a free, trustworthy public source.
+
+## How many use it
+
+Honestly, we do not know, and that is on purpose: the app has no analytics, so nobody counts visits to the website. The
+only public numbers are these:
+
+- **GitHub stars:** the badge at the top, updated by [shields.io](https://shields.io) from GitHub.
+- **Container downloads** (Umbrel, StartOS and Docker): GitHub shows the total on the
+  [package page](https://github.com/users/Random21m/packages/container/package/blockhorizon), under "Total downloads".
+  There is no badge for it: neither GitHub nor shields.io offers one for this registry, and the third-party badges
+  that exist work by scraping that page. Each update, reinstall or automatic check can count again, so it is an upper
+  bound, not a number of people.
+
+The badges are pictures on this README only, loaded by GitHub; the app itself contacts neither GitHub's statistics nor
+shields.io.
 
 ## Support
 
