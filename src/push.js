@@ -5,7 +5,7 @@
 import * as L from './lib.js';
 import { onStore } from './api.js';
 import { t } from './i18n.js';
-import { S, save, hooks, alarms, feeAlerts, priceAlerts, fmtPrice, FEE_LVL_KEYS } from './state.js';
+import { S, save, hooks, alarms, feeAlerts, priceAlerts, txAlerts, fmtPrice, FEE_LVL_KEYS } from './state.js';
 
 let available = false,
   timer = 0;
@@ -54,6 +54,12 @@ export function pushList() {
       msg:
         '⏰ ' + t(a.dir === 'up' ? 'priceUpTo' : 'priceDownTo', { p: fmtPrice(a.price, a.cur), n: '{now} ' + a.cur }),
     });
+  for (const a of txAlerts())
+    out.push({
+      kind: 'tx',
+      txid: a.txid,
+      msg: '✅ ' + t('txConfirmedMsg', { id: a.txid.slice(0, 8) + '…' + a.txid.slice(-6), h: '{now}' }),
+    });
   return out;
 }
 // Send the list now. Resolves to how many alarms the node is watching for this browser (0 when turned off), or throws.
@@ -86,7 +92,7 @@ export async function sendTest() {
 export function initPush(cfg) {
   available = !!(cfg && cfg.push);
   if (!available) return;
-  for (const k of ['alarms', 'feeAlerts', 'priceAlerts']) onStore[k] = later;
+  for (const k of ['alarms', 'feeAlerts', 'priceAlerts', 'txAlerts']) onStore[k] = later;
   if (S.pushOn) later();
   hooks.alerts(); // the Alarm page, if it was drawn before the config arrived, gains its panel
 }

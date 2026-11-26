@@ -456,4 +456,14 @@ export default {
   pushBadTopic: 'Gib die volle Adresse des Themas ein, etwa https://ntfy.sh/dein-thema.',
   pushNote:
     'ntfy.sh stellt die Nachrichten zu, und wer den Namen eines Themas kennt, kann mitlesen: Behalte den zufälligen Namen oder nutze die Adresse deines eigenen ntfy-Servers. Gesendet werden die Alarme aus diesem Browser; andere Geräte schalten es für ihre eigenen ein.',
+  txAlertOn: 'Sag mir, wenn sie bestätigt ist',
+  txAlertOff: 'Bestätigungsalarm beenden',
+  txAlertSet:
+    'Du bekommst einen Ton und eine Nachricht, sobald sie in einem Block ist, solange BLOCKHORIZON offen ist.',
+  txAlertSetPhone:
+    'Du bekommst einen Ton und eine Nachricht, sobald sie in einem Block ist, und dein Node sagt es deinem Handy.',
+  txConfirmedMsg: 'Deine Transaktion {id} ist bestätigt, in Block {h}',
+  txAlertsTitle: 'Transaktionen',
+  txAlertsIntro:
+    'Ein Ton und eine Nachricht, sobald jede davon in einem Block ist. Gesetzt auf der Seite einer wartenden Transaktion.',
 };

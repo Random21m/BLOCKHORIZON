@@ -11,6 +11,7 @@ import {
   alarms,
   feeAlerts,
   priceAlerts,
+  txAlerts,
   fmtPrice,
   FEE_LVL_KEYS,
   toast,
@@ -186,6 +187,32 @@ export function checkAlarms() {
     play(x.sound || S.asound);
     notify(msg);
   }
+}
+// Transaction alerts: on each new height, ask about the waiting transactions; each fires once it is in a block, then
+// is removed. A transaction that cannot be found (dropped or replaced) is kept: it may come back.
+let txTip = NaN;
+export const shortTx = (id) => id.slice(0, 8) + '…' + id.slice(-6);
+export function checkTxAlerts() {
+  if (!Number.isFinite(st.tip) || st.tip <= txTip) return;
+  txTip = st.tip;
+  for (const a of txAlerts())
+    api.tx(a.txid).then(
+      (x) => {
+        if (!x || x.__stale || !x.status || !x.status.confirmed) return;
+        const list = txAlerts();
+        if (!list.some((y) => y.txid === a.txid)) return; // removed, or fired by another check meanwhile
+        store(
+          'txAlerts',
+          list.filter((y) => y.txid !== a.txid)
+        );
+        hooks.alerts();
+        const msg = '✅ ' + t('txConfirmedMsg', { id: shortTx(a.txid), h: L.fmtNum(x.status.block_height) });
+        toast(msg);
+        play(a.sound || S.asound);
+        notify(msg);
+      },
+      () => {}
+    );
 }
 // Fee alerts: checked whenever new fee data arrives (live feed or the minute refresh). Each fires once, then is removed.
 let feeSeen = null;

@@ -632,6 +632,48 @@ await ok('transaction lookup: one waiting in the mempool, with its place in the 
     tx
   );
 });
+await ok(
+  'transaction alert: set on a waiting transaction, listed on the Alarm page, fires once it is in a block',
+  async () => {
+    const c = await b.newContext();
+    await c.routeWebSocket(/./, (ws) => ws.close());
+    await c.route(/^(?!http:\/\/127\.0\.0\.1)/, (r) =>
+      r.request().url().includes('mempool.space') ? r.fallback() : r.abort()
+    );
+    let mined = false;
+    await c.route(/mempool\.space/, (route) => {
+      const u = new URL(route.request().url()).pathname;
+      if (u === '/api/tx/' + TXM && mined) {
+        const x = JSON.parse(fx('tx-mempool.json'));
+        x.status = { confirmed: true, block_height: 977412, block_time: 1795552000 };
+        return route.fulfill({ contentType: 'application/json', body: JSON.stringify(x) });
+      }
+      const m = MOCK[u];
+      if (!m) return route.fulfill({ status: 404, body: '' });
+      route.fulfill({ contentType: m[0], body: fx(m[1]) });
+    });
+    const p = await c.newPage();
+    await p.goto(base + '#/tx/' + TXM);
+    await p.waitForSelector('#tx-alert');
+    assert.equal(await p.getAttribute('#tx-alert', 'aria-pressed'), 'false');
+    await p.click('#tx-alert');
+    assert.equal(await p.getAttribute('#tx-alert', 'aria-pressed'), 'true');
+    assert.deepEqual(await p.evaluate(() => JSON.parse(localStorage.getItem('bh.txAlerts')).map((a) => a.txid)), [TXM]);
+    await p.goto(base + '#/alarm');
+    await p.waitForSelector('#tx-list');
+    assert.ok((await p.locator('#tx-list').innerText()).includes(TXM.slice(0, 8)));
+    mined = true;
+    await p.reload();
+    await until(
+      p,
+      () => /confirmed, in block 977,412/.test(document.querySelector('#toast')?.textContent || ''),
+      null,
+      { timeout: 8000 }
+    );
+    assert.deepEqual(await p.evaluate(() => JSON.parse(localStorage.getItem('bh.txAlerts'))), []);
+    await c.close();
+  }
+);
 await ok('transaction search explains a mistyped ID', async () => {
   await page.goto(base);
   await page.click('#btn-search');

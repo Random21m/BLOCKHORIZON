@@ -41,16 +41,19 @@ function clean(a) {
   const msg = str(a.msg, 300);
   if (!msg) return null;
   if (a.kind === 'height' && a.height > 0) return { kind: 'height', height: Math.floor(a.height), msg: msg };
+  if (a.kind === 'tx' && /^[0-9a-f]{64}$/.test(a.txid)) return { kind: 'tx', txid: a.txid, msg: msg };
   if (a.kind === 'fee' && FIELDS[a.level] && a.max > 0) return { kind: 'fee', level: a.level, max: +a.max, msg: msg };
   if (a.kind === 'price' && /^[A-Z]{3}$/.test(a.cur) && a.price > 0 && (a.dir === 'up' || a.dir === 'down'))
     return { kind: 'price', cur: a.cur, price: +a.price, dir: a.dir, msg: msg };
   return null;
 }
-const keyOf = (a) => [a.kind, a.height, a.level, a.max, a.cur, a.price, a.dir].join('|');
+const keyOf = (a) => [a.kind, a.height, a.level, a.max, a.cur, a.price, a.dir, a.txid].join('|');
 
-// The value an alarm watches, from the latest data: its height, fee level or price ({now} in its message).
+// The value an alarm watches, from the latest data: its height, fee level or price, or the block a watched
+// transaction is in ({now} in its message).
 function valueFor(a, last) {
   if (a.kind === 'height') return last.tip;
+  if (a.kind === 'tx') return last.txs ? last.txs[a.txid] : undefined;
   if (a.kind === 'fee') return last.fees ? last.fees[FIELDS[a.level]] : undefined;
   return last.prices ? last.prices[a.cur] : undefined;
 }
@@ -58,6 +61,7 @@ function reached(a, last) {
   const v = valueFor(a, last);
   if (typeof v !== 'number' || !isFinite(v)) return false;
   if (a.kind === 'height') return v >= a.height;
+  if (a.kind === 'tx') return v > 0; // it is in a block
   if (a.kind === 'fee') return v <= a.max;
   return a.dir === 'up' ? v >= a.price : v <= a.price;
 }
@@ -91,6 +95,22 @@ async function fetchLast(alerts) {
   }
   if (need.fee) last.fees = await getJSON('/v1/fees/recommended');
   if (need.price) last.prices = await getJSON('/v1/prices');
+  if (need.tx) {
+    // the block each watched transaction is in (none while it waits; a dropped one is simply not found)
+    last.txs = {};
+    const ids = [];
+    alerts.forEach((a) => {
+      if (a.kind === 'tx' && ids.indexOf(a.txid) < 0 && ids.length < 50) ids.push(a.txid);
+    });
+    for (let i = 0; i < ids.length; i++) {
+      try {
+        const s = await getJSON('/tx/' + ids[i] + '/status');
+        if (s && s.confirmed && s.block_height > 0) last.txs[ids[i]] = s.block_height;
+      } catch (e) {
+        /* not found: dropped or replaced, or not seen yet */
+      }
+    }
+  }
   return last;
 }
 
@@ -195,7 +215,7 @@ async function sync(r) {
   d.clients[b.id] = {
     url: b.url,
     click: okUrl(b.click) ? b.click : '',
-    grp: str(b.grp, 2),
+    grp: typeof b.grp === 'string' ? b.grp.slice(0, 2) : ',',
     dec: str(b.dec, 1) || '.',
     alerts: list,
     at: Date.now(),

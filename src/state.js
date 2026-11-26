@@ -66,6 +66,8 @@ export const st = {
 export const alarms = () => store('alarms') || [];
 export const feeAlerts = () => store('feeAlerts') || [];
 export const priceAlerts = () => store('priceAlerts') || [];
+// Transactions to report once confirmed: [{ txid }] (set on a waiting transaction's page).
+export const txAlerts = () => store('txAlerts') || [];
 export const fmtPrice = (v, cur) => L.fmtNum(v, L.priceDigits(v)) + ' ' + cur;
 export const FEE_LVL_KEYS = { next: 'lvlNext', h30: 'lvl30', h1: 'lvl60' }; // translation keys for the fee alert speeds
 export function tzShort(ms) {

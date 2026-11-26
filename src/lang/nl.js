@@ -456,4 +456,13 @@ export default {
   pushBadTopic: 'Vul het volledige adres van het onderwerp in, zoals https://ntfy.sh/jouw-onderwerp.',
   pushNote:
     'ntfy.sh bezorgt de berichten, en wie de naam van een onderwerp kent, kan meelezen: houd de willekeurige naam of gebruik het adres van je eigen ntfy-server. De alarmen uit deze browser worden verstuurd; andere apparaten zetten het aan voor die van henzelf.',
+  txAlertOn: 'Laat het me weten als hij bevestigd is',
+  txAlertOff: 'Bevestigingsalarm uitzetten',
+  txAlertSet: 'Je krijgt een geluid en een bericht zodra hij in een blok staat, zolang BLOCKHORIZON open is.',
+  txAlertSetPhone:
+    'Je krijgt een geluid en een bericht zodra hij in een blok staat, en je node laat het je telefoon weten.',
+  txConfirmedMsg: 'Je transactie {id} is bevestigd, in blok {h}',
+  txAlertsTitle: 'Transacties',
+  txAlertsIntro:
+    'Een geluid en een bericht zodra elk ervan in een blok staat. In te stellen op de pagina van een wachtende transactie.',
 };

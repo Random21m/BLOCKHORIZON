@@ -457,4 +457,12 @@ export default {
   pushBadTopic: 'Escreva o endereço completo do tópico, como https://ntfy.sh/o-seu-topico.',
   pushNote:
     'O ntfy.sh entrega as mensagens e quem souber o nome de um tópico pode lê-lo: mantenha o nome aleatório ou use o endereço do seu próprio servidor ntfy. São enviados os alarmes deste navegador; outros dispositivos ativam isto para os seus.',
+  txAlertOn: 'Avise-me quando for confirmada',
+  txAlertOff: 'Parar o alerta de confirmação',
+  txAlertSet: 'Vai receber um som e uma mensagem quando estiver num bloco, enquanto o BLOCKHORIZON estiver aberto.',
+  txAlertSetPhone: 'Vai receber um som e uma mensagem quando estiver num bloco, e o seu nó avisa o seu telemóvel.',
+  txConfirmedMsg: 'A sua transação {id} está confirmada, no bloco {h}',
+  txAlertsTitle: 'Transações',
+  txAlertsIntro:
+    'Um som e uma mensagem quando cada uma estiver num bloco. Ativa-se na página de uma transação em espera.',
 };
