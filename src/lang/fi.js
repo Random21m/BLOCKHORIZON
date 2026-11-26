@@ -288,7 +288,7 @@ export default {
   eta10: '~10 min',
   eta30: '~30 min',
   eta60: '~1 tunti',
-  etaLater: 'myöhemmin',
+  etaLater: 'myöh.',
   deep: '{n} lohkoa syvä',
   inflow: ' · {n} vB/s sisään',
   byFee: 'maksun mukaan: matala → korkea',
