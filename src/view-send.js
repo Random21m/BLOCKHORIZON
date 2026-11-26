@@ -63,7 +63,7 @@ async function check(hex, out) {
     out.replaceChildren(el('p', { class: 'panel err' }, t(tx.error === 'hex' ? 'sendBadHex' : 'sendBadTx')));
     return;
   }
-  const feeCell = el('span', null, '…'),
+  const feeCell = el('span', { dir: 'auto' }, '…'), // sats and sat/vB keep their order in a right-to-left page
     status = el('div', { class: 'sendstatus' }, el('p', { class: 'dim' }, t('loading'))),
     lists = el('div', null, flowBox(L.asServerTx(tx)));
   out.replaceChildren(
@@ -108,8 +108,9 @@ async function check(hex, out) {
   const fee = L.txFee(tx, prevVal),
     rate = fee / tx.vsize,
     f = st.fees || {};
+  // without the right-to-left mark t() adds in ar/fa/he, so dir=auto reads the line by its first word
   feeCell.textContent = Number.isFinite(fee)
-    ? t('sendFeeVal', { s: L.fmtNum(fee), r: L.fmtFee(rate) })
+    ? t('sendFeeVal', { s: L.fmtNum(fee), r: L.fmtFee(rate) }).replace(/^\u200f/, '')
     : ids.length > PREV_MAX
       ? '–'
       : t('sendFeeUnknown');

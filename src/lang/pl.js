@@ -580,4 +580,37 @@ export default {
   ribbonAvgs: 'Średnie od 9 do 200 dni',
   diffRibbonNote: 'Gdy średnie się zbiegają, trudność przestała rosnąć, a górnicy są pod presją. Teraz dzieli je {p}%.',
   last2y: 'Ostatnie 2 lata',
+  sendTitle: 'Wyślij transakcję',
+  sendLink: 'Wyślij podpisaną transakcję',
+  sendIntro:
+    'Wklej podpisaną transakcję: surowy hex, który eksportuje Twój portfel. Najpierw jest odczytywana tutaj, na Twoim urządzeniu; nic nie zostanie wysłane, dopóki nie naciśniesz Wyślij.',
+  sendPaste: 'Podpisana transakcja (hex)',
+  sendCheck: 'Sprawdź',
+  sendBadHex:
+    'To nie jest surowa transakcja. Wklej długi hex, który portfel eksportuje przy podpisywaniu (ID transakcji nie wystarczy).',
+  sendBadTx: 'Ten hex nie jest pełną transakcją. Sprawdź, czy został skopiowany w całości.',
+  sendWhat: 'Co robi',
+  sendSize: '{v} vB ({w} jednostek wagi)',
+  sendFeeVal: '{s} sats · {r} sat/vB',
+  sendFeeUnknown: 'nieznana, dopóki nie zostaną znalezione monety, które wydaje',
+  sendRbf: 'Można ją później zastąpić transakcją z wyższą opłatą.',
+  sendFinal: 'Nie można jej później zastąpić transakcją z wyższą opłatą.',
+  sendMissing:
+    'Części monet, które wydaje, nie znaleziono: mogą być już wydane albo należeć do innej sieci. Prawdopodobnie zostałaby odrzucona.',
+  sendSpent: 'Monety, które wydaje, zostały już wydane przez inną transakcję w bloku, więc zostałaby odrzucona.',
+  sendReplaces:
+    'Monety, które wydaje, są już użyte przez transakcję, która wciąż czeka. Ta przejdzie tylko, jeśli zastąpi tamtą wyższą opłatą.',
+  sendNegative: 'Wypłaca więcej, niż wydaje, więc zostałaby odrzucona.',
+  sendHigh: 'Ta opłata jest wyjątkowo wysoka: następny blok wymaga około {r} sat/vB. Sprawdź ją przed wysłaniem.',
+  sendLow: 'Ta opłata jest niższa niż {m} sat/vB, które węzły teraz przyjmują, więc zostałaby odrzucona.',
+  sendSlow:
+    'Ta opłata jest niższa niż to, czego wymagają bloki w najbliższej godzinie ({r} sat/vB), więc może trochę poczekać.',
+  sendKnown: 'Ta transakcja została już wysłana.',
+  sendOpen: 'Otwórz jej stronę',
+  sendTo: 'Wyślij do {h}',
+  sendNote:
+    'Po wysłaniu nie da się jej cofnąć. {h} przekazuje ją do sieci i widzi, że pochodzi z Twojego połączenia, jak serwer każdego portfela.',
+  sending: 'Wysyłanie…',
+  sendDone: 'Wysłano: sieć ją ma.',
+  sendFail: 'Nie przyjęto: {m}',
 };

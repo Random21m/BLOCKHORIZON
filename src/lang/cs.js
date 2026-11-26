@@ -579,4 +579,36 @@ export default {
   ribbonAvgs: 'Průměry za 9 až 200 dní',
   diffRibbonNote: 'Když se průměry sbíhají, obtížnost přestala růst a těžaři jsou pod tlakem. Teď je dělí {p} %.',
   last2y: 'Poslední 2 roky',
+  sendTitle: 'Odeslat transakci',
+  sendLink: 'Odeslat podepsanou transakci',
+  sendIntro:
+    'Vložte podepsanou transakci: surový hex, který exportuje vaše peněženka. Nejdřív se přečte tady ve vašem zařízení; nic se neodešle, dokud nestisknete Odeslat.',
+  sendPaste: 'Podepsaná transakce (hex)',
+  sendCheck: 'Zkontrolovat',
+  sendBadHex:
+    'Toto není surová transakce. Vložte dlouhý hex, který peněženka exportuje při podpisu (ID transakce nestačí).',
+  sendBadTx: 'Tento hex není úplná transakce. Zkontrolujte, že se zkopíroval celý.',
+  sendWhat: 'Co dělá',
+  sendSize: '{v} vB ({w} jednotek váhy)',
+  sendFeeVal: '{s} satů · {r} sat/vB',
+  sendFeeUnknown: 'neznámý, dokud se nenajdou mince, které utrácí',
+  sendRbf: 'Později ji lze nahradit transakcí s vyšším poplatkem.',
+  sendFinal: 'Později ji nelze nahradit transakcí s vyšším poplatkem.',
+  sendMissing:
+    'Některé mince, které utrácí, se nenašly: možná už jsou utracené, nebo patří do jiné sítě. Nejspíš by byla odmítnuta.',
+  sendSpent: 'Mince, které utrácí, už utratila jiná transakce v bloku, takže by byla odmítnuta.',
+  sendReplaces:
+    'Mince, které utrácí, už používá transakce, která stále čeká. Tato projde, jen pokud ji nahradí s vyšším poplatkem.',
+  sendNegative: 'Vyplácí víc, než utrácí, takže by byla odmítnuta.',
+  sendHigh: 'Tento poplatek je neobvykle vysoký: další blok potřebuje asi {r} sat/vB. Zkontrolujte ho před odesláním.',
+  sendLow: 'Tento poplatek je nižší než {m} sat/vB, které teď uzly přijímají, takže by byla odmítnuta.',
+  sendSlow: 'Tento poplatek je nižší, než potřebují bloky příští hodiny ({r} sat/vB), takže může chvíli čekat.',
+  sendKnown: 'Tato transakce už byla odeslána.',
+  sendOpen: 'Otevřít její stránku',
+  sendTo: 'Odeslat na {h}',
+  sendNote:
+    'Po odeslání ji nelze vzít zpět. {h} ji předá síti a vidí, že přichází z vašeho připojení, jako server kterékoli peněženky.',
+  sending: 'Odesílání…',
+  sendDone: 'Odesláno: síť ji má.',
+  sendFail: 'Nepřijato: {m}',
 };

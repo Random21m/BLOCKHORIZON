@@ -587,4 +587,37 @@ export default {
   diffRibbonNote:
     'Saat rata-rata saling merapat, kesulitan berhenti naik dan penambang sedang tertekan. Saat ini selisihnya {p}%.',
   last2y: '2 tahun terakhir',
+  sendTitle: 'Kirim transaksi',
+  sendLink: 'Kirim transaksi yang sudah ditandatangani',
+  sendIntro:
+    'Tempel transaksi yang sudah ditandatangani: hex mentah yang diekspor dompet Anda. Transaksi dibaca dulu di sini, di perangkat Anda; tidak ada yang dikirim sampai Anda menekan Kirim.',
+  sendPaste: 'Transaksi bertanda tangan (hex)',
+  sendCheck: 'Periksa',
+  sendBadHex:
+    'Ini bukan transaksi mentah. Tempel hex panjang yang diekspor dompet Anda saat menandatangani (ID transaksi saja tidak cukup).',
+  sendBadTx: 'Hex ini bukan transaksi yang lengkap. Pastikan tersalin seluruhnya.',
+  sendWhat: 'Apa yang dilakukannya',
+  sendSize: '{v} vB ({w} unit bobot)',
+  sendFeeVal: '{s} sats · {r} sat/vB',
+  sendFeeUnknown: 'belum diketahui sampai koin yang dibelanjakannya ditemukan',
+  sendRbf: 'Transaksi ini bisa diganti nanti dengan biaya lebih tinggi.',
+  sendFinal: 'Transaksi ini tidak bisa diganti nanti dengan biaya lebih tinggi.',
+  sendMissing:
+    'Sebagian koin yang dibelanjakannya tidak ditemukan: mungkin sudah dibelanjakan, atau milik jaringan lain. Kemungkinan besar akan ditolak.',
+  sendSpent: 'Koin yang dibelanjakannya sudah dibelanjakan oleh transaksi lain di sebuah blok, jadi akan ditolak.',
+  sendReplaces:
+    'Koin yang dibelanjakannya sudah dipakai oleh transaksi yang masih menunggu. Transaksi ini hanya masuk jika menggantikannya dengan biaya lebih tinggi.',
+  sendNegative: 'Transaksi ini membayar lebih banyak daripada yang dibelanjakannya, jadi akan ditolak.',
+  sendHigh: 'Biaya ini sangat tinggi: blok berikutnya butuh sekitar {r} sat/vB. Periksa sebelum mengirim.',
+  sendLow: 'Biaya ini di bawah {m} sat/vB yang diterima node saat ini, jadi akan ditolak.',
+  sendSlow:
+    'Biaya ini di bawah yang dibutuhkan blok-blok satu jam ke depan ({r} sat/vB), jadi mungkin menunggu agak lama.',
+  sendKnown: 'Transaksi ini sudah dikirim.',
+  sendOpen: 'Buka halamannya',
+  sendTo: 'Kirim ke {h}',
+  sendNote:
+    'Setelah dikirim, tidak bisa ditarik kembali. {h} meneruskannya ke jaringan dan melihatnya datang dari koneksi Anda, seperti server dompet mana pun.',
+  sending: 'Mengirim…',
+  sendDone: 'Terkirim: jaringan sudah menerimanya.',
+  sendFail: 'Tidak diterima: {m}',
 };

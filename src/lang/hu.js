@@ -588,4 +588,37 @@ export default {
   diffRibbonNote:
     'Ha az átlagok összetömörülnek, a nehézség már nem nő, és a bányászok nyomás alatt vannak. Most {p}% a különbség köztük.',
   last2y: 'Utolsó 2 év',
+  sendTitle: 'Tranzakció küldése',
+  sendLink: 'Aláírt tranzakció küldése',
+  sendIntro:
+    'Illessz be egy aláírt tranzakciót: a nyers hexet, amelyet a tárcád exportál. Először itt, az eszközödön olvassuk be; semmi sem megy el, amíg meg nem nyomod a Küldés gombot.',
+  sendPaste: 'Aláírt tranzakció (hex)',
+  sendCheck: 'Ellenőrzés',
+  sendBadHex:
+    'Ez nem nyers tranzakció. Illeszd be a hosszú hexet, amelyet a tárcád aláíráskor exportál (a tranzakcióazonosító nem elég).',
+  sendBadTx: 'Ez a hex nem teljes tranzakció. Ellenőrizd, hogy teljes egészében másoltad-e.',
+  sendWhat: 'Mit csinál',
+  sendSize: '{v} vB ({w} súlyegység)',
+  sendFeeVal: '{s} sats · {r} sat/vB',
+  sendFeeUnknown: 'ismeretlen, amíg meg nem találjuk az elköltött coinokat',
+  sendRbf: 'Később lecserélhető magasabb díjjal.',
+  sendFinal: 'Később nem cserélhető le magasabb díjjal.',
+  sendMissing:
+    'Az általa elköltött coinok egy része nem található: lehet, hogy már elköltötték őket, vagy egy másik hálózathoz tartoznak. Valószínűleg elutasítanák.',
+  sendSpent: 'Az általa elköltött coinokat már elköltötte egy másik tranzakció egy blokkban, így elutasítanák.',
+  sendReplaces:
+    'Az általa elköltött coinokat már használja egy tranzakció, amely még vár. Ez csak akkor megy át, ha magasabb díjjal lecseréli azt.',
+  sendNegative: 'Többet fizet ki, mint amennyit elkölt, így elutasítanák.',
+  sendHigh: 'Ez a díj szokatlanul magas: a következő blokkhoz kb. {r} sat/vB kell. Küldés előtt ellenőrizd.',
+  sendLow: 'Ez a díj a node-ok által most elfogadott {m} sat/vB alatt van, így elutasítanák.',
+  sendSlow:
+    'Ez a díj alacsonyabb annál, amit a következő óra blokkjai igényelnek ({r} sat/vB), így várhat egy darabig.',
+  sendKnown: 'Ezt a tranzakciót már elküldték.',
+  sendOpen: 'Oldalának megnyitása',
+  sendTo: 'Küldés ide: {h}',
+  sendNote:
+    'Elküldés után nem vonható vissza. A(z) {h} továbbítja a hálózatnak, és látja, hogy a te kapcsolatodról érkezik, ahogy bármely tárca szervere.',
+  sending: 'Küldés…',
+  sendDone: 'Elküldve: a hálózat megkapta.',
+  sendFail: 'Nem fogadták el: {m}',
 };

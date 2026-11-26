@@ -586,4 +586,36 @@ export default {
   diffRibbonNote:
     'Når snittene samler seg, har vanskelighetsgraden sluttet å stige og utvinnerne er presset. Nå er de {p} % fra hverandre.',
   last2y: 'Siste 2 år',
+  sendTitle: 'Send en transaksjon',
+  sendLink: 'Send en signert transaksjon',
+  sendIntro:
+    'Lim inn en signert transaksjon: den rå hex-en lommeboken din eksporterer. Den leses først her på enheten din; ingenting sendes før du trykker Send.',
+  sendPaste: 'Signert transaksjon (hex)',
+  sendCheck: 'Sjekk',
+  sendBadHex:
+    'Dette er ikke en rå transaksjon. Lim inn den lange hex-en lommeboken eksporterer når den signerer (en transaksjons-ID er ikke nok).',
+  sendBadTx: 'Denne hex-en er ikke en fullstendig transaksjon. Sjekk at den ble kopiert helt.',
+  sendWhat: 'Hva den gjør',
+  sendSize: '{v} vB ({w} vektenheter)',
+  sendFeeVal: '{s} sats · {r} sat/vB',
+  sendFeeUnknown: 'ukjent til myntene den bruker er funnet',
+  sendRbf: 'Den kan erstattes senere med høyere gebyr.',
+  sendFinal: 'Den kan ikke erstattes senere med høyere gebyr.',
+  sendMissing:
+    'Noen av myntene den bruker ble ikke funnet: de kan allerede være brukt, eller høre til et annet nettverk. Den ville trolig blitt avvist.',
+  sendSpent: 'Mynter den bruker er allerede brukt av en annen transaksjon i en blokk, så den ville blitt avvist.',
+  sendReplaces:
+    'Mynter den bruker er allerede brukt av en transaksjon som fortsatt venter. Denne går bare gjennom hvis den erstatter den andre med høyere gebyr.',
+  sendNegative: 'Den betaler ut mer enn den bruker, så den ville blitt avvist.',
+  sendHigh: 'Gebyret er uvanlig høyt: neste blokk krever omtrent {r} sat/vB. Sjekk det før du sender.',
+  sendLow: 'Gebyret er under de {m} sat/vB nodene godtar nå, så den ville blitt avvist.',
+  sendSlow: 'Gebyret er under det blokkene den neste timen krever ({r} sat/vB), så den kan bli liggende en stund.',
+  sendKnown: 'Denne transaksjonen er allerede sendt.',
+  sendOpen: 'Åpne siden dens',
+  sendTo: 'Send til {h}',
+  sendNote:
+    'Når den er sendt, kan den ikke kalles tilbake. {h} sender den videre til nettverket og ser at den kommer fra tilkoblingen din, slik serveren til enhver lommebok gjør.',
+  sending: 'Sender…',
+  sendDone: 'Sendt: nettverket har den.',
+  sendFail: 'Ikke godtatt: {m}',
 };
