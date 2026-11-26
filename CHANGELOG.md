@@ -2,7 +2,7 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
-## Unreleased
+## 0.21.0
 
 - **What miners earn per block, and how full blocks are.** Three more history charts on the Charts page, with the same
   1 month, 1 year and all time buttons: the fees per block (in BTC), the fees' share of what miners earn (block reward
