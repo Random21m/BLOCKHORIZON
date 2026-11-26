@@ -4,6 +4,13 @@ What changed in each version of BLOCKHORIZON, newest first. The version is shown
 
 ## Unreleased
 
+- **Is now a good time to send? The mempool over time, by fee rate.** A new chart on the Charts page shows how much
+  was waiting to be mined over the last 24 hours, week, month, year or all time, stacked by the fee rate it pays in
+  the same colours as the blocks, with a dashed line for one block. Above it: how much is waiting now, the fee rate
+  where the next block would end, and how often the mempool was fuller than now in that range. The part paying under
+  1 sat/vB (often most of it, and it may never be mined) is left out until you switch it on. The data comes from
+  mempool.space or your own mempool server; the backup server does not have it, so the chart says so while it is in
+  use.
 - **Where a transaction's coins came from and went.** A transaction's page lists every input and output, with its
   address (a link to the address page) and amount; each input links to the transaction that made it. Below, a
   **Privacy** box says in plain words what anyone looking at it can tell: an address used again, coins from several
