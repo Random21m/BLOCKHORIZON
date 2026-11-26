@@ -20,13 +20,14 @@ description: >-
   asks a third party for it. The price comes from Kraken's public feed (Coinbase's while Kraken is down). No
   accounts and no tracking; settings stay in your browser.
 releaseNotes: >-
-  Help when a payment is stuck: on a waiting transaction whose fee is too low, "Taking too long?" explains the ways
-  out in plain words, with what each would cost right now.
+  Watch your own addresses: on the Alarm page, add up to 10 Bitcoin addresses and get a sound and a message when a
+  payment to one of them is seen and again when it confirms, with "On your phone" on your phone too. Addresses are
+  only looked up on your own node.
 
 
-  Also new: search takes a Bitcoin address and shows its balance and recent payments (on Umbrel, looked up on your
-  own node), and four long-term charts: the 200-week average, the Mayer Multiple, the halving cycles and the supply
-  over time.
+  Also new: help when a payment is stuck, search by address, four long-term charts (200-week average, Mayer
+  Multiple, halving cycles, supply), Chinese, Korean, Russian and Brazilian Portuguese, and a backup live price
+  from Coinbase while Kraken is down.
 
 developer: Random21m
 website: https://random21m.github.io/BLOCKHORIZON/
