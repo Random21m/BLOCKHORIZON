@@ -372,7 +372,8 @@ export default {
   legacy: 'Legacy (1…)',
   paySize: 'Apie {n} vB',
   feesMissing: 'Mokesčiai dar neįkelti',
-  payNote: 'Įprasti dydžiai standartinėms vieno parašo piniginėms. Jūsų piniginė parodo tikslų mokestį prieš siunčiant.',
+  payNote:
+    'Įprasti dydžiai standartinėms vieno parašo piniginėms. Jūsų piniginė parodo tikslų mokestį prieš siunčiant.',
   replayIntro: 'Peržiūrėkite kiekvieną halvingą: atlygis už bloką sumažėja perpus kas 210 000 blokų.',
   halvingStep: 'Halvingo žingsnis',
   genesisEpoch: 'Genezės epocha',
@@ -459,7 +460,8 @@ export default {
   txAlertSetPhone: 'Gausite garsą ir pranešimą, kai ji pateks į bloką, o jūsų mazgas praneš jūsų telefonui.',
   txConfirmedMsg: 'Jūsų transakcija {id} patvirtinta bloke {h}',
   txAlertsTitle: 'Transakcijos',
-  txAlertsIntro: 'Garsas ir pranešimas, kai kiekviena iš jų pateks į bloką. Nustatoma laukiančios transakcijos puslapyje.',
+  txAlertsIntro:
+    'Garsas ir pranešimas, kai kiekviena iš jų pateks į bloką. Nustatoma laukiančios transakcijos puslapyje.',
   minutes: '{n} min',
   staleFor: 'Naujų duomenų nėra jau {m} min.: patikrinkite ryšį arba savo mazgą.',
   addrTitle: 'Stebėti adresą',
@@ -502,8 +504,7 @@ export default {
   addrTxCount: 'Transakcijos',
   addrRecent: 'Naujausios transakcijos',
   addrNoTx: 'Transakcijų dar nėra.',
-  addrLookedUp:
-    'Ieškota per {s}, o ten šį adresą galima susieti su jūsų IP adresu. Jūsų mazge jis lieka jūsų mazge.',
+  addrLookedUp: 'Ieškota per {s}, o ten šį adresą galima susieti su jūsų IP adresu. Jūsų mazge jis lieka jūsų mazge.',
   stuckTitle: 'Užtrunka per ilgai?',
   stuckIntro:
     'Jos mokestis mažesnis nei dabar priima kasėjai. Ji praeis, kai mokesčiai nukris, arba galite ją paspartinti.',
