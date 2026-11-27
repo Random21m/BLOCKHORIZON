@@ -1,6 +1,6 @@
 // Search and settings dialogs.
 import * as L from './lib.js';
-import { api, normServer, DEFAULT_SERVER, FALLBACK, getServer, lookupHost } from './api.js';
+import { api, normServer, DEFAULT_SERVER, FALLBACK, getServer, lookupHost, backupAllowed } from './api.js';
 import { CURRENCIES } from './price.js';
 import { t, LANGS, loadLang } from './i18n.js';
 import { play, BLOCK_SOUNDS } from './sound.js';
@@ -424,7 +424,10 @@ export function settingsModal() {
           autocomplete: 'off',
           spellcheck: 'false',
         }),
-        msg = el('p', { class: 'dim', role: 'status' }, t('srvNow', { s: getServer().replace(/^https?:\/\//, '') }));
+        msg = el('p', { class: 'dim', role: 'status' }, t('srvNow', { s: getServer().replace(/^https?:\/\//, '') })),
+        // the backup server stands in for mempool.space only (never for your own server), so the note is shown only then
+        note = el('p', { class: 'dim', id: 'st-backup' }, t('srvNote', { f: FALLBACK.replace(/^https?:\/\//, '') }));
+      note.hidden = !backupAllowed();
       const use = async (v) => {
         const n = v.trim() ? normServer(v) : '';
         if (v.trim() && !n) {
@@ -448,6 +451,7 @@ export function settingsModal() {
         S.server = n;
         save();
         hooks.server();
+        note.hidden = !backupAllowed();
         msg.textContent = t('srvOk', { s: (n || DEFAULT_SERVER).replace(/^https?:\/\//, '') });
       };
       return el(
@@ -471,7 +475,7 @@ export function settingsModal() {
           )
         ),
         msg,
-        el('p', { class: 'dim' }, t('srvNote', { f: FALLBACK.replace(/^https?:\/\//, '') }))
+        note
       );
     },
   };

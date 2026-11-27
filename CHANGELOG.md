@@ -2,6 +2,15 @@
 
 What changed in each version of BLOCKHORIZON, newest first. The version is shown at the bottom of the app.
 
+## Unreleased
+
+- **Your own server is never replaced by another.** When the data server was your own (chosen in Settings, or the
+  node the app runs on, as on Umbrel and StartOS) and it stopped answering or answered with a server error, the
+  height, blocks, fees and transaction lookups came from blockstream.info instead, so a transaction ID could leave
+  your node while its Mempool restarted. The backup server now stands in only for mempool.space; with your own server
+  down, the app says it is offline and shows the last values it saved. Settings, Data mentions the backup only while
+  mempool.space is in use.
+
 ## 0.23.0
 
 - **Send page privacy:** checking a transaction looked up the coins it spends on the backup server (blockstream.info)

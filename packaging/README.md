@@ -2,7 +2,8 @@
 
 The site is static files, so it runs anywhere. The container in this repository adds one thing: with
 `MEMPOOL_URL` set, it proxies `/api` (REST and the live websocket) to that mempool server and points the app at it,
-so the browser only talks to your node (and to Kraken for the price).
+so the browser only talks to your node (and to Kraken, or Coinbase while Kraken is down, for the price). If the node's
+mempool is not answering, the app says it is offline; it never asks blockstream.info or any other server in its place.
 
 ## Docker
 

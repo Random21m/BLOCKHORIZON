@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as L from '../src/lib.js';
 import { parseTicker, parseBackupTicker, BACKUP_CURRENCIES, CURRENCIES } from '../src/price.js';
-import { normServer, esploraFor, esploraFees } from '../src/api.js';
+import { normServer, esploraFor, esploraFees, getJSON, setServer, DEFAULT_SERVER } from '../src/api.js';
 import { LANGS, loadLang, setLang, t, getLang, detectLang, isRtl } from '../src/i18n.js';
 // every language's texts, as the app would load them one at a time
 const TABLES = Object.fromEntries(
@@ -977,6 +977,41 @@ test('backup source: only the essentials map to blockstream.info, and its fee es
     economyFee: 1,
     minimumFee: 1,
   });
+});
+test('backup source: stands in for mempool.space only, never for your own server (a txid stays on your node)', async () => {
+  const real = globalThis.fetch,
+    asked = [];
+  const txid = 'ab'.repeat(32);
+  try {
+    for (const down of ['unreachable', 503]) {
+      globalThis.fetch = async (url) => {
+        asked.push(url);
+        if (url.startsWith('https://blockstream.info/'))
+          return new Response('{"txid":"' + txid + '"}', { status: 200 });
+        if (down === 'unreachable') throw new TypeError('Failed to fetch');
+        return new Response('', { status: down });
+      };
+      // your own server (Settings, or config.json on a node): the error comes back, nothing else is asked
+      asked.length = 0;
+      setServer('http://node.local:3006');
+      await assert.rejects(getJSON('/tx/' + txid), down === 'unreachable' ? /Failed to fetch/ : /HTTP 503/);
+      await assert.rejects(getJSON('/v1/fees/recommended'));
+      await assert.rejects(getJSON('/blocks/tip/height', { text: true }));
+      assert.deepEqual(
+        asked.filter((u) => !u.startsWith('http://node.local:3006/')),
+        [],
+        'asked another server: ' + asked.join(' ')
+      );
+      // mempool.space: the essentials still come from blockstream.info while it is down
+      asked.length = 0;
+      setServer('');
+      assert.equal((await getJSON('/tx/' + txid)).txid, txid);
+      assert.deepEqual(asked, [DEFAULT_SERVER + '/api/tx/' + txid, 'https://blockstream.info/api/tx/' + txid]);
+    }
+  } finally {
+    globalThis.fetch = real;
+    setServer('');
+  }
 });
 test('miner economics: revenue, fee share and hashprice from reward-stats', () => {
   const e = L.minerEconomics(fx('reward-stats.json'), 1e21);

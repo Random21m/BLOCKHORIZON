@@ -47,7 +47,7 @@ BLOCKHORIZON is built around one idea: in Bitcoin, time is measured in blocks. T
 - Halving replay, chain calendar, glossary, and a Watch page of Bitcoin channels
 
 **Everywhere**
-- Your own node: point it at your own mempool server (**Settings, Data**), or run it on your node with the container (see [packaging](packaging/README.md)). If the data server stops answering, the height, blocks, fees and mempool come from blockstream.info until it is back, and the connection dot turns amber
+- Your own node: point it at your own mempool server (**Settings, Data**), or run it on your node with the container (see [packaging](packaging/README.md)). If mempool.space stops answering, the height, blocks, fees and mempool come from blockstream.info until it is back, and the connection dot turns amber. Your own server is never replaced by another: while it is not answering, the app says it is offline
 - On a phone, the four main pages sit in a tab bar along the bottom, the rest under **More**
 - Dark, light or automatic; English, German, Spanish, French, Portuguese (Portugal and Brazil), Italian, Dutch, Polish, Czech, Slovenian, Croatian, Swedish, Danish, Norwegian, Finnish, Hungarian, Romanian, Greek, Lithuanian, Turkish, Indonesian, Vietnamese, Thai, Malay, Russian, Ukrainian, Macedonian, Georgian, Hindi, Nepali, Bengali, Japanese, Korean, Simplified Chinese, Arabic, Persian and Hebrew (chosen from your browser's language at first); your currency, time and date format
 - Accessible: keyboard-friendly, screen-reader labels, and checked with axe-core on every page in both themes as part of the tests
@@ -103,7 +103,7 @@ Options: `show=height|halving|price|mining` (`mining` draws a small picture of t
 
 ## Privacy
 
-Your browser asks the public mempool.space API (or the server you chose in Settings) for block, fee and mempool data, blockstream.info only while that server is not answering, and Kraken's public feed for the price (plus Kraken's public API for past candles on the trading chart). Only while Kraken sends no price for 15 seconds, the price comes from Coinbase's public feed instead (US dollars, euros and pounds; the other currencies from mempool.space), until Kraken is back. Nothing else is contacted, there are no cookies or analytics, and nothing about you is stored anywhere but your own browser. Details: [privacy.html](https://random21m.github.io/BLOCKHORIZON/privacy.html).
+Your browser asks the public mempool.space API (or the server you chose in Settings) for block, fee and mempool data, blockstream.info only while mempool.space is not answering (never in place of a server you chose), and Kraken's public feed for the price (plus Kraken's public API for past candles on the trading chart). Only while Kraken sends no price for 15 seconds, the price comes from Coinbase's public feed instead (US dollars, euros and pounds; the other currencies from mempool.space), until Kraken is back. Nothing else is contacted, there are no cookies or analytics, and nothing about you is stored anywhere but your own browser. Details: [privacy.html](https://random21m.github.io/BLOCKHORIZON/privacy.html).
 
 ## Run your own copy
 
