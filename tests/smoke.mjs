@@ -2356,13 +2356,25 @@ await ok(
     await until(p, () => /977,411/.test(document.querySelector('#h')?.textContent || ''));
     await new Promise((r) => setTimeout(r, 800));
     assert.ok(hosts.has('node.example') && !hosts.has('mempool.space'), [...hosts].join());
+    // your own server stops answering (a Mempool restart): never blockstream.info in its place, the dot says offline
+    nodeUp = false;
+    hosts.clear();
+    await p.reload();
+    await until(p, () => /Offline/.test(document.querySelector('#conn')?.title || ''), null, { timeout: 25000 });
+    await p.goto(base + '#/tx/' + 'ab'.repeat(32));
+    await new Promise((r) => setTimeout(r, 1500));
+    assert.ok(!hosts.has('blockstream.info') && !hosts.has('mempool.space'), [...hosts].join());
+    nodeUp = true;
+    await p.goto(base);
     await p.click('#btn-settings');
     await p.click('#tab-data');
+    assert.ok(await p.locator('#st-backup').isHidden(), 'the backup note is shown for your own server');
     await p.click('#st-panel button:not(.btn-go)');
     await until(p, () =>
       /Now using mempool\.space/.test(document.querySelector('#st-panel [role=status]').textContent)
     );
     assert.equal(await p.evaluate(() => JSON.parse(localStorage.getItem('bh.settings')).server), '');
+    assert.ok(await p.locator('#st-backup').isVisible(), 'the backup note is back for mempool.space');
     assert.deepEqual(perr, []);
     await c.close();
   }

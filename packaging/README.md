@@ -2,7 +2,8 @@
 
 The site is static files, so it runs anywhere. The container in this repository adds one thing: with
 `MEMPOOL_URL` set, it proxies `/api` (REST and the live websocket) to that mempool server and points the app at it,
-so the browser only talks to your node (and to Kraken for the price).
+so the browser only talks to your node (and to Kraken, or Coinbase while Kraken is down, for the price). If the node's
+mempool is not answering, the app says it is offline; it never asks blockstream.info or any other server in its place.
 
 ## Docker
 
@@ -66,13 +67,3 @@ For a new version:
    image tag and digest in `docker-compose.yml`, then run Umbrel's linter in the fork:
    `npm run lint:apps -- blockhorizon --check-images`.
 4. Push the fork branch (that updates the pull request, or opens an update once the app is in the store).
-
-## Start9
-
-The StartOS package lives in its own repository, [Random21m/blockhorizon-startos](https://github.com/Random21m/blockhorizon-startos),
-as Start9's process requires. It runs this same image with `MEMPOOL_URL` set to the StartOS Mempool service's Web UI
-address, and depends on Mempool. Its build workflow (Start9's own) produces the `.s9pk` files for x86_64 and aarch64.
-
-It was submitted to the Start9 Community Registry by email to submissions@start9.com. Start9 forks the repository into
-the Start9-Community GitHub organization and reviews it there; from then on, changes and new versions are pull requests
-against that fork. Its `UPDATING.md` says how to move it to a new image.

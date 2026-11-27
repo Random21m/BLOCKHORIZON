@@ -1,7 +1,9 @@
 // Network layer: a mempool.space-compatible REST API + websocket. Last good values are cached in localStorage.
 // The server is mempool.space unless the user picks their own (Settings, or the optional config.json of a self-hosted copy,
-// e.g. on an Umbrel or Start9 node). If the server cannot be reached, the essentials (height, blocks, fees, mempool,
-// transactions) come from blockstream.info's Esplora API instead, so the dashboard keeps counting blocks.
+// e.g. on an Umbrel or Start9 node). Only while that is mempool.space and it cannot be reached do the essentials (height,
+// blocks, fees, mempool, transactions) come from blockstream.info's Esplora API instead, so the dashboard keeps counting
+// blocks. Any other server, such as your own node, is never stood in for: nothing it would be asked (a txid, say) goes
+// anywhere else, and the app shows that it is not answering.
 export const DEFAULT_SERVER = 'https://mempool.space';
 export const FALLBACK = 'https://blockstream.info';
 let server = DEFAULT_SERVER;
@@ -24,6 +26,7 @@ export function normServer(s) {
 }
 export function setServer(s) {
   server = normServer(s) || DEFAULT_SERVER;
+  source = ''; // the dot no longer names the old server's backup
 }
 export const getServer = () => server;
 // The data server's host: where an address is looked up (never the backup server, see api.address).
@@ -35,6 +38,8 @@ export const lookupHost = () => {
   }
 };
 export const isDefaultServer = () => server === DEFAULT_SERVER;
+// Whether the backup server may stand in: only for mempool.space, never for a server the user or the node chose.
+export const backupAllowed = () => isDefaultServer();
 export const wsUrl = () => server.replace(/^http/, 'ws') + '/api/v1/ws';
 // Which host answered last ('' until something did): shown beside the connection dot, so a fallback is never silent.
 export let source = '';
@@ -109,8 +114,8 @@ export async function getJSON(path, { cacheKey, text, noFallback } = {}) {
       v = await fetchFrom(server, path, text);
       source = server;
     } catch (e) {
-      // a 4xx is an answer (not found, bad request); only an unreachable server or a 5xx falls back
-      const f = noFallback || (e.status && e.status < 500) ? null : esploraFor(path);
+      // a 4xx is an answer (not found, bad request); only an unreachable mempool.space or its 5xx falls back
+      const f = noFallback || !backupAllowed() || (e.status && e.status < 500) ? null : esploraFor(path);
       if (!f) throw e;
       v = await fetchFrom(FALLBACK, f.path, text);
       if (f.map) v = f.map(v);
