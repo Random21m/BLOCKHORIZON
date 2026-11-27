@@ -40,7 +40,7 @@ need git "Install git."; need gpg "Install GnuPG."; need gh "Install the GitHub 
 git rev-parse --show-toplevel >/dev/null 2>&1 || die "run this inside your clone of the repository."
 cd "$(git rev-parse --show-toplevel)"
 [ -f tools/release.conf ] || die "tools/release.conf is missing."
-NAME=; REPO=; SITE=; SITE_ROOT=; SITE_FILES=(); VERSION_FILE=; VERSION_RE=; CHECKS=()
+NAME=; REPO=; SITE=; SITE_ROOT=; SITE_FILES=(); VERSION_FILE=; VERSION_RE=; CHECKS=(); ASSETS=()
 # shellcheck source=/dev/null
 . tools/release.conf
 [ -n "$NAME" ] && [ -n "$REPO" ] && [ -n "$SITE" ] && [ ${#SITE_FILES[@]} -ge 1 ] && [ -n "$VERSION_FILE" ] && [ -n "$VERSION_RE" ] \
@@ -82,7 +82,7 @@ ok "main is $NAME $V ($VERSION_FILE${CHECKS[0]+ and ${#CHECKS[@]} more checks})"
 ! gh release view "$TAG" -R "$REPO" >/dev/null 2>&1 || die "a GitHub release $TAG already exists."
 
 say "2/5  The checksums of main's site files, and the live site"
-D=".release/$TAG"; mkdir -p "$D"; rm -f "$D/SHA256SUMS" "$D/SHA256SUMS.asc" "$D/notes.md"; rm -rf "$D/check"
+D=".release/$TAG"; mkdir -p "$D"; rm -f "$D/SHA256SUMS" "$D/SHA256SUMS.asc" "$D/notes.md"; rm -rf "$D/check" "$D/assets"
 paths=(); for f in "${SITE_FILES[@]}"; do paths+=("$P$f"); done
 n=0
 while IFS= read -r g; do
@@ -113,10 +113,15 @@ if [ -s "$D/notes.md" ]; then
 elif gh api -H "Accept: application/vnd.github.raw" "repos/$NOTES_REPO/contents/releases/$lc/$lc-$TAG-notes.md" > "$D/notes.md" 2>/dev/null && [ -s "$D/notes.md" ]; then
   ok "notes: releases/$lc/$lc-$TAG-notes.md from the notebook"
 else
-  die "no notes for $V: add a \"## $V\" part to CHANGELOG.md in main (or releases/$lc/$lc-$TAG-notes.md to the notebook)."
+  printf '%s %s\n' "$NAME" "$TAG" > "$D/notes.md"
+  ok "notes: no CHANGELOG part or notebook notes for $V, so just the name and the checksums (edit them on GitHub later if you like)"
 fi
 printf '\nSHA256SUMS (signed with the release key %s; the public key is in the repository) lists every file of the site at this version:\n```\ngpg --verify SHA256SUMS.asc SHA256SUMS\n```\n' "$FPR" >> "$D/notes.md"
-gh release create "$TAG" -R "$REPO" --target "$M" --title "$NAME $TAG" --notes-file "$D/notes.md" "$D/SHA256SUMS" "$D/SHA256SUMS.asc" >/dev/null
+files=("$D/SHA256SUMS" "$D/SHA256SUMS.asc")
+for a in ${ASSETS[@]+"${ASSETS[@]}"}; do   # more files from main to attach (release.conf: ASSETS)
+  mkdir -p "$D/assets"; git show "$M:$a" > "$D/assets/${a##*/}" 2>/dev/null || die "main has no $a (release.conf ASSETS)."; files+=("$D/assets/${a##*/}")
+done
+gh release create "$TAG" -R "$REPO" --target "$M" --title "$NAME $TAG" --notes-file "$D/notes.md" "${files[@]}" >/dev/null
 ok "released: https://github.com/$REPO/releases/tag/$TAG"
 
 say "5/5  Checking the release"
