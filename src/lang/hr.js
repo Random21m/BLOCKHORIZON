@@ -161,6 +161,13 @@ export default {
   imgBlocksAgo: 'prije {n} blokova',
   imgReward: 'tadašnja nagrada {r} BTC',
   myBadDate: 'Najprije odaberite datum.',
+  myTx: 'Transakcija (neobavezno)',
+  myTry: 'Probajte:',
+  myTxAfter: 'Blokova nakon bloka tog dana',
+  myTxBefore: 'Blokova prije bloka tog dana',
+  myTxSame: 'U samom bloku tog dana',
+  myTxMoved: 'Premješteno (svi izlazi)',
+  myTxWorthNow: 'Vrijedi danas',
   embedTitle: 'Ugradite na svoju stranicu',
   embedIntro:
     'Stavite broj s BLOCKHORIZON-a uživo na svoju web stranicu ili blog: odaberite što prikazati, kopirajte kod i zalijepite ga u stranicu. Sam se ažurira i vodi natrag ovamo.',

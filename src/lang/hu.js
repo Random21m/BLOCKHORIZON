@@ -161,6 +161,13 @@ export default {
   imgBlocksAgo: '{n} blokkal ezelőtt',
   imgReward: 'akkori jutalom: {r} BTC',
   myBadDate: 'Előbb válassz dátumot.',
+  myTx: 'Tranzakció (nem kötelező)',
+  myTry: 'Próbáld ki:',
+  myTxAfter: 'Blokk a nap blokkja után',
+  myTxBefore: 'Blokk a nap blokkja előtt',
+  myTxSame: 'Magában a nap blokkjában',
+  myTxMoved: 'Mozgatott összeg (minden kimenet)',
+  myTxWorthNow: 'Mai érték',
   embedTitle: 'Beágyazás a saját oldaladra',
   embedIntro:
     'Tegyél egy élő BLOCKHORIZON-számot a saját weboldaladra vagy blogodra: válaszd ki, mi látsszon, másold ki a kódot, és illeszd be az oldaladba. Magától frissül, és ide hivatkozik.',

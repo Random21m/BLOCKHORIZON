@@ -160,6 +160,13 @@ export default {
   imgBlocksAgo: 'před {n} bloky',
   imgReward: 'tehdejší odměna {r} BTC',
   myBadDate: 'Nejdřív vyberte datum.',
+  myTx: 'Transakce (nepovinné)',
+  myTry: 'Zkuste:',
+  myTxAfter: 'Bloků po bloku toho dne',
+  myTxBefore: 'Bloků před blokem toho dne',
+  myTxSame: 'Přímo v bloku toho dne',
+  myTxMoved: 'Přesunuto (všechny výstupy)',
+  myTxWorthNow: 'Hodnota dnes',
   embedTitle: 'Vložit na váš web',
   embedIntro:
     'Dejte živé číslo z BLOCKHORIZON na svůj web nebo blog: vyberte, co zobrazit, zkopírujte kód a vložte ho do stránky. Aktualizuje se samo a odkazuje sem.',

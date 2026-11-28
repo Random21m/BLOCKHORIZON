@@ -161,6 +161,13 @@ export default {
   imgBlocksAgo: '{n} blok yang lalu',
   imgReward: 'imbalan saat itu {r} BTC',
   myBadDate: 'Pilih tanggal dulu.',
+  myTx: 'Transaksi (opsional)',
+  myTry: 'Coba:',
+  myTxAfter: 'Blok setelah blok hari itu',
+  myTxBefore: 'Blok sebelum blok hari itu',
+  myTxSame: 'Di blok hari itu sendiri',
+  myTxMoved: 'Dipindahkan (semua output)',
+  myTxWorthNow: 'Nilai sekarang',
   embedTitle: 'Sematkan di situs Anda',
   embedIntro:
     'Pasang angka BLOCKHORIZON langsung di situs web atau blog Anda: pilih yang ingin ditampilkan, salin kodenya, lalu tempelkan di halaman Anda. Angkanya diperbarui sendiri dan menautkan kembali ke sini.',

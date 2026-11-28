@@ -161,6 +161,13 @@ export default {
   imgBlocksAgo: '{n} blocks ago',
   imgReward: 'reward then {r} BTC',
   myBadDate: 'Pick a date first.',
+  myTx: 'Transaction (optional)',
+  myTry: 'Try:',
+  myTxAfter: "Blocks after the day's block",
+  myTxBefore: "Blocks before the day's block",
+  myTxSame: "In the day's block itself",
+  myTxMoved: 'Moved (all outputs)',
+  myTxWorthNow: 'Worth now',
   embedTitle: 'Embed on your site',
   embedIntro:
     'Put a live BLOCKHORIZON number on your own website or blog: pick what to show, copy the code and paste it into your page. It updates itself and links back here.',

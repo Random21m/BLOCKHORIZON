@@ -161,6 +161,13 @@ export default {
   imgBlocksAgo: '{n} blocchi fa',
   imgReward: 'ricompensa allora {r} BTC',
   myBadDate: 'Scegli prima una data.',
+  myTx: 'Transazione (facoltativa)',
+  myTry: 'Prova:',
+  myTxAfter: 'Blocchi dopo il blocco del giorno',
+  myTxBefore: 'Blocchi prima del blocco del giorno',
+  myTxSame: 'Nel blocco del giorno stesso',
+  myTxMoved: 'Spostati (tutti gli output)',
+  myTxWorthNow: 'Valore oggi',
   embedTitle: 'Inseriscilo nel tuo sito',
   embedIntro:
     'Metti un dato BLOCKHORIZON dal vivo sul tuo sito o blog: scegli cosa mostrare, copia il codice e incollalo nella pagina. Si aggiorna da solo e rimanda qui.',

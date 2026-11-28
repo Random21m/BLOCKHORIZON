@@ -159,6 +159,13 @@ export default {
   imgBlocksAgo: '{n} blok önce',
   imgReward: 'o zamanki ödül {r} BTC',
   myBadDate: 'Önce bir tarih seç.',
+  myTx: 'İşlem (isteğe bağlı)',
+  myTry: 'Deneyin:',
+  myTxAfter: 'Günün bloğundan sonraki blok',
+  myTxBefore: 'Günün bloğundan önceki blok',
+  myTxSame: 'Günün bloğunun kendisinde',
+  myTxMoved: 'Taşınan (tüm çıktılar)',
+  myTxWorthNow: 'Bugünkü değeri',
   embedTitle: 'Kendi sitene ekle',
   embedIntro:
     'Kendi web sitene ya da bloguna canlı bir BLOCKHORIZON değeri koy: neyin gösterileceğini seç, kodu kopyala ve sayfana yapıştır. Kendini günceller ve buraya bağlantı verir.',

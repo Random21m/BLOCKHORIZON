@@ -161,6 +161,13 @@ export default {
   imgBlocksAgo: '{n} bloków temu',
   imgReward: 'nagroda wtedy {r} BTC',
   myBadDate: 'Najpierw wybierz datę.',
+  myTx: 'Transakcja (opcjonalnie)',
+  myTry: 'Spróbuj:',
+  myTxAfter: 'Bloki po bloku z tego dnia',
+  myTxBefore: 'Bloki przed blokiem z tego dnia',
+  myTxSame: 'W samym bloku z tego dnia',
+  myTxMoved: 'Przesłano (wszystkie wyjścia)',
+  myTxWorthNow: 'Warte dziś',
   embedTitle: 'Osadź na swojej stronie',
   embedIntro:
     'Umieść liczbę z BLOCKHORIZON na żywo na swojej stronie lub blogu: wybierz, co pokazać, skopiuj kod i wklej go na stronę. Aktualizuje się sam i prowadzi z powrotem tutaj.',

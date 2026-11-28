@@ -160,6 +160,13 @@ export default {
   imgBlocksAgo: '{n} ブロック前',
   imgReward: '当時の報酬 {r} BTC',
   myBadDate: '先に日付を選んでください。',
+  myTx: 'トランザクション（任意）',
+  myTry: '例:',
+  myTxAfter: 'その日のブロックより後のブロック数',
+  myTxBefore: 'その日のブロックより前のブロック数',
+  myTxSame: 'その日のブロックそのものの中',
+  myTxMoved: '送金額（全出力）',
+  myTxWorthNow: '現在の価値',
   embedTitle: 'サイトに埋め込む',
   embedIntro:
     'BLOCKHORIZON のライブな数字を自分のウェブサイトやブログに載せられます。表示する項目を選び、コードをコピーしてページに貼り付けてください。自動で更新され、このサイトへのリンクが付きます。',

@@ -161,6 +161,13 @@ export default {
   imgBlocksAgo: '{n} lohkoa sitten',
   imgReward: 'palkkio silloin {r} BTC',
   myBadDate: 'Valitse ensin päivämäärä.',
+  myTx: 'Siirto (valinnainen)',
+  myTry: 'Kokeile:',
+  myTxAfter: 'Lohkoja päivän lohkon jälkeen',
+  myTxBefore: 'Lohkoja ennen päivän lohkoa',
+  myTxSame: 'Päivän lohkossa itsessään',
+  myTxMoved: 'Siirretty (kaikki tulosteet)',
+  myTxWorthNow: 'Arvo nyt',
   embedTitle: 'Upota sivustollesi',
   embedIntro:
     'Lisää reaaliaikainen BLOCKHORIZON-luku omalle sivustollesi tai blogiisi: valitse mitä näytetään, kopioi koodi ja liitä se sivullesi. Se päivittyy itsestään ja linkittää tänne.',

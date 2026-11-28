@@ -2280,6 +2280,29 @@ await ok(
     await until(page, () => /did not exist yet/.test(document.querySelector('#my-out')?.textContent || ''));
     await page.goto(base + '#/my?d=2023-02-30');
     assert.equal(await page.locator('#my-out').innerText(), '');
+    // a transaction beside the day's block: its own block, how far after the day's block, what it moved
+    const txid = '2bb85f4b004be6da54f766c17c1e855187327112c231ef2ff35ebad0ea67c69e';
+    await page.goto(base + '#/my?d=2023-11-14&tx=' + txid);
+    await until(page, () => document.querySelectorAll('.mypair .mycard .myh').length === 2);
+    const tc = await page.locator('.mytx').innerText();
+    for (const w of ['#840,000', "Blocks after the day's block", '23,215', '17.97928002 BTC', 'Worth now'])
+      assert.ok(tc.includes(w), w + ' in ' + tc);
+    assert.equal(await page.locator('#my-tx').inputValue(), txid);
+    assert.ok((await page.locator('.mypair .mycard').first().innerText()).includes('#816,785'));
+    // mined on the chosen day: the day is placed on the transaction's own block
+    await page.goto(base + '#/my?d=2024-04-20&tx=' + txid);
+    await until(page, () => document.querySelectorAll('.mypair .mycard .myh').length === 2);
+    assert.ok((await page.locator('.mypair .mycard').first().innerText()).includes('#840,000'));
+    assert.ok((await page.locator('.mytx').innerText()).includes("In the day's block itself"));
+    // an ID that is not one is refused before the link changes; the Pizza Day example carries its transaction
+    await page.fill('#my-tx', 'abc');
+    await page.click('form .btn-go');
+    await until(page, () => /64 characters/.test(document.body.textContent));
+    assert.ok(!(await page.evaluate(() => location.hash)).includes('tx=abc'));
+    assert.equal(
+      await page.locator('#my-pizza').getAttribute('href'),
+      '#/my?d=2010-05-22&l=Bitcoin%20Pizza%20Day&tx=a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d'
+    );
   }
 );
 await ok(
