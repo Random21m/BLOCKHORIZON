@@ -1,8 +1,9 @@
 // "Your block": a date that matters to someone, placed on the chain. The date and name live only in the link
 // (#/my?d=2016-05-14&l=My%20birthday), so a shared link reproduces the page and nothing is stored or sent anywhere
 // except the public data requests (the block at that time, the price that week). An optional transaction
-// (&tx=<id>, say the 10,000 BTC pizza payment on Pizza Day) gets a second card beside it: the block it was mined in and
-// how many blocks it came after the day's block.
+// (&tx=<id>, say the 10,000 BTC pizza payment on Pizza Day) gets a second card beside it. When it was mined on that
+// day (UTC), the day is placed on its exact block (Pizza Day on 57,043, not the block before noon); on another day, its
+// card says how many blocks it came after or before the day's block.
 import * as L from './lib.js';
 import { api } from './api.js';
 import { t } from './i18n.js';
@@ -137,8 +138,10 @@ export function viewMy(query) {
         tx ? api.tx(tx).catch(() => null) : null,
       ]);
       if (tok !== token) return;
-      const h = b.height,
-        mined = Date.parse(b.timestamp) || ts * 1000,
+      const ts2 = txr && txr.status && txr.status.confirmed ? txr.status.block_time : NaN,
+        onDay = Number.isFinite(ts2) && Math.floor(ts2 / 86400) === Math.floor(ts / 86400);
+      const h = onDay ? txr.status.block_height : b.height,
+        mined = onDay ? ts2 * 1000 : Date.parse(b.timestamp) || ts * 1000,
         price = L.priceAt(pr, S.cur, ts);
       const since = Number.isFinite(st.tip) ? st.tip - h : NaN,
         ms = Number.isFinite(since) ? L.nextMilestone(since) : null;

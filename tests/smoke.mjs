@@ -2289,6 +2289,11 @@ await ok(
       assert.ok(tc.includes(w), w + ' in ' + tc);
     assert.equal(await page.locator('#my-tx').inputValue(), txid);
     assert.ok((await page.locator('.mypair .mycard').first().innerText()).includes('#816,785'));
+    // mined on the chosen day: the day is placed on the transaction's own block
+    await page.goto(base + '#/my?d=2024-04-20&tx=' + txid);
+    await until(page, () => document.querySelectorAll('.mypair .mycard .myh').length === 2);
+    assert.ok((await page.locator('.mypair .mycard').first().innerText()).includes('#840,000'));
+    assert.ok((await page.locator('.mytx').innerText()).includes("In the day's block itself"));
     // an ID that is not one is refused before the link changes; the Pizza Day example carries its transaction
     await page.fill('#my-tx', 'abc');
     await page.click('form .btn-go');
