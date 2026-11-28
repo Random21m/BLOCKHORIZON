@@ -161,6 +161,13 @@ export default {
   imgBlocksAgo: '{n} blok yang lalu',
   imgReward: 'ganjaran ketika itu {r} BTC',
   myBadDate: 'Pilih tarikh dahulu.',
+  myTx: 'Transaksi (pilihan)',
+  myTry: 'Cuba:',
+  myTxAfter: 'Blok selepas blok hari itu',
+  myTxBefore: 'Blok sebelum blok hari itu',
+  myTxSame: 'Dalam blok hari itu sendiri',
+  myTxMoved: 'Dipindahkan (semua output)',
+  myTxWorthNow: 'Nilai sekarang',
   embedTitle: 'Benamkan di laman anda',
   embedIntro:
     'Letakkan nombor BLOCKHORIZON secara langsung di laman web atau blog anda sendiri: pilih apa yang hendak dipaparkan, salin kod dan tampalkan ke dalam halaman anda. Ia dikemas kini sendiri dan memaut kembali ke sini.',

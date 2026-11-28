@@ -161,6 +161,13 @@ export default {
   imgBlocksAgo: 'acum {n} blocuri',
   imgReward: 'recompensa atunci {r} BTC',
   myBadDate: 'Alege mai întâi o dată.',
+  myTx: 'Tranzacție (opțional)',
+  myTry: 'Încearcă:',
+  myTxAfter: 'Blocuri după blocul zilei',
+  myTxBefore: 'Blocuri înainte de blocul zilei',
+  myTxSame: 'Chiar în blocul zilei',
+  myTxMoved: 'Mutat (toate ieșirile)',
+  myTxWorthNow: 'Valorează acum',
   embedTitle: 'Pune pe site-ul tău',
   embedIntro:
     'Pune un număr BLOCKHORIZON live pe site-ul sau blogul tău: alege ce să afișezi, copiază codul și lipește-l în pagină. Se actualizează singur și trimite înapoi aici.',

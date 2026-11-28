@@ -162,6 +162,13 @@ export default {
   imgBlocksAgo: 'il y a {n} blocs',
   imgReward: 'récompense à l’époque {r} BTC',
   myBadDate: 'Choisissez d’abord une date.',
+  myTx: 'Transaction (facultatif)',
+  myTry: 'Essayez :',
+  myTxAfter: 'Blocs après le bloc du jour',
+  myTxBefore: 'Blocs avant le bloc du jour',
+  myTxSame: 'Dans le bloc du jour lui-même',
+  myTxMoved: 'Déplacé (toutes les sorties)',
+  myTxWorthNow: 'Vaut aujourd’hui',
   embedTitle: 'L’intégrer à votre site',
   embedIntro:
     'Affichez un chiffre BLOCKHORIZON en direct sur votre site ou blog : choisissez quoi afficher, copiez le code et collez-le dans votre page. Il se met à jour tout seul et renvoie ici.',

@@ -160,6 +160,13 @@ export default {
   imgBlocksAgo: 'há {n} blocos',
   imgReward: 'recompensa na época {r} BTC',
   myBadDate: 'Escolha uma data primeiro.',
+  myTx: 'Transação (opcional)',
+  myTry: 'Experimente:',
+  myTxAfter: 'Blocos depois do bloco do dia',
+  myTxBefore: 'Blocos antes do bloco do dia',
+  myTxSame: 'No próprio bloco do dia',
+  myTxMoved: 'Movimentado (todas as saídas)',
+  myTxWorthNow: 'Vale hoje',
   embedTitle: 'Incorporar no seu site',
   embedIntro:
     'Coloque um número ao vivo do BLOCKHORIZON no seu site ou blog: escolha o que mostrar, copie o código e cole na sua página. Ele se atualiza sozinho e tem um link para cá.',

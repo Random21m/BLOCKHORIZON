@@ -160,6 +160,13 @@ export default {
   imgBlocksAgo: '{n} khối trước',
   imgReward: 'phần thưởng khi đó {r} BTC',
   myBadDate: 'Hãy chọn ngày trước.',
+  myTx: 'Giao dịch (không bắt buộc)',
+  myTry: 'Thử:',
+  myTxAfter: 'Số khối sau khối của ngày đó',
+  myTxBefore: 'Số khối trước khối của ngày đó',
+  myTxSame: 'Ngay trong khối của ngày đó',
+  myTxMoved: 'Đã chuyển (mọi đầu ra)',
+  myTxWorthNow: 'Giá trị hiện nay',
   embedTitle: 'Nhúng vào trang của bạn',
   embedIntro:
     'Đặt một con số BLOCKHORIZON trực tiếp lên website hoặc blog của bạn: chọn nội dung muốn hiện, sao chép mã rồi dán vào trang. Nó tự cập nhật và có liên kết về đây.',

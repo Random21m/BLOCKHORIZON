@@ -153,6 +153,13 @@ export default {
   imgBlocksAgo: '{n} 个区块之前',
   imgReward: '当时奖励 {r} BTC',
   myBadDate: '请先选择日期。',
+  myTx: '交易（可选）',
+  myTry: '试试：',
+  myTxAfter: '在当天区块之后的区块数',
+  myTxBefore: '在当天区块之前的区块数',
+  myTxSame: '就在当天的区块里',
+  myTxMoved: '转移金额（所有输出）',
+  myTxWorthNow: '现在价值',
   embedTitle: '嵌入到你的网站',
   embedIntro:
     '把 BLOCKHORIZON 的实时数字放到你自己的网站或博客上：选择要显示的内容，复制代码并粘贴到你的页面。它会自动更新，并链接回这里。',

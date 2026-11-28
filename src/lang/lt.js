@@ -161,6 +161,13 @@ export default {
   imgBlocksAgo: 'prieš {n} blokų',
   imgReward: 'tuometinis atlygis {r} BTC',
   myBadDate: 'Pirmiausia pasirinkite datą.',
+  myTx: 'Operacija (nebūtina)',
+  myTry: 'Išbandykite:',
+  myTxAfter: 'Blokų po tos dienos bloko',
+  myTxBefore: 'Blokų prieš tos dienos bloką',
+  myTxSame: 'Pačiame tos dienos bloke',
+  myTxMoved: 'Perkelta (visi išėjimai)',
+  myTxWorthNow: 'Vertė dabar',
   embedTitle: 'Įterpti į savo svetainę',
   embedIntro:
     'Įdėkite gyvą BLOCKHORIZON skaičių į savo svetainę ar tinklaraštį: pasirinkite, ką rodyti, nukopijuokite kodą ir įklijuokite jį į savo puslapį. Jis atsinaujina pats ir veda atgal čia.',

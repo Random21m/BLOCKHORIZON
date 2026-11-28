@@ -161,6 +161,13 @@ export default {
   imgBlocksAgo: '{n} blokken geleden',
   imgReward: 'beloning toen {r} BTC',
   myBadDate: 'Kies eerst een datum.',
+  myTx: 'Transactie (optioneel)',
+  myTry: 'Probeer:',
+  myTxAfter: 'Blokken na het blok van die dag',
+  myTxBefore: 'Blokken voor het blok van die dag',
+  myTxSame: 'In het blok van die dag zelf',
+  myTxMoved: 'Verplaatst (alle outputs)',
+  myTxWorthNow: 'Nu waard',
   embedTitle: 'Op je eigen site zetten',
   embedIntro:
     'Zet een live BLOCKHORIZON-getal op je eigen website of blog: kies wat je toont, kopieer de code en plak die in je pagina. Het werkt zichzelf bij en linkt hierheen.',

@@ -161,6 +161,13 @@ export default {
   imgBlocksAgo: 'vor {n} Blöcken',
   imgReward: 'Belohnung damals {r} BTC',
   myBadDate: 'Wähle zuerst ein Datum.',
+  myTx: 'Transaktion (optional)',
+  myTry: 'Probier:',
+  myTxAfter: 'Blöcke nach dem Block des Tages',
+  myTxBefore: 'Blöcke vor dem Block des Tages',
+  myTxSame: 'Im Block des Tages selbst',
+  myTxMoved: 'Bewegt (alle Ausgänge)',
+  myTxWorthNow: 'Heute wert',
   embedTitle: 'Auf der eigenen Website einbinden',
   embedIntro:
     'Eine live BLOCKHORIZON-Zahl auf deiner Website oder deinem Blog: auswählen, Code kopieren und in die Seite einfügen. Sie aktualisiert sich selbst und verlinkt hierher.',

@@ -158,6 +158,13 @@ export default {
   imgBlocksAgo: '{n}블록 전',
   imgReward: '당시 보상 {r} BTC',
   myBadDate: '먼저 날짜를 고르세요.',
+  myTx: '트랜잭션 (선택)',
+  myTry: '예시:',
+  myTxAfter: '그날 블록 이후 블록 수',
+  myTxBefore: '그날 블록 이전 블록 수',
+  myTxSame: '그날 블록 안에',
+  myTxMoved: '이동한 금액 (모든 출력)',
+  myTxWorthNow: '지금 가치',
   embedTitle: '내 사이트에 넣기',
   embedIntro:
     '내 웹사이트나 블로그에 BLOCKHORIZON의 실시간 숫자를 넣어 보세요. 보여 줄 항목을 고르고 코드를 복사해 페이지에 붙여 넣으면 돼요. 자동으로 업데이트되고 이곳으로 링크돼요.',

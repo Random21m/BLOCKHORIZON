@@ -160,6 +160,13 @@ export default {
   imgBlocksAgo: 'för {n} block sedan',
   imgReward: 'belöning då {r} BTC',
   myBadDate: 'Välj ett datum först.',
+  myTx: 'Transaktion (valfritt)',
+  myTry: 'Prova:',
+  myTxAfter: 'Block efter dagens block',
+  myTxBefore: 'Block före dagens block',
+  myTxSame: 'I själva dagens block',
+  myTxMoved: 'Flyttat (alla utgångar)',
+  myTxWorthNow: 'Värt nu',
   embedTitle: 'Bädda in på din sajt',
   embedIntro:
     'Visa en live-siffra från BLOCKHORIZON på din egen webbplats eller blogg: välj vad som ska visas, kopiera koden och klistra in den på sidan. Den uppdateras av sig själv och länkar hit.',

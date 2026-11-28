@@ -161,6 +161,13 @@ export default {
   imgBlocksAgo: 'for {n} blokke siden',
   imgReward: 'belønning dengang {r} BTC',
   myBadDate: 'Vælg først en dato.',
+  myTx: 'Transaktion (valgfrit)',
+  myTry: 'Prøv:',
+  myTxAfter: 'Blokke efter dagens blok',
+  myTxBefore: 'Blokke før dagens blok',
+  myTxSame: 'I selve dagens blok',
+  myTxMoved: 'Flyttet (alle outputs)',
+  myTxWorthNow: 'Værd nu',
   embedTitle: 'Indsæt på din side',
   embedIntro:
     'Vis et live BLOCKHORIZON-tal på din egen hjemmeside eller blog: vælg hvad der skal vises, kopiér koden og indsæt den på din side. Den opdaterer sig selv og linker hertil.',
