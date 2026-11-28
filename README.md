@@ -154,6 +154,6 @@ If BLOCKHORIZON is useful to you, you can send a tip over Lightning:
 
 <img src="docs/support-qr.svg" alt="QR code for the Lightning address below" width="220">
 
-`npub1vj8zjhnmkhekv93e2xmrz7kfwuxq25vrzw53u4dqhwd2lp5smvks3mwu2n@npub.cash`
+`npub1t5nvfnlmegsqkqegcpnyek4qf4fc2f2gx2t4lm88h2kq22plpmxqdhgpa9@npub.cash`
 
 (An npub.cash Lightning address: scan the QR code or paste the address into any Lightning wallet.)
