@@ -2287,6 +2287,16 @@ main:empty + .foot {
 #my-out {
   margin-top: 14px;
 }
+/* the day's block and a transaction, side by side (one above the other on a phone) */
+.mypair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 14px;
+  align-items: start;
+}
+.mytx .eyebrow a {
+  color: inherit;
+}
 /* "Mining": the block being mined, drawn live */
 .strip2 .blk.mining {
   border-color: var(--accent);

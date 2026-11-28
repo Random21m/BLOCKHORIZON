@@ -1,23 +1,30 @@
 // "Your block": a date that matters to someone, placed on the chain. The date and name live only in the link
 // (#/my?d=2016-05-14&l=My%20birthday), so a shared link reproduces the page and nothing is stored or sent anywhere
-// except the two public data requests (the block at that time, the price that week).
+// except the public data requests (the block at that time, the price that week). An optional transaction
+// (&tx=<id>, say the 10,000 BTC pizza payment on Pizza Day) gets a second card beside it: the block it was mined in and
+// how many blocks it came after the day's block.
 import * as L from './lib.js';
 import { api } from './api.js';
 import { t } from './i18n.js';
-import { S, st, fmtD, el, toast } from './state.js';
+import { S, st, fmtD, el, toast, price as priceNow } from './state.js';
 import { kv, shareRow } from './ui.js';
 import { shareNostr } from './nostr.js';
 
 const params = (q) => {
   const p = new URLSearchParams(q || '');
-  return { d: p.get('d') || '', l: (p.get('l') || '').slice(0, 40) };
+  const tx = (p.get('tx') || '').trim().toLowerCase();
+  return { d: p.get('d') || '', l: (p.get('l') || '').slice(0, 40), tx: L.isTxid(tx) ? tx : '' };
 };
-export const myLink = (d, l) => '/my?d=' + encodeURIComponent(d) + (l ? '&l=' + encodeURIComponent(l) : '');
+export const myLink = (d, l, tx) =>
+  '/my?d=' + encodeURIComponent(d) + (l ? '&l=' + encodeURIComponent(l) : '') + (tx ? '&tx=' + tx : '');
+// Pizza Day: 22 May 2010, when Laszlo Hanyecz paid 10,000 BTC for two pizzas (the transaction below, in block 57,043).
+const PIZZA_TX = 'a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d';
+export const PIZZA_LINK = myLink('2010-05-22', 'Bitcoin Pizza Day', PIZZA_TX);
 const fmtDay = (ms) => fmtD(ms, { dateOnly: true, utc: true });
 let token = 0;
 
 export function viewMy(query) {
-  const { d, l } = params(query),
+  const { d, l, tx } = params(query),
     tok = ++token;
   const di = el('input', { id: 'my-d', type: 'date', value: d, min: '2008-01-01', 'aria-label': t('myDate') });
   const li = el('input', {
@@ -28,13 +35,28 @@ export function viewMy(query) {
     placeholder: t('myLabelPh'),
     'aria-label': t('myLabel'),
   });
+  const ti = el('input', {
+    id: 'my-tx',
+    type: 'text',
+    value: tx,
+    maxlength: 64,
+    spellcheck: 'false',
+    autocomplete: 'off',
+    placeholder: t('mineTrackPh'),
+    'aria-label': t('myTx'),
+  });
   const go = (e) => {
     e.preventDefault();
     if (!L.noonTs(di.value)) {
       toast(t('myBadDate'));
       return;
     }
-    location.hash = '#' + myLink(di.value, li.value.trim());
+    const id = ti.value.trim().toLowerCase();
+    if (id && !L.isTxid(id)) {
+      toast(t('notTxid'));
+      return;
+    }
+    location.hash = '#' + myLink(di.value, li.value.trim(), id);
   };
   const out = el('div', { id: 'my-out' });
   const root = el(
@@ -49,7 +71,15 @@ export function viewMy(query) {
       di,
       el('label', { for: 'my-l' }, t('myLabel')),
       li,
+      el('label', { for: 'my-tx' }, t('myTx')),
+      ti,
       el('button', { class: 'btn-go', type: 'submit' }, t('myFind'))
+    ),
+    el(
+      'p',
+      { class: 'dim' },
+      t('myTry') + ' ',
+      el('a', { id: 'my-pizza', href: '#' + PIZZA_LINK }, 'Bitcoin Pizza Day')
     ),
     out
   );
@@ -93,7 +123,7 @@ export function viewMy(query) {
               ' ' + t('blocksToGo')
             )
           : null,
-        shareRow(myLink(d, l), 'BLOCKHORIZON · ' + name)
+        shareRow(myLink(d, l, tx), 'BLOCKHORIZON · ' + name)
       )
     );
     return root;
@@ -101,7 +131,11 @@ export function viewMy(query) {
   out.append(el('div', { class: 'panel' }, t('loading')));
   (async () => {
     try {
-      const [b, pr] = await Promise.all([api.byTime(ts), api.priceAt(S.cur, ts).catch(() => null)]);
+      const [b, pr, txr] = await Promise.all([
+        api.byTime(ts),
+        api.priceAt(S.cur, ts).catch(() => null),
+        tx ? api.tx(tx).catch(() => null) : null,
+      ]);
       if (tok !== token) return;
       const h = b.height,
         mined = Date.parse(b.timestamp) || ts * 1000,
@@ -109,71 +143,111 @@ export function viewMy(query) {
       const since = Number.isFinite(st.tip) ? st.tip - h : NaN,
         ms = Number.isFinite(since) ? L.nextMilestone(since) : null;
       const card = { name, h, mined, since, reward: L.subsidy(h), pct: (L.supplyAt(h) / L.MAX_SATS) * 100, price };
-      out.replaceChildren(
-        el(
-          'div',
-          { class: 'panel mycard' },
-          el('div', { class: 'eyebrow' }, name),
-          el('div', { class: 'myh' }, el('a', { href: '#/block/' + h }, '#' + L.fmtNum(h))),
-          el('p', { class: 'dim' }, t('minedOn', { d: fmtD(mined, { utc: true }) })),
-          kv(
+      const dayCard = el(
+        'div',
+        { class: 'panel mycard' },
+        el('div', { class: 'eyebrow' }, name),
+        el('div', { class: 'myh' }, el('a', { href: '#/block/' + h }, '#' + L.fmtNum(h))),
+        el('p', { class: 'dim' }, t('minedOn', { d: fmtD(mined, { utc: true }) })),
+        kv(
+          [
             [
-              [
-                t('blocksSince'),
-                el('b', { id: 'my-since', 'data-from': h }, Number.isFinite(since) ? L.fmtNum(since) : '…'),
-              ],
-              ms
-                ? [
-                    t('nextMilestone'),
-                    t('milestoneAt', { n: L.fmtNum(ms.blocks), d: fmtDay(now + ms.inBlocks * L.TARGET_SEC * 1000) }),
-                  ]
-                : null,
-              [t('rewardThen'), L.satsToBtc(card.reward, 8).replace(/\.?0+$/, '') + ' BTC'],
-              [t('issuedThen'), t('issuedPct', { p: card.pct.toFixed(1) })],
-              Number.isFinite(price)
-                ? [t('priceThen'), t('priceAbout', { p: L.fmtNum(price, price < 100 ? 2 : 0) + ' ' + S.cur })]
-                : null,
-            ].filter(Boolean)
-          ),
-          shareRow(myLink(d, l), 'BLOCKHORIZON · ' + name),
+              t('blocksSince'),
+              el('b', { id: 'my-since', 'data-from': h }, Number.isFinite(since) ? L.fmtNum(since) : '…'),
+            ],
+            ms
+              ? [
+                  t('nextMilestone'),
+                  t('milestoneAt', { n: L.fmtNum(ms.blocks), d: fmtDay(now + ms.inBlocks * L.TARGET_SEC * 1000) }),
+                ]
+              : null,
+            [t('rewardThen'), L.satsToBtc(card.reward, 8).replace(/\.?0+$/, '') + ' BTC'],
+            [t('issuedThen'), t('issuedPct', { p: card.pct.toFixed(1) })],
+            Number.isFinite(price)
+              ? [t('priceThen'), t('priceAbout', { p: L.fmtNum(price, price < 100 ? 2 : 0) + ' ' + S.cur })]
+              : null,
+          ].filter(Boolean)
+        ),
+        shareRow(myLink(d, l, tx), 'BLOCKHORIZON · ' + name),
+        el(
+          'p',
+          { class: 'row' },
+          el('button', { id: 'my-img', onclick: () => saveImage(card) }, t('saveImage')),
           el(
-            'p',
-            { class: 'row' },
-            el('button', { id: 'my-img', onclick: () => saveImage(card) }, t('saveImage')),
-            el(
-              'button',
-              {
-                id: 'my-nostr',
-                onclick: async () => {
-                  const url = location.href.split('#')[0] + '#' + myLink(d, l);
-                  // the link goes in after t(), so no right-to-left isolate mark sticks to it (a client would link it)
-                  const text = t('nostrText', {
-                    name,
-                    n: L.fmtNum(h),
-                    d: fmtDay(mined),
-                    s: Number.isFinite(since) ? L.fmtNum(since) : '…',
-                    u: '\u0000',
-                  }).replace(/\u2068?\u0000\u2069?/, () => url);
-                  const r = await shareNostr(text);
-                  toast(
-                    r.how === 'posted'
-                      ? t('nostrPosted', { n: r.relays })
-                      : r.how === 'copied'
-                        ? t('nostrCopied')
-                        : t('nostrFailed')
-                  );
-                },
+            'button',
+            {
+              id: 'my-nostr',
+              onclick: async () => {
+                const url = location.href.split('#')[0] + '#' + myLink(d, l, tx);
+                // the link goes in after t(), so no right-to-left isolate mark sticks to it (a client would link it)
+                const text = t('nostrText', {
+                  name,
+                  n: L.fmtNum(h),
+                  d: fmtDay(mined),
+                  s: Number.isFinite(since) ? L.fmtNum(since) : '…',
+                  u: '\u0000',
+                }).replace(/\u2068?\u0000\u2069?/, () => url);
+                const r = await shareNostr(text);
+                toast(
+                  r.how === 'posted'
+                    ? t('nostrPosted', { n: r.relays })
+                    : r.how === 'copied'
+                      ? t('nostrCopied')
+                      : t('nostrFailed')
+                );
               },
-              t('nostrShare')
-            )
+            },
+            t('nostrShare')
           )
         )
       );
+      out.replaceChildren(tx ? el('div', { class: 'mypair' }, dayCard, txCard(tx, txr, h)) : dayCard);
     } catch {
       if (tok === token) out.replaceChildren(el('div', { class: 'panel' }, t('notFound')));
     }
   })();
   return root;
+}
+
+// The second card: the transaction, the block it is in and how far that is from the day's block (dayH).
+function txCard(id, r, dayH) {
+  const head = el(
+    'div',
+    { class: 'eyebrow' },
+    el('a', { href: '#/tx/' + id, class: 'mono', title: id }, t('txTitle') + ' ' + id.slice(0, 8) + '…' + id.slice(-6))
+  );
+  if (!r) return el('div', { class: 'panel mycard mytx' }, head, el('p', null, t('notFound')));
+  const moved = (r.vout || []).reduce((a, o) => a + (o.value || 0), 0),
+    now = priceNow(),
+    s = r.status || {};
+  const btc = (sats) => L.satsToBtc(sats, 8).replace(/\.?0+$/, '') + ' BTC';
+  if (!s.confirmed)
+    return el(
+      'div',
+      { class: 'panel mycard mytx' },
+      head,
+      el('div', { class: 'myh' }, '…'),
+      el('p', { class: 'dim' }, t('waiting')),
+      kv([[t('myTxMoved'), btc(moved)]])
+    );
+  const h = s.block_height,
+    gap = h - dayH;
+  return el(
+    'div',
+    { class: 'panel mycard mytx' },
+    head,
+    el('div', { class: 'myh' }, el('a', { href: '#/block/' + h }, '#' + L.fmtNum(h))),
+    el('p', { class: 'dim' }, t('minedOn', { d: fmtD(s.block_time * 1000, { utc: true }) })),
+    kv(
+      [
+        gap === 0
+          ? [t('myTxSame'), '✓']
+          : [t(gap > 0 ? 'myTxAfter' : 'myTxBefore'), el('b', null, L.fmtNum(Math.abs(gap)))],
+        [t('myTxMoved'), btc(moved)],
+        Number.isFinite(now) ? [t('myTxWorthNow'), L.fmtNum((moved / 1e8) * now, 0) + ' ' + S.cur] : null,
+      ].filter(Boolean)
+    )
+  );
 }
 
 // Keep "blocks since" (or "blocks to go") live: called on every data update from app.js.
