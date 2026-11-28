@@ -457,7 +457,7 @@ await ok('about page shows the support address and QR', async () => {
   });
   assert.equal(
     await page.getAttribute('#support a[href^="lightning:"]', 'href'),
-    'lightning:npub1vj8zjhnmkhekv93e2xmrz7kfwuxq25vrzw53u4dqhwd2lp5smvks3mwu2n@npub.cash'
+    'lightning:npub1t5nvfnlmegsqkqegcpnyek4qf4fc2f2gx2t4lm88h2kq22plpmxqdhgpa9@npub.cash'
   );
 });
 await ok('settings: light theme and language persist', async () => {
