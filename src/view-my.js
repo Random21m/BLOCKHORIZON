@@ -221,7 +221,9 @@ function txCard(id, r, dayH) {
     now = priceNow(),
     s = r.status || {};
   const btc = (sats) => {
-    const [w, f] = L.satsToBtc(sats, 8).replace(/\.?0+$/, '').split('.');
+    const [w, f] = L.satsToBtc(sats, 8)
+      .replace(/\.?0+$/, '')
+      .split('.');
     return L.fmtNum(+w) + (f ? L.fmtNum(0.1, 1).replace(/\d/g, '')[0] + f : '') + ' BTC';
   };
   if (!s.confirmed)
