@@ -220,7 +220,10 @@ function txCard(id, r, dayH) {
   const moved = (r.vout || []).reduce((a, o) => a + (o.value || 0), 0),
     now = priceNow(),
     s = r.status || {};
-  const btc = (sats) => L.satsToBtc(sats, 8).replace(/\.?0+$/, '') + ' BTC';
+  const btc = (sats) => {
+    const [w, f] = L.satsToBtc(sats, 8).replace(/\.?0+$/, '').split('.');
+    return L.fmtNum(+w) + (f ? L.fmtNum(0.1, 1).replace(/\d/g, '')[0] + f : '') + ' BTC';
+  };
   if (!s.confirmed)
     return el(
       'div',
